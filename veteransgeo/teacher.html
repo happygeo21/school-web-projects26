@@ -166,7 +166,7 @@ const awarenessLabel=v=>PROJECT.awarenessLevels.find(x=>x.value===Number(v))?.la
 
 function filtered(){
   const q=$("search").value.trim().toLowerCase();
-  return rows.filter(r=>($("schoolFilter").value==="ALL"||r.schoolId===$("schoolFilter").value)&&($("catFilter").value==="ALL"||r.category===$("catFilter").value)&&($("officialFilter").value==="ALL"||r.officialStatus===$("officialFilter").value)&&(!q||`${r.placeName} ${r.address||""} ${r.scoreReason||""} ${r.keywords||""} ${r.rememberSentence||""}`.toLowerCase().includes(q)));
+  return rows.filter(r=>($("schoolFilter").value==="ALL"||r.schoolId===$("schoolFilter").value)&&($("catFilter").value==="ALL"||r.category===$("catFilter").value)&&($("officialFilter").value==="ALL"||r.officialStatus===$("officialFilter").value)&&(!q||`${r.placeName} ${r.placeDescription||""} ${r.address||""} ${r.scoreReason||""} ${r.keywords||""} ${r.rememberSentence||""}`.toLowerCase().includes(q)));
 }
 function avg(rs,k){return rs.length?(rs.reduce((a,r)=>a+(Number(r[k])||0),0)/rs.length).toFixed(1):"-";}
 function bars(id,obj){const max=Math.max(1,...Object.values(obj));$(id).innerHTML=Object.entries(obj).map(([k,v])=>`<div class="barrow"><div>${esc(k)}</div><div class="bartrack"><div class="barfill" style="width:${v/max*100}%"></div></div><b>${v}</b></div>`).join("");}
@@ -210,7 +210,9 @@ function render(){
   $("entries").innerHTML=rs.length?rs.sort((a,b)=>b.createdAt-a.createdAt).map(r=>{
     const k=key(r),isPub=!!published[k],s=info(r.schoolId);
     return `<div class="entry"><div class="meta">${esc(s.region)} · ${esc(s.school)} · 활동코드 ${esc(r.activityCode)}</div><h4>${esc(r.placeName)}</h4>
-    <p><strong>공식지도 확인:</strong> ${esc(officialLabel(r.officialStatus))}<br><strong>활동 전 인지도:</strong> ${esc(awarenessLabel(r.awarenessScore))}<br><strong>중요도 / 발견도:</strong> ${r.importance} / ${r.visibility}</p>
+    <p><strong>장소 선택:</strong> ${r.placeOrigin==="student_suggested"?"내가 직접 제안한 장소":"공식 현충시설 지도에서 찾은 장소"}<br><strong>공식지도 확인:</strong> ${esc(officialLabel(r.officialStatus))}<br><strong>활동 전 인지도:</strong> ${esc(awarenessLabel(r.awarenessScore))}<br><strong>중요도 / 발견도:</strong> ${r.importance} / ${r.visibility}</p>
+    <p><strong>장소 설명:</strong> ${esc(r.placeDescription||"미입력")}</p>
+    <p><strong>위치 확인:</strong> <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${r.latitude},${r.longitude}`)}" target="_blank" rel="noopener">Google 지도에서 열기</a></p>
     <p><strong>판단 근거:</strong> ${esc(r.scoreReason||"")}</p>
     <p><strong>근거:</strong> ${esc(r.sourceType||"")}${r.sourceNote?` · ${esc(r.sourceNote)}`:""}</p>
     <p><strong>왜 기억해야 하나:</strong> ${esc(r.rememberSentence)}</p>
@@ -224,7 +226,7 @@ async function togglePub(k){
   const r=rows.find(x=>key(x)===k);if(!r)return;
   if(published[k]) await remove(ref(db,`${DB_ROOT}/published/${k}`));
   else await set(ref(db,`${DB_ROOT}/published/${k}`),{
-    publishedAt:Date.now(),schoolId:r.schoolId,category:r.category,placeName:r.placeName,address:r.address||"",
+    publishedAt:Date.now(),schoolId:r.schoolId,category:r.category,placeOrigin:r.placeOrigin||"official_map",placeName:r.placeName,placeDescription:r.placeDescription||"",address:r.address||"",
     latitude:r.latitude,longitude:r.longitude,officialStatus:r.officialStatus||"not_checked",awarenessScore:Number(r.awarenessScore||1),
     importance:r.importance,visibility:r.visibility,scoreReason:r.scoreReason||"",sourceType:r.sourceType||"",sourceNote:r.sourceNote||"",
     rememberSentence:r.rememberSentence,message:r.message||"",keywords:r.keywords
@@ -242,16 +244,16 @@ function downloadCsv(filename,arr){
 }
 $("egisBtn").onclick=()=>{
   const rs=filtered();
-  const head=["name","address","latitude","longitude","school","region","category","official_status","official_status_ko","awareness_score","awareness_label","importance","visibility","official_memory_gap","score_reason","source_type","source_note","remember_sentence","message","keywords"];
+  const head=["name","address","latitude","longitude","school","region","category","place_origin","place_description","official_status","official_status_ko","awareness_score","awareness_label","importance","visibility","official_memory_gap","score_reason","source_type","source_note","remember_sentence","message","keywords"];
   const data=[head,...rs.map(r=>{const s=info(r.schoolId);const gap=r.officialStatus==="confirmed"&&Number(r.awarenessScore)<=2&&Number(r.visibility)<=2?"Y":"N";return[
-    r.placeName,r.address||"",r.latitude,r.longitude,s.school,s.region,r.category,r.officialStatus||"",officialLabel(r.officialStatus),
+    r.placeName,r.address||"",r.latitude,r.longitude,s.school,s.region,r.category,r.placeOrigin||"official_map",r.placeDescription||"",r.officialStatus||"",officialLabel(r.officialStatus),
     r.awarenessScore||"",awarenessLabel(r.awarenessScore),r.importance,r.visibility,gap,r.scoreReason||"",r.sourceType||"",r.sourceNote||"",r.rememberSentence||"",r.message||"",r.keywords||""
   ]})];
   downloadCsv("기억의좌표_eGIS_분석용.csv",data);
 };
 $("exportBtn").onclick=()=>{
-  const rs=filtered(),head=["학교","지역","분야","장소","주소","위도","경도","공식지도확인","활동전인지도","중요도","발견도","공식기억사각지대","점수근거","근거유형","자료명/URL","기억문장","한마디","핵심어"];
-  const data=[head,...rs.map(r=>{const s=info(r.schoolId);return[s.school,s.region,r.category,r.placeName,r.address||"",r.latitude,r.longitude,officialLabel(r.officialStatus),awarenessLabel(r.awarenessScore),r.importance,r.visibility,(r.officialStatus==="confirmed"&&Number(r.awarenessScore)<=2&&Number(r.visibility)<=2)?"Y":"N",r.scoreReason||"",r.sourceType||"",r.sourceNote||"",r.rememberSentence||"",r.message||"",r.keywords||""]})];
+  const rs=filtered(),head=["학교","지역","분야","장소선택방식","장소","장소설명","주소","위도","경도","공식지도확인","활동전인지도","중요도","발견도","공식기억사각지대","점수근거","근거유형","자료명/URL","기억문장","한마디","핵심어"];
+  const data=[head,...rs.map(r=>{const s=info(r.schoolId);return[s.school,s.region,r.category,r.placeOrigin==="student_suggested"?"내가 직접 제안한 장소":"공식 현충시설 지도에서 찾은 장소",r.placeName,r.placeDescription||"",r.address||"",r.latitude,r.longitude,officialLabel(r.officialStatus),awarenessLabel(r.awarenessScore),r.importance,r.visibility,(r.officialStatus==="confirmed"&&Number(r.awarenessScore)<=2&&Number(r.visibility)<=2)?"Y":"N",r.scoreReason||"",r.sourceType||"",r.sourceNote||"",r.rememberSentence||"",r.message||"",r.keywords||""]})];
   downloadCsv("기억의좌표_전체자료.csv",data);
 };
 

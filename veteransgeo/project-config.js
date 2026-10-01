@@ -26,7 +26,7 @@ export const PROJECT = {
     "국가·지자체·공공기관 자료",
     "박물관·기념관·지역사 자료",
     "도서·논문·언론 자료",
-    "기타"
+    "나의 판단"
   ],
 
   officialStatuses: [

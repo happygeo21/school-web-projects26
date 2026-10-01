@@ -43,8 +43,18 @@
 <div><label>학교</label><select id="school"></select></div>
 <div><label>활동코드</label><input id="activityCode" maxlength="20" placeholder="예: 2조 / A03"></div>
 <div><label>분야</label><select id="category"></select></div>
-<div><label>장소 이름</label><input id="placeName" maxlength="100" placeholder="예: ○○ 충혼비"></div>
+<div><label>장소 선택 방식</label>
+<select id="placeOrigin">
+<option value="official_map">공식 현충시설 지도에서 찾은 장소</option>
+<option value="student_suggested">내가 직접 제안한 장소</option>
+</select>
+<div class="choice-help">※ 공식 지도에 없더라도 우리 지역이 기억해야 한다고 생각하면 ‘내가 직접 제안한 장소’를 선택할 수 있습니다.</div>
+</div>
+<div><label>장소 이름</label><input id="placeName" maxlength="100" placeholder="예: ○○ 충혼비 / ○○역 앞 추모공간"></div>
 <div><label>소재지·주소 <span class="muted small">(선택)</span></label><input id="address" maxlength="160" placeholder="예: 전남 화순군 ..."></div>
+<div style="grid-column:1/-1"><label>이 장소는 어떤 곳인가요? <span class="muted small">(10자 이상)</span></label>
+<textarea id="placeDescription" maxlength="350" placeholder="예: 마을 주민들이 매년 추모행사를 여는 작은 비석이 있는 곳으로, 공식 현충시설 지도에서는 찾기 어렵지만 지역에서는 오랫동안 기억해 온 장소이다."></textarea>
+</div>
 <div><label>국가보훈부 현충시설 지도 확인 결과</label><select id="officialStatus"></select>
 <div class="choice-help">※ ‘찾지 못함’은 ‘공식적으로 가치가 없다’는 뜻이 아닙니다. 공식 지도와 생활 속 기억의 차이를 탐구하기 위한 항목입니다.</div></div>
 </div>
@@ -60,11 +70,32 @@
 </div>
 </div>
 
-<h2 class="section">3. 지도에서 정확한 장소를 찍습니다</h2>
+<h2 class="section">3. 장소를 검색하고 지도에서 정확한 위치를 찍습니다</h2>
 <div class="card">
-<p class="muted">조사 대상 장소를 지도에서 클릭하세요. 현재 내 GPS 위치는 자동으로 수집하지 않습니다.</p>
+<div class="callout">
+<strong>① 먼저 Google 지도에서 장소를 검색해 보세요.</strong><br>
+장소 이름이나 주소를 검색해 위치를 확인한 뒤, 아래 지도에서 같은 위치를 클릭하면 위도·경도가 자동으로 입력됩니다.
+</div>
+<div class="grid two">
+<div style="grid-column:1/-1">
+<label>Google 지도 장소 검색</label>
+<div class="toolbar">
+<input id="googleMapQuery" style="flex:1;min-width:240px" maxlength="180" placeholder="예: 화순 충혼탑 / 전남 화순군 충혼탑">
+<button id="googleMapSearchBtn" type="button" class="primary">🔎 Google 지도에서 검색</button>
+</div>
+<div class="choice-help">※ 별도 Google API 키 없이 새 창에서 검색됩니다. 장소 이름·주소를 먼저 입력하면 더 정확합니다.</div>
+</div>
+</div>
+<p class="muted"><strong>② 아래 지도에서 실제 위치를 클릭하세요.</strong> 현재 내 GPS 위치는 자동으로 수집하지 않습니다.</p>
 <div id="map"></div>
-<div class="grid two"><div><label>위도</label><input id="lat" readonly></div><div><label>경도</label><input id="lng" readonly></div></div>
+<div class="grid two">
+<div><label>위도</label><input id="lat" readonly></div>
+<div><label>경도</label><input id="lng" readonly></div>
+</div>
+<div class="toolbar" style="margin-top:12px">
+<button id="googleMapCoordBtn" type="button" class="gray" disabled>📍 선택 좌표를 Google 지도에서 확인</button>
+<span class="muted small">위치를 잘못 찍었다면 지도를 다시 클릭하면 됩니다.</span>
+</div>
 </div>
 
 <h2 class="section">4. 장소의 의미와 발견 가능성을 판단합니다</h2>
@@ -136,15 +167,40 @@ PROJECT.awarenessLevels.forEach(x=>$("awarenessScore").add(new Option(x.label,St
 const map=L.map("map").setView(PROJECT.schools[0].center,PROJECT.schools[0].zoom);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
 let marker=null;
-map.on("click",e=>{
-  $("lat").value=e.latlng.lat.toFixed(6);$("lng").value=e.latlng.lng.toFixed(6);
-  if(marker) marker.setLatLng(e.latlng); else marker=L.marker(e.latlng).addTo(map);
-});
+function setPickedLocation(lat,lng){
+  $("lat").value=Number(lat).toFixed(6);
+  $("lng").value=Number(lng).toFixed(6);
+  const p=[Number(lat),Number(lng)];
+  if(marker) marker.setLatLng(p); else marker=L.marker(p).addTo(map);
+  $("googleMapCoordBtn").disabled=false;
+}
+map.on("click",e=>setPickedLocation(e.latlng.lat,e.latlng.lng));
+
+function googleMapsSearchUrl(query){
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}
+$("googleMapSearchBtn").onclick=()=>{
+  const q=$("googleMapQuery").value.trim() || [$("placeName").value.trim(),$("address").value.trim()].filter(Boolean).join(" ");
+  if(!q){alert("장소 이름이나 주소를 먼저 입력해 주세요.");return;}
+  $("googleMapQuery").value=q;
+  window.open(googleMapsSearchUrl(q),"_blank","noopener");
+};
+$("googleMapCoordBtn").onclick=()=>{
+  const lat=$("lat").value.trim(),lng=$("lng").value.trim();
+  if(!lat||!lng)return;
+  window.open(googleMapsSearchUrl(`${lat},${lng}`),"_blank","noopener");
+};
+["placeName","address"].forEach(id=>$(id).addEventListener("change",()=>{
+  if(!$("googleMapQuery").value.trim()){
+    $("googleMapQuery").value=[$("placeName").value.trim(),$("address").value.trim()].filter(Boolean).join(" ");
+  }
+}));
+
 $("school").onchange=()=>{
   const s=PROJECT.schools.find(x=>x.id===$("school").value);
   map.setView(s.center,s.zoom);
   if(marker){map.removeLayer(marker);marker=null;}
-  $("lat").value="";$("lng").value="";
+  $("lat").value="";$("lng").value="";$("googleMapCoordBtn").disabled=true;
 };
 ["importance","visibility"].forEach(id=>{const sl=$(id),sc=$(id+"Score");sl.oninput=()=>sc.textContent=sl.value;});
 
@@ -160,12 +216,12 @@ try{
 const v=id=>$(id).value.trim();
 $("submitBtn").onclick=async()=>{
   const lat=v("lat"),lng=v("lng");
-  if(!v("activityCode")||!v("placeName")||!lat||!lng||!v("scoreReason")||v("scoreReason").length<10||!v("rememberSentence")||v("rememberSentence").length<10||!v("keywords")){
-    $("msg").textContent="활동코드·장소·지도 위치·판단 근거(10자 이상)·기억 문장·핵심어를 확인해 주세요.";return;
+  if(!v("activityCode")||!v("placeName")||!v("placeDescription")||v("placeDescription").length<10||!lat||!lng||!v("scoreReason")||v("scoreReason").length<10||!v("rememberSentence")||v("rememberSentence").length<10||!v("keywords")){
+    $("msg").textContent="활동코드·장소 이름·장소 설명(10자 이상)·지도 위치·판단 근거(10자 이상)·기억 문장·핵심어를 확인해 주세요.";return;
   }
   const data={
     createdAt:Date.now(),schoolId:v("school"),activityCode:v("activityCode"),category:v("category"),
-    placeName:v("placeName"),address:v("address"),latitude:Number(lat),longitude:Number(lng),
+    placeOrigin:v("placeOrigin"),placeName:v("placeName"),placeDescription:v("placeDescription"),address:v("address"),latitude:Number(lat),longitude:Number(lng),
     officialStatus:v("officialStatus"),awarenessScore:Number(v("awarenessScore")),
     importance:Number(v("importance")),visibility:Number(v("visibility")),
     scoreReason:v("scoreReason"),sourceType:v("sourceType"),sourceNote:v("sourceNote"),
