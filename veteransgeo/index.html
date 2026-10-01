@@ -1,1 +1,184 @@
+<!doctype html><html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>기억의 좌표 LIVE | 학생용</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--text:#172033;--muted:#697386;--line:#dde3eb;--blue:#2e659e;--green:#15735a;--red:#b33f3f;--amber:#a36b00;--purple:#6a4aa3;--shadow:0 12px 28px rgba(28,42,72,.08)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI","Noto Sans KR",sans-serif;line-height:1.62}.wrap{max-width:1180px;margin:auto;padding:18px 18px 70px}.hero{background:linear-gradient(135deg,#17314f,#2f659c 72%,#5687b9);color:#fff;padding:38px 28px;border-radius:27px;box-shadow:var(--shadow)}.hero h1{font-size:clamp(36px,5.5vw,62px);line-height:1.08;margin:8px 0 12px;letter-spacing:-.05em}.hero p{font-size:clamp(15px,1.8vw,20px);margin:0;opacity:.95}.badge{display:inline-block;padding:7px 11px;border-radius:999px;font-size:13px;font-weight:850;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22)}.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:23px;box-shadow:var(--shadow);margin-top:18px}.grid{display:grid;gap:17px}.two{grid-template-columns:repeat(2,minmax(0,1fr))}.three{grid-template-columns:repeat(3,minmax(0,1fr))}.five{grid-template-columns:repeat(5,minmax(0,1fr))}@media(max-width:950px){.two,.three,.five{grid-template-columns:1fr}}.section{font-size:clamp(25px,3vw,34px);letter-spacing:-.04em;margin:40px 0 12px}label{display:block;font-weight:820;margin:11px 0 6px}input,select,textarea{width:100%;font:inherit;color:inherit;background:#fff;border:1px solid var(--line);border-radius:13px;padding:12px 13px}textarea{min-height:100px;resize:vertical}.sentence{min-height:120px;font-size:17px}.range-row{display:grid;grid-template-columns:1fr 70px;gap:12px;align-items:center}.range-row input[type=range]{padding:0}.score{font-size:25px;font-weight:950;text-align:center;color:#245989}button,.btn{border:0;border-radius:12px;padding:10px 14px;font:inherit;font-weight:850;cursor:pointer;text-decoration:none;display:inline-block}.primary{background:var(--blue);color:#fff}.green{background:var(--green);color:#fff}.red{background:var(--red);color:#fff}.gray{background:#edf1f5;color:#2c3a4f}.amber{background:#fff3d8;color:#755000}.purple{background:#efe9fb;color:#56368f}.toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.status{padding:9px 12px;border-radius:11px;background:#eef3f9;color:#214f7e;font-weight:800}.ok{background:#e9f7f1;color:#096347}.err{background:#fff0f0;color:#982f2f}.muted{color:var(--muted)}.small{font-size:13px}.note{font-size:13px;padding:9px 11px;border-radius:10px;background:#f1f4f8;color:#5d6878}#map,#teacherMap,#publicMap{height:510px;border-radius:17px;border:1px solid var(--line);overflow:hidden;background:#edf1f5}.callout{padding:14px 16px;border-radius:13px;background:#eef4fb;border-left:5px solid var(--blue);margin:14px 0}.warn{background:#fff7e7;border-left-color:#b77900}.compare{background:#f4effc;border-left-color:var(--purple)}.metric{font-size:39px;line-height:1.1;font-weight:950;color:#235887;margin:7px 0}.metriclabel{font-size:13px;color:var(--muted)}.entry{padding:15px;border:1px solid var(--line);border-radius:15px;background:#fcfdff;margin:10px 0}.entry h4{margin:0 0 5px}.meta{font-size:12px;color:var(--muted)}.wordcloud{min-height:220px;border:1px dashed #b9c4d4;border-radius:17px;padding:20px;display:flex;gap:12px 15px;flex-wrap:wrap;align-content:center;justify-content:center;background:#fbfcfe}.word{font-weight:950;color:#28517f;line-height:1}.barrow{display:grid;grid-template-columns:minmax(130px,1.2fr) minmax(120px,3fr) 45px;gap:8px;align-items:center;margin:9px 0}.bartrack{height:17px;background:#edf1f5;border-radius:999px;overflow:hidden}.barfill{height:100%;background:#3c6fa5;border-radius:999px}.blind{border-left:5px solid #b76900;background:#fffaf0}.hidden{display:none!important}.filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}@media(max-width:800px){.filters{grid-template-columns:1fr}}.footer{text-align:center;color:var(--muted);font-size:13px;padding-top:34px}.rubric{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}@media(max-width:800px){.rubric{grid-template-columns:1fr}}.rubric div{padding:12px;border:1px solid var(--line);border-radius:12px;background:#fafcff}.compare-template{font-size:17px;line-height:1.8;background:#fff;border:1px dashed #a999c6;border-radius:14px;padding:16px}
 
+.official-box{background:#eef7ff;border:1px solid #bfd7ef;border-radius:16px;padding:17px;margin:14px 0}
+.official-box .biglink{display:inline-flex;align-items:center;gap:8px;background:#245f98;color:white;padding:11px 15px;border-radius:12px;text-decoration:none;font-weight:900}
+.choice-help{font-size:13px;color:#637086;margin-top:6px}
+.awareness-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+@media(max-width:800px){.awareness-grid{grid-template-columns:1fr 1fr}}
+.awareness-option{border:1px solid var(--line);border-radius:13px;padding:10px;background:#fafcff}
+.metric6{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+@media(max-width:1050px){.metric6{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.metric6{grid-template-columns:1fr}}
+.official-tag{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:850;background:#e8f2ff;color:#245b90}
+.outside-tag{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:850;background:#f2effa;color:#604493}
+.gap-tag{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:900;background:#fff0db;color:#8b5500}
+</style></head><body><div class="wrap">
+
+<section class="hero">
+<span class="badge">학생용 · 7개 학교 공동 탐구</span>
+<h1>🧭 기억의 좌표 LIVE</h1>
+<p><strong>공식적으로 기록된 장소</strong>와 <strong>학생들이 실제로 알고 있던 생활 속 기억</strong>의 차이를 지도 위에 기록합니다.</p>
+</section>
+
+<div class="card"><div class="toolbar">
+<span id="conn" class="status">Firebase 연결 중…</span>
+<span class="note">이름·학번·현재 GPS는 수집하지 않습니다. 활동코드만 사용합니다.</span>
+</div></div>
+
+<h2 class="section">1. 공식 기억지도를 먼저 확인합니다</h2>
+<div class="card">
+<div class="official-box">
+<h3 style="margin-top:0">🏛️ 국가보훈부 현충시설 지도서비스</h3>
+<p>우리 지역에 어떤 현충시설이 공식적으로 등록되어 있는지 먼저 살펴보세요. 공식 지도에 있는 장소를 선택해도 되고, <strong>공식 지도에서는 찾지 못했지만 우리 지역이 기억해야 한다고 생각하는 장소</strong>를 선택해도 됩니다.</p>
+<a class="biglink" id="officialMapLink" href="#" target="_blank" rel="noopener">🔎 현충시설 공식지도 열기</a>
+</div>
+
+<div class="grid two">
+<div><label>학교</label><select id="school"></select></div>
+<div><label>활동코드</label><input id="activityCode" maxlength="20" placeholder="예: 2조 / A03"></div>
+<div><label>분야</label><select id="category"></select></div>
+<div><label>장소 이름</label><input id="placeName" maxlength="100" placeholder="예: ○○ 충혼비"></div>
+<div><label>소재지·주소 <span class="muted small">(선택)</span></label><input id="address" maxlength="160" placeholder="예: 전남 화순군 ..."></div>
+<div><label>국가보훈부 현충시설 지도 확인 결과</label><select id="officialStatus"></select>
+<div class="choice-help">※ ‘찾지 못함’은 ‘공식적으로 가치가 없다’는 뜻이 아닙니다. 공식 지도와 생활 속 기억의 차이를 탐구하기 위한 항목입니다.</div></div>
+</div>
+</div>
+
+<h2 class="section">2. 이 활동 전, 나는 이 장소를 얼마나 알고 있었나요?</h2>
+<div class="card">
+<p class="muted">검색한 뒤의 지식이 아니라 <strong>수업을 시작하기 전의 나</strong>를 떠올려 선택하세요.</p>
+<select id="awarenessScore"></select>
+<div class="callout compare">
+<strong>이 항목이 중요한 이유</strong><br>
+공식 지도에는 기록되어 있지만 학생들은 거의 모르는 장소가 있다면, 그곳은 ‘공식 기록과 생활 속 기억이 어긋나는 곳’일 수 있습니다.
+</div>
+</div>
+
+<h2 class="section">3. 지도에서 정확한 장소를 찍습니다</h2>
+<div class="card">
+<p class="muted">조사 대상 장소를 지도에서 클릭하세요. 현재 내 GPS 위치는 자동으로 수집하지 않습니다.</p>
+<div id="map"></div>
+<div class="grid two"><div><label>위도</label><input id="lat" readonly></div><div><label>경도</label><input id="lng" readonly></div></div>
+</div>
+
+<h2 class="section">4. 장소의 의미와 발견 가능성을 판단합니다</h2>
+<div class="grid two">
+<div class="card"><h3>🔥 역사적 중요도</h3><p class="muted">1 = 역사적 맥락 확인 어려움 · 3 = 지역사 이해에 의미 있음 · 5 = 근거가 분명하고 넓은 역사 맥락에서도 중요</p><div class="range-row"><input id="importance" type="range" min="1" max="5" value="4"><div id="importanceScore" class="score">4</div></div></div>
+<div class="card"><h3>👀 발견 가능성</h3><p class="muted">1 = 가까이 가도 의미를 알기 어려움 · 3 = 어느 정도 발견 가능 · 5 = 누구나 쉽게 발견하고 의미도 이해 가능</p><div class="range-row"><input id="visibility" type="range" min="1" max="5" value="3"><div id="visibilityScore" class="score">3</div></div></div>
+</div>
+
+<h2 class="section">5. 점수에는 근거를 붙입니다</h2>
+<div class="card">
+<label>내가 이 점수를 준 근거는? <span class="muted small">(10자 이상)</span></label>
+<textarea id="scoreReason" maxlength="300" placeholder="예: 국가보훈부 현충시설 지도에 등록되어 있고 지역 독립운동과 직접 관련되지만, 현장 안내판이 작아 지나가며 의미를 알기 어렵다."></textarea>
+
+<div class="grid two">
+<div><label>주요 근거 유형</label><select id="sourceType"></select></div>
+<div><label>자료 이름·기관·URL <span class="muted small">(선택)</span></label><input id="sourceNote" maxlength="300" placeholder="예: 국가보훈부 현충시설정보 / ○○시 문화관광 / URL"></div>
+</div>
+
+<label>왜 이 장소를 다음 세대가 기억해야 할까요?</label>
+<textarea id="rememberSentence" class="sentence" maxlength="250" placeholder="사실을 나열하기보다 ‘왜 기억해야 하는지’를 한 문장으로 적어주세요."></textarea>
+
+<label>그 시대의 사람들에게 한마디 <span class="muted small">(선택)</span></label>
+<textarea id="message" maxlength="180" placeholder="예: 당신들이 지키려 했던 평범한 하루를 우리가 지금 살아가고 있습니다."></textarea>
+
+<label>핵심 단어 3개</label>
+<input id="keywords" maxlength="120" placeholder="예: 독립, 기억, 공동체">
+
+<div class="callout">
+<strong>핵심 질문</strong><br>
+“공식 지도에 기록되어 있다고 해서, 사람들에게 실제로 기억되고 있다고 할 수 있을까?”
+</div>
+
+<div class="toolbar"><button id="submitBtn" class="green" disabled>기억의 좌표 등록하기</button><span id="msg" class="muted"></span></div>
+</div>
+
+<div id="compareMission" class="card hidden">
+<h2 style="margin-top:0">✅ 제출 완료 — 이제 비교가 시작됩니다</h2>
+<p>다른 지역 학생의 자료를 최소 2곳 살펴보고 아래 문장을 완성해 보세요.</p>
+<div class="compare-template">
+“우리 지역은 <strong>_____</strong>의 기억이 두드러지는 반면, <strong>_____</strong> 지역은 <strong>_____</strong>의 기억이 더 두드러졌다. 그 이유는 <strong>_____</strong>라고 생각한다.”
+</div>
+<div class="toolbar" style="margin-top:13px">
+<a class="btn purple" href="./public.html" target="_blank">🗺️ 7개 학교 공개지도 비교하기</a>
+<a class="btn gray" id="officialMapLink2" href="#" target="_blank">🏛️ 공식 현충시설 지도 다시 보기</a>
+</div>
+</div>
+
+<div class="footer">제출 자료는 교사가 사실관계와 표현을 검토한 뒤 승인된 내용만 공개지도에 표시됩니다.</div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+import { firebaseConfig, DB_ROOT } from "./firebase-config.js";
+import { PROJECT } from "./project-config.js";
+
+const $=id=>document.getElementById(id);
+$("officialMapLink").href=PROJECT.officialMapUrl;
+$("officialMapLink2").href=PROJECT.officialMapUrl;
+
+PROJECT.schools.forEach(s=>$("school").add(new Option(`${s.region} · ${s.school}`,s.id)));
+PROJECT.categories.forEach(c=>$("category").add(new Option(c,c)));
+PROJECT.sourceTypes.forEach(c=>$("sourceType").add(new Option(c,c)));
+PROJECT.officialStatuses.forEach(x=>$("officialStatus").add(new Option(x.label,x.value)));
+PROJECT.awarenessLevels.forEach(x=>$("awarenessScore").add(new Option(x.label,String(x.value))));
+
+const map=L.map("map").setView(PROJECT.schools[0].center,PROJECT.schools[0].zoom);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
+let marker=null;
+map.on("click",e=>{
+  $("lat").value=e.latlng.lat.toFixed(6);$("lng").value=e.latlng.lng.toFixed(6);
+  if(marker) marker.setLatLng(e.latlng); else marker=L.marker(e.latlng).addTo(map);
+});
+$("school").onchange=()=>{
+  const s=PROJECT.schools.find(x=>x.id===$("school").value);
+  map.setView(s.center,s.zoom);
+  if(marker){map.removeLayer(marker);marker=null;}
+  $("lat").value="";$("lng").value="";
+};
+["importance","visibility"].forEach(id=>{const sl=$(id),sc=$(id+"Score");sl.oninput=()=>sc.textContent=sl.value;});
+
+let db=null,uid=null;
+try{
+  const app=initializeApp(firebaseConfig),auth=getAuth(app);db=getDatabase(app);
+  const cred=await signInAnonymously(auth);uid=cred.user.uid;
+  $("conn").textContent=`● 실시간 연결됨 · 익명 ${uid.slice(0,6)}…`;$("conn").className="status ok";$("submitBtn").disabled=false;
+}catch(e){
+  console.error(e);$("conn").textContent=`연결 실패 · ${e.code||e.message}`;$("conn").className="status err";
+}
+
+const v=id=>$(id).value.trim();
+$("submitBtn").onclick=async()=>{
+  const lat=v("lat"),lng=v("lng");
+  if(!v("activityCode")||!v("placeName")||!lat||!lng||!v("scoreReason")||v("scoreReason").length<10||!v("rememberSentence")||v("rememberSentence").length<10||!v("keywords")){
+    $("msg").textContent="활동코드·장소·지도 위치·판단 근거(10자 이상)·기억 문장·핵심어를 확인해 주세요.";return;
+  }
+  const data={
+    createdAt:Date.now(),schoolId:v("school"),activityCode:v("activityCode"),category:v("category"),
+    placeName:v("placeName"),address:v("address"),latitude:Number(lat),longitude:Number(lng),
+    officialStatus:v("officialStatus"),awarenessScore:Number(v("awarenessScore")),
+    importance:Number(v("importance")),visibility:Number(v("visibility")),
+    scoreReason:v("scoreReason"),sourceType:v("sourceType"),sourceNote:v("sourceNote"),
+    rememberSentence:v("rememberSentence"),message:v("message"),keywords:v("keywords")
+  };
+  $("submitBtn").disabled=true;$("msg").textContent="제출 중…";
+  try{
+    const p=push(ref(db,`${DB_ROOT}/submissions/${data.schoolId}/${uid}`));
+    await set(p,data);
+    $("msg").textContent="✓ 등록 완료! 이제 다른 지역의 기억과 비교해 보세요.";
+    $("compareMission").classList.remove("hidden");
+    $("compareMission").scrollIntoView({behavior:"smooth",block:"center"});
+  }catch(e){console.error(e);$("msg").textContent=`제출 실패 · ${e.code||e.message}`;}
+  finally{$("submitBtn").disabled=false;}
+};
+</script></body></html>

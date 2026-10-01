@@ -1,0 +1,85 @@
+<!doctype html><html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>기억의 좌표 | 7개 학교 공개지도</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>
+:root{--bg:#f5f6f8;--card:#fff;--text:#172033;--muted:#697386;--line:#dde3eb;--blue:#2e659e;--green:#15735a;--red:#b33f3f;--amber:#a36b00;--purple:#6a4aa3;--shadow:0 12px 28px rgba(28,42,72,.08)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI","Noto Sans KR",sans-serif;line-height:1.62}.wrap{max-width:1180px;margin:auto;padding:18px 18px 70px}.hero{background:linear-gradient(135deg,#17314f,#2f659c 72%,#5687b9);color:#fff;padding:38px 28px;border-radius:27px;box-shadow:var(--shadow)}.hero h1{font-size:clamp(36px,5.5vw,62px);line-height:1.08;margin:8px 0 12px;letter-spacing:-.05em}.hero p{font-size:clamp(15px,1.8vw,20px);margin:0;opacity:.95}.badge{display:inline-block;padding:7px 11px;border-radius:999px;font-size:13px;font-weight:850;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22)}.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:23px;box-shadow:var(--shadow);margin-top:18px}.grid{display:grid;gap:17px}.two{grid-template-columns:repeat(2,minmax(0,1fr))}.three{grid-template-columns:repeat(3,minmax(0,1fr))}.five{grid-template-columns:repeat(5,minmax(0,1fr))}@media(max-width:950px){.two,.three,.five{grid-template-columns:1fr}}.section{font-size:clamp(25px,3vw,34px);letter-spacing:-.04em;margin:40px 0 12px}label{display:block;font-weight:820;margin:11px 0 6px}input,select,textarea{width:100%;font:inherit;color:inherit;background:#fff;border:1px solid var(--line);border-radius:13px;padding:12px 13px}textarea{min-height:100px;resize:vertical}.sentence{min-height:120px;font-size:17px}.range-row{display:grid;grid-template-columns:1fr 70px;gap:12px;align-items:center}.range-row input[type=range]{padding:0}.score{font-size:25px;font-weight:950;text-align:center;color:#245989}button,.btn{border:0;border-radius:12px;padding:10px 14px;font:inherit;font-weight:850;cursor:pointer;text-decoration:none;display:inline-block}.primary{background:var(--blue);color:#fff}.green{background:var(--green);color:#fff}.red{background:var(--red);color:#fff}.gray{background:#edf1f5;color:#2c3a4f}.amber{background:#fff3d8;color:#755000}.purple{background:#efe9fb;color:#56368f}.toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.status{padding:9px 12px;border-radius:11px;background:#eef3f9;color:#214f7e;font-weight:800}.ok{background:#e9f7f1;color:#096347}.err{background:#fff0f0;color:#982f2f}.muted{color:var(--muted)}.small{font-size:13px}.note{font-size:13px;padding:9px 11px;border-radius:10px;background:#f1f4f8;color:#5d6878}#map,#teacherMap,#publicMap{height:510px;border-radius:17px;border:1px solid var(--line);overflow:hidden;background:#edf1f5}.callout{padding:14px 16px;border-radius:13px;background:#eef4fb;border-left:5px solid var(--blue);margin:14px 0}.warn{background:#fff7e7;border-left-color:#b77900}.compare{background:#f4effc;border-left-color:var(--purple)}.metric{font-size:39px;line-height:1.1;font-weight:950;color:#235887;margin:7px 0}.metriclabel{font-size:13px;color:var(--muted)}.entry{padding:15px;border:1px solid var(--line);border-radius:15px;background:#fcfdff;margin:10px 0}.entry h4{margin:0 0 5px}.meta{font-size:12px;color:var(--muted)}.wordcloud{min-height:220px;border:1px dashed #b9c4d4;border-radius:17px;padding:20px;display:flex;gap:12px 15px;flex-wrap:wrap;align-content:center;justify-content:center;background:#fbfcfe}.word{font-weight:950;color:#28517f;line-height:1}.barrow{display:grid;grid-template-columns:minmax(130px,1.2fr) minmax(120px,3fr) 45px;gap:8px;align-items:center;margin:9px 0}.bartrack{height:17px;background:#edf1f5;border-radius:999px;overflow:hidden}.barfill{height:100%;background:#3c6fa5;border-radius:999px}.blind{border-left:5px solid #b76900;background:#fffaf0}.hidden{display:none!important}.filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}@media(max-width:800px){.filters{grid-template-columns:1fr}}.footer{text-align:center;color:var(--muted);font-size:13px;padding-top:34px}.rubric{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}@media(max-width:800px){.rubric{grid-template-columns:1fr}}.rubric div{padding:12px;border:1px solid var(--line);border-radius:12px;background:#fafcff}.compare-template{font-size:17px;line-height:1.8;background:#fff;border:1px dashed #a999c6;border-radius:14px;padding:16px}
+
+.official-box{background:#eef7ff;border:1px solid #bfd7ef;border-radius:16px;padding:17px;margin:14px 0}
+.official-box .biglink{display:inline-flex;align-items:center;gap:8px;background:#245f98;color:white;padding:11px 15px;border-radius:12px;text-decoration:none;font-weight:900}
+.choice-help{font-size:13px;color:#637086;margin-top:6px}
+.awareness-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+@media(max-width:800px){.awareness-grid{grid-template-columns:1fr 1fr}}
+.awareness-option{border:1px solid var(--line);border-radius:13px;padding:10px;background:#fafcff}
+.metric6{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+@media(max-width:1050px){.metric6{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.metric6{grid-template-columns:1fr}}
+.official-tag{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:850;background:#e8f2ff;color:#245b90}
+.outside-tag{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:850;background:#f2effa;color:#604493}
+.gap-tag{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:900;background:#fff0db;color:#8b5500}
+</style></head><body><div class="wrap">
+<section class="hero"><span class="badge">교사 검토·승인 자료 · 7개 학교 공동 탐구</span><h1>🧭 기억의 좌표 | 공개지도</h1><p>공식적으로 기록된 기억과 학생들이 실제로 알고 있던 생활 속 기억의 차이를 함께 비교합니다.</p></section>
+
+<div class="grid three">
+<div class="card"><div class="metriclabel">공개 장소</div><div id="count" class="metric">0</div></div>
+<div class="card"><div class="metriclabel">공식지도 확인 장소</div><div id="official" class="metric">0</div></div>
+<div class="card blind"><div class="metriclabel">공식 기억 사각지대 후보</div><div id="blind" class="metric">0</div></div>
+</div>
+
+<div class="card">
+<div class="filters">
+<div><label>학교</label><select id="sf"><option value="ALL">전체 학교</option></select></div>
+<div><label>분야</label><select id="cf"><option value="ALL">전체 분야</option></select></div>
+<div><label>공식지도 확인</label><select id="of"><option value="ALL">전체</option><option value="confirmed">공식지도에서 확인</option><option value="not_found">찾지 못함</option><option value="not_checked">확인 전</option></select></div>
+</div>
+<label>검색</label><input id="search" placeholder="장소·핵심어·지역">
+<div class="toolbar" style="margin-top:12px"><a id="officialMap" class="btn gray" href="#" target="_blank">🏛️ 국가보훈부 현충시설 지도</a></div>
+</div>
+
+<div class="card"><div id="publicMap"></div></div>
+
+<div class="grid two">
+<div class="card"><h3>학생들이 발견한 기억의 간극</h3><div id="cards"></div></div>
+<div class="card"><h3>기억의 핵심 단어</h3><div id="cloud" class="wordcloud"></div></div>
+</div>
+
+<div class="callout compare"><strong>생각해 볼 질문</strong><br>공식 지도에 등록된 장소인데도 학생들이 잘 모르거나 현장에서 잘 보이지 않는다면, 그 기억은 우리 일상에서 어떤 상태에 있는 걸까요?</div>
+<div class="footer">학생 탐구 결과 중 교사가 사실관계와 표현을 검토하고 승인한 자료만 공개됩니다.</div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import {getDatabase,ref,onValue} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+import {firebaseConfig,DB_ROOT} from "./firebase-config.js";
+import {PROJECT} from "./project-config.js";
+
+const $=id=>document.getElementById(id);
+$("officialMap").href=PROJECT.officialMapUrl;
+PROJECT.schools.forEach(s=>$("sf").add(new Option(`${s.region} · ${s.school}`,s.id)));
+PROJECT.categories.forEach(c=>$("cf").add(new Option(c,c)));
+
+const map=L.map("publicMap").setView([36.15,127.7],7);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
+const layer=L.layerGroup().addTo(map);let rows=[];
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+const school=id=>PROJECT.schools.find(x=>x.id===id)||{school:id,region:""};
+const aware=v=>PROJECT.awarenessLevels.find(x=>x.value===Number(v))?.label||"미입력";
+const official=v=>PROJECT.officialStatuses.find(x=>x.value===v)?.label||"미입력";
+function selected(){
+ const q=$("search").value.trim().toLowerCase();
+ return rows.filter(r=>($("sf").value==="ALL"||r.schoolId===$("sf").value)&&($("cf").value==="ALL"||r.category===$("cf").value)&&($("of").value==="ALL"||r.officialStatus===$("of").value)&&(!q||`${r.placeName} ${r.keywords||""} ${school(r.schoolId).region}`.toLowerCase().includes(q)));
+}
+function render(){
+ const rs=selected(),blinds=rs.filter(r=>r.officialStatus==="confirmed"&&Number(r.awarenessScore)<=2&&Number(r.visibility)<=2);
+ $("count").textContent=rs.length;$("official").textContent=rs.filter(r=>r.officialStatus==="confirmed").length;$("blind").textContent=blinds.length;
+ layer.clearLayers();
+ rs.forEach(r=>{const s=school(r.schoolId),gap=r.officialStatus==="confirmed"&&Number(r.awarenessScore)<=2&&Number(r.visibility)<=2;
+   L.marker([r.latitude,r.longitude]).addTo(layer).bindPopup(`<strong>${esc(r.placeName)}</strong><br>${r.officialStatus==="confirmed"?'<span class="official-tag">공식지도 확인</span>':r.officialStatus==="not_found"?'<span class="outside-tag">공식지도에서 찾지 못함</span>':""} ${gap?'<span class="gap-tag">기억 사각지대 후보</span>':""}<br>${esc(s.region)} · ${esc(r.category)}<br>활동 전 인지도: ${esc(aware(r.awarenessScore))}<br>발견도: ${r.visibility}<hr>${esc(r.rememberSentence)}`);
+ });
+ $("cards").innerHTML=rs.length?rs.sort((a,b)=>{const ga=(a.officialStatus==="confirmed"&&Number(a.awarenessScore)<=2&&Number(a.visibility)<=2)?1:0,gb=(b.officialStatus==="confirmed"&&Number(b.awarenessScore)<=2&&Number(b.visibility)<=2)?1:0;return gb-ga}).slice(0,35).map(r=>{const s=school(r.schoolId),gap=r.officialStatus==="confirmed"&&Number(r.awarenessScore)<=2&&Number(r.visibility)<=2;return `<div class="entry ${gap?'blind':''}"><div class="meta">${esc(s.region)} · ${esc(r.category)}</div><h4>${esc(r.placeName)} ${gap?'<span class="gap-tag">기억 사각지대 후보</span>':""}</h4><p><strong>공식지도:</strong> ${esc(official(r.officialStatus))}<br><strong>활동 전 인지도:</strong> ${esc(aware(r.awarenessScore))} · <strong>발견도:</strong> ${r.visibility}</p><p>${esc(r.rememberSentence)}</p></div>`}).join(""):'<p class="muted">아직 공개된 장소가 없습니다.</p>';
+ const wc={};rs.forEach(r=>(r.keywords||"").split(/[,，\/\s]+/).filter(x=>x.length>1).forEach(w=>wc[w]=(wc[w]||0)+1));const list=Object.entries(wc).sort((a,b)=>b[1]-a[1]).slice(0,45),mx=Math.max(1,...list.map(x=>x[1]));$("cloud").innerHTML=list.length?list.map(([w,n])=>`<span class="word" style="font-size:${16+28*n/mx}px">${esc(w)}</span>`).join(""):'<span class="muted">아직 핵심 단어가 없습니다.</span>';
+}
+["sf","cf","of","search"].forEach(id=>{$(id).addEventListener("change",render);$(id).addEventListener("input",render);});
+const app=initializeApp(firebaseConfig),db=getDatabase(app);onValue(ref(db,`${DB_ROOT}/published`),snap=>{rows=Object.values(snap.val()||{});render();});
+</script></body></html>
