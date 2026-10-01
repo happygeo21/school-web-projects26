@@ -1,0 +1,10 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "energyMatchV10_3": {
+      ".read": true,
+      ".write": true
+    }
+  }
+}

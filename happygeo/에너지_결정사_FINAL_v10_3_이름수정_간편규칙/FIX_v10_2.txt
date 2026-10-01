@@ -1,0 +1,17 @@
+v10.2 학급 등록 오류 수정
+
+원인 가능성이 가장 높았던 부분:
+- 교사용 Firebase 인증은 익명 UID를 사용합니다.
+- 이전에 같은 학급 코드(GEO21 등)를 다른 익명 UID로 만든 적이 있으면,
+  기존 teacherUid 소유권 때문에 새 세션에서 그 코드를 다시 저장할 수 없습니다.
+- 기존 화면은 이 오류를 사용자에게 표시하지 않아 '버튼이 안 되는 것'처럼 보였습니다.
+
+수정:
+1. 새 데이터 경로 energyMatchV10_2 사용 → 이전 teacherUid 충돌 차단
+2. 학급 저장 성공/실패 메시지를 화면에 표시
+3. 이미 다른 UID에 묶인 코드라면 새 학급 코드를 자동 제안
+4. 교사용 암호 happygeo26 유지
+5. Firebase 규칙 병합 도우미를 energyMatchV10_2용으로 업데이트
+
+필수:
+- firebase-rules-merge-helper.html로 현재 Firebase 규칙에 energyMatchV10_2 규칙을 추가/게시해야 합니다.

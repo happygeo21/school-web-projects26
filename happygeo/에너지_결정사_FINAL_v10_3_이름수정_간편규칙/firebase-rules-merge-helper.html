@@ -1,0 +1,22 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>Firebase 빠른 규칙</title></head>
+<body style="font-family:system-ui;padding:24px;background:#f7f8fc;line-height:1.55">
+<h1>에너지 결정사 v10.3 빠른 실행용 Firebase 규칙</h1>
+<p>아래 규칙은 <b>학급 등록/학생 접속이 바로 되도록</b> 가장 단순하게 만든 버전입니다.</p>
+<ol>
+<li>Firebase → Realtime Database → <b>규칙</b> 탭 열기</li>
+<li>현재 내용 전체를 지우고 아래 JSON을 통째로 붙여넣기</li>
+<li><b>게시</b> 버튼 누르기</li>
+</ol>
+<textarea style="width:100%;height:340px">{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "energyMatchV10_3": {
+      ".read": true,
+      ".write": true
+    }
+  }
+}</textarea>
+<p><button onclick="navigator.clipboard.writeText(document.querySelector('textarea').value)">규칙 복사</button></p>
+<p>※ 수업용 빠른 실행 버전이므로, 고급 보안보다 작동 안정성을 우선했습니다.</p>
+</body></html>
