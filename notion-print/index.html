@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Notion A4 Print Studio</title>
+<style>
+:root{
+  --paper-w:210mm;
+  --paper-h:297mm;
+  --page-margin:12mm;
+  --body-size:12.5px;
+  --line-height:1.48;
+  --content-width:100%;
+  --img-max:100%;
+  --heading-scale:1;
+  --page-gap:16px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:Pretendard,"Apple SD Gothic Neo","Malgun Gothic",Arial,sans-serif;
+  color:#111;background:#f2f4f7;
+}
+button,input,select{font:inherit}
+button{
+  border:1px solid #cfd4dc;background:#fff;border-radius:9px;
+  padding:8px 11px;cursor:pointer
+}
+button:hover{background:#f7f9fc}
+button.primary{background:#1769e0;border-color:#1769e0;color:#fff}
+button.danger{color:#b42318}
+.toolbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(255,255,255,.96);
+  border-bottom:1px solid #d9dde4;
+  box-shadow:0 2px 10px rgba(0,0,0,.04);
+  padding:10px 12px;
+}
+.toolbar-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.group{
+  display:flex;gap:6px;align-items:center;flex-wrap:wrap;
+  padding:6px 8px;border:1px solid #e0e3e8;border-radius:10px;background:#fff;
+}
+.group label{font-size:12.5px;color:#444;white-space:nowrap}
+.group input[type=number]{width:68px}
+.group select{min-width:82px}
+input,select{
+  border:1px solid #cfd4dc;border-radius:8px;padding:6px 8px;background:#fff
+}
+.status{
+  margin-left:auto;font-size:12.5px;color:#667085;
+}
+.workspace{padding:20px}
+.stage{display:flex;justify-content:center}
+.paper{
+  width:var(--paper-w);
+  min-height:var(--paper-h);
+  background:#fff;
+  padding:var(--page-margin);
+  box-shadow:0 12px 35px rgba(0,0,0,.12);
+  position:relative;
+}
+.editor{
+  width:var(--content-width);
+  min-height:calc(var(--paper-h) - (2 * var(--page-margin)));
+  outline:none;
+  font-size:var(--body-size);
+  line-height:var(--line-height);
+  overflow-wrap:anywhere;
+}
+.editor:empty:before{
+  content:"여기를 클릭한 뒤 Notion 페이지 본문을 붙여넣으세요.  (Ctrl+V)";
+  color:#98a2b3;
+}
+.editor h1{font-size:calc(2em * var(--heading-scale));line-height:1.2;margin:.35em 0 .35em}
+.editor h2{font-size:calc(1.55em * var(--heading-scale));line-height:1.25;margin:.55em 0 .3em}
+.editor h3{font-size:calc(1.25em * var(--heading-scale));line-height:1.3;margin:.55em 0 .25em}
+.editor p{margin:.35em 0}
+.editor ul,.editor ol{margin:.35em 0;padding-left:1.65em}
+.editor li{margin:.15em 0}
+.editor blockquote{
+  margin:.5em 0;padding:.45em .8em;border-left:3px solid #cfd4dc;
+  color:#444;background:#fafafa
+}
+.editor pre{
+  white-space:pre-wrap;background:#f6f8fa;padding:8px;border-radius:8px;
+  border:1px solid #e6e8eb
+}
+.editor code{font-family:Consolas,monospace;font-size:.92em}
+.editor table{
+  width:100%;border-collapse:collapse;margin:.5em 0;font-size:.96em
+}
+.editor th,.editor td{
+  border:1px solid #bfc5ce;padding:4px 6px;vertical-align:top
+}
+.editor img{
+  max-width:var(--img-max);height:auto;display:block;margin:6px auto;
+  page-break-inside:avoid;break-inside:avoid;
+}
+.editor hr{border:0;border-top:1px solid #bfc5ce;margin:8px 0}
+.editor a{color:inherit;text-decoration:underline}
+.editor .page-break{
+  height:0;border-top:2px dashed #1769e0;margin:12px 0;
+  page-break-after:always;break-after:page;
+  position:relative;
+}
+.editor .page-break:after{
+  content:"페이지 나눔";position:absolute;right:0;top:-12px;
+  background:#fff;color:#1769e0;font-size:10px;padding-left:5px
+}
+.editor .keep-together{break-inside:avoid;page-break-inside:avoid}
+.tip{
+  max-width:var(--paper-w);margin:10px auto 0;
+  font-size:12px;color:#667085;line-height:1.5
+}
+.modal{
+  position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.45);
+  display:none;align-items:center;justify-content:center;padding:20px
+}
+.modal.show{display:flex}
+.modal-card{
+  width:min(780px,100%);max-height:88vh;overflow:auto;
+  background:#fff;border-radius:14px;padding:18px;
+  box-shadow:0 20px 60px rgba(0,0,0,.3)
+}
+.modal-card h2{margin-top:0}
+.modal-card li{margin:7px 0}
+kbd{border:1px solid #c8cdd5;border-bottom-width:2px;border-radius:5px;padding:1px 5px;background:#fff;font-size:.9em}
+.badge{
+  display:inline-block;padding:2px 7px;border-radius:999px;background:#eef4ff;
+  color:#1849a9;font-size:11px
+}
+.selected-image{
+  outline:3px solid rgba(23,105,224,.35)!important;
+  outline-offset:2px
+}
+@page{size:A4 portrait;margin:0}
+@media print{
+  body{background:#fff}
+  .toolbar,.tip,.modal{display:none!important}
+  .workspace{padding:0}
+  .paper{
+    box-shadow:none;margin:0;width:210mm;min-height:297mm;
+    padding:var(--page-margin)
+  }
+  .editor{min-height:auto}
+  .editor .page-break{
+    border:0;margin:0;height:0
+  }
+  .editor .page-break:after{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="toolbar-row">
+    <div class="group">
+      <button class="primary" onclick="pasteFromClipboard()">클립보드 붙여넣기</button>
+      <button onclick="document.getElementById('editor').focus()">직접 편집</button>
+      <button onclick="insertPageBreak()">페이지 나눔</button>
+    </div>
+
+    <div class="group">
+      <label>글자</label>
+      <button onclick="stepVar('--body-size',-0.5,'px',8,30)">−</button>
+      <input id="fontSize" type="number" step="0.5" value="12.5" onchange="setVar('--body-size',this.value+'px')">
+      <button onclick="stepVar('--body-size',0.5,'px',8,30)">+</button>
+    </div>
+
+    <div class="group">
+      <label>여백 mm</label>
+      <button onclick="stepVar('--page-margin',-1,'mm',4,30)">−</button>
+      <input id="marginSize" type="number" value="12" onchange="setVar('--page-margin',this.value+'mm')">
+      <button onclick="stepVar('--page-margin',1,'mm',4,30)">+</button>
+    </div>
+
+    <div class="group">
+      <label>줄간격</label>
+      <input id="lineHeight" type="number" step="0.05" value="1.48" onchange="setVar('--line-height',this.value)">
+    </div>
+
+    <div class="group">
+      <label>이미지 최대</label>
+      <select id="imgMax" onchange="setVar('--img-max',this.value)">
+        <option value="100%">100%</option>
+        <option value="90%">90%</option>
+        <option value="80%">80%</option>
+        <option value="70%">70%</option>
+        <option value="60%">60%</option>
+        <option value="50%">50%</option>
+        <option value="40%">40%</option>
+      </select>
+    </div>
+
+    <div class="group">
+      <label>목표</label>
+      <select id="targetPages">
+        <option value="1">1쪽</option>
+        <option value="2">2쪽</option>
+        <option value="3">3쪽</option>
+        <option value="4">4쪽</option>
+        <option value="5">5쪽</option>
+      </select>
+      <button onclick="autoFit()">자동 맞춤</button>
+    </div>
+
+    <div class="group">
+      <button onclick="removeLinks()">링크 서식 제거</button>
+      <button onclick="clearFormatting()">선택 서식 지우기</button>
+      <button onclick="deleteSelectedImage()">선택 이미지 삭제</button>
+    </div>
+
+    <div class="group">
+      <button onclick="saveLocal()">저장</button>
+      <button onclick="loadLocal()">불러오기</button>
+      <button class="danger" onclick="newDocument()">새 문서</button>
+      <button onclick="openHelp()">사용법</button>
+      <button class="primary" onclick="window.print()">인쇄</button>
+    </div>
+
+    <div class="status" id="status">예상 1쪽</div>
+  </div>
+</div>
+
+<div class="workspace">
+  <div class="stage">
+    <main class="paper" id="paper">
+      <div id="editor" class="editor" contenteditable="true" spellcheck="false"></div>
+    </main>
+  </div>
+  <div class="tip">
+    <span class="badge">권장</span>
+    Notion에서 인쇄할 본문 블록만 선택해 복사 → 이 파일에서 <b>클립보드 붙여넣기</b> → 필요하면 글자·여백 조절 → 인쇄.
+    특정 Notion URL에 종속되지 않으며, 어떤 페이지든 반복해서 사용할 수 있습니다.
+  </div>
+</div>
+
+<div class="modal" id="helpModal">
+  <div class="modal-card">
+    <h2>범용 Notion A4 Print Studio 사용법</h2>
+    <ol>
+      <li><b>Notion에서 필요한 본문만 복사</b>합니다. 페이지 안에서 블록들을 드래그 선택하거나, 블록 선택 상태에서 복사하세요.</li>
+      <li>이 HTML을 열고 <b>클립보드 붙여넣기</b>를 누르거나 편집 영역에서 <kbd>Ctrl</kbd>+<kbd>V</kbd> 합니다.</li>
+      <li>제목·목록·표·이미지는 가능한 범위에서 그대로 유지됩니다. 불필요한 부분은 여기서 직접 삭제·수정하세요.</li>
+      <li><b>자동 맞춤</b>에서 목표 1~5쪽을 고르면 글자 크기·줄간격·여백을 단계적으로 줄여 해당 쪽수에 가깝게 맞춥니다.</li>
+      <li>원하는 위치에서 <b>페이지 나눔</b>을 누르면 그 지점부터 다음 A4에서 시작합니다.</li>
+      <li>이미지를 클릭하면 선택됩니다. <b>선택 이미지 삭제</b>로 제거할 수 있고, 상단의 이미지 최대 폭으로 전체 이미지 크기를 조절할 수 있습니다.</li>
+      <li>완성 후 <b>인쇄</b> → 용지 A4 → 배율 100% → 머리글/바닥글 끔 → 배경 그래픽 필요 시 켬으로 사용하면 됩니다.</li>
+    </ol>
+    <p><b>중요:</b> 이 정적 HTML은 Notion URL만 넣어서 페이지를 자동으로 가져오지는 않습니다. 브라우저의 보안(CORS)과 Notion 로그인/권한 때문에 임의의 Notion 페이지를 안정적으로 직접 읽을 수 없기 때문입니다. 대신 <b>복사·붙여넣기 방식이라 공개/비공개 페이지 모두</b> 사용할 수 있습니다.</p>
+    <div style="text-align:right"><button onclick="closeHelp()">닫기</button></div>
+  </div>
+</div>
+
+<script>
+const editor = document.getElementById('editor');
+const root = document.documentElement;
+let selectedImage = null;
+
+function cssNumber(name){
+  return parseFloat(getComputedStyle(root).getPropertyValue(name));
+}
+function setVar(name,value){
+  root.style.setProperty(name,value);
+  syncControls();
+  updatePages();
+}
+function stepVar(name,delta,unit,min,max){
+  let n=cssNumber(name);
+  n=Math.max(min,Math.min(max,n+delta));
+  root.style.setProperty(name,n+unit);
+  syncControls(); updatePages();
+}
+function syncControls(){
+  document.getElementById('fontSize').value = cssNumber('--body-size');
+  document.getElementById('marginSize').value = cssNumber('--page-margin');
+  document.getElementById('lineHeight').value = cssNumber('--line-height').toFixed(2);
+}
+function pageContentPx(){
+  const mmToPx = 96/25.4;
+  const margin = cssNumber('--page-margin');
+  return (297 - 2*margin) * mmToPx;
+}
+function estimatedPages(){
+  const h = Math.max(editor.scrollHeight,1);
+  return Math.max(1,Math.ceil(h/pageContentPx()));
+}
+function updatePages(){
+  document.getElementById('status').textContent = `예상 ${estimatedPages()}쪽`;
+}
+function autoFit(){
+  const target = Number(document.getElementById('targetPages').value || 1);
+  let guard=0;
+  while(estimatedPages()>target && guard<70){
+    let font=cssNumber('--body-size');
+    let line=cssNumber('--line-height');
+    let margin=cssNumber('--page-margin');
+
+    if(font>9) root.style.setProperty('--body-size',(font-0.25)+'px');
+    else if(line>1.15) root.style.setProperty('--line-height',(line-0.02));
+    else if(margin>5) root.style.setProperty('--page-margin',(margin-0.5)+'mm');
+    else break;
+
+    guard++;
+  }
+  syncControls();
+  updatePages();
+}
+async function pasteFromClipboard(){
+  editor.focus();
+  try{
+    const items = await navigator.clipboard.read();
+    for(const item of items){
+      if(item.types.includes('text/html')){
+        const blob = await item.getType('text/html');
+        const html = await blob.text();
+        document.execCommand('insertHTML',false,html);
+        cleanPastedContent();
+        updatePages();
+        return;
+      }
+    }
+    const text = await navigator.clipboard.readText();
+    document.execCommand('insertText',false,text);
+    updatePages();
+  }catch(e){
+    alert('브라우저가 클립보드 직접 읽기를 막았습니다. 편집 영역을 클릭한 뒤 Ctrl+V로 붙여넣어 주세요.');
+  }
+}
+function cleanPastedContent(){
+  editor.querySelectorAll('script,style,iframe').forEach(el=>el.remove());
+  editor.querySelectorAll('*').forEach(el=>{
+    [...el.attributes].forEach(attr=>{
+      const keep = ['href','src','colspan','rowspan'];
+      if(!keep.includes(attr.name.toLowerCase())) el.removeAttribute(attr.name);
+    });
+  });
+}
+function insertPageBreak(){
+  editor.focus();
+  const div=document.createElement('div');
+  div.className='page-break';
+  div.setAttribute('contenteditable','false');
+  const sel=window.getSelection();
+  if(sel.rangeCount){
+    const range=sel.getRangeAt(0);
+    range.deleteContents();
+    range.insertNode(div);
+    range.setStartAfter(div);
+    range.collapse(true);
+    sel.removeAllRanges(); sel.addRange(range);
+  }else{
+    editor.appendChild(div);
+  }
+  updatePages();
+}
+function removeLinks(){
+  editor.querySelectorAll('a').forEach(a=>{
+    const span=document.createElement('span');
+    span.innerHTML=a.innerHTML;
+    a.replaceWith(span);
+  });
+}
+function clearFormatting(){
+  editor.focus();
+  document.execCommand('removeFormat',false,null);
+}
+function newDocument(){
+  if(confirm('현재 편집 내용을 모두 지울까요? 저장하지 않은 내용은 사라집니다.')){
+    editor.innerHTML='';
+    root.removeAttribute('style');
+    syncControls(); updatePages();
+  }
+}
+function saveLocal(){
+  const data={
+    html:editor.innerHTML,
+    style:{
+      font:getComputedStyle(root).getPropertyValue('--body-size').trim(),
+      margin:getComputedStyle(root).getPropertyValue('--page-margin').trim(),
+      line:getComputedStyle(root).getPropertyValue('--line-height').trim(),
+      img:getComputedStyle(root).getPropertyValue('--img-max').trim()
+    }
+  };
+  localStorage.setItem('notion_a4_print_studio_v2',JSON.stringify(data));
+  alert('현재 문서를 이 브라우저에 저장했습니다.');
+}
+function loadLocal(){
+  const raw=localStorage.getItem('notion_a4_print_studio_v2');
+  if(!raw){alert('저장된 문서가 없습니다.');return;}
+  const data=JSON.parse(raw);
+  editor.innerHTML=data.html||'';
+  if(data.style){
+    root.style.setProperty('--body-size',data.style.font||'12.5px');
+    root.style.setProperty('--page-margin',data.style.margin||'12mm');
+    root.style.setProperty('--line-height',data.style.line||'1.48');
+    root.style.setProperty('--img-max',data.style.img||'100%');
+  }
+  syncControls();updatePages();
+}
+function deleteSelectedImage(){
+  if(selectedImage){
+    selectedImage.remove();
+    selectedImage=null;
+    updatePages();
+  }else{
+    alert('먼저 삭제할 이미지를 클릭하세요.');
+  }
+}
+function openHelp(){document.getElementById('helpModal').classList.add('show')}
+function closeHelp(){document.getElementById('helpModal').classList.remove('show')}
+
+editor.addEventListener('input',updatePages);
+editor.addEventListener('paste',()=>{
+  setTimeout(()=>{cleanPastedContent();updatePages()},30);
+});
+editor.addEventListener('click',e=>{
+  if(selectedImage) selectedImage.classList.remove('selected-image');
+  if(e.target.tagName==='IMG'){
+    selectedImage=e.target;
+    selectedImage.classList.add('selected-image');
+  }else{
+    selectedImage=null;
+  }
+});
+window.addEventListener('resize',updatePages);
+window.addEventListener('keydown',e=>{
+  if(e.key==='Escape') closeHelp();
+});
+
+syncControls();
+updatePages();
+</script>
+</body>
+</html>
