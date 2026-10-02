@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>학교 웹 프로젝트 2026</title>
+<meta name="description" content="지리 수업·학생 활동·교사업무를 위한 웹도구 모음" />
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#667085;--line:#e2e7ef;--brand:#245b90;--soft:#eef5fb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI","Noto Sans KR","Apple SD Gothic Neo",sans-serif;line-height:1.6}
+a{color:inherit}.wrap{max-width:1100px;margin:auto;padding:28px 20px 56px}.hero{background:linear-gradient(135deg,#173b63,#2d6da7);color:#fff;border-radius:24px;padding:34px 30px;box-shadow:0 18px 45px rgba(23,59,99,.18)}.hero .eyebrow{font-size:13px;font-weight:800;opacity:.86}.hero h1{font-size:clamp(32px,5vw,52px);line-height:1.08;margin:8px 0 12px;letter-spacing:-.04em}.hero p{max-width:720px;margin:0;opacity:.94;font-size:17px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:22px}@media(max-width:760px){.grid{grid-template-columns:1fr}.hero{padding:28px 22px}}.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 5px 18px rgba(31,42,68,.05);display:flex;flex-direction:column;min-height:230px}.icon{font-size:34px}.card h2{font-size:22px;margin:10px 0 5px;letter-spacing:-.025em}.card p{color:var(--muted);margin:0 0 16px;flex:1}.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}.tag{background:var(--soft);color:var(--brand);font-size:12px;font-weight:800;border-radius:999px;padding:5px 9px}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-block;text-decoration:none;border-radius:11px;padding:9px 12px;font-weight:800;font-size:14px;border:1px solid #cfd8e5;background:#fff}.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}.guide{margin-top:22px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:21px}.guide h2{margin:0 0 8px}.flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}.step{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:9px 11px;font-weight:750}.arrow{color:#98a2b3}.footer{text-align:center;color:var(--muted);font-size:13px;margin-top:28px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <div class="eyebrow">GEOGRAPHY · CLASSROOM · VIBE CODING</div>
+    <h1>학교 웹 프로젝트 2026</h1>
+    <p>수업에서 필요한 문제를 발견하고, AI와 함께 직접 만든 지리·수업·업무용 웹도구를 한곳에서 관리합니다.</p>
+  </section>
+
+  <section class="grid">
+    <article class="card">
+      <div class="icon">🧭</div>
+      <h2>기억의 좌표 LIVE</h2>
+      <p>공식 기록과 생활 속 기억을 지도 위에서 비교하는 7개 학교 공동 보훈·장소 탐구 프로젝트입니다.</p>
+      <div class="tags"><span class="tag">GIS</span><span class="tag">Firebase</span><span class="tag">학생·교사·공개지도</span></div>
+      <div class="actions"><a class="btn primary" href="./veteransgeo/">학생용 열기</a><a class="btn" href="./veteransgeo/teacher.html">교사용</a><a class="btn" href="./veteransgeo/public.html">공개지도</a></div>
+    </article>
+
+    <article class="card">
+      <div class="icon">💘</div>
+      <h2>에너지 결정사</h2>
+      <p>석탄·석유·천연가스·원자력·재생에너지의 특성을 소개팅형 활동으로 비교하는 수업용 웹앱입니다.</p>
+      <div class="tags"><span class="tag">게임형 수업</span><span class="tag">Firebase</span><span class="tag">학생 대시보드</span></div>
+      <div class="actions"><a class="btn primary" href="./happygeo/">시작화면</a><a class="btn" href="./happygeo/student.html">학생용</a><a class="btn" href="./happygeo/teacher.html">교사용</a></div>
+    </article>
+
+    <article class="card">
+      <div class="icon">🌍</div>
+      <h2>KOSIS → e-GIS 변환 스튜디오</h2>
+      <p>KOSIS Excel·CSV 자료의 행정구역 구조를 정리하고 e-GIS 결합용 자료로 변환·검증하는 도구입니다.</p>
+      <div class="tags"><span class="tag">KOSIS</span><span class="tag">e-GIS</span><span class="tag">데이터 정제</span></div>
+      <div class="actions"><a class="btn primary" href="./kosis-egis/">도구 실행</a></div>
+    </article>
+
+    <article class="card">
+      <div class="icon">🖨️</div>
+      <h2>Notion A4 Print Studio</h2>
+      <p>Notion 내용을 붙여넣고 글자·여백·줄간격·이미지 크기·목표 페이지 수를 조정해 A4로 출력합니다.</p>
+      <div class="tags"><span class="tag">Notion</span><span class="tag">A4</span><span class="tag">교사업무</span></div>
+      <div class="actions"><a class="btn primary" href="./notion-print/">도구 실행</a></div>
+    </article>
+  </section>
+
+  <section class="guide">
+    <h2>권장 운영 흐름</h2>
+    <div>학생에게는 GitHub 자체가 아니라 배포된 웹주소와 Notion 안내 페이지만 보여주는 것을 권장합니다.</div>
+    <div class="flow"><span class="step">Notion 안내</span><span class="arrow">→</span><span class="step">GitHub 원본·버전관리</span><span class="arrow">→</span><span class="step">Netlify / GitHub Pages 배포</span><span class="arrow">→</span><span class="step">Firebase 데이터</span></div>
+  </section>
+
+  <div class="footer">school-web-projects26 · 수업용 웹도구 아카이브</div>
+</div>
+</body>
+</html>
