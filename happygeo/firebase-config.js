@@ -8,4 +8,4 @@ window.ENERGY_FIREBASE_CONFIG = {
   appId: "1:1059484913673:web:f733d8efeea6a3029328d8",
   measurementId: "G-MNY6QXL8P6"
 };
-window.ENERGY_APP_SETTINGS = { databaseRoot: "energyMatchV10_3", teacherPasscode: "happygeo26" };
+window.ENERGY_APP_SETTINGS = { databaseRoot: "energyMatchV10_3" };
