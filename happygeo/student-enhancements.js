@@ -86,14 +86,14 @@ function decorateProfiles(){
     const r=RESOURCE[info.id];
     const body=card.querySelector('.profile-body');
     const name=card.querySelector('.profile-name');
-    if(name) name.innerHTML=`${r.icon} ${charName}`;
+    if(name){const wanted=`${r.icon} ${charName}`;if(name.textContent.trim()!==wanted)name.textContent=wanted;}
     let kicker=body&&body.querySelector('.resource-kicker');
     if(body&&!kicker){
       kicker=document.createElement('div');
       kicker.className='resource-kicker';
       body.insertBefore(kicker,body.firstChild);
     }
-    if(kicker) kicker.textContent=`${r.name} · ${THEME_LABEL[info.theme]}`;
+    if(kicker){const wanted=`${r.name} · ${THEME_LABEL[info.theme]}`;if(kicker.textContent!==wanted)kicker.textContent=wanted;}
     let badge=body&&body.querySelector('.profile-resource');
     if(body&&!badge){
       badge=document.createElement('span');
@@ -101,9 +101,9 @@ function decorateProfiles(){
       const line=body.querySelector('.profile-line');
       if(line) line.insertAdjacentElement('afterend',badge); else body.appendChild(badge);
     }
-    if(badge) badge.textContent=`${r.name} · ${r.type} 타입`;
+    if(badge){const wanted=`${r.name} · ${r.type} 타입`;if(badge.textContent!==wanted)badge.textContent=wanted;}
     const oldMonster=card.querySelector('.monster-name');
-    if(oldMonster) oldMonster.textContent=`${charName} · ${r.type} 타입`;
+    if(oldMonster){const wanted=`${charName} · ${r.type} 타입`;if(oldMonster.textContent!==wanted)oldMonster.textContent=wanted;}
   });
 }
 
@@ -114,7 +114,7 @@ function decorateProfileModal(){
   const info=parseProfile(img);
   if(!info||!RESOURCE[info.id]) return;
   const r=RESOURCE[info.id];
-  title.textContent=`${r.icon} ${CHARACTER_NAMES[info.theme][info.id]} · ${r.name}`;
+  {const wanted=`${r.icon} ${CHARACTER_NAMES[info.theme][info.id]} · ${r.name}`;if(title.textContent!==wanted)title.textContent=wanted;}
 }
 
 function createTextbookModal(){
