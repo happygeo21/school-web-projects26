@@ -9,3 +9,15 @@ window.ENERGY_FIREBASE_CONFIG = {
   measurementId: "G-MNY6QXL8P6"
 };
 window.ENERGY_APP_SETTINGS = { databaseRoot: "energyMatchV10_3" };
+
+(function(){
+  try{
+    var p=(location.pathname||'').toLowerCase();
+    if(p.endsWith('/student.html') || p.endsWith('student.html')){
+      var sc=document.createElement('script');
+      sc.src='student-enhancements.js?v=20261007b';
+      sc.async=false;
+      document.head.appendChild(sc);
+    }
+  }catch(e){console.warn('student enhancement loader',e);}
+})();
