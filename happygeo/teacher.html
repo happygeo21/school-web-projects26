@@ -85,19 +85,17 @@ async function init(){
         lockMsg.textContent='승인된 교사 계정으로 로그인해 주세요.';
         return;
       }
-      lockMsg.textContent='권한 확인 중…';
-      try{
-        // 실제 교사 여부는 Realtime Database Rules가 최종 판정합니다.
-        await db.ref(root).limitToFirst(1).once('value');
-        lock.classList.add('hidden');app.classList.remove('hidden');
-        configNotice.textContent='✅ Firebase 교사 인증 완료 · '+(user.email||'인증 계정');
-        configNotice.classList.add('ok');
-        modeBanner.textContent='🔐 교사 인증 · Firebase 실시간';
-      }catch(e){
+      const allowedTeacher='ksoundmin@gmail.com';
+      if((user.email||'').toLowerCase()!==allowedTeacher){
         lock.classList.remove('hidden');app.classList.add('hidden');
-        lockMsg.textContent='이 계정은 교사용 데이터 접근 권한이 없습니다. · '+(e.code||e.message);
-        configNotice.textContent='⚠️ 로그인은 되었지만 교사 DB 권한이 없습니다.';
+        lockMsg.textContent='허용된 교사 계정이 아닙니다. '+allowedTeacher+' 계정으로 로그인해 주세요.';
+        configNotice.textContent='⚠️ 교사 계정 불일치';
+        return;
       }
+      lock.classList.add('hidden');app.classList.remove('hidden');
+      configNotice.textContent='✅ Firebase 교사 인증 완료 · '+user.email;
+      configNotice.classList.add('ok');
+      modeBanner.textContent='🔐 교사 인증 · Firebase 실시간';
     });
   }catch(e){
     configNotice.textContent='⚠️ '+(e.code||e.message);
