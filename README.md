@@ -12,6 +12,23 @@
 | 🌍 **KOSIS → e-GIS 변환 스튜디오** | KOSIS Excel/CSV를 e-GIS 결합용 자료로 정리·검증 | [`kosis-egis/`](./kosis-egis/) |
 | 🖨️ **Notion A4 Print Studio** | Notion 내용을 A4에 맞춰 편집·자동맞춤·인쇄 | [`notion-print/`](./notion-print/) |
 
+
+## GitHub Pages 공개 주소
+
+GitHub Pages가 활성화되면 아래 주소를 기본 공개 주소로 사용할 수 있습니다.
+
+- 통합 허브: https://happygeo21.github.io/school-web-projects26/
+- 기억의 좌표 LIVE 학생용: https://happygeo21.github.io/school-web-projects26/veteransgeo/
+- 기억의 좌표 교사용: https://happygeo21.github.io/school-web-projects26/veteransgeo/teacher.html
+- 기억의 좌표 공개지도: https://happygeo21.github.io/school-web-projects26/veteransgeo/public.html
+- 에너지 결정사 시작화면: https://happygeo21.github.io/school-web-projects26/happygeo/
+- 에너지 결정사 학생용: https://happygeo21.github.io/school-web-projects26/happygeo/student.html
+- 에너지 결정사 교사용: https://happygeo21.github.io/school-web-projects26/happygeo/teacher.html
+- KOSIS → e-GIS 변환 스튜디오: https://happygeo21.github.io/school-web-projects26/kosis-egis/
+- Notion A4 Print Studio: https://happygeo21.github.io/school-web-projects26/notion-print/
+
+> Netlify는 삭제하지 않고 기존 주소를 유지합니다. GitHub Pages는 별도의 공개 경로로 추가되며, `main` 브랜치에 커밋되면 GitHub Actions를 통해 자동 배포되도록 구성합니다.
+
 ## 권장 운영 방식
 
 ```text
