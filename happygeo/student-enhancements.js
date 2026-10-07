@@ -41,6 +41,7 @@ function addStyles(){
   .resource-kicker{font-size:11px;font-weight:900;color:#6258e8;margin-bottom:2px}
   .profile-name{line-height:1.2}
   .profile-resource{display:inline-flex;margin-top:5px;padding:3px 7px;border-radius:999px;background:#f4f2f8;color:#5f6578;font-size:10px;font-weight:800}
+  #concept .intro-flow{grid-template-columns:repeat(5,1fr)}
   .student-route{margin-top:16px;padding:18px;border:1px solid #dfe4ee;border-radius:22px;background:linear-gradient(135deg,#fff,#f7f7ff);box-shadow:0 10px 26px rgba(30,39,70,.06)}
   .student-route h3{margin:0 0 6px;font-size:20px}
   .student-route .route-sub{margin:0 0 14px;color:#667086;font-size:13px}
@@ -65,8 +66,8 @@ function addStyles(){
   .tbz-imgwrap{overflow:auto;border-radius:14px;background:#f3f4f7;display:grid;place-items:center}
   .tbz-imgwrap img{display:block;max-width:none;width:auto;height:auto;min-width:min(760px,92vw);max-height:none;cursor:zoom-out}
   .tbz-caption{margin-top:10px;color:#667086;font-size:12px}
-  @media(max-width:900px){.route-grid{grid-template-columns:1fr 1fr}.route-card:not(:last-child)::after{display:none}}
-  @media(max-width:520px){.route-grid{grid-template-columns:1fr}.student-route{padding:14px}.tbz-card{padding:10px}.tbz-imgwrap img{min-width:100%}}
+  @media(max-width:900px){#concept .intro-flow{grid-template-columns:1fr 1fr}.route-grid{grid-template-columns:1fr 1fr}.route-card:not(:last-child)::after{display:none}}
+  @media(max-width:520px){#concept .intro-flow{grid-template-columns:1fr}.route-grid{grid-template-columns:1fr}.student-route{padding:14px}.tbz-card{padding:10px}.tbz-imgwrap img{min-width:100%}}
   `;
   document.head.appendChild(style);
 }
