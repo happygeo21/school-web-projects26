@@ -31,8 +31,15 @@ footer{text-align:center;color:#7b8292;padding:36px 20px}.hidden{display:none}
 .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.detail-block{border:1px solid var(--line);border-radius:13px;padding:11px}.detail-block b{display:block;color:#5148c0;margin-bottom:4px}@media(max-width:650px){.detail-grid{grid-template-columns:1fr}}
 </style></head><body>
 <section class="hero"><div class="hero-inner"><span class="eyebrow">👩‍🏫 교사용 · 실시간 관리</span><h1>에너지 결정사 LIVE</h1><p>학생 참여·의견·관심 선택·점수를 확인하고, 학생 정보와 선생님 메시지를 수정·삭제·초기화합니다.</p></div></section><div id="configNotice" class="config-warning">Firebase 연결 확인 중…</div>
-<section id="lock" class="wrap"><div class="card" style="max-width:520px;margin:auto"><h2>🔐 교사용 접속</h2><div class="fields"><input id="teacherPass" type="password"><button id="unlockBtn" class="btn primary">열기</button></div><div id="lockMsg"></div></div></section>
-<section id="app" class="wrap hidden"><div class="card"><div class="fields"><input id="classCode" placeholder="학급 코드"><input id="className" placeholder="학급명"><button id="autoCode" class="btn soft">코드 자동 생성</button><button id="openClass" class="btn primary">학급 열기/저장</button><button id="closeClass" class="btn danger">참여 마감</button></div><div id="classSaveStatus" class="statusline" style="margin-top:8px">학급 코드와 학급명을 입력한 뒤 ‘학급 열기/저장’을 누르세요.</div></div><h2 id="classTitle" class="section-title" style="margin-top:20px">학급 미선택</h2>
+<section id="lock" class="wrap"><div class="card" style="max-width:620px;margin:auto">
+<h2>🔐 교사용 로그인</h2>
+<p>Firebase에서 승인된 교사 계정으로 로그인하세요. 화면 비밀번호 방식은 제거했습니다.</p>
+<div class="fields"><button id="googleLoginBtn" class="btn primary">Google 교사 로그인</button></div>
+<div style="height:1px;background:var(--line);margin:18px 0"></div>
+<div class="fields"><input id="emailLogin" type="email" autocomplete="username" placeholder="교사 계정 이메일"><input id="passwordLogin" type="password" autocomplete="current-password" placeholder="Firebase 교사용 비밀번호"><button id="passwordLoginBtn" class="btn good">이메일·비밀번호 로그인</button></div>
+<div id="lockMsg" class="statusline" style="margin-top:10px">로그인 후 Firebase 권한 규칙으로 교사 여부를 확인합니다.</div>
+</div></section>
+<section id="app" class="wrap hidden"><div class="card"><div class="fields"><input id="classCode" placeholder="학급 코드"><input id="className" placeholder="학급명"><button id="autoCode" class="btn soft">코드 자동 생성</button><button id="openClass" class="btn primary">학급 열기/저장</button><button id="closeClass" class="btn danger">참여 마감</button><button id="logoutBtn" class="btn outline">로그아웃</button></div><div id="classSaveStatus" class="statusline" style="margin-top:8px">학급 코드와 학급명을 입력한 뒤 ‘학급 열기/저장’을 누르세요.</div></div><h2 id="classTitle" class="section-title" style="margin-top:20px">학급 미선택</h2>
 <div class="metrics"><div class="metric"><span>참여 학생</span><b id="mCount">0</b></div><div class="metric"><span>현재 접속</span><b id="mOnline">0</b></div><div class="metric"><span>평균 총점</span><b id="mAvg">0/21</b></div><div class="metric"><span>완주율</span><b id="mComplete">0%</b></div><div class="metric"><span>관심 1위</span><b id="mInterest" style="font-size:16px">-</b></div><div class="metric"><span>학생 의견</span><b id="mOpinions">0</b></div></div>
 <div class="teacher-tabs"><button class="active" data-panel="overview">전체 현황</button><button data-panel="students">학생 관리</button><button data-panel="activities">학생 활동/의견</button><button data-panel="messages">선생님 메시지</button></div>
 <div id="panel-overview" class="teacher-panel active"><div class="chartgrid"><div class="chartbox"><h3>차시별 평균 점수</h3><div id="lessonChart"></div></div><div class="chartbox"><h3>관심 에너지 순위</h3><div id="interestChart"></div></div></div></div>
@@ -42,41 +49,83 @@ footer{text-align:center;color:#7b8292;padding:36px 20px}.hidden{display:none}
 <div id="studentModal" class="modal"><div class="modal-card"><button id="studentModalClose" class="btn outline" style="float:right">닫기</button><h2 id="smTitle"></h2><div id="smBody"></div></div></div><div id="modeBanner" class="mode-banner">초기화 중…</div>
 <script src="firebase-config.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script>
-(()=>{'use strict';const ENERGY={"coal": {"name": "석탄", "monster": "탄돌이", "icon": "🪨", "type": "산업·고체", "line": "오래된 산업 현장에서 힘을 발휘하는 묵직한 회원", "tags": ["고기 조산대", "발전·제철", "국제 이동 상대적 적음"], "reaction": "탄돌이가 묵직하게 고개를 끄덕였어요. “산업 이야기라면 자신 있어!”", "detail": {"교과서 핵심": "석탄은 발전과 제철 공업 등 산업용으로 주로 이용됩니다. 교과서 2020년 자료에서 산업용 비중은 81.8%로 가장 큽니다.", "분포·입지": "주로 고기 조산대 주변에 많이 매장되며 석유보다 비교적 넓게 분포합니다.", "강점": "대규모 산업과 발전에 오랫동안 이용되어 왔습니다.", "주의": "이산화탄소와 대기 오염 물질 배출 문제가 큽니다.", "매칭 포인트": "제철 중심 산업 지역에는 강하지만 탄소 감축 목표를 함께 봐야 합니다."}}, "oil": {"name": "석유", "monster": "유돌이", "icon": "🛢️", "type": "수송·액체", "line": "이동과 연결에 강한 기동성 높은 회원", "tags": ["신생대 제3기층 배사", "수송", "국제 이동 큼"], "reaction": "오일링이 빠르게 달려왔어요. “자동차·항공·선박은 내 전문이야!”", "detail": {"교과서 핵심": "석유는 운송 수단 발달과 함께 수요가 급증했고 교과서 2020년 자료에서 수송용 비중이 61.6%로 가장 큽니다.", "분포·입지": "신생대 제3기층의 배사 구조에 주로 분포하며 생산지와 소비지가 달라 국제 이동이 큽니다.", "강점": "운송이 편리하고 석유 화학 원료로도 널리 이용됩니다.", "주의": "편재성이 커 국제 정세와 가격 변동의 영향을 크게 받을 수 있습니다.", "매칭 포인트": "수송 활동이 활발한 지역에는 강하지만 수입 의존도와 탄소 배출을 함께 봐야 합니다."}}, "gas": {"name": "천연가스", "monster": "가스돌이", "icon": "🔥", "type": "도시·기체", "line": "도시 난방과 조리에 잘 맞는 비교적 깔끔한 화석 회원", "tags": ["LNG", "난방·조리", "도시 소비"], "reaction": "가스루가 푸른 불꽃을 반짝였어요. “도시 생활과 산업을 모두 살펴볼까?”", "detail": {"교과서 핵심": "천연가스는 석탄·석유보다 대기 오염 물질 배출이 적은 편이며 산업용뿐 아니라 가정용·상업용에서도 상대적으로 많이 이용됩니다.", "분포·입지": "석유 매장 지역에서 함께 생산되는 경우가 많고 냉동 액화 기술과 대형 수송관 발달로 운반·저장이 편리해졌습니다.", "강점": "난방·조리와 산업용으로 폭넓게 쓰입니다.", "주의": "여전히 화석 연료이며 LNG 시설과 수송 인프라가 필요합니다.", "매칭 포인트": "도시형 수요와 공급 안정성에는 유리하지만 장기 탄소 감축도 함께 고려해야 합니다."}}, "nuclear": {"name": "원자력", "monster": "원자돌이", "icon": "⚛️", "type": "기저·원자", "line": "안정적인 대량 전력에 강하지만 신중한 대화가 필요한 회원", "tags": ["안정적 전력", "저탄소", "폐기물"], "reaction": "뉴클리가 원자 궤도를 반짝였어요. “안정성과 안전, 둘 다 이야기해보자!”", "detail": {"교과서 핵심": "첨부 교과서에서는 원자력이 세계 1차 에너지 소비 구조에 포함됩니다. 에너지 믹스 비교를 위한 확장 회원입니다.", "분포·입지": "발전소 입지, 냉각수, 안전 기준, 국가 정책과 사회적 수용성이 중요합니다.", "강점": "대규모 전력을 안정적으로 생산할 수 있습니다.", "주의": "사고 위험, 방사성 폐기물 처리, 건설 비용을 함께 고려해야 합니다.", "매칭 포인트": "안정적 전력을 중시할 때 유력하지만 안전성과 폐기물에 대한 사회적 합의가 중요합니다."}}, "hydro": {"name": "수력", "monster": "물돌이", "icon": "💧", "type": "물·재생", "line": "풍부한 유량과 큰 낙차를 만나면 힘이 커지는 회원", "tags": ["유량", "낙차", "댐"], "reaction": "하이드리가 물방울을 튀겼어요. “낙차와 유량을 같이 확인해줘!”", "detail": {"교과서 핵심": "수력은 물의 낙차와 속도를 전력으로 바꿉니다. 유량이 풍부하고 큰 낙차를 확보할 수 있는 지역이 유리합니다.", "분포·입지": "중국·캐나다·브라질·미국·러시아·인도 등이 주요 생산국이며 노르웨이는 큰 낙차, 브라질은 풍부한 유량이 강점입니다.", "강점": "직접 폐기물과 이산화탄소 배출이 적은 편입니다.", "주의": "댐 건설 비용, 수몰 지역과 생태계 변화를 고려해야 합니다.", "매칭 포인트": "유량과 낙차가 충분한 지역에서는 강력하지만 댐의 지역 영향을 꼭 비교해야 합니다."}}, "wind": {"name": "풍력", "monster": "바람돌이", "icon": "🌬️", "type": "바람·재생", "line": "강하고 지속적인 바람이 있는 곳에서 활약하는 회원", "tags": ["해안·섬·고원", "재생 가능", "변동성"], "reaction": "윈디핀이 빙글 돌았어요. “바람이 좋으면 나도 신나!”", "detail": {"교과서 핵심": "풍력은 바람을 이용하므로 바람이 강한 해양·섬·고원 지대에서 주로 이루어집니다.", "분포·입지": "해안과 산지처럼 바람이 강하고 지속적인 지역이 유리합니다.", "강점": "연료를 연소하지 않아 발전 과정의 오염 물질 배출이 적습니다.", "주의": "기후 조건에 따른 발전량 변동, 소음과 환경 훼손 문제가 있습니다.", "매칭 포인트": "솔바람시처럼 바람이 강한 해안이라면 주력 후보지만 변동성을 보완할 전원도 필요합니다."}}, "solar": {"name": "태양광", "monster": "햇빛돌이", "icon": "☀️", "type": "빛·재생", "line": "햇빛이 오래 머무는 지역에서 빛나는 회원", "tags": ["일조량", "일조 시간", "건조 기후"], "reaction": "솔리빔이 햇살을 모았어요. “맑은 날이 많을수록 내 매력이 커져!”", "detail": {"교과서 핵심": "태양광은 일조량이 많고 일조 시간이 긴 지역에서 주로 발전합니다. 서남아시아와 오스트레일리아 등 건조 기후 지역이 유리합니다.", "분포·입지": "자연조건뿐 아니라 기술과 시설 수준도 중요해 미국·일본·중국 등에서도 생산 비중이 높습니다.", "강점": "시설 유지 비용이 낮고 발전 과정의 소음과 환경 오염이 거의 없습니다.", "주의": "밤이나 흐린 날에는 발전량이 줄어 지속적인 전력 생산에 한계가 있습니다.", "매칭 포인트": "일조량이 좋은 지역에 적합하며 다른 전원과 조합해 변동성을 보완할 수 있습니다."}}, "bio": {"name": "바이오", "monster": "새싹돌이", "icon": "🌱", "type": "생물·재생", "line": "식물과 미생물을 다시 에너지로 연결하는 순환형 회원", "tags": ["식물·미생물", "바이오 연료", "곡물 경쟁"], "reaction": "그리니가 새잎을 흔들었어요. “순환은 좋지만 토지 이용도 같이 생각해줘!”", "detail": {"교과서 핵심": "바이오 에너지는 식물이나 미생물을 열분해·발효해 열·전기·바이오 연료를 생산합니다.", "분포·입지": "옥수수와 사탕수수 생산이 많은 미국과 브라질에서 생산 비중이 높습니다.", "강점": "생물 자원과 폐기물을 활용할 수 있습니다.", "주의": "곡물 가격 상승, 열대림 파괴, 토양 오염 등 식량·토지 문제로 이어질 수 있습니다.", "매칭 포인트": "농업·폐기물 자원이 많은 지역에 장점이 있지만 식량·토지와의 경쟁을 따져야 합니다."}}, "geo": {"name": "지열", "monster": "땅열이", "icon": "🌋", "type": "열·재생", "line": "지하의 열이 강한 화산 지대와 판 경계에서 활약하는 회원", "tags": ["화산 지대", "판 경계", "입지 제약"], "reaction": "지오락이 따뜻한 김을 내뿜었어요. “땅속 열을 제대로 읽어줘!”", "detail": {"교과서 핵심": "지열 발전은 지하의 열을 이용해 전기를 생산하며 화산 지대에서 발전 잠재력이 높습니다.", "분포·입지": "판 경계에 위치한 미국·인도네시아·필리핀·튀르키예 등에서 발전량이 많습니다.", "강점": "기상 변화의 영향을 상대적으로 덜 받습니다.", "주의": "모든 지역에서 이용하기 어렵고 지하 조건에 따른 입지 제약이 큽니다.", "매칭 포인트": "화산·지열 자원이 풍부한 지역에서는 강력하지만 일반 지역에서는 적용하기 어렵습니다."}}},CFG=window.ENERGY_FIREBASE_CONFIG||{},SETTINGS=window.ENERGY_APP_SETTINGS||{databaseRoot:'energyMatchV10_3',teacherPasscode:'happygeo26'},$=id=>document.getElementById(id),root=SETTINGS.databaseRoot||'energyMatchV10_3';let mode='local',auth=null,db=null,currentCode='',DATA={},unsub=null;
+(()=>{'use strict';const ENERGY={"coal": {"name": "석탄", "monster": "탄돌이", "icon": "🪨", "type": "산업·고체", "line": "오래된 산업 현장에서 힘을 발휘하는 묵직한 회원", "tags": ["고기 조산대", "발전·제철", "국제 이동 상대적 적음"], "reaction": "탄돌이가 묵직하게 고개를 끄덕였어요. “산업 이야기라면 자신 있어!”", "detail": {"교과서 핵심": "석탄은 발전과 제철 공업 등 산업용으로 주로 이용됩니다. 교과서 2020년 자료에서 산업용 비중은 81.8%로 가장 큽니다.", "분포·입지": "주로 고기 조산대 주변에 많이 매장되며 석유보다 비교적 넓게 분포합니다.", "강점": "대규모 산업과 발전에 오랫동안 이용되어 왔습니다.", "주의": "이산화탄소와 대기 오염 물질 배출 문제가 큽니다.", "매칭 포인트": "제철 중심 산업 지역에는 강하지만 탄소 감축 목표를 함께 봐야 합니다."}}, "oil": {"name": "석유", "monster": "유돌이", "icon": "🛢️", "type": "수송·액체", "line": "이동과 연결에 강한 기동성 높은 회원", "tags": ["신생대 제3기층 배사", "수송", "국제 이동 큼"], "reaction": "오일링이 빠르게 달려왔어요. “자동차·항공·선박은 내 전문이야!”", "detail": {"교과서 핵심": "석유는 운송 수단 발달과 함께 수요가 급증했고 교과서 2020년 자료에서 수송용 비중이 61.6%로 가장 큽니다.", "분포·입지": "신생대 제3기층의 배사 구조에 주로 분포하며 생산지와 소비지가 달라 국제 이동이 큽니다.", "강점": "운송이 편리하고 석유 화학 원료로도 널리 이용됩니다.", "주의": "편재성이 커 국제 정세와 가격 변동의 영향을 크게 받을 수 있습니다.", "매칭 포인트": "수송 활동이 활발한 지역에는 강하지만 수입 의존도와 탄소 배출을 함께 봐야 합니다."}}, "gas": {"name": "천연가스", "monster": "가스돌이", "icon": "🔥", "type": "도시·기체", "line": "도시 난방과 조리에 잘 맞는 비교적 깔끔한 화석 회원", "tags": ["LNG", "난방·조리", "도시 소비"], "reaction": "가스루가 푸른 불꽃을 반짝였어요. “도시 생활과 산업을 모두 살펴볼까?”", "detail": {"교과서 핵심": "천연가스는 석탄·석유보다 대기 오염 물질 배출이 적은 편이며 산업용뿐 아니라 가정용·상업용에서도 상대적으로 많이 이용됩니다.", "분포·입지": "석유 매장 지역에서 함께 생산되는 경우가 많고 냉동 액화 기술과 대형 수송관 발달로 운반·저장이 편리해졌습니다.", "강점": "난방·조리와 산업용으로 폭넓게 쓰입니다.", "주의": "여전히 화석 연료이며 LNG 시설과 수송 인프라가 필요합니다.", "매칭 포인트": "도시형 수요와 공급 안정성에는 유리하지만 장기 탄소 감축도 함께 고려해야 합니다."}}, "nuclear": {"name": "원자력", "monster": "원자돌이", "icon": "⚛️", "type": "기저·원자", "line": "안정적인 대량 전력에 강하지만 신중한 대화가 필요한 회원", "tags": ["안정적 전력", "저탄소", "폐기물"], "reaction": "뉴클리가 원자 궤도를 반짝였어요. “안정성과 안전, 둘 다 이야기해보자!”", "detail": {"교과서 핵심": "첨부 교과서에서는 원자력이 세계 1차 에너지 소비 구조에 포함됩니다. 에너지 믹스 비교를 위한 확장 회원입니다.", "분포·입지": "발전소 입지, 냉각수, 안전 기준, 국가 정책과 사회적 수용성이 중요합니다.", "강점": "대규모 전력을 안정적으로 생산할 수 있습니다.", "주의": "사고 위험, 방사성 폐기물 처리, 건설 비용을 함께 고려해야 합니다.", "매칭 포인트": "안정적 전력을 중시할 때 유력하지만 안전성과 폐기물에 대한 사회적 합의가 중요합니다."}}, "hydro": {"name": "수력", "monster": "물돌이", "icon": "💧", "type": "물·재생", "line": "풍부한 유량과 큰 낙차를 만나면 힘이 커지는 회원", "tags": ["유량", "낙차", "댐"], "reaction": "하이드리가 물방울을 튀겼어요. “낙차와 유량을 같이 확인해줘!”", "detail": {"교과서 핵심": "수력은 물의 낙차와 속도를 전력으로 바꿉니다. 유량이 풍부하고 큰 낙차를 확보할 수 있는 지역이 유리합니다.", "분포·입지": "중국·캐나다·브라질·미국·러시아·인도 등이 주요 생산국이며 노르웨이는 큰 낙차, 브라질은 풍부한 유량이 강점입니다.", "강점": "직접 폐기물과 이산화탄소 배출이 적은 편입니다.", "주의": "댐 건설 비용, 수몰 지역과 생태계 변화를 고려해야 합니다.", "매칭 포인트": "유량과 낙차가 충분한 지역에서는 강력하지만 댐의 지역 영향을 꼭 비교해야 합니다."}}, "wind": {"name": "풍력", "monster": "바람돌이", "icon": "🌬️", "type": "바람·재생", "line": "강하고 지속적인 바람이 있는 곳에서 활약하는 회원", "tags": ["해안·섬·고원", "재생 가능", "변동성"], "reaction": "윈디핀이 빙글 돌았어요. “바람이 좋으면 나도 신나!”", "detail": {"교과서 핵심": "풍력은 바람을 이용하므로 바람이 강한 해양·섬·고원 지대에서 주로 이루어집니다.", "분포·입지": "해안과 산지처럼 바람이 강하고 지속적인 지역이 유리합니다.", "강점": "연료를 연소하지 않아 발전 과정의 오염 물질 배출이 적습니다.", "주의": "기후 조건에 따른 발전량 변동, 소음과 환경 훼손 문제가 있습니다.", "매칭 포인트": "솔바람시처럼 바람이 강한 해안이라면 주력 후보지만 변동성을 보완할 전원도 필요합니다."}}, "solar": {"name": "태양광", "monster": "햇빛돌이", "icon": "☀️", "type": "빛·재생", "line": "햇빛이 오래 머무는 지역에서 빛나는 회원", "tags": ["일조량", "일조 시간", "건조 기후"], "reaction": "솔리빔이 햇살을 모았어요. “맑은 날이 많을수록 내 매력이 커져!”", "detail": {"교과서 핵심": "태양광은 일조량이 많고 일조 시간이 긴 지역에서 주로 발전합니다. 서남아시아와 오스트레일리아 등 건조 기후 지역이 유리합니다.", "분포·입지": "자연조건뿐 아니라 기술과 시설 수준도 중요해 미국·일본·중국 등에서도 생산 비중이 높습니다.", "강점": "시설 유지 비용이 낮고 발전 과정의 소음과 환경 오염이 거의 없습니다.", "주의": "밤이나 흐린 날에는 발전량이 줄어 지속적인 전력 생산에 한계가 있습니다.", "매칭 포인트": "일조량이 좋은 지역에 적합하며 다른 전원과 조합해 변동성을 보완할 수 있습니다."}}, "bio": {"name": "바이오", "monster": "새싹돌이", "icon": "🌱", "type": "생물·재생", "line": "식물과 미생물을 다시 에너지로 연결하는 순환형 회원", "tags": ["식물·미생물", "바이오 연료", "곡물 경쟁"], "reaction": "그리니가 새잎을 흔들었어요. “순환은 좋지만 토지 이용도 같이 생각해줘!”", "detail": {"교과서 핵심": "바이오 에너지는 식물이나 미생물을 열분해·발효해 열·전기·바이오 연료를 생산합니다.", "분포·입지": "옥수수와 사탕수수 생산이 많은 미국과 브라질에서 생산 비중이 높습니다.", "강점": "생물 자원과 폐기물을 활용할 수 있습니다.", "주의": "곡물 가격 상승, 열대림 파괴, 토양 오염 등 식량·토지 문제로 이어질 수 있습니다.", "매칭 포인트": "농업·폐기물 자원이 많은 지역에 장점이 있지만 식량·토지와의 경쟁을 따져야 합니다."}}, "geo": {"name": "지열", "monster": "땅열이", "icon": "🌋", "type": "열·재생", "line": "지하의 열이 강한 화산 지대와 판 경계에서 활약하는 회원", "tags": ["화산 지대", "판 경계", "입지 제약"], "reaction": "지오락이 따뜻한 김을 내뿜었어요. “땅속 열을 제대로 읽어줘!”", "detail": {"교과서 핵심": "지열 발전은 지하의 열을 이용해 전기를 생산하며 화산 지대에서 발전 잠재력이 높습니다.", "분포·입지": "판 경계에 위치한 미국·인도네시아·필리핀·튀르키예 등에서 발전량이 많습니다.", "강점": "기상 변화의 영향을 상대적으로 덜 받습니다.", "주의": "모든 지역에서 이용하기 어렵고 지하 조건에 따른 입지 제약이 큽니다.", "매칭 포인트": "화산·지열 자원이 풍부한 지역에서는 강력하지만 일반 지역에서는 적용하기 어렵습니다."}}},CFG=window.ENERGY_FIREBASE_CONFIG||{},SETTINGS=window.ENERGY_APP_SETTINGS||{databaseRoot:'energyMatchV10_3'},$=id=>document.getElementById(id),root=SETTINGS.databaseRoot||'energyMatchV10_3';let mode='firebase',auth=null,db=null,currentCode='',DATA={},unsub=null;
 function ldb(){try{return JSON.parse(localStorage.getItem(root)||'{}')}catch{return {}}}function sdb(x){localStorage.setItem(root,JSON.stringify(x));window.dispatchEvent(new Event('energy-local-change'))}
-async function init(){if(!CFG.apiKey||!CFG.databaseURL||!window.firebase){mode='local';configNotice.textContent='⚠️ Firebase 미연결 · 로컬 데모';return}try{if(!firebase.apps.length)firebase.initializeApp(CFG);auth=firebase.auth();await auth.signInAnonymously();db=firebase.database();mode='firebase';configNotice.textContent='✅ Firebase 실시간 연결 준비 완료';configNotice.classList.add('ok');modeBanner.textContent='🔥 Firebase 실시간'}catch(e){configNotice.textContent='⚠️ '+(e.code||e.message)}}
-unlockBtn.onclick=()=>{if(teacherPass.value===SETTINGS.teacherPasscode){lock.classList.add('hidden');app.classList.remove('hidden')}else lockMsg.textContent='비밀번호가 다릅니다.'};document.querySelectorAll('[data-panel]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-panel]').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.teacher-panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('panel-'+b.dataset.panel).classList.add('active')});autoCode.onclick=()=>classCode.value='GEO'+Math.random().toString(36).slice(2,6).toUpperCase();
+async function init(){
+  if(!CFG.apiKey||!CFG.databaseURL||!window.firebase){
+    configNotice.textContent='⚠️ Firebase 설정을 불러오지 못했습니다.';
+    lockMsg.textContent='Firebase 설정을 확인해 주세요.';
+    return;
+  }
+  try{
+    if(!firebase.apps.length)firebase.initializeApp(CFG);
+    auth=firebase.auth();
+    db=firebase.database();
+    const provider=new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({prompt:'select_account'});
+
+    googleLoginBtn.onclick=async()=>{
+      lockMsg.textContent='Google 로그인 중…';
+      try{await auth.signInWithPopup(provider)}
+      catch(e){lockMsg.textContent='Google 로그인 실패 · '+(e.code||e.message)}
+    };
+    passwordLoginBtn.onclick=async()=>{
+      const email=emailLogin.value.trim(), password=passwordLogin.value;
+      if(!email||!password){lockMsg.textContent='이메일과 비밀번호를 모두 입력해 주세요.';return}
+      lockMsg.textContent='로그인 중…';
+      try{await auth.signInWithEmailAndPassword(email,password)}
+      catch(e){lockMsg.textContent='이메일·비밀번호 로그인 실패 · '+(e.code||e.message)}
+    };
+    passwordLogin.addEventListener('keydown',e=>{if(e.key==='Enter')passwordLoginBtn.click()});
+    logoutBtn.onclick=()=>auth.signOut();
+
+    auth.onAuthStateChanged(async user=>{
+      if(!user||user.isAnonymous){
+        lock.classList.remove('hidden');app.classList.add('hidden');
+        lockMsg.textContent='승인된 교사 계정으로 로그인해 주세요.';
+        return;
+      }
+      lockMsg.textContent='권한 확인 중…';
+      try{
+        // 실제 교사 여부는 Realtime Database Rules가 최종 판정합니다.
+        await db.ref(root).limitToFirst(1).once('value');
+        lock.classList.add('hidden');app.classList.remove('hidden');
+        configNotice.textContent='✅ Firebase 교사 인증 완료 · '+(user.email||'인증 계정');
+        configNotice.classList.add('ok');
+        modeBanner.textContent='🔐 교사 인증 · Firebase 실시간';
+      }catch(e){
+        lock.classList.remove('hidden');app.classList.add('hidden');
+        lockMsg.textContent='이 계정은 교사용 데이터 접근 권한이 없습니다. · '+(e.code||e.message);
+        configNotice.textContent='⚠️ 로그인은 되었지만 교사 DB 권한이 없습니다.';
+      }
+    });
+  }catch(e){
+    configNotice.textContent='⚠️ '+(e.code||e.message);
+    lockMsg.textContent='Firebase 초기화에 실패했습니다.';
+  }
+}document.querySelectorAll('[data-panel]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-panel]').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.teacher-panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('panel-'+b.dataset.panel).classList.add('active')});autoCode.onclick=()=>classCode.value='GEO'+Math.random().toString(36).slice(2,6).toUpperCase();
 function clean(v){return v.trim().toUpperCase().replace(/[^A-Z0-9가-힣_-]/g,'').slice(0,20)}
-async function setPath(path,val){if(mode==='firebase')return db.ref(path).set(val);let d=ldb(),ps=path.split('/').slice(1),o=d;for(let i=0;i<ps.length-1;i++)o=o[ps[i]]=o[ps[i]]||{};if(val===null)delete o[ps.at(-1)];else o[ps.at(-1)]=val;sdb(d)}
-async function updatePath(path,val){if(mode==='firebase')return db.ref(path).update(val);let d=ldb(),ps=path.split('/').slice(1),o=d;for(let i=0;i<ps.length;i++)o=o[ps[i]]=o[ps[i]]||{};Object.assign(o,val);sdb(d)}
+async function setPath(path,val){if(!db)throw new Error('Firebase 미연결');return db.ref(path).set(val)}
+async function updatePath(path,val){if(!db)throw new Error('Firebase 미연결');return db.ref(path).update(val)}
 openClass.onclick=async()=>{
   let c=clean(classCode.value),n=className.value.trim();
   if(!c||!n){classSaveStatus.textContent='⚠️ 학급 코드와 학급명을 모두 입력하세요.';return}
   classSaveStatus.textContent='저장 중…';
   try{
-    if(mode==='firebase'){
-      await db.ref(`${root}/${c}/meta`).update({
-        className:n,
-        active:true,
-        updatedAt:Date.now(),
-        createdAt:Date.now()
-      });
-      currentCode=c;
-      subFB(c);
-    }else{
-      let d=ldb();
-      d[c]=d[c]||{students:{},messages:{}};
-      d[c].meta={...(d[c].meta||{}),className:n,active:true};
-      sdb(d);
-      currentCode=c;
-      subLocal(c);
-    }
+    await db.ref(`${root}/${c}/meta`).update({
+      className:n,
+      active:true,
+      updatedAt:Date.now(),
+      createdAt:Date.now()
+    });
+    currentCode=c;
+    subFB(c);
     classTitle.textContent=n+' · '+c;
     classSaveStatus.innerHTML=`✅ <b>${n}</b> 학급이 <b>${c}</b> 코드로 저장되었습니다.`;
   }catch(e){
     console.error('class save error',e);
     if(String(e.code||e.message).includes('PERMISSION_DENIED')){
-      classSaveStatus.innerHTML='⚠️ 학급 저장 실패: Firebase 규칙이 아직 적용되지 않았습니다. 압축파일 안의 <b>firebase-rules-open.json</b> 내용을 Realtime Database 규칙에 그대로 붙여넣고 <b>게시</b>하세요.';
+      classSaveStatus.innerHTML='⚠️ 학급 저장 실패: 현재 계정에 교사용 쓰기 권한이 없습니다. Realtime Database의 <b>energyMatchV10_3</b> 보안 규칙을 확인해 주세요.';
     }else{
       classSaveStatus.textContent='⚠️ 학급 저장 실패: '+(e.code||e.message||e);
     }
@@ -93,7 +142,7 @@ async function edit(uid){let r=by(uid),no=prompt('번호 수정',r.no||'');if(no
 async function resetOne(uid,ask=true){if(ask&&!confirm('이 학생의 활동을 초기화할까요?'))return;await updatePath(`${root}/${currentCode}/students/${uid}`,{answers:{1:{},2:{},3:{}},scores:{1:0,2:0,3:0},interests:{},opinions:{},activityLog:null,mix:null,profileTheme:'pokemon'})}
 async function del(uid){if(confirm('완전히 삭제할까요?'))await setPath(`${root}/${currentCode}/students/${uid}`,null)}resetAllStudents.onclick=async()=>{if(confirm('모든 학생 활동을 초기화할까요?'))for(let r of vals(DATA.students))await resetOne(r.uid,false)};
 function renderActivities(rows){let type=activityFilter.value,q=activitySearch.value.trim().toLowerCase(),all=[];rows.forEach(r=>vals(r.activityLog).forEach(a=>all.push({...a,name:r.name,no:r.no})));all=all.filter(a=>(type==='all'||a.type===type)&&(!q||String(a.name).toLowerCase().includes(q)||String(a.text).toLowerCase().includes(q))).sort((a,b)=>(b.at||0)-(a.at||0));activityFeed.innerHTML=all.map(a=>`<div class="activity-item"><div class="activity-meta">${fmt(a.at)} · ${a.no}번 ${esc(a.name)} · ${a.title}</div>${esc(a.text)}</div>`).join('')||'<div class="card">아직 활동이 없습니다.</div>'}activityFilter.onchange=()=>renderActivities(vals(DATA.students));activitySearch.oninput=()=>renderActivities(vals(DATA.students));
-sendMessage.onclick=async()=>{if(!currentCode)return alert('학급을 먼저 여세요.');let t=newMessage.value.trim();if(!t)return;let item={text:t,createdAt:Date.now(),updatedAt:Date.now()};if(mode==='firebase')await db.ref(`${root}/${currentCode}/messages`).push(item);else{let d=ldb();d[currentCode].messages=d[currentCode].messages||{};d[currentCode].messages['m'+Date.now()]=item;sdb(d)}newMessage.value=''};
+sendMessage.onclick=async()=>{if(!currentCode)return alert('학급을 먼저 여세요.');let t=newMessage.value.trim();if(!t)return;let item={text:t,createdAt:Date.now(),updatedAt:Date.now()};await db.ref(`${root}/${currentCode}/messages`).push(item)newMessage.value=''};
 function renderMessages(ms){messageHistory.innerHTML=Object.entries(ms).map(([id,m])=>({id,...m})).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0)).map(m=>`<div class="message-item"><div class="message-meta">${fmt(m.createdAt)}</div><div>${esc(m.text)}</div><div class="actionrow"><button class="btn tiny soft" data-me="${m.id}">수정</button><button class="btn tiny danger" data-md="${m.id}">삭제</button></div></div>`).join('')||'<div class="card">기록 없음</div>';messageHistory.querySelectorAll('[data-me]').forEach(b=>b.onclick=()=>editMsg(b.dataset.me));messageHistory.querySelectorAll('[data-md]').forEach(b=>b.onclick=()=>delMsg(b.dataset.md))}
 async function editMsg(id){let m=DATA.messages?.[id],t=prompt('메시지 수정',m.text||'');if(t&&t.trim())await updatePath(`${root}/${currentCode}/messages/${id}`,{text:t.trim(),updatedAt:Date.now()})}
 async function delMsg(id){if(confirm('메시지를 삭제할까요?'))await setPath(`${root}/${currentCode}/messages/${id}`,null)}clearMessages.onclick=()=>currentCode&&confirm('메시지를 모두 초기화할까요?')&&setPath(`${root}/${currentCode}/messages`,null);
