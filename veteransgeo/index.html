@@ -18,6 +18,8 @@
 .official-tag{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:850;background:#e8f2ff;color:#245b90}
 .outside-tag{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:850;background:#f2effa;color:#604493}
 .gap-tag{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:900;background:#fff0db;color:#8b5500}
+</style><style id="simple-student-ui">
+.wrap{max-width:900px}.hero{padding:24px;border-radius:20px}.hero h1{font-size:36px}.hero p{font-size:17px}.section{font-size:24px;margin:0 0 12px}.card{padding:20px;box-shadow:0 4px 16px #17203308}.step-panel{margin-top:20px}.step-panel[hidden]{display:none}.step-panel>.card{margin-top:12px}.step-nav{display:flex;gap:8px;margin:20px 0}.step-nav button{flex:1;background:#e6edf3;color:#38506b;font-size:14px}.step-nav button[aria-current=step]{background:#245f98;color:white}.step-actions{display:flex;justify-content:space-between;gap:12px;margin-top:20px}.step-error{color:#982f2f;font-weight:700}.step-help{color:#5d6878;margin:4px 0 16px}#map{height:330px}textarea{min-height:80px}.official-box{margin:12px 0;padding:14px}.official-box h3{font-size:17px}.optional-fields{padding:12px 0}.optional-fields summary{cursor:pointer;color:#42617f;font-weight:700}.choice-help{font-size:13px}input:focus,select:focus,textarea:focus,button:focus-visible{outline:3px solid #8cbbeb;outline-offset:2px}.invalid{border:2px solid #b33f3f}button:disabled{opacity:.6;cursor:wait}.two{grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:600px){.two{grid-template-columns:1fr}.wrap{padding:12px 12px 40px}.hero h1{font-size:29px}.step-nav button{padding:10px 4px;font-size:12px}.card{padding:16px}}
 </style></head><body><div class="wrap">
 
 <section class="hero">
@@ -27,7 +29,7 @@
 </section>
 
 <div class="card"><div class="toolbar">
-<span id="conn" class="status">Firebase 연결 중…</span>
+<span id="conn" class="status">제출 연결 확인 중…</span>
 <span class="note">이름·학번·현재 GPS는 수집하지 않습니다. 활동코드만 사용합니다.</span>
 </div></div>
 
@@ -151,6 +153,49 @@
 <div class="footer">제출 자료는 교사가 사실관계와 표현을 검토한 뒤 승인된 내용만 공개지도에 표시됩니다.</div>
 </div>
 
+<script>
+(()=>{
+const $=id=>document.getElementById(id),wrap=document.querySelector('.wrap');
+document.querySelector('.hero p').textContent='우리 지역의 기억 장소 한 곳을 찾아, 내 생각을 지도에 남겨요.';
+document.querySelector('.hero .badge').textContent='학생용 · 장소 한 곳 탐구';
+const heads=[...document.querySelectorAll('h2.section')],blocks=heads.map(h=>h.nextElementSibling);
+const intro=heads[0].previousElementSibling;if(intro.classList.contains('callout'))intro.remove();
+const nav=document.createElement('nav');nav.className='step-nav';nav.setAttribute('aria-label','활동 단계');nav.innerHTML=['1 장소 고르기','2 위치·자료 확인','3 내 생각 쓰기'].map((t,i)=>'<button type="button" data-step="'+i+'">'+t+'</button>').join('');heads[0].before(nav);
+const panels=[0,1,2].map(i=>{const p=document.createElement('section');p.className='step-panel';p.innerHTML='<h2 class="section" tabindex="-1">'+['1. 어떤 장소를 조사할까요?','2. 어디에 있고, 어떤 곳인가요?','3. 왜 기억해야 할까요?'][i]+'</h2><p class="step-help">'+['학교·활동코드를 적고 장소 한 곳을 정하세요.','위치를 찍고, 자료를 읽으며 확인한 사실을 적으세요.','두 가지 점수를 고르고, 근거와 내 생각을 적으면 끝!'][i]+'</p>';nav.after(p);return p;});
+panels.forEach(p=>nav.parentNode.insertBefore(p,$('compareMission')));
+heads.forEach(h=>h.remove());
+panels[0].append(blocks[0],blocks[1]);panels[1].append(blocks[2]);panels[2].append(blocks[3],blocks[4]);
+const firstGrid=blocks[0].querySelector('.grid');
+const moveField=(id,target)=>target.append($(id).parentElement);
+const identity=document.createElement('div');identity.className='grid two';blocks[0].prepend(identity);['school','activityCode','placeName'].forEach(id=>moveField(id,identity));
+const aware=blocks[1];
+aware.querySelector('p').textContent='검색하기 전, 이 장소를 얼마나 알고 있었나요? 모둠이면 대표 작성자가 답하세요.';
+aware.querySelector('.callout').remove();identity.append(aware);
+const official=blocks[0].querySelector('.official-box');official.querySelector('h3').textContent='아직 장소를 못 골랐다면?';official.querySelector('p').textContent='공식지도에서 우리 지역의 장소 한 곳을 찾아보세요. 직접 제안할 때는 보훈과 연결되는 근거가 필요해요.';
+const details=document.createElement('details');details.className='optional-fields';details.innerHTML='<summary>장소 분류·선택 방식 확인</summary>';details.append(firstGrid);blocks[0].append(details);
+const info=document.createElement('div');info.className='card';panels[1].append(info);['placeDescription','officialStatus'].forEach(id=>moveField(id,info));const sourceGrid=blocks[4].querySelector('.grid');info.append(sourceGrid);
+const addressDetails=document.createElement('details');addressDetails.className='optional-fields';addressDetails.innerHTML='<summary>주소·좌표 자세히 보기</summary>';moveField('address',addressDetails);const coords=$('lat').parentElement.parentElement;addressDetails.append(coords);blocks[2].append(addressDetails);
+$('placeSearchQuery').type='hidden';$('placeSearchQuery').previousElementSibling?.remove();
+blocks[2].querySelector('.callout').innerHTML='<strong>장소 이름은 다시 입력하지 않아도 돼요.</strong><br>「장소 자동 찾기」 → 검색 결과 선택. 안 나오면 지도를 확대해 장소를 눌러주세요.';
+$('placeAutoSearchBtn').textContent='장소 자동 찾기';$('googleMapSearchBtn').textContent='Google 지도 참고';
+$('placeDescription').placeholder='예: 이곳은 ○○의 희생을 기리는 곳이다. ○○ 자료에서 확인했다. (10자 이상)';
+$('scoreReason').placeholder='중요도: ○○ 자료를 보고 판단했다. / 발견 가능성: ○○ 사진에서 안내판이 보여 판단했다. (10자 이상)';
+$('rememberSentence').placeholder='이곳은 __________을 기억하는 곳이며, __________ 때문에 다음 세대도 기억해야 한다. (10자 이상)';
+const optional=document.createElement('details');optional.className='optional-fields';optional.innerHTML='<summary>한마디 더 남기기 (선택)</summary>';const ml=$('message').previousElementSibling;optional.append(ml,$('message'));$('keywords').previousElementSibling.before(optional);
+blocks[4].querySelector('.callout').remove();
+const scoreCards=blocks[3].querySelectorAll('.card');scoreCards[0].querySelector('h3').textContent='이 장소는 역사적으로 얼마나 중요할까요?';scoreCards[0].querySelector('p').textContent='1 근거가 부족함 · 3 지역 역사에 의미 있음 · 5 역사적 근거가 분명함';scoreCards[0].querySelector('.small').textContent='장소의 가치를 서열화하는 점수가 아니에요. 확인한 근거로 판단하세요.';scoreCards[1].querySelector('h3').textContent='지나가는 사람이 쉽게 알아볼까요?';scoreCards[1].querySelector('p').textContent='1 알아보기 어려움 · 3 어느 정도 보임 · 5 쉽게 보이고 의미도 알 수 있음';scoreCards[1].querySelector('.small').textContent='현장·사진·로드뷰에서 확인하세요. 못 봤다면 근거에 적어주세요.';
+let step=0;
+const rules=[[['activityCode','활동코드를 적어주세요.',1],['placeName','장소 이름을 적어주세요.',1],['awarenessScore','검색 전 인지도를 선택해주세요.',1]],[['lat','지도에서 장소의 위치를 선택해주세요.',1],['placeDescription','장소 설명을 10자 이상 적어주세요.',10],['sourceType','자료 종류를 선택해주세요.',1],['sourceNote','자료 이름이나 출처를 적어주세요.',1]],[['scoreReason','점수의 근거를 10자 이상 적어주세요.',10],['rememberSentence','기억해야 할 이유를 10자 이상 적어주세요.',10],['keywords','핵심 단어를 적어주세요.',1]]];
+function check(i){for(const [id,msg,min] of rules[i]){if($(id).value.trim().length<min){panels[i].querySelector('.step-error').textContent=msg;const d=$(id).closest('details');if(d)d.open=true;$(id).classList.add('invalid');$(id).focus();return false;}}panels[i].querySelector('.step-error').textContent='';return true;}
+function show(i,focus=true){step=i;panels.forEach((p,j)=>p.hidden=i!==j);nav.querySelectorAll('button').forEach((b,j)=>j===i?b.setAttribute('aria-current','step'):b.removeAttribute('aria-current'));document.dispatchEvent(new Event('memory-step-change'));if(focus){nav.scrollIntoView({behavior:'smooth',block:'start'});panels[i].querySelector('h2').focus({preventScroll:true});}}
+panels.forEach((p,i)=>{const error=document.createElement('p');error.className='step-error';error.setAttribute('role','alert');p.append(error);const actions=document.createElement('div');actions.className='step-actions';if(i){const b=document.createElement('button');b.type='button';b.className='gray';b.textContent='← 이전';b.onclick=()=>show(i-1);actions.append(b);}if(i<2){const b=document.createElement('button');b.type='button';b.className='primary';b.textContent=i===0?'다음: 위치·자료 확인 →':'다음: 내 생각 쓰기 →';b.onclick=()=>{if(check(i))show(i+1);};actions.append(b);}p.append(actions);});
+nav.querySelectorAll('button').forEach(b=>b.onclick=()=>{const to=Number(b.dataset.step);if(to>step){for(let i=step;i<to;i++)if(!check(i)){show(i);return;}}show(to);});
+$('submitBtn').addEventListener('click',e=>{for(let i=0;i<3;i++)if(!check(i)){e.stopImmediatePropagation();show(i);return;}},true);
+document.querySelectorAll('input,textarea,select').forEach(el=>el.addEventListener('input',()=>el.classList.remove('invalid')));
+document.querySelectorAll('label').forEach(l=>{const field=l.parentElement.querySelector('input,select,textarea');if(field)l.htmlFor=field.id;});
+show(0,false);
+})();
+</script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
@@ -176,6 +221,7 @@ $("sourceType").value="";
 const map=L.map("map").setView(PROJECT.schools[0].center,PROJECT.schools[0].zoom);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
 let marker=null;
+document.addEventListener("memory-step-change",()=>setTimeout(()=>map.invalidateSize(),0));
 
 function currentSchool(){
   return PROJECT.schools.find(x=>x.id===$("school").value) || PROJECT.schools[0];
@@ -204,7 +250,7 @@ function googleMapsSearchUrl(query){
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 }
 function composedSearchQuery(){
-  const typed=$("placeSearchQuery").value.trim() || $("placeName").value.trim() || $("address").value.trim();
+  const typed=$("placeName").value.trim() || $("address").value.trim();
   const region=schoolSearchPrefix();
   if(!typed) return "";
   return typed.includes(region) ? typed : `${region} ${typed}`;
@@ -221,7 +267,7 @@ async function autoFindPlace(){
   $("searchResults").innerHTML='<span class="muted small">장소를 찾고 있습니다…</span>';
   try{
     const url=`https://nominatim.openstreetmap.org/search?format=jsonv2&countrycodes=kr&limit=5&accept-language=ko&q=${encodeURIComponent(q)}`;
-    const res=await fetch(url,{headers:{"Accept":"application/json"}});
+    const res=await fetch(url,{headers:{"Accept":"application/json"},signal:AbortSignal.timeout(12000)});
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
     const data=await res.json();
     if(!data.length){
@@ -284,7 +330,7 @@ let db=null,uid=null;
 try{
   const app=initializeApp(firebaseConfig),auth=getAuth(app);db=getDatabase(app);
   const cred=await signInAnonymously(auth);uid=cred.user.uid;
-  $("conn").textContent=`● 실시간 연결됨 · 익명 ${uid.slice(0,6)}…`;$("conn").className="status ok";$("submitBtn").disabled=false;
+  $("conn").textContent=`● 제출 준비 완료`;$("conn").className="status ok";$("submitBtn").disabled=false;
 }catch(e){
   console.error(e);$("conn").textContent=`연결 실패 · ${e.code||e.message}`;$("conn").className="status err";
 }
