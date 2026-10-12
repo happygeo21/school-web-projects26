@@ -20,6 +20,8 @@
 .gap-tag{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:900;background:#fff0db;color:#8b5500}
 </style><style id="simple-student-ui">
 .wrap{max-width:900px}.hero{padding:24px;border-radius:20px}.hero h1{font-size:36px}.hero p{font-size:17px}.section{font-size:24px;margin:0 0 12px}.card{padding:20px;box-shadow:0 4px 16px #17203308}.step-panel{margin-top:20px}.step-panel[hidden]{display:none}.step-panel>.card{margin-top:12px}.step-nav{display:flex;gap:8px;margin:20px 0}.step-nav button{flex:1;background:#e6edf3;color:#38506b;font-size:14px}.step-nav button[aria-current=step]{background:#245f98;color:white}.step-actions{display:flex;justify-content:space-between;gap:12px;margin-top:20px}.step-error{color:#982f2f;font-weight:700}.step-help{color:#5d6878;margin:4px 0 16px}#map{height:330px}textarea{min-height:80px}.official-box{margin:12px 0;padding:14px}.official-box h3{font-size:17px}.optional-fields{padding:12px 0}.optional-fields summary{cursor:pointer;color:#42617f;font-weight:700}.choice-help{font-size:13px}input:focus,select:focus,textarea:focus,button:focus-visible{outline:3px solid #8cbbeb;outline-offset:2px}.invalid{border:2px solid #b33f3f}button:disabled{opacity:.6;cursor:wait}.two{grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:600px){.two{grid-template-columns:1fr}.wrap{padding:12px 12px 40px}.hero h1{font-size:29px}.step-nav button{padding:10px 4px;font-size:12px}.card{padding:16px}}
+</style><style>
+#map{height:360px;position:relative}.map-tools{margin:12px 0}.picked-box{background:#eef6fc;border:1px solid #c6dded;border-radius:14px;padding:16px;margin-top:14px;display:flex;gap:14px;align-items:center;justify-content:space-between}.picked-box.confirmed{background:#eaf7f0;border-color:#9bcab3}#locationStatus{font-weight:750}#confirmLocationBtn{white-space:nowrap}.google-help{margin-top:18px;border-top:1px solid #dde3eb;padding-top:14px}.google-help summary{cursor:pointer;color:#365d80;font-weight:750}.place-result{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;background:white;border:1px solid #c8d8e8;margin-top:8px;padding:14px}.place-result:hover{background:#eef6fc;border-color:#2e659e}.result-address{display:block;font-size:13px;font-weight:400;color:#59697b;margin-top:4px}.result-action{color:#245f98;white-space:nowrap}.map-tip{margin:8px 0;color:#4e6074;font-size:14px}#placeSearchQuery{min-width:0!important;flex-basis:240px!important}#map.manual-mode{outline:3px solid #2e659e}#coordinatePaste{margin-bottom:10px}@media(max-width:600px){.picked-box{display:block}#confirmLocationBtn{margin-top:12px;width:100%}#map{height:300px}.map-tools button{width:100%}.result-action{font-size:13px}}
 </style></head><body><div class="wrap">
 
 <section class="hero">
@@ -175,9 +177,16 @@ const official=blocks[0].querySelector('.official-box');official.querySelector('
 const details=document.createElement('details');details.className='optional-fields';details.innerHTML='<summary>장소 분류·선택 방식 확인</summary>';details.append(firstGrid);blocks[0].append(details);
 const info=document.createElement('div');info.className='card';panels[1].append(info);['placeDescription','officialStatus'].forEach(id=>moveField(id,info));const sourceGrid=blocks[4].querySelector('.grid');info.append(sourceGrid);
 const addressDetails=document.createElement('details');addressDetails.className='optional-fields';addressDetails.innerHTML='<summary>주소·좌표 자세히 보기</summary>';moveField('address',addressDetails);const coords=$('lat').parentElement.parentElement;addressDetails.append(coords);blocks[2].append(addressDetails);
-$('placeSearchQuery').type='hidden';$('placeSearchQuery').previousElementSibling?.remove();
-blocks[2].querySelector('.callout').innerHTML='<strong>장소 이름은 다시 입력하지 않아도 돼요.</strong><br>「장소 자동 찾기」 → 검색 결과 선택. 안 나오면 지도를 확대해 장소를 눌러주세요.';
-$('placeAutoSearchBtn').textContent='장소 자동 찾기';$('googleMapSearchBtn').textContent='Google 지도 참고';
+$('placeSearchQuery').setAttribute('aria-label','찾을 장소 이름 또는 주소');
+blocks[2].querySelector('.callout').innerHTML='<strong>① 장소 찾기 → ② 결과 선택 → ③ 위치 확정</strong><br>앞에서 적은 장소 이름이 자동으로 들어옵니다. 검색 결과에서 우리 장소를 고르세요.';
+$('placeAutoSearchBtn').textContent='🔎 이 장소 찾기';
+const mapElement=$('map');
+const picked=document.createElement('div');picked.className='picked-box';picked.innerHTML='<div id="locationStatus" role="status" aria-live="polite">📍 아직 위치를 고르지 않았어요.</div><button id="confirmLocationBtn" type="button" class="green" disabled>✓ 이 위치가 맞아요</button><input id="locationConfirmed" type="hidden">';mapElement.after(picked);
+const mapTools=document.createElement('div');mapTools.className='toolbar map-tools';mapTools.innerHTML='<button id="manualLocationBtn" type="button" class="gray" aria-pressed="false">검색이 안 되나요? 지도에서 직접 찍기</button><button id="schoolMapBtn" type="button" class="gray">우리 지역으로 돌아가기</button>';mapElement.before(mapTools);
+const googleHelp=document.createElement('details');googleHelp.className='google-help';googleHelp.innerHTML='<summary>Google 지도로 확인하고 싶다면</summary><p>① Google 지도를 열어 장소를 찾으세요.<br>② 이 화면으로 돌아와 검색하거나 지도에서 같은 곳을 찍으세요.</p><div id="googleButtonRow" class="toolbar"></div><p class="small muted">Google 지도에서 찾은 위치가 이 화면에 자동으로 옮겨지지는 않아요.</p><details><summary>지도에서 못 찾겠어요: 위치 숫자 붙여넣기</summary><p class="small">컴퓨터: Google 지도에서 정확한 지점을 마우스 오른쪽 버튼으로 누르고, 맨 위의 숫자를 눌러 복사하세요.<br>휴대폰: 장소를 길게 눌러 핀을 놓고, 표시된 위치 숫자를 복사하세요.</p><label for="coordinatePaste">복사한 위치 숫자</label><input id="coordinatePaste" placeholder="예: 35.0612, 126.9865" inputmode="text"><button id="applyCoordinatesBtn" type="button" class="gray">이 위치 가져오기</button><p id="coordinateHelp" role="status" class="small"></p></details>';picked.after(googleHelp);
+$('googleMapSearchBtn').textContent='Google 지도에서 장소 보기';$('googleButtonRow').append($('googleMapSearchBtn'));$('googleMapCoordBtn').textContent='선택한 핀을 Google 지도에서 보기';$('googleButtonRow').append($('googleMapCoordBtn'));
+const oldMapToolbar=blocks[2].querySelector('.toolbar[style="margin-top:12px"]');if(oldMapToolbar)oldMapToolbar.remove();
+
 $('placeDescription').placeholder='예: 이곳은 ○○의 희생을 기리는 곳이다. ○○ 자료에서 확인했다. (10자 이상)';
 $('scoreReason').placeholder='중요도: ○○ 자료를 보고 판단했다. / 발견 가능성: ○○ 사진에서 안내판이 보여 판단했다. (10자 이상)';
 $('rememberSentence').placeholder='이곳은 __________을 기억하는 곳이며, __________ 때문에 다음 세대도 기억해야 한다. (10자 이상)';
@@ -185,14 +194,14 @@ const optional=document.createElement('details');optional.className='optional-fi
 blocks[4].querySelector('.callout').remove();
 const scoreCards=blocks[3].querySelectorAll('.card');scoreCards[0].querySelector('h3').textContent='이 장소는 역사적으로 얼마나 중요할까요?';scoreCards[0].querySelector('p').textContent='1 근거가 부족함 · 3 지역 역사에 의미 있음 · 5 역사적 근거가 분명함';scoreCards[0].querySelector('.small').textContent='장소의 가치를 서열화하는 점수가 아니에요. 확인한 근거로 판단하세요.';scoreCards[1].querySelector('h3').textContent='지나가는 사람이 쉽게 알아볼까요?';scoreCards[1].querySelector('p').textContent='1 알아보기 어려움 · 3 어느 정도 보임 · 5 쉽게 보이고 의미도 알 수 있음';scoreCards[1].querySelector('.small').textContent='현장·사진·로드뷰에서 확인하세요. 못 봤다면 근거에 적어주세요.';
 let step=0;
-const rules=[[['activityCode','활동코드를 적어주세요.',1],['placeName','장소 이름을 적어주세요.',1],['awarenessScore','검색 전 인지도를 선택해주세요.',1]],[['lat','지도에서 장소의 위치를 선택해주세요.',1],['placeDescription','장소 설명을 10자 이상 적어주세요.',10],['sourceType','자료 종류를 선택해주세요.',1],['sourceNote','자료 이름이나 출처를 적어주세요.',1]],[['scoreReason','점수의 근거를 10자 이상 적어주세요.',10],['rememberSentence','기억해야 할 이유를 10자 이상 적어주세요.',10],['keywords','핵심 단어를 적어주세요.',1]]];
-function check(i){for(const [id,msg,min] of rules[i]){if($(id).value.trim().length<min){panels[i].querySelector('.step-error').textContent=msg;const d=$(id).closest('details');if(d)d.open=true;$(id).classList.add('invalid');$(id).focus();return false;}}panels[i].querySelector('.step-error').textContent='';return true;}
+const rules=[[['activityCode','활동코드를 적어주세요.',1],['placeName','장소 이름을 적어주세요.',1],['awarenessScore','검색 전 인지도를 선택해주세요.',1]],[['locationConfirmed','장소를 고른 뒤 「이 위치가 맞아요」를 눌러주세요.',1],['placeDescription','장소 설명을 10자 이상 적어주세요.',10],['sourceType','자료 종류를 선택해주세요.',1],['sourceNote','자료 이름이나 출처를 적어주세요.',1]],[['scoreReason','점수의 근거를 10자 이상 적어주세요.',10],['rememberSentence','기억해야 할 이유를 10자 이상 적어주세요.',10],['keywords','핵심 단어를 적어주세요.',1]]];
+function check(i){for(const [id,msg,min] of rules[i]){if($(id).value.trim().length<min){panels[i].querySelector('.step-error').textContent=msg;const d=$(id).closest('details');if(d)d.open=true;$(id).classList.add('invalid');if(id==='locationConfirmed'){$('locationStatus').scrollIntoView({block:'center'});$('confirmLocationBtn').focus();}else $(id).focus();return false;}}panels[i].querySelector('.step-error').textContent='';return true;}
 function show(i,focus=true){step=i;panels.forEach((p,j)=>p.hidden=i!==j);nav.querySelectorAll('button').forEach((b,j)=>j===i?b.setAttribute('aria-current','step'):b.removeAttribute('aria-current'));document.dispatchEvent(new Event('memory-step-change'));if(focus){nav.scrollIntoView({behavior:'smooth',block:'start'});panels[i].querySelector('h2').focus({preventScroll:true});}}
 panels.forEach((p,i)=>{const error=document.createElement('p');error.className='step-error';error.setAttribute('role','alert');p.append(error);const actions=document.createElement('div');actions.className='step-actions';if(i){const b=document.createElement('button');b.type='button';b.className='gray';b.textContent='← 이전';b.onclick=()=>show(i-1);actions.append(b);}if(i<2){const b=document.createElement('button');b.type='button';b.className='primary';b.textContent=i===0?'다음: 위치·자료 확인 →':'다음: 내 생각 쓰기 →';b.onclick=()=>{if(check(i))show(i+1);};actions.append(b);}p.append(actions);});
 nav.querySelectorAll('button').forEach(b=>b.onclick=()=>{const to=Number(b.dataset.step);if(to>step){for(let i=step;i<to;i++)if(!check(i)){show(i);return;}}show(to);});
 $('submitBtn').addEventListener('click',e=>{for(let i=0;i<3;i++)if(!check(i)){e.stopImmediatePropagation();show(i);return;}},true);
 document.querySelectorAll('input,textarea,select').forEach(el=>el.addEventListener('input',()=>el.classList.remove('invalid')));
-document.querySelectorAll('label').forEach(l=>{const field=l.parentElement.querySelector('input,select,textarea');if(field)l.htmlFor=field.id;});
+document.querySelectorAll('label').forEach(l=>{const field=l.nextElementSibling;if(field?.matches('input,select,textarea'))l.htmlFor=field.id;});
 show(0,false);
 })();
 </script>
@@ -218,112 +227,118 @@ $("officialStatus").value="not_checked";
 $("sourceType").insertBefore(new Option("근거 유형을 선택하세요",""),$("sourceType").firstChild);
 $("sourceType").value="";
 
-const map=L.map("map").setView(PROJECT.schools[0].center,PROJECT.schools[0].zoom);
+const map=L.map("map",{scrollWheelZoom:false}).setView(PROJECT.schools[0].center,PROJECT.schools[0].zoom);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
-let marker=null;
-document.addEventListener("memory-step-change",()=>setTimeout(()=>map.invalidateSize(),0));
-
-function currentSchool(){
-  return PROJECT.schools.find(x=>x.id===$("school").value) || PROJECT.schools[0];
-}
-function schoolSearchPrefix(){
-  const s=currentSchool();
-  return s.region || s.school || "";
+let marker=null,manualMode=false,pickedLabel="",searchVersion=0,activeSearch=null,lastSearchAt=0;
+function currentSchool(){return PROJECT.schools.find(x=>x.id===$("school").value)||PROJECT.schools[0];}
+function escHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
+function googleMapsSearchUrl(query){return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;}
+function composedSearchQuery(){
+  const typed=$("placeSearchQuery").value.trim()||$("placeName").value.trim();
+  const region=currentSchool().region||"";
+  // A full address already supplies its own region.
+  return !typed?"":(!region||typed.includes(region)||/^(서울|부산|대구|인천|광주|대전|울산|세종|경기|강원|충청|충남|충북|전라|전남|전북|경상|경남|경북|제주)/.test(typed)?typed:`${region} ${typed}`);
 }
 function updateSearchHint(){
-  const s=currentSchool();
-  $("placeSearchQuery").placeholder=`예: ${s.region} 충혼탑 / ${s.region} ${$("placeName").value.trim()||"장소 이름"}`;
-  $("searchHint").textContent=`※ 현재 검색 지역: ${s.region} · ${s.school}`;
+  $("placeSearchQuery").placeholder="장소 이름 또는 주소로 찾아요";
+  $("searchHint").textContent=`검색 지역: ${currentSchool().region} · 결과의 주소를 보고 선택하세요.`;
 }
-function setPickedLocation(lat,lng,label=""){
-  $("lat").value=Number(lat).toFixed(6);
-  $("lng").value=Number(lng).toFixed(6);
-  const p=[Number(lat),Number(lng)];
-  if(marker) marker.setLatLng(p); else marker=L.marker(p).addTo(map);
-  map.setView(p, Math.max(map.getZoom(),16));
-  if(label) marker.bindPopup(label).openPopup();
-  $("googleMapCoordBtn").disabled=false;
+function invalidateLocation(){
+  $("locationConfirmed").value="";$("confirmLocationBtn").disabled=!marker;
+  $("confirmLocationBtn").textContent="✓ 이 위치가 맞아요";
+  $("locationStatus").parentElement.classList.remove("confirmed");
 }
-map.on("click",e=>setPickedLocation(e.latlng.lat,e.latlng.lng,"직접 선택한 위치"));
-
-function googleMapsSearchUrl(query){
-  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+function setManualMode(enabled){
+  manualMode=enabled;$("manualLocationBtn").setAttribute("aria-pressed",String(enabled));
+  $("manualLocationBtn").textContent=enabled?"지도에서 장소를 눌러주세요 · 직접 찍기 종료":"검색이 안 되나요? 지도에서 직접 찍기";
+  $("map").classList.toggle("manual-mode",enabled);
+  if(marker) enabled?marker.dragging.enable():marker.dragging.disable();
 }
-function composedSearchQuery(){
-  const typed=$("placeName").value.trim() || $("address").value.trim();
-  const region=schoolSearchPrefix();
-  if(!typed) return "";
-  return typed.includes(region) ? typed : `${region} ${typed}`;
+function clearLocation(){
+  if(marker){map.removeLayer(marker);marker=null;}
+  $("lat").value="";$("lng").value="";pickedLabel="";invalidateLocation();
+  $("googleMapCoordBtn").disabled=true;$("locationStatus").textContent="📍 아직 위치를 고르지 않았어요.";
 }
-function escHtml(s){
-  return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+function setPickedLocation(lat,lng,label="",zoom=17){
+  lat=Number(lat);lng=Number(lng);
+  if(!Number.isFinite(lat)||!Number.isFinite(lng)||lat<33||lat>39.5||lng<124||lng>132){$("locationStatus").textContent="위치 숫자를 다시 확인해주세요. 대한민국 안의 장소를 골라주세요.";return false;}
+  $("lat").value=lat.toFixed(6);$("lng").value=lng.toFixed(6);pickedLabel=label||$("placeName").value.trim();
+  const p=[lat,lng];
+  if(marker)marker.setLatLng(p);else{
+    marker=L.marker(p,{draggable:manualMode}).addTo(map);
+    marker.on("dragend",()=>{const pos=marker.getLatLng();setPickedLocation(pos.lat,pos.lng,"핀을 옮긴 위치",map.getZoom());});
+  }
+  map.setView(p,zoom);marker.bindPopup(escHtml(pickedLabel)).openPopup();
+  invalidateLocation();$("googleMapCoordBtn").disabled=false;
+  $("locationStatus").textContent=`📍 ${pickedLabel} — 핀이 맞는 곳에 있나요?`;
+  return true;
 }
-
+map.on("click",e=>{if(manualMode)setPickedLocation(e.latlng.lat,e.latlng.lng,"지도에서 직접 찍은 위치",map.getZoom());});
+$("manualLocationBtn").onclick=()=>setManualMode(!manualMode);
+$("schoolMapBtn").onclick=()=>{map.setView(currentSchool().center,currentSchool().zoom);};
+$("confirmLocationBtn").onclick=()=>{
+  if(!marker)return;$("locationConfirmed").value="yes";$("locationConfirmed").classList.remove("invalid");
+  $("locationStatus").textContent=`✅ 위치 확정! ${$("placeName").value.trim()}의 위치가 저장될 준비가 되었어요.`;
+  $("locationStatus").parentElement.classList.add("confirmed");$("confirmLocationBtn").textContent="✓ 위치 확인 완료";$("confirmLocationBtn").disabled=true;setManualMode(false);
+};
+function parseLocationText(raw){
+  const text=String(raw).trim();let match=text.match(/^\s*([+-]?\d+(?:\.\d+)?)\s*[,，]\s*([+-]?\d+(?:\.\d+)?)\s*$/);
+  if(match)return [Number(match[1]),Number(match[2])];
+  try{
+    const url=new URL(text);if(url.protocol!=="https:"||!(/(^|\.)google\.(com|co\.kr)$/.test(url.hostname)||url.hostname==="maps.google.com"))return null;
+    // Only explicit place coordinates; @lat,lng describes the camera, not the place.
+    match=decodeURIComponent(url.href).match(/!3d([+-]?\d+(?:\.\d+)?)!4d([+-]?\d+(?:\.\d+)?)/);
+    if(match)return [Number(match[1]),Number(match[2])];
+    for(const key of ["query","q"]){const value=url.searchParams.get(key)||"";match=value.match(/^([+-]?\d+(?:\.\d+)?)\s*,\s*([+-]?\d+(?:\.\d+)?)$/);if(match)return [Number(match[1]),Number(match[2])];}
+  }catch{}
+  return null;
+}
+$("applyCoordinatesBtn").onclick=()=>{
+  const coords=parseLocationText($("coordinatePaste").value);
+  if(!coords){$("coordinateHelp").textContent="장소의 위치 숫자 두 개를 복사해주세요. 예: 35.0612, 126.9865. 짧은 공유 링크나 지도 화면 주소만으로는 위치를 정할 수 없어요.";return;}
+  if(setPickedLocation(...coords,"Google 지도에서 가져온 위치"))$("coordinateHelp").textContent="위치를 가져왔어요. 핀을 확인하고 「이 위치가 맞아요」를 누르세요.";
+  else $("coordinateHelp").textContent="대한민국 안의 위치인지, 숫자 순서가 위도·경도인지 확인해주세요.";
+};
+function searchFailure(message){
+  $("searchResults").innerHTML=`<div class="note">${escHtml(message)}<br>① 아래 검색칸을 <strong>도로명주소</strong>로 바꿔 다시 찾거나<br>② 「지도에서 직접 찍기」를 눌러 위치를 고르세요.<br>Google 지도는 아래 펼치기에서 참고할 수 있어요.</div>`;
+}
 async function autoFindPlace(){
-  const q=composedSearchQuery();
-  if(!q){alert("장소 이름이나 주소를 먼저 입력해 주세요.");return;}
-  $("placeAutoSearchBtn").disabled=true;
-  $("placeAutoSearchBtn").textContent="검색 중…";
-  $("searchResults").innerHTML='<span class="muted small">장소를 찾고 있습니다…</span>';
+  const q=composedSearchQuery();if(!q){$("searchResults").textContent="찾을 장소 이름이나 주소를 적어주세요.";$("placeSearchQuery").focus();return;}
+  if(Date.now()-lastSearchAt<1200)return;lastSearchAt=Date.now();
+  const version=++searchVersion,schoolId=$("school").value;activeSearch?.abort();activeSearch=new AbortController();const controller=activeSearch;
+  const timeout=setTimeout(()=>controller.abort(),12000);
+  $("placeAutoSearchBtn").disabled=true;$("placeAutoSearchBtn").textContent="찾는 중…";$("searchResults").textContent="장소를 찾고 있어요. 잠시만 기다려주세요.";
   try{
     const url=`https://nominatim.openstreetmap.org/search?format=jsonv2&countrycodes=kr&limit=5&accept-language=ko&q=${encodeURIComponent(q)}`;
-    const res=await fetch(url,{headers:{"Accept":"application/json"},signal:AbortSignal.timeout(12000)});
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data=await res.json();
-    if(!data.length){
-      $("searchResults").innerHTML='<div class="note">검색 결과가 없습니다. 장소명을 조금 줄이거나 주소를 함께 입력해 보세요.</div>';
-      return;
-    }
-    $("searchResults").innerHTML=data.map((r,i)=>`
-      <button type="button" class="gray place-result" data-i="${i}" style="display:block;width:100%;text-align:left;margin:6px 0">
-        <strong>${i+1}. ${escHtml(r.display_name)}</strong>
-      </button>`).join("");
-    [...document.querySelectorAll(".place-result")].forEach(btn=>{
-      btn.onclick=()=>{
-        const r=data[Number(btn.dataset.i)];
-        setPickedLocation(Number(r.lat),Number(r.lon),escHtml(r.display_name));
-        if(!$("address").value.trim()) $("address").value=r.display_name;
-        $("searchResults").innerHTML=`<div class="note"><strong>선택됨:</strong> ${escHtml(r.display_name)}<br>위도·경도가 자동 입력되었습니다. 필요하면 지도에서 위치를 조금 보정하세요.</div>`;
-      };
+    const res=await fetch(url,{headers:{Accept:"application/json"},signal:controller.signal});if(!res.ok)throw new Error(`HTTP ${res.status}`);
+    const data=await res.json();if(version!==searchVersion||schoolId!==$("school").value)return;
+    if(!Array.isArray(data)||!data.length){searchFailure("이 이름으로는 장소를 찾지 못했어요.");return;}
+    $("searchResults").innerHTML='<p class="map-tip">👇 주소가 맞는 결과를 눌러주세요. 핀이 나타나면 위치를 확인하세요.</p>'+data.map((r,i)=>`<button type="button" class="place-result" data-i="${i}"><span><strong>${escHtml(r.name||r.display_name.split(",")[0])}</strong><span class="result-address">${escHtml(r.display_name)}</span></span><span class="result-action">여기 선택 →</span></button>`).join("");
+    document.querySelectorAll(".place-result").forEach(btn=>btn.onclick=()=>{
+      const r=data[Number(btn.dataset.i)];setManualMode(false);
+      if(setPickedLocation(r.lat,r.lon,r.name||r.display_name.split(",")[0])){
+        $("address").value=r.display_name;
+        $("searchResults").innerHTML='<div class="note">선택했어요! 아래 핀을 확인하고 <strong>「이 위치가 맞아요」</strong>를 누르세요.</div>';
+        $("map").scrollIntoView({behavior:"smooth",block:"center"});
+      }
     });
-  }catch(e){
-    console.error(e);
-    $("searchResults").innerHTML='<div class="note">자동 검색에 실패했습니다. 잠시 후 다시 시도하거나 Google 지도에서 확인해 주세요.</div>';
-  }finally{
-    $("placeAutoSearchBtn").disabled=false;
-    $("placeAutoSearchBtn").textContent="🔎 장소 자동 찾기";
-  }
+  }catch(e){if(version===searchVersion)searchFailure("지금 자동 검색을 사용할 수 없어요.");}
+  finally{clearTimeout(timeout);if(version===searchVersion){$("placeAutoSearchBtn").disabled=false;$("placeAutoSearchBtn").textContent="🔎 이 장소 찾기";}}
 }
-
 $("placeAutoSearchBtn").onclick=autoFindPlace;
 $("placeSearchQuery").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();autoFindPlace();}});
-
-$("googleMapSearchBtn").onclick=()=>{
-  const q=composedSearchQuery();
-  if(!q){alert("장소 이름이나 주소를 먼저 입력해 주세요.");return;}
-  window.open(googleMapsSearchUrl(q),"_blank","noopener");
-};
-$("googleMapCoordBtn").onclick=()=>{
-  const lat=$("lat").value.trim(),lng=$("lng").value.trim();
-  if(!lat||!lng)return;
-  window.open(googleMapsSearchUrl(`${lat},${lng}`),"_blank","noopener");
-};
-
-["placeName","address"].forEach(id=>$(id).addEventListener("change",()=>{
-  if(!$("placeSearchQuery").value.trim()) $("placeSearchQuery").value=$(id).value.trim();
-  updateSearchHint();
-}));
-
+$("googleMapSearchBtn").onclick=()=>{const q=composedSearchQuery();if(q)window.open(googleMapsSearchUrl(q),"_blank","noopener");};
+$("googleMapCoordBtn").onclick=()=>{if(marker)window.open(googleMapsSearchUrl(`${$("lat").value},${$("lng").value}`),"_blank","noopener");};
+$("placeName").addEventListener("input",()=>{
+  $("placeSearchQuery").value=$("placeName").value.trim();++searchVersion;activeSearch?.abort();$("placeAutoSearchBtn").disabled=false;$("placeAutoSearchBtn").textContent="🔎 이 장소 찾기";$("searchResults").textContent="";clearLocation();
+});
 $("school").onchange=()=>{
-  const s=currentSchool();
-  map.setView(s.center,s.zoom);
-  if(marker){map.removeLayer(marker);marker=null;}
-  $("lat").value="";$("lng").value="";
-  $("googleMapCoordBtn").disabled=true;
-  $("searchResults").innerHTML="";
-  updateSearchHint();
+  ++searchVersion;activeSearch?.abort();clearLocation();setManualMode(false);map.setView(currentSchool().center,currentSchool().zoom);
+  $("placeAutoSearchBtn").disabled=false;$("placeAutoSearchBtn").textContent="🔎 이 장소 찾기";$("searchResults").textContent="";updateSearchHint();
 };
-updateSearchHint();
+document.addEventListener("memory-step-change",()=>{if(!$("placeSearchQuery").value.trim())$("placeSearchQuery").value=$("placeName").value.trim();setTimeout(()=>map.invalidateSize(),0);});
+$("placeSearchQuery").value=$("placeName").value.trim();updateSearchHint();
+
 ["importance","visibility"].forEach(id=>{const sl=$(id),sc=$(id+"Score");sl.oninput=()=>sc.textContent=sl.value;});
 
 let db=null,uid=null;
