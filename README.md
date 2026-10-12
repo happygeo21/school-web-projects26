@@ -13,6 +13,15 @@
 | 🖨️ **Notion A4 Print Studio** | Notion 내용을 A4에 맞춰 편집·자동맞춤·인쇄 | [`notion-print/`](./notion-print/) |
 
 
+## 외부 교사업무 도구 (출처 링크)
+
+| 도구 | 활용 | 공식 사이트 · 출처 |
+|---|---|---|
+| 🎤 **행사박사** | 학교 의식행사 사회 대본 준비, 진행 순서 및 음원 운영 | [바로 사용](https://ahnbagsa.github.io/event/) · [원본 개발 저장소: Ahnbagsa/event](https://github.com/Ahnbagsa/event) |
+| 📄 **kordoc 공문 만들기 간편판** | AI 초안을 HWPX 공문서로 변환 | [출처와 이용 안내](./tools/kordoc-simple/README.md) |
+
+> 외부 제작 프로그램은 원본을 복제하거나 수정하지 않고 공식 사이트로 연결합니다. 각 프로그램의 저작권 및 이용 조건을 존중합니다.
+
 ## GitHub Pages 공개 주소
 
 GitHub Pages가 활성화되면 아래 주소를 기본 공개 주소로 사용할 수 있습니다.
