@@ -1,0 +1,21 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "korean-teacher-skills",
+  "version": "0.1.0",
+  "description": "Skills-only workflows for Korean geography data, HWP documents, school notices and academic research.",
+  "author": {
+    "name": "happygeo21"
+  },
+  "repository": "https://github.com/happygeo21/school-web-projects26",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "한국 교사 업무 스킬",
+        "shortDescription": "KOSIS, HWP, 학교 문서, 학술자료",
+        "longDescription": "Reusable teacher workflows; does not install API or CLI integrations.",
+        "developerName": "happygeo21",
+        "category": "Education"
+      }
+    }
+  }
+}
