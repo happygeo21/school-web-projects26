@@ -277,6 +277,7 @@ function syncControls(){
   document.getElementById('fontSize').value = cssNumber('--body-size');
   document.getElementById('marginSize').value = cssNumber('--page-margin');
   document.getElementById('lineHeight').value = cssNumber('--line-height').toFixed(2);
+  document.getElementById('imgMax').value = getComputedStyle(root).getPropertyValue('--img-max').trim();
 }
 function pageContentPx(){
   const mmToPx = 96/25.4;
@@ -284,8 +285,35 @@ function pageContentPx(){
   return (297 - 2*margin) * mmToPx;
 }
 function estimatedPages(){
-  const h = Math.max(editor.scrollHeight,1);
-  return Math.max(1,Math.ceil(h/pageContentPx()));
+  // Measure at the printed width, without the screen's minimum paper height.
+  const copy = editor.cloneNode(true);
+  copy.removeAttribute('id');
+  copy.removeAttribute('contenteditable');
+  const width = (210 - 2*cssNumber('--page-margin')) * 96/25.4;
+  Object.assign(copy.style,{
+    position:'absolute',left:'-100000px',top:'0',width:width+'px',
+    minHeight:'0',visibility:'hidden',display:'flow-root'
+  });
+  document.body.appendChild(copy);
+  try{
+    const breaks = [...copy.querySelectorAll('.page-break')];
+    breaks.forEach(el=>Object.assign(el.style,{border:'0',margin:'0',height:'0'}));
+    let pages=0;
+    const range=document.createRange();
+    range.setStart(copy,0);
+    for(const marker of breaks){
+      range.setEndBefore(marker);
+      pages+=Math.max(1,Math.ceil((range.getBoundingClientRect().height-1)/pageContentPx()));
+      range.setStartAfter(marker);
+    }
+    range.setEnd(copy,copy.childNodes.length);
+    const height=breaks.length ? range.getBoundingClientRect().height : copy.getBoundingClientRect().height;
+    // A trailing forced break alone does not create an extra printed page.
+    if(!breaks.length || height>1) pages+=Math.max(1,Math.ceil((height-1)/pageContentPx()));
+    return Math.max(1,pages);
+  }finally{
+    copy.remove();
+  }
 }
 function updatePages(){
   document.getElementById('status').textContent = `예상 ${estimatedPages()}쪽`;
@@ -298,9 +326,9 @@ function autoFit(){
     let line=cssNumber('--line-height');
     let margin=cssNumber('--page-margin');
 
-    if(font>9) root.style.setProperty('--body-size',(font-0.25)+'px');
-    else if(line>1.15) root.style.setProperty('--line-height',(line-0.02));
-    else if(margin>5) root.style.setProperty('--page-margin',(margin-0.5)+'mm');
+    if(font>9) root.style.setProperty('--body-size',Math.max(9,font-0.25)+'px');
+    else if(line>1.15) root.style.setProperty('--line-height',Math.max(1.15,line-0.02));
+    else if(margin>5) root.style.setProperty('--page-margin',Math.max(5,margin-0.5)+'mm');
     else break;
 
     guard++;
@@ -332,10 +360,15 @@ async function pasteFromClipboard(){
 function cleanPastedContent(){
   editor.querySelectorAll('script,style,iframe').forEach(el=>el.remove());
   editor.querySelectorAll('*').forEach(el=>{
+    const pageBreak = el.tagName==='DIV' && el.classList.contains('page-break');
     [...el.attributes].forEach(attr=>{
       const keep = ['href','src','colspan','rowspan'];
       if(!keep.includes(attr.name.toLowerCase())) el.removeAttribute(attr.name);
     });
+    if(pageBreak){
+      el.className='page-break';
+      el.setAttribute('contenteditable','false');
+    }
   });
 }
 function insertPageBreak(){
@@ -413,6 +446,7 @@ function openHelp(){document.getElementById('helpModal').classList.add('show')}
 function closeHelp(){document.getElementById('helpModal').classList.remove('show')}
 
 editor.addEventListener('input',updatePages);
+editor.addEventListener('load',updatePages,true);
 editor.addEventListener('paste',()=>{
   setTimeout(()=>{cleanPastedContent();updatePages()},30);
 });
