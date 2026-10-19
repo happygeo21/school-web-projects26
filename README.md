@@ -17,6 +17,7 @@
 
 - 🧩 [GitHub → AI 도구 연결 도우미](./tools/github-ai-connector/) — HWPX Skill·OpenSlide 설치 안내 및 공개 저장소 분류
 - 🗂 [2026-10-19 GitHub / Notion / Netlify 점검 기록](./docs/integrations/2026-10-19-sync.md)
+- 🔐 [2026-10-19 공개 GitHub / Netlify 보안 감사 및 조치 내역](./docs/security/security-audit-2026-10-19.md)
 - 🚀 **Netlify 자동 배포 확인 (2026-10-19 11:41 KST)** — 사용자가 제공한 Netlify Deploys 화면에서 `veteransgeo`가 `main@bc32bca`를 Published로 표시함. 별도 토큰을 요구하는 수동 배포 워크플로는 보안상 제거. 실제 게시 폴더와 페이지 내용은 추가 확인 필요.
 - ⏰ 파일별 정확한 반영 일시는 GitHub 커밋 타임스탬프를 기준으로 확인합니다.
 
