@@ -1,0 +1,34 @@
+# Private credentials / user data — do not commit to this public repository
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.p12
+*.pfx
+*.key
+*.keystore
+serviceAccountKey*.json
+*service-account-key*.json
+firebase-adminsdk*.json
+credentials.json
+secrets.json
+.netlify/
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.log
+.DS_Store
+
+# School private files belong outside the published static site
+private-data/
+student-data/
+student-records/
+personal-records/
+exports-private/
+backup-private/
+*_성적표.*
+*_학생명단.*
+*_개인정보.*
