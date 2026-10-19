@@ -20,7 +20,7 @@ Use `.gitignore` only to prevent *future accidental commits*. Ignoring or deleti
 ## Account and Actions
 1. Enable GitHub 2FA/passkey and inspect active sessions, SSH keys, GitHub Apps, fine-grained tokens.
 2. Enable available secret scanning, push protection, Dependabot alerts, and review default-branch protection/settings.
-3. Store any Netlify deploy token only in GitHub Actions Secrets, and use least privileges; never add it to HTML or Notion.
+3. The Netlify GitHub integration already deploys automatically; do **not** create a separate Netlify token for redundant manual deployment. For any future token, use the approved secret manager and least privileges; never add it to HTML or Notion.
 4. Ensure Netlify uses the intended publish directory and that build logs do not echo credentials.
 5. Check Git commit author email privacy. Prior commit metadata may reveal the commit author email even if profile visibility is off. Configure a GitHub `noreply` commit identity for future commits.
 
