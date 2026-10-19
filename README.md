@@ -13,6 +13,13 @@
 | 🖨️ **Notion A4 Print Studio** | Notion 내용을 A4에 맞춰 편집·자동맞춤·인쇄 | [`notion-print/`](./notion-print/) |
 
 
+## 2026-10-19 AI 도구·배포 업데이트 (KST)
+
+- 🧩 [GitHub → AI 도구 연결 도우미](./tools/github-ai-connector/) — HWPX Skill·OpenSlide 설치 안내 및 공개 저장소 분류
+- 🗂 [2026-10-19 GitHub / Notion / Netlify 점검 기록](./docs/integrations/2026-10-19-sync.md)
+- 🚀 [Netlify 보훈 사이트 수동 배포 워크플로](./.github/workflows/deploy-veteransgeo-netlify.yml) — **워크플로 생성 ≠ 실제 Netlify 배포 완료**
+- ⏰ 파일별 정확한 반영 일시는 GitHub 커밋 타임스탬프를 기준으로 확인합니다.
+
 ## 외부 교사업무 도구 (출처 링크)
 
 | 도구 | 활용 | 공식 사이트 · 출처 |
