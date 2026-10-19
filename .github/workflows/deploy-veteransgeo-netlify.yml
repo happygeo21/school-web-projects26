@@ -1,0 +1,32 @@
+name: Deploy veteransgeo to Netlify (manual)
+
+# GitHub Pages와 Netlify는 별도 서비스입니다.
+# Netlify Site ID와 개인 접근 토큰을 GitHub Actions Secrets에 저장한 뒤 수동 실행하세요.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Validate published directory
+        run: |
+          test -s veteransgeo/index.html
+          test -s veteransgeo/public.html
+          test -s veteransgeo/teacher.html
+      - name: Deploy exact veteransgeo folder to production
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: |
+          if [ -z "$NETLIFY_AUTH_TOKEN" ] || [ -z "$NETLIFY_SITE_ID" ]; then
+            echo "::error::Set NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID in GitHub Actions secrets."
+            exit 1
+          fi
+          npx --yes netlify-cli@latest deploy --prod --dir=veteransgeo --site "$NETLIFY_SITE_ID" --auth "$NETLIFY_AUTH_TOKEN" --message "veteransgeo main $GITHUB_SHA"
