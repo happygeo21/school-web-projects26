@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GitHub → AI 도구 연결 도우미</title>
+<style>
+:root{font-family:"Noto Sans KR","Malgun Gothic",system-ui,sans-serif;background:#f6f7f8;color:#172536}
+*{box-sizing:border-box}body{margin:0}.wrap{max-width:1040px;margin:auto;padding:34px 20px 60px}
+header{padding:20px 0 28px;border-bottom:2px solid #223e5b}small{color:#52708e;font-weight:700;letter-spacing:.11em}
+h1{font-size:clamp(30px,5vw,44px);letter-spacing:-.055em;margin:10px 0}p{line-height:1.7;color:#596879}
+.box{background:#fff;border:1px solid #dce3ea;margin-top:20px;padding:24px}
+h2{font-size:20px;margin:0 0 16px}h3{font-size:16px;margin-top:20px}
+.row{display:flex;gap:10px}input{font:inherit;border:1px solid #becbd7;padding:14px;min-width:0;flex:1}
+button,.button{font:inherit;background:#223e5b;color:#fff;border:0;padding:12px 16px;cursor:pointer;text-decoration:none;display:inline-block}
+button.secondary{background:#eaf0f5;color:#223e5b;margin-top:8px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.code{white-space:pre-wrap;overflow-wrap:anywhere;background:#172536;color:#eaf2f9;padding:17px;font:13px/1.65 Consolas,monospace}
+.links{display:flex;flex-wrap:wrap;gap:12px}.links a{color:#205e8a}
+.muted{font-size:13px;color:#697989}.warn{border-left:3px solid #b78235;padding:8px 13px;background:#fff9ec}
+#results{display:none}#fallback{display:none}
+@media(max-width:720px){.row{flex-direction:column}.grid{grid-template-columns:1fr}.wrap{padding:18px 12px}.box{padding:18px}}
+</style></head><body><main class="wrap">
+<header><small>TEACHER'S AI TOOL HUB · GITHUB / CODEX / CHATGPT</small><h1>GitHub → AI 도구 연결 도우미</h1>
+<p>공개 GitHub 저장소의 파일 구조를 분석하고 환경별 설치 방법을 안내합니다. 분석과 설치는 별개의 단계입니다.</p></header>
+<section class="box"><h2>01. 저장소 주소 입력</h2><div class="row">
+<input id="url" aria-label="GitHub 저장소 URL" value="https://github.com/Canine89/hwpxskill">
+<button id="analyze">저장소 분석</button></div><p id="status" role="status">공개 저장소만 조회합니다. 토큰·비밀번호를 입력하지 마세요.</p>
+<div id="fallback" class="warn"><strong>API 연결 실패</strong><p>네트워크, CORS, 확장 프로그램, GitHub API 호출 제한을 확인하세요. 저장소 자체가 고장 났다는 뜻은 아닙니다.</p>
+<div class="links"><a id="repoLink" target="_blank" rel="noopener">GitHub 저장소 열기</a><a id="apiLink" target="_blank" rel="noopener">API 응답 확인</a></div></div></section>
+<section class="box" id="results"><h2>02. 분석 결과</h2><h3 id="name"></h3><p id="kind"></p><p id="files"></p><div id="more" class="links"></div>
+<div class="grid"><section><h3>Codex 프로젝트 스킬 설치 명령</h3><div id="project" class="code"></div><button class="secondary" data-copy="project">복사</button></section>
+<section><h3>Codex 전역 스킬 설치 명령</h3><div id="global" class="code"></div><button class="secondary" data-copy="global">복사</button></section></div>
+<h3>ChatGPT에 요청할 문장</h3><div id="prompt" class="code"></div><button class="secondary" data-copy="prompt">복사</button>
+<p class="warn">이 페이지는 읽기 전용이며, 사용자의 PC나 ChatGPT 계정에 설치하지 않습니다. 실행 전에 README·스크립트·의존성을 검토하세요.</p></section>
+<section class="box"><h2>03. 오늘 확인한 도구</h2><h3>HWPX Skill</h3>
+<p><a href="https://github.com/Canine89/hwpxskill" target="_blank" rel="noopener">Canine89/hwpxskill</a> · 문서 양식 보존 편집, 내용 추출, 검증용 Python 기반 Agent Skill</p>
+<h3>OpenSlide</h3><p><a href="https://open-slide.dev/docs" target="_blank" rel="noopener">공식 문서</a> · <a href="https://aimatters.co.kr/ai-tool/54001/" target="_blank" rel="noopener">참고 기사</a></p>
+<div id="openSlideCmd" class="code">node --version
+npm --version
+npx @open-slide/cli init my-deck
+cd my-deck
+npm run dev</div><button class="secondary" data-copy="openSlideCmd">명령어 복사</button>
+<p class="muted">OpenSlide는 SKILL.md 복사형이 아닌 Node.js 프로젝트 초기화 방식입니다. 생성 전 작업 폴더와 라이선스를 확인하세요.</p></section>
+<section class="box"><h2>04. 운영 원칙</h2>
+<p><b>ChatGPT</b> — 저장소 분석과 작업 지침 활용 · <b>Codex</b> — 로컬 Agent Skill 설치 및 실행 · <b>GitHub Pages</b> — 공개 웹앱 배포. GitHub Fork는 실제 설치와 다릅니다.</p></section>
+<p class="muted">관리 기준일: 2026-10-19 (Asia/Seoul). 정확한 변경 시각은 GitHub 파일 커밋 기록을 기준으로 확인하세요.</p>
+</main><script>
+const $=id=>document.getElementById(id);
+function parseRepo(value){const u=new URL(value.trim());if(u.hostname!=="github.com")throw Error("github.com 링크를 입력하세요.");const p=u.pathname.split("/").filter(Boolean);if(p.length<2||p.slice(0,2).some(x=>! /^[\w.-]+$/.test(x)))throw Error("https://github.com/소유자/저장소 형식만 지원합니다.");return [p[0],p[1].replace(/\.git$/,"")];}
+async function getJson(url){const controller=new AbortController();const t=setTimeout(()=>controller.abort(),12000);try{const r=await fetch(url,{headers:{"Accept":"application/vnd.github+json"},signal:controller.signal});if(!r.ok)throw Error(r.status===403?"API 한도 또는 접근 제한(403)":r.status===404?"공개 저장소를 찾지 못했습니다(404)":"API 오류 "+r.status);return await r.json()}finally{clearTimeout(t)}}
+function link(parent,text,url){const a=document.createElement("a");a.href=url;a.textContent=text;a.target="_blank";a.rel="noopener noreferrer";parent.append(a)}
+async function analyze(){
+$("results").style.display="none";$("fallback").style.display="none";$("status").textContent="GitHub API 조회 중…";
+let parts;try{parts=parseRepo($("url").value)}catch(e){$("status").textContent=e.message;return}
+const repo=parts.join("/"),url="https://github.com/"+repo,api="https://api.github.com/repos/"+repo;
+$("repoLink").href=url;$("apiLink").href=api;
+try{
+const info=await getJson(api),contents=await getJson(api+"/contents");
+const paths=contents.map(f=>f.name),has=x=>paths.includes(x),skill=has("SKILL.md"),mcp=has("mcp.json")||has("server.py"),npm=has("package.json");
+$("name").textContent=repo;$("kind").textContent=skill?"Agent Skill / SKILL.md 확인":mcp?"MCP 형태 가능성 — 실행·인증 확인 필요":npm?"Node.js 기반 프로젝트 — README 확인 필요":"일반 저장소 — 수동 분석 필요";
+$("files").textContent="기본 브랜치: "+info.default_branch+" · 최상위 파일: "+paths.slice(0,18).join(", ");
+const more=$("more");more.replaceChildren();link(more,"원본 저장소",url);link(more,"README",url+"/blob/"+info.default_branch+"/README.md");if(skill)link(more,"SKILL.md",url+"/blob/"+info.default_branch+"/SKILL.md");
+const folder=parts[1],clone="git clone "+url+".git",prefix="# 저장소 코드를 검토한 후 실행\n";
+$("project").textContent=skill?prefix+clone+"\nNew-Item -ItemType Directory -Force .agents/skills | Out-Null\nCopy-Item -Recurse -Force "+folder+" .agents/skills/"+folder:prefix+"# 루트 SKILL.md를 찾지 못했습니다. 설치 명령을 자동 생성하지 않습니다.";
+$("global").textContent=skill?prefix+clone+"\nNew-Item -ItemType Directory -Force $HOME/.agents/skills | Out-Null\nCopy-Item -Recurse -Force "+folder+" $HOME/.agents/skills/"+folder:prefix+"# 공식 README와 설치 요구사항을 먼저 확인하세요.";
+$("prompt").textContent="다음 저장소의 README/SKILL.md와 실행 코드를 검토해 줘: "+url+"\n1. ChatGPT 채팅/코덱스/MCP/웹 실행 유형을 분류해 줘.\n2. Windows 설치 방법과 보안·라이선스 위험을 알려 줘.\n3. 임의 실행이나 계정 변경 없이 테스트 방법을 제안해 줘.";
+$("results").style.display="block";$("status").textContent="분석 완료 (읽기 전용).";
+}catch(e){$("fallback").style.display="block";$("status").textContent=(e.name==="AbortError"?"12초 응답 지연":e.message==="Failed to fetch"?"네트워크 또는 CORS 요청 실패":e.message)+". 아래 수동 확인 링크를 이용하세요."}
+}
+$("analyze").addEventListener("click",analyze);$("url").addEventListener("keydown",e=>{if(e.key==="Enter")analyze()});
+document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",async()=>{try{await navigator.clipboard.writeText($(b.dataset.copy).textContent);b.textContent="복사 완료"}catch(e){alert("클립보드 접근이 제한되었습니다. 텍스트를 선택해 복사해 주세요.")}}));
+</script></body></html>
