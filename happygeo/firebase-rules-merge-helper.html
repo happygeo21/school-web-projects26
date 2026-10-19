@@ -1,22 +1,20 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>Firebase 빠른 규칙</title></head>
-<body style="font-family:system-ui;padding:24px;background:#f7f8fc;line-height:1.55">
-<h1>에너지 결정사 v10.3 빠른 실행용 Firebase 규칙</h1>
-<p>아래 규칙은 <b>학급 등록/학생 접속이 바로 되도록</b> 가장 단순하게 만든 버전입니다.</p>
+<!doctype html>
+<html lang="ko">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Firebase 보안 규칙 점검 안내 | 에너지 결정사</title>
+<style>body{font-family:system-ui,"Noto Sans KR",sans-serif;max-width:750px;margin:35px auto;padding:0 22px;line-height:1.75;color:#1c2939;background:#f8fafc}main{background:white;border:1px solid #d8e1ec;padding:28px}h1{font-size:27px}strong{color:#912d27}a{color:#185783}code{background:#e9eef6;padding:2px 5px}.note{border-left:4px solid #ba4d36;background:#fff1ec;padding:10px 15px}li{margin:10px 0}</style></head>
+<body><main><h1>Firebase 보안 규칙 점검 안내</h1>
+<div class="note"><strong>주의: 이 페이지는 자동으로 규칙을 변경하지 않습니다.</strong> 학급 접속 오류를 해결하려고 실시간 데이터베이스 전체 또는 활동 경로에 무조건적인 읽기·쓰기 권한을 허용해서는 안 됩니다.</div>
+<p>교사용 Google/이메일 로그인과 학생 익명 로그인을 지원합니다. 최종 접근 권한은 <b>Firebase Realtime Database Rules</b>에서 검사해야 합니다.</p>
+<h2>안전한 점검 순서</h2>
 <ol>
-<li>Firebase → Realtime Database → <b>규칙</b> 탭 열기</li>
-<li>현재 내용 전체를 지우고 아래 JSON을 통째로 붙여넣기</li>
-<li><b>게시</b> 버튼 누르기</li>
+<li>Firebase Console → Realtime Database → <b>규칙</b>을 열고 현재 규칙을 안전한 곳에 백업합니다.</li>
+<li>비로그인 사용자가 학생 데이터 경로를 읽거나 변경할 수 없는지 확인합니다.</li>
+<li>로그인한 학생도 <b>본인 UID 경로</b> 이외의 자료를 읽거나 수정하지 못하도록 제한합니다.</li>
+<li>교사 전체 조회·삭제·공개 승인 권한은 승인한 교사 계정으로만 제한합니다.</li>
+<li>Firebase Emulator Suite / Rules Playground를 이용해 무인증·학생·교사 권한을 각각 테스트한 후 게시합니다.</li>
+<li>실제 학급 등록과 학생 제출을 시도하고, 교사가 아닌 로그인 계정의 전체 조회가 거부되는지 확인합니다.</li>
 </ol>
-<textarea style="width:100%;height:340px">{
-  "rules": {
-    ".read": false,
-    ".write": false,
-    "energyMatchV10_3": {
-      ".read": true,
-      ".write": true
-    }
-  }
-}</textarea>
-<p><button onclick="navigator.clipboard.writeText(document.querySelector('textarea').value)">규칙 복사</button></p>
-<p>※ 수업용 빠른 실행 버전이므로, 고급 보안보다 작동 안정성을 우선했습니다.</p>
-</body></html>
+<p><a href="./FIREBASE_SECURITY_GUIDE.md">기존 Firebase 보안 전환 가이드 보기</a></p>
+<p>안내 문서의 예시는 운영 환경에 그대로 붙여 넣기 전에 현재 데이터 경로·교사 인증 조건과 일치하는지 검토해야 합니다.</p>
+<p><small>보안 안내 수정: 2026-10-19 (KST) · 공개 규칙 예제에서 무인증 전체 허용을 제거했습니다. 실제 운영 규칙 변경 여부는 Firebase Console에서 별도 확인하세요.</small></p>
+</main></body></html>
