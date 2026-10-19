@@ -1,5 +1,11 @@
 # chris.gomdori.app × ChatGPT × GitHub 연결·사용 안내
 
+## 바로 실행하는 링크
+
+- **[25개 원클릭 HTML 실행 허브](./gomdori-launcher.html)** — 검색·분류·외부 사이트 직접 열기·MCP 프롬프트 복사·GitHub Fork 진입 링크.
+- **[노션 실행 허브](https://app.notion.com/p/3feabbdcebdc810f8b8cd9d67559a08e?pvs=204)** — 모든 프로젝트 상태 및 사용법, 공개 원본 8개 Fork 버튼. 현재 비공개 개인 페이지.
+- HTML 파일은 별도 검토 브랜치의 신규 문서이므로 **GitHub Pages의 실제 배포는 아직 확인되지 않았습니다**. 노션의 외부 링크는 지금 바로 사용 가능합니다.
+
 확인: 2026-10-19. 출처: https://chris.gomdori.app/ 및 GitHub 원본 저장소 메타데이터.
 
 ## 상태 해석
