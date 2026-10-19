@@ -3,8 +3,8 @@
 ## 바로 실행하는 링크
 
 - **[25개 원클릭 HTML 실행 허브](./gomdori-launcher.html)** — 검색·분류·외부 사이트 직접 열기·MCP 프롬프트 복사·GitHub Fork 진입 링크.
-- **[노션 실행 허브](https://app.notion.com/p/3feabbdcebdc810f8b8cd9d67559a08e?pvs=204)** — 모든 프로젝트 상태 및 사용법, 공개 원본 8개 Fork 버튼. 현재 비공개 개인 페이지.
-- HTML 파일은 별도 검토 브랜치의 신규 문서이므로 **GitHub Pages의 실제 배포는 아직 확인되지 않았습니다**. 노션의 외부 링크는 지금 바로 사용 가능합니다.
+- **[노션 실행 허브](https://app.notion.com/p/3feabbdcebdc810f8b8cd9d67559a08e?pvs=204)** — 모든 프로젝트 상태 및 사용법, 실제 확인된 Fork 8개 바로가기. 현재 비공개 개인 페이지.
+- HTML은 GitHub PR #1에 포함된 파일입니다. **main 병합 후 GitHub Pages 배포를 별도 확인해야 합니다**. 노션의 외부 링크는 지금 바로 사용 가능합니다.
 
 확인: 2026-10-19. 출처: https://chris.gomdori.app/ 및 GitHub 원본 저장소 메타데이터.
 
@@ -26,9 +26,9 @@
 | 04 | korean-stats-mcp | MCP | Fork 완료 | 연결·조회 성공 | ChatGPT: ‘KOSIS 전라남도 시군구 주민등록인구 통계표 찾아줘’ |
 | 05 | korean-patent-mcp | MCP | Fork 완료 | 연결됨·API 일일 한도 도달 | ChatGPT: ‘기후변화 특허를 찾아줘’. 서버 공유키 한도 초과 시 재시도/본인 API키 검토 |
 | 06 | archhub-mcp | MCP | Fork 완료 | 연결·조회 성공 | ChatGPT: ‘화순읍 필지의 건축물대장 확인해줘’ (주소 필요) |
-| 07 | schoolinfo-mcp | MCP+웹 | 개인 GitHub Fork 미확인 | 연결·조회 성공 | ChatGPT: ‘화순고등학교 2026학년도 평가계획 찾아줘’; 웹 school.gomdori.app |
-| 08 | korean-dart-mcp | 설치형 MCP | 개인 GitHub Fork 미확인 | 이 MCP 직접 연결 확인 안 됨 | OpenDART 공시 분석은 원본 README 보고 로컬/원격 호환 구성 확인 |
-| 09 | LexDiff | 웹 | 개인 GitHub Fork 미확인 | 직접 연결 아님 | lexdiff.gomdori.app에서 로그인 후 법령·개정이력 비교 |
+| 07 | schoolinfo-mcp | MCP+웹 | Fork 완료 (2026-10-19) | 연결·조회 성공 | ChatGPT: ‘화순고등학교 2026학년도 평가계획 찾아줘’; 웹 school.gomdori.app |
+| 08 | korean-dart-mcp | 설치형 MCP | Fork 완료 (2026-10-19) | 이 MCP 직접 연결 확인 안 됨 | OpenDART 공시 분석은 원본 README 보고 로컬/원격 호환 구성 확인 |
+| 09 | LexDiff | 웹 | Fork 완료 (2026-10-19) | 직접 연결 아님 | lexdiff.gomdori.app에서 로그인 후 법령·개정이력 비교 |
 | 10 | 표준주소실록 | 웹/확장 | 개인 GitHub Fork 미확인 | 직접 연결 아님 | gjdong.vercel.app 에서 주소 목록 붙여넣고 정규화·좌표/Excel 내보내기 |
 | 11 | 인파레이더 | 웹 | 개인 GitHub Fork 미확인 | 직접 연결 아님 | gjdong.vercel.app/crowd 에서 지점 선택 → 혼잡도·인쇄 보고서 |
 | 12 | 광진 라이프 | 웹/PWA | 개인 GitHub Fork 미확인 | 직접 연결 아님 | gjdong.vercel.app/gwangjin에서 지역 생활정보 조회 |
@@ -37,11 +37,11 @@
 | 15 | 제도 은하 | 웹 시각화 | 개인 GitHub Fork 미확인 | 직접 연결 아님 | chris.gomdori.app/korea100에서 제도·조문 관계 탐색 |
 | 16 | 학습 은하 | 웹 시각화 | 개인 GitHub Fork 미확인 | 직접 연결 아님 | chris.gomdori.app/learnmap에서 중·고 성취기준 연계 탐색 |
 | 17 | 정부 은하 | 웹 시각화 | 개인 GitHub Fork 미확인 | 직접 연결 아님 | chris.gomdori.app/onegov에서 부처별 문서 관계 탐색 |
-| 18 | fable-ish | Claude Code 플러그인 | 개인 GitHub Fork 미확인 | ChatGPT 일반 채팅에 직접 적용 불가 | Claude Code 저장소에 원본 지침에 따라 설치하여 코드 검증 게이트 적용 |
-| 19 | hermes-dashboard | Hermes Agent 도구 | 개인 GitHub Fork 미확인 | ChatGPT 일반 채팅에 직접 적용 불가 | Hermes Agent 사용 시 원본 README에 따라 서버·대시보드 설정 |
-| 20 | ollama-mcp-host | 로컬 호스트 | 개인 GitHub Fork 미확인 | ChatGPT 일반 채팅에 직접 적용 불가 | Node 20+·Ollama 설치 후 로컬 MCP 호스트 구성 |
-| 21 | edoc-summarizer | 브라우저 확장 | 개인 GitHub Fork 미확인 | ChatGPT 일반 채팅에 직접 적용 불가 | Edge/Chrome 확장 설치 후 지원 전자문서 페이지에서 요약 실행 |
-| 22 | fde-wizard | Blender 예제/웹 | 개인 GitHub Fork 미확인 | ChatGPT 일반 채팅에 직접 적용 불가 | chris.gomdori.app/wizard 체험, 커스텀 3D 작업은 Blender Python 필요 |
+| 18 | fable-ish | Claude Code 플러그인 | Fork 완료 (2026-10-19) | ChatGPT 일반 채팅에 직접 적용 불가 | Claude Code 저장소에 원본 지침에 따라 설치하여 코드 검증 게이트 적용 |
+| 19 | hermes-dashboard | Hermes Agent 도구 | Fork 완료 (2026-10-19) | ChatGPT 일반 채팅에 직접 적용 불가 | Hermes Agent 사용 시 원본 README에 따라 서버·대시보드 설정 |
+| 20 | ollama-mcp-host | 로컬 호스트 | Fork 완료 (2026-10-19) | ChatGPT 일반 채팅에 직접 적용 불가 | Node 20+·Ollama 설치 후 로컬 MCP 호스트 구성 |
+| 21 | edoc-summarizer | 브라우저 확장 | Fork 완료 (2026-10-19) | ChatGPT 일반 채팅에 직접 적용 불가 | Edge/Chrome 확장 설치 후 지원 전자문서 페이지에서 요약 실행 |
+| 22 | fde-wizard | Blender 예제/웹 | Fork 완료 (2026-10-19) | ChatGPT 일반 채팅에 직접 적용 불가 | chris.gomdori.app/wizard 체험, 커스텀 3D 작업은 Blender Python 필요 |
 | +1 | 점심 딸깍 | 웹 | 별도 Fork 미확인 | ChatGPT 연결 불필요 | chris.gomdori.app/lunch에서 위치 허용 후 무작위 점심 장소 확인 |
 | +2 | 교대근무 딸깍 | 웹 | 별도 Fork 미확인 | ChatGPT 연결 불필요 | chris.gomdori.app/shift에서 이름·근무지 입력 후 자동 배정/엑셀 추출 |
 | +3 | 당직 딸깍 | 웹 | 별도 Fork 미확인 | ChatGPT 연결 불필요 | chris.gomdori.app/duty에서 명단·월 입력 후 캘린더 생성 |
@@ -81,3 +81,8 @@
 
 - https://chris.gomdori.app/
 - https://github.com/NomaDamas/k-skill
+
+
+## 2026-10-19 GitHub Fork 재검증
+
+추가 8개 저장소의 `fork=true` 및 `parent=chrisryugj/...` 관계를 확인했습니다. **로컬 설치 또는 ChatGPT 연결 완료는 아닙니다.** 세부 반영 시각은 이 문서의 GitHub Commit을 기준으로 합니다.
