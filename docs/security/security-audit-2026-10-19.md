@@ -26,6 +26,7 @@
 | 비밀 파일 실수 업로드 | 루트 `.gitignore` 미존재 | `.env`, 개인키, Firebase Admin SDK, 학생 개인자료 폴더 등을 제외하도록 추가 | **예방 조치 완료** |
 | 공개 저장소 보안 정책 | 개인정보·비밀키 운영 규칙이 산재 | [SECURITY.md](../../SECURITY.md) 추가 및 운영 수칙 명시 | **완료** |
 | Netlify 토큰 기반 수동 배포 | 자동 배포가 이미 작동하는데 추가 토큰과 실행 경로를 권장 | 중복 Actions 워크플로 제거 | **완료** |
+| ChatGPT에 연결된 GitHub App 접근 범위 | 설치 메타데이터의 `repository_selection=all` 확인. 현재 GitHub 계정의 저장소 전체 접근 선택 | 계정 Settings → Applications → Installed GitHub Apps에서 필요한 저장소만 선택하도록 변경 검토. 단 기존 전 저장소 업무 자동화에는 제약 발생 가능 | **사용자 선택 필요** |
 | 기본 브랜치 보호 | GitHub `branches/main`에서 `protected=false`, 저장소 Rulesets 목록 비어 있음 | [Rules 설정](https://github.com/happygeo21/school-web-projects26/settings/rules)에서 PR 우선·강제 푸시/삭제 차단을 권장. 1인 계정이면 승인 필수값으로 인한 작업 봉쇄 주의 | **추가 조치 필요** |
 | Git 커밋 작성자 이메일 | 최근 커밋 40건 모두 `noreply`가 아닌 작성자 이메일 메타데이터 포함 | 향후 커밋 신원 설정 변경은 사용자 GitHub/로컬 Git 설정 필요 | **추가 조치 필요** |
 | 공개 Firebase 설정 파일 | `happygeo/firebase-config.js`, `veteransgeo/firebase-config.js`에 Firebase Web API key 존재 | 웹 클라이언트에 필요한 공개 설정이며 그 자체로 비밀키 유출은 아님. Firebase Rules·App Check/API 제한 검증 필요 | **운영 규칙 확인 필요** |
