@@ -26,6 +26,7 @@
 | 비밀 파일 실수 업로드 | 루트 `.gitignore` 미존재 | `.env`, 개인키, Firebase Admin SDK, 학생 개인자료 폴더 등을 제외하도록 추가 | **예방 조치 완료** |
 | 공개 저장소 보안 정책 | 개인정보·비밀키 운영 규칙이 산재 | [SECURITY.md](../../SECURITY.md) 추가 및 운영 수칙 명시 | **완료** |
 | Netlify 토큰 기반 수동 배포 | 자동 배포가 이미 작동하는데 추가 토큰과 실행 경로를 권장 | 중복 Actions 워크플로 제거 | **완료** |
+| 기본 브랜치 보호 | GitHub `branches/main`에서 `protected=false`, 저장소 Rulesets 목록 비어 있음 | [Rules 설정](https://github.com/happygeo21/school-web-projects26/settings/rules)에서 PR 우선·강제 푸시/삭제 차단을 권장. 1인 계정이면 승인 필수값으로 인한 작업 봉쇄 주의 | **추가 조치 필요** |
 | Git 커밋 작성자 이메일 | 최근 커밋 40건 모두 `noreply`가 아닌 작성자 이메일 메타데이터 포함 | 향후 커밋 신원 설정 변경은 사용자 GitHub/로컬 Git 설정 필요 | **추가 조치 필요** |
 | 공개 Firebase 설정 파일 | `happygeo/firebase-config.js`, `veteransgeo/firebase-config.js`에 Firebase Web API key 존재 | 웹 클라이언트에 필요한 공개 설정이며 그 자체로 비밀키 유출은 아님. Firebase Rules·App Check/API 제한 검증 필요 | **운영 규칙 확인 필요** |
 
@@ -34,8 +35,9 @@
 1. GitHub 계정 **Settings → Emails**에서 이메일 비공개/비공개 `noreply` 커밋 주소 확인. 이후 로컬 Git과 Codex 커밋 작성자 이메일을 이 주소로 설정. 과거 커밋은 현재 설정만으로 숨겨지지 않음.
 2. GitHub 계정 **Settings → Password and authentication**에서 2FA/passkey, 로그인 세션 점검. **Developer settings**에서 활성 토큰·승인 앱·SSH 키 정리.
 3. [저장소 보안 설정](https://github.com/happygeo21/school-web-projects26/settings/security_analysis)에서 Secret scanning, Push protection, Dependabot/Code scanning 상태 확인 및 가능한 보호 활성화.
-4. **Firebase Console → Realtime Database → Rules**에서 보훈 `submissions`은 승인된 교사만 전역 읽기, 학생은 자신의 UID로만 쓰기가 가능한지 확인. `published`만 공개 읽기를 허용. 에너지 활동도 `energyMatchV10_3`의 무인증 접근을 차단해야 함.
-5. **Netlify → veteransgeo → Project configuration → Developer settings → Continuous deployment → Build settings**에서 디렉터리 확인. 페이지 제목이 `기억의 좌표 LIVE`인지 확인.
-6. GitHub Pages와 Netlify 배포 실행은 성공했어도 Firebase 운영 보안 규칙 검증과 실제 페이지 내용 일치는 별개로 관리.
+4. GitHub 저장소 **Settings → Rules → Rulesets**에서 `main` 브랜치 보호를 검토. 강제 푸시/삭제 차단, 필요 시 PR 경유를 설정하되 본인 한 명만 사용하는 경우 승인자 부족으로 잠기지 않도록 사전 확인.
+5. **Firebase Console → Realtime Database → Rules**에서 보훈 `submissions`은 승인된 교사만 전역 읽기, 학생은 자신의 UID로만 쓰기가 가능한지 확인. `published`만 공개 읽기를 허용. 에너지 활동도 `energyMatchV10_3`의 무인증 접근을 차단해야 함.
+6. **Netlify → veteransgeo → Project configuration → Developer settings → Continuous deployment → Build settings**에서 디렉터리 확인. 페이지 제목이 `기억의 좌표 LIVE`인지 확인.
+7. GitHub Pages와 Netlify 배포 실행은 성공했어도 Firebase 운영 보안 규칙 검증과 실제 페이지 내용 일치는 별개로 관리.
 
 **주의:** 공개 Git 저장소에서 비밀값이 발견되면 파일 삭제보다 **먼저 토큰·키를 회수/교체**해야 합니다. 과거 커밋 재작성은 Fork·배포에 영향을 주므로 일방적으로 수행하지 않습니다.
