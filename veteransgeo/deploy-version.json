@@ -1,0 +1,16 @@
+{
+  "project": "veteransgeo",
+  "release_date": "2026-10-19",
+  "release_time_kst": "2026-10-19 11:41:38 KST",
+  "source_repository": "happygeo21/school-web-projects26",
+  "source_branch": "main",
+  "source_directory": "veteransgeo",
+  "source_blobs": {
+    "index.html": "382b99186f4ba7bd9e65d3fba83e5c0100b4f5fb",
+    "teacher.html": "aae0fff39e8125024224254a0b75378e5ee28ca7",
+    "public.html": "0ae17ebbef469cd3068934e08a49abcbd429a839",
+    "project-config.js": "e9a5ae4e2b95aed09aaef326c85ad2dc4477eb22"
+  },
+  "note": "Release marker. Confirms repository source version only; Netlify production deployment must be independently verified.",
+  "netlify_deployment_verified": false
+}
