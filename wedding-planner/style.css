@@ -2,3 +2,4 @@
 :root{scroll-behavior:smooth}.chapter-count{display:block;font-size:12px;font-weight:700;color:var(--green);margin:16px 0 8px}.chapter-cards .actions{gap:4px 12px}.chapter-cards button{font-weight:650}.record .money{color:var(--gold);font-weight:700}.record .next-action{padding:10px 12px;background:var(--soft);border-radius:8px}.record .due{font-size:12px;color:var(--muted)}
 :root{color-scheme:light}.journal-grid>*,.two>*{min-width:0}input,select,textarea{min-width:0}
 .chapter-cards .actions a{font-size:13px;padding:9px 0;min-height:44px}
+nav button[aria-selected=true]:hover:enabled{background:var(--green);color:white}
