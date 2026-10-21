@@ -1,0 +1,106 @@
+import {cloudConfig, notionEnabled} from './cloud-config.js';
+const $ = id => document.getElementById(id);
+let api, auth, db, functions, allowed = false, records = [], stopRecords, stopMember;
+let editing = null, generation = 0, saving = false;
+const localDate = () => new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date());
+const message = (text, error = false) => { $('notice').textContent=text; $('notice').classList.toggle('error',error); };
+function tab(name) {
+  document.querySelectorAll('.view').forEach(el => el.hidden=el.id!==name);
+  document.querySelectorAll('[data-tab]').forEach(el => el.setAttribute('aria-selected',String(el.dataset.tab===name)));
+}
+document.querySelectorAll('[data-tab]').forEach(el=>el.onclick=()=>tab(el.dataset.tab));
+document.querySelectorAll('[data-template]').forEach(el=>el.onclick=()=>{tab('journal');$('category').value=el.dataset.template;$('title').focus();});
+function resetForm() { editing=null; $('recordForm').reset(); $('date').value=localDate();$('formTitle').textContent='새 기록 남기기';$('cancelEdit').hidden=true; }
+function clearPrivate() {
+  stopRecords?.();stopRecords=null;records=[];allowed=false;resetForm();render();
+  $('save').disabled=true;$('backup').disabled=true;$('loginPanel').hidden=false;
+}
+function button(text,fn) { const el=document.createElement('button');el.type='button';el.textContent=text;el.onclick=fn;return el; }
+function card(r) {
+  const el=document.createElement('article');el.className='record';
+  const meta=document.createElement('div');meta.className='meta';meta.textContent=`${r.date} · ${r.category} · ${r.status}`;
+  const title=document.createElement('h3');title.textContent=r.title;
+  const body=document.createElement('p');body.textContent=r.body;
+  el.append(meta,title,body);
+  if(r.amount){const amount=document.createElement('p');amount.textContent=`관련 금액 ${r.amount.toLocaleString('ko-KR')}원`;el.append(amount);}
+  const actions=document.createElement('div');actions.className='actions';
+  actions.append(button('수정하기',()=>{
+    if(!allowed)return;editing={id:r.id,revision:r.revision};
+    for(const key of ['title','body','category','status','date','amount'])$(key).value=r[key];
+    $('formTitle').textContent='기록 수정하기';$('cancelEdit').hidden=false;tab('journal');$('title').focus();
+  }));
+  if(notionEnabled)actions.append(button('노션에 보내기',async()=>{
+    if(!allowed||!confirm('이 기록의 제목·내용·날짜·분야·상태를 노션 공동 기록 DB로 보낼까요?'))return;
+    const epoch=generation;
+    try{await api.httpsCallable(functions,'exportWeddingRecord')({id:r.id,revision:r.revision});if(epoch===generation)message('노션 반영 완료. 노션에서 직접 한 변경은 이 화면에 돌아오지 않습니다.');}
+    catch{if(epoch===generation)message('노션 반영을 확인하지 못했습니다. 다시 누르기 전에 노션 기록을 확인해 주세요.',true);}
+  }));
+  el.append(actions);return el;
+}
+function render() {
+  const selected=records.filter(r=>$('filter').value==='전체'||r.category===$('filter').value);
+  $('records').replaceChildren(...selected.map(card));
+  if(!selected.length){const p=document.createElement('p');p.className='empty';p.textContent=allowed?'아직 기록이 없어요. 첫 소식을 남겨 주세요.':'로그인 후 공동 기록을 확인할 수 있어요.';$('records').append(p);}
+  const todos=records.filter(r=>r.status!=='완료');$('todoList').replaceChildren(...todos.map(card));
+  if(!todos.length){const p=document.createElement('p');p.className='empty';p.textContent=allowed?'남은 할 일이 없어요. 새 계획을 함께 남겨 보세요.':'로그인하면 우리 할 일이 여기에 모여요.';$('todoList').append(p);}
+  const done=records.length-todos.length;$('counts').textContent=allowed?`${done} / ${records.length} 완료`:'로그인 후 표시';
+  $('progress').style.width=(records.length?done/records.length*100:0)+'%';
+}
+$('filter').onchange=render;$('cancelEdit').onclick=resetForm;
+$('recordForm').onsubmit=async e=>{
+  e.preventDefault();if(!allowed||saving||!auth.currentUser)return;
+  if(!navigator.onLine){message('오프라인입니다. 인터넷 연결 후 저장해 주세요. 입력 내용은 아직 공동 저장되지 않았습니다.',true);return;}
+  const epoch=generation,uid=auth.currentUser.uid,target=editing?{...editing}:null;
+  const values={};for(const key of ['title','body','category','status','date'])values[key]=$(key).value.trim();
+  values.amount=Number($('amount').value||0);
+  if(!values.title||!Number.isFinite(values.amount)||values.amount<0||values.amount>1e9)return;
+  saving=true;$('save').disabled=true;message('공동 저장 중… 이 화면을 닫지 마세요.');
+  try {
+    const ref=target?api.doc(db,'records',target.id):api.doc(api.collection(db,'records'));
+    await api.runTransaction(db,async tx=>{
+      if(epoch!==generation||!allowed)throw Error('권한이 변경되었습니다.');
+      const snap=await tx.get(ref);
+      if(target&&(!snap.exists()||snap.data().revision!==target.revision))throw Error('다른 사람이 이 기록을 수정했어요. 수정 취소 후 최신 기록을 열어 다시 반영해 주세요.');
+      tx.set(ref,{...values,revision:target?target.revision+1:1,updatedBy:uid,updatedAt:api.serverTimestamp()});
+    });
+    if(epoch===generation){resetForm();message('공동 저장 완료 · 두 사람이 같은 기록을 볼 수 있어요.');}
+  }catch(err){if(epoch===generation)message(err.message?.startsWith('다른 사람이')?err.message:'저장하지 못했습니다. 입력 내용을 유지했으니 연결과 권한을 확인한 뒤 다시 저장해 주세요.',true);}
+  finally{saving=false;$('save').disabled=!allowed;}
+};
+$('backup').onclick=()=>{
+  if(!allowed||!confirm('개인 기록을 이 기기에 파일로 내려받습니다. 공용 기기에서는 저장하지 마세요.'))return;
+  const blob=new Blob([JSON.stringify({format:'wedding-records-v2',exportedAt:new Date().toISOString(),records:records.map(({updatedBy,...r})=>r)},null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`wedding-${localDate()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+window.addEventListener('offline',()=>message('인터넷 연결이 끊겼어요. 화면의 기록은 마지막으로 불러온 내용입니다. 새 입력은 아직 저장되지 않았습니다.',true));
+window.addEventListener('online',()=>message('인터넷에 다시 연결되었습니다. 공동 저장 완료 여부를 확인해 주세요.'));
+window.addEventListener('beforeunload',e=>{if(saving||$('title').value||$('body').value){e.preventDefault();e.returnValue='';}});
+resetForm();render();
+async function boot(){
+  if(!cloudConfig){$('connection').textContent='공동 저장 설정 중';message('공동 저장은 아직 준비 중이에요. 지금은 준비 가이드와 기존 계산기를 이용해 주세요.');return;}
+  try {
+    const base='https://www.gstatic.com/firebasejs/12.4.0/';
+    const [app,a,f,fn]=await Promise.all(['firebase-app.js','firebase-auth.js','firebase-firestore.js','firebase-functions.js'].map(x=>import(base+x)));
+    api={...a,...f,...fn};const instance=app.initializeApp(cloudConfig);auth=a.getAuth(instance);
+    db=f.initializeFirestore(instance,{localCache:f.memoryLocalCache()});functions=fn.getFunctions(instance,'asia-northeast3');
+    await a.setPersistence(auth,a.inMemoryPersistence);
+    $('login').disabled=false;$('connection').textContent='로그인 전';
+    $('login').onclick=async()=>{try{await a.signInWithPopup(auth,new a.GoogleAuthProvider());}catch{message('로그인이 완료되지 않았습니다. 팝업 허용과 로그인 계정을 확인해 주세요.',true);}};
+    $('signout').onclick=async()=>{generation++;stopMember?.();stopMember=null;clearPrivate();await a.signOut(auth);message('로그아웃했습니다. 화면의 개인 기록을 비웠어요.');};
+    a.onAuthStateChanged(auth,user=>{
+      const epoch=++generation;stopMember?.();stopMember=null;clearPrivate();$('signout').hidden=!user;
+      if(!user){$('connection').textContent='로그인 전';return;}
+      $('connection').textContent='권한 확인 중';
+      stopMember=f.onSnapshot(f.doc(db,'members',user.uid),member=>{
+        if(epoch!==generation)return;
+        if(!member.exists()||!user.emailVerified){clearPrivate();$('connection').textContent='접근 권한 필요';message('이 계정에는 공동 기록 접근 권한이 없습니다. 허용된 두 사람의 계정으로 로그인해 주세요.',true);return;}
+        if(allowed)return;allowed=true;$('loginPanel').hidden=true;$('save').disabled=false;$('backup').disabled=false;$('connection').textContent='둘만의 공동 공간';
+        stopRecords=f.onSnapshot(f.query(f.collection(db,'records'),f.orderBy('updatedAt','desc'),f.limit(500)),{includeMetadataChanges:true},snapshot=>{
+          if(epoch!==generation)return;records=snapshot.docs.map(d=>({id:d.id,...d.data()}));render();
+          if(!saving)message(snapshot.metadata.fromCache?'연결 확인 중 · 마지막으로 불러온 기록입니다.':'최신 공동 기록을 불러왔어요. (최근 500건)');
+        },()=>{clearPrivate();message('공동 기록을 불러올 수 없습니다. 접근 권한과 연결 상태를 확인해 주세요.',true);});
+      },()=>{clearPrivate();message('접근 권한을 확인하지 못했습니다.',true);});
+    });
+  }catch{$('connection').textContent='연결 실패';message('공동 저장 연결에 실패했습니다. 인터넷과 서비스 설정을 확인해 주세요.',true);}
+}
+boot();
