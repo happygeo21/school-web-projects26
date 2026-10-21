@@ -2,9 +2,9 @@
 
 ## 현재 운영 결정
 
-사용자는 Firebase 공동 저장만 우선 사용하기로 선택했다. Spark 요금제를 유지하고 Blaze 결제 연결과 Cloud Functions 배포는 보류한다. Notion 전용 연결 생성은 완료했으나 자동 전송은 비활성 상태다.
+사용자는 비용이 발생하지 않는 두 번째 방식으로 변경하도록 승인했다. Firebase Spark 공동 저장을 유지하고 Cloudflare Workers Free의 `wedding-notion-private-sync`로 노션 전송을 연결한다. Google 결제 계정과 Blaze·Cloud Functions·Secret Manager는 사용하지 않는다. 전송은 선택한 기록의 버튼으로 실행하는 단방향 방식이다.
 
-노션 토큰의 Secret Manager 등록과 API 활성화/약관 동의는 승인받았다. 실제 콘솔에서 Secret Manager API가 결제 계정이 연결된 프로젝트를 요구하는 것을 확인해 결제 연결을 취소했다. 따라서 토큰은 읽거나 복사하지 않았고 비밀 저장소 등록은 미완료다. 추가 승인을 기다리는 상태가 아니라 현재 무과금 운영 선택에 따른 보류다.
+이전 Secret Manager 시도는 결제 계정 요구로 중단했다. 이후 별도로 Cloudflare 공식 배포 권한과 전용 서버 비밀 환경변수 저장을 승인받았다. 현재 전용 노션 토큰은 Cloudflare `WEDDING_NOTION_TOKEN` Secret에 암호화 저장하고 배포했다. 원문은 채팅·GitHub·노션 본문·로그·로컬 파일에 저장하지 않았다.
 
 ## 실제 설정한 항목
 
@@ -31,9 +31,21 @@
 
 Web 앱 식별자: `1:499305995229:web:8ae8f00c41b34849cfb434`. Firebase Console 프로젝트 설정에서 공개 설정 객체 전체를 확인한다.
 
-현재 `cloudConfig`는 실제 프로젝트를 사용하고 `notionEnabled=false`로 서버 전송만 비활성화했다.
+현재 `cloudConfig`는 실제 프로젝트를 사용한다. `notionEndpoint`는 `https://wedding-notion-private-sync.ksoundmin.workers.dev/export`이며 `notionEnabled=true`로 실제 전송을 사용한다.
 
-## Notion 서버 연동
+## Cloudflare 무료 Notion 전송 (현재)
+
+- Workers 대시보드에서 무료 일일 요청 100,000회, 기존 Worker와 새 Worker가 각각 존재함을 확인했다. 기존 학교용 Worker는 변경하지 않았다.
+- SQLite Durable Object를 바인딩해 전송 상태와 중복 방지 이력을 직렬화한다. 본문·이메일·토큰은 저장하지 않는다.
+- 실제 서버에서 비로그인 401, 잘못된 인증 403, 다른 Origin 403 확인.
+- 운영 Pages에서 실제 Google 로그인 → 기존 개인정보 없는 시험 기록 저장 → 노션 생성 성공 확인. 같은 버전 다시 전송 시 `already-sent` 안내로 중복 차단. 기록 수정 후 다시 전송해 동일 Notion 페이지가 갱신됨을 별도 Notion 커넥터 조회로 확인. 해당 제목 접두어 SQL 결과는 1건, page ID는 `400abbdc-ebdc-81cc-9281-f4dab369c236`로 유지됐다.
+- 실제 무료 한도를 소진하는 검사는 하지 않았다. 일일 200회/6초 간격/UTC 초기화는 모의 테스트로 검증했다. 두 번째 계정 실제 로그인은 여전히 소유자 확인이 필요하다.
+- 모의 테스트 8개 통과: 접근 차단, 동시 중복 방지/수정 PATCH, stale revision, 불확실 응답 잠금, 일일 200회/6초 간격/초기화, 무료 한도 및 서버 오류, CORS, 긴 Unicode 매핑.
+- 상세 제한·복구·배포는 [worker/README.md](worker/README.md). 한도 도달 시 중단하며 유료 플랜으로 전환하는 코드는 없다.
+
+## Cloud Functions 준비 코드 (미사용 이력)
+
+아래는 이전 유료 서버 방식의 준비 이력이다. 현재 배포 대상으로 사용하지 않는다. 실제 운영 서버와 비밀키는 위 Cloudflare 방식이다.
 
 - 연결된 ChatGPT Notion 플러그인 권한은 자체 서버 토큰이 아니다. 토큰을 추출하거나 재사용하지 않는다.
 - 사용자 승인 후 `Wedding Planner · Private Sync` 전용 integration을 생성했다. 기존 Wedding Journal DB만 수동 선택해 연결했으며 개인 사용자 정보·댓글·에이전트 기능은 사용하지 않는다. 토큰은 Google Secret Manager의 `WEDDING_NOTION_TOKEN`에 등록할 예정이며 현재 등록 승인/배포 대기다. 채팅·GitHub·페이지 본문에 붙여넣지 않는다.
@@ -57,6 +69,7 @@ Web 앱 식별자: `1:499305995229:web:8ae8f00c41b34849cfb434`. Firebase Console
 ## 검증 범위
 
 - 완료: 정적 화면/모바일/메뉴, Google 실제 로그인, Firebase 실제 생성/수정, 두 세션 반영, 오래된 revision 저장 충돌 차단, 로그아웃 시 데이터 제거, 비로그인 저장/백업 비활성화, 구문 검사, Notion 매핑/긴 텍스트 분할 2개 테스트, 익명 서버 접근 거부 및 두 번째 허용 이메일/목록 밖 이메일의 규칙 시뮬레이션.
-- 미완료: 두 번째 계정 소유자의 실제 로그인, 실제 오프라인 저장 시험, 운영 Notion 서버 전송. 모든 Rules 입력 조합을 망라한 검사는 수행하지 않았다. 준비 코드와 실제 검증 결과를 구분한다.
+- 현재 추가 완료: Cloudflare 무료 서버와 암호화 비밀키 등록, 실제 Notion 생성·중복 차단·동일 페이지 수정 반영, 비로그인/잘못된 인증/다른 Origin 서버 거부, Worker 모의 테스트 8개.
+- 미완료: 두 번째 계정 소유자의 실제 로그인, 실제 오프라인 저장 시험, 실제 한도 소진 시험. 모든 Rules 입력 조합을 망라한 검사는 수행하지 않았다. 준비 코드와 실제 검증 결과를 구분한다.
 
 공식 참고: [Firebase Auth와 Rules](https://firebase.google.com/docs/rules/rules-and-auth), [Cloud Functions 시작](https://firebase.google.com/docs/functions/get-started), [Notion 페이지 생성](https://developers.notion.com/reference/post-page).

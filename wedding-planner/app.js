@@ -121,7 +121,12 @@ async function boot(){
         stopRecords=f.onSnapshot(f.query(f.collection(db,'records'),f.orderBy('updatedAt','desc'),f.limit(500)),{includeMetadataChanges:true},snapshot=>{
           if(epoch!==generation)return;records=snapshot.docs.map(d=>({id:d.id,...d.data()}));render();
           if(!saving)message(snapshot.metadata.fromCache?'연결 확인 중 · 마지막으로 불러온 기록입니다.':'최신 공동 기록을 불러왔어요. (최근 500건)');
-        },()=>{clearPrivate();message('공동 기록을 불러올 수 없습니다. 접근 권한과 연결 상태를 확인해 주세요.',true);});
+        },error=>{
+          if(error.code==='resource-exhausted'){
+            stopRecords?.();stopRecords=null;$('save').disabled=true;$('connection').textContent='무료 한도 도달';
+            message('무료 읽기 한도에 도달해 공동 저장을 잠시 멈췄어요. 화면은 마지막으로 불러온 기록입니다. 작성 중인 내용은 복사해 보관하고 한도 초기화 후 새로고침해 주세요.',true);
+          }else{clearPrivate();message('공동 기록을 불러올 수 없습니다. 접근 권한과 연결 상태를 확인해 주세요.',true);}
+        });
       },()=>{clearPrivate();$('connection').textContent='접근 권한 필요';message('이 계정의 접근 권한을 확인하지 못했습니다. 허용된 두 사람의 Google 계정인지 확인해 주세요.',true);});
     });
   }catch{$('connection').textContent='연결 실패';message('공동 저장 연결에 실패했습니다. 인터넷과 서비스 설정을 확인해 주세요.',true);}
