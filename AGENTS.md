@@ -30,3 +30,8 @@ This repository file guides agents that load AGENTS.md. It does **not** grant No
 - Never place GitHub/Netlify/Notion tokens in tracked files, page descriptions, logs, or client HTML.
 
 Updated: 2026-10-19 (Asia/Seoul).
+
+## Image creation and teaching visuals
+- For exploratory image generation requests, consult [image-style-library/README.md](image-style-library/README.md) and suggest 3–4 appropriate, distinct visual styles with one recommended option, unless the user specifies a style or asks for immediate generation.
+- The 100 slash-keywords are style labels, not native ChatGPT commands. Prompt details, not the labels alone, produce images. The original full prompts and illustrations are on the [JJ Creative reference site](https://www.jjcreative.co.kr/lounge/imgcode).
+- The standalone [image-style-library/](image-style-library/) contains the searchable catalog, scoped AGENTS.md, and Notion reference. For geography lessons, verify substantive spatial/statistical facts.
