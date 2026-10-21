@@ -7,4 +7,6 @@ export const cloudConfig = {
   messagingSenderId: '499305995229',
   appId: '1:499305995229:web:8ae8f00c41b34849cfb434'
 };
-export const notionEnabled = false;
+export const notionEnabled = true;
+// Public endpoint; the Worker uses Firebase Rules and a server-only Notion secret.
+export const notionEndpoint = 'https://wedding-notion-private-sync.ksoundmin.workers.dev/export';
