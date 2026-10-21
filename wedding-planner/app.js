@@ -76,6 +76,7 @@ window.addEventListener('offline',()=>message('인터넷 연결이 끊겼어요.
 window.addEventListener('online',()=>message('인터넷에 다시 연결되었습니다. 공동 저장 완료 여부를 확인해 주세요.'));
 window.addEventListener('beforeunload',e=>{if(saving||$('title').value||$('body').value){e.preventDefault();e.returnValue='';}});
 resetForm();render();
+if(notionEnabled)$('notionStatus').textContent='기록별 ‘노션에 보내기’로 선택한 내용을 노션에 반영할 수 있어요. 노션에서 한 수정은 자동으로 돌아오지 않아요.';
 async function boot(){
   if(!cloudConfig){$('connection').textContent='공동 저장 설정 중';message('공동 저장은 아직 준비 중이에요. 지금은 준비 가이드와 기존 계산기를 이용해 주세요.');return;}
   try {
@@ -85,13 +86,18 @@ async function boot(){
     db=f.initializeFirestore(instance,{localCache:f.memoryLocalCache()});functions=fn.getFunctions(instance,'asia-northeast3');
     await a.setPersistence(auth,a.inMemoryPersistence);
     $('login').disabled=false;$('connection').textContent='로그인 전';
-    $('login').onclick=async()=>{try{await a.signInWithPopup(auth,new a.GoogleAuthProvider());}catch{message('로그인이 완료되지 않았습니다. 팝업 허용과 로그인 계정을 확인해 주세요.',true);}};
+    $('login').onclick=async()=>{
+      $('login').disabled=true;message('Google 로그인 창을 여는 중이에요. 창에서 계정을 선택해 주세요.');
+      try{await a.signInWithPopup(auth,new a.GoogleAuthProvider());}
+      catch(error){message(error.code==='auth/unauthorized-domain'?'이 주소는 아직 로그인 허용 도메인이 아닙니다. 설정을 확인해 주세요.':'로그인이 완료되지 않았습니다. 팝업 허용과 로그인 계정을 확인해 주세요.',true);}
+      finally{$('login').disabled=false;}
+    };
     $('signout').onclick=async()=>{generation++;stopMember?.();stopMember=null;clearPrivate();await a.signOut(auth);message('로그아웃했습니다. 화면의 개인 기록을 비웠어요.');};
     a.onAuthStateChanged(auth,user=>{
       const epoch=++generation;stopMember?.();stopMember=null;clearPrivate();$('signout').hidden=!user;
       if(!user){$('connection').textContent='로그인 전';return;}
       $('connection').textContent='권한 확인 중';
-      stopMember=f.onSnapshot(f.doc(db,'members',user.uid),member=>{
+      stopMember=f.onSnapshot(f.doc(db,'access','config'),member=>{
         if(epoch!==generation)return;
         if(!member.exists()||!user.emailVerified){clearPrivate();$('connection').textContent='접근 권한 필요';message('이 계정에는 공동 기록 접근 권한이 없습니다. 허용된 두 사람의 계정으로 로그인해 주세요.',true);return;}
         if(allowed)return;allowed=true;$('loginPanel').hidden=true;$('save').disabled=false;$('backup').disabled=false;$('connection').textContent='둘만의 공동 공간';
@@ -99,7 +105,7 @@ async function boot(){
           if(epoch!==generation)return;records=snapshot.docs.map(d=>({id:d.id,...d.data()}));render();
           if(!saving)message(snapshot.metadata.fromCache?'연결 확인 중 · 마지막으로 불러온 기록입니다.':'최신 공동 기록을 불러왔어요. (최근 500건)');
         },()=>{clearPrivate();message('공동 기록을 불러올 수 없습니다. 접근 권한과 연결 상태를 확인해 주세요.',true);});
-      },()=>{clearPrivate();message('접근 권한을 확인하지 못했습니다.',true);});
+      },()=>{clearPrivate();$('connection').textContent='접근 권한 필요';message('이 계정의 접근 권한을 확인하지 못했습니다. 허용된 두 사람의 Google 계정인지 확인해 주세요.',true);});
     });
   }catch{$('connection').textContent='연결 실패';message('공동 저장 연결에 실패했습니다. 인터넷과 서비스 설정을 확인해 주세요.',true);}
 }

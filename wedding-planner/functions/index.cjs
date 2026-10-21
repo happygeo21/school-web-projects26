@@ -9,7 +9,8 @@ const dataSource='c5124da9-baac-4670-85ff-f355c192d5b7';
 // Explicit export: the connector's session is never reused as a server credential.
 exports.exportWeddingRecord=onCall({region:'asia-northeast3',secrets:[token],maxInstances:1,concurrency:1,timeoutSeconds:60,cors:['https://happygeo21.github.io']},async request=>{
   if(!request.auth||request.auth.token.email_verified!==true)throw new HttpsError('unauthenticated','Login required');
-  if(!(await db.doc(`members/${request.auth.uid}`).get()).exists)throw new HttpsError('permission-denied','Members only');
+  const access=await db.doc('access/config').get();
+  if(request.auth.token.firebase?.sign_in_provider!=='google.com'||!access.data()?.emails?.includes(request.auth.token.email))throw new HttpsError('permission-denied','Members only');
   const {id,revision}=request.data||{};
   if(typeof id!=='string'||! /^[A-Za-z0-9_-]{1,128}$/.test(id)||!Number.isInteger(revision))throw new HttpsError('invalid-argument','Invalid record');
   const ref=db.doc(`records/${id}`),sync=db.doc(`notionSync/${id}`);
