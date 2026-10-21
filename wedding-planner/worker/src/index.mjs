@@ -1,4 +1,5 @@
 // No service-account key: Firestore checks the caller's Firebase ID token and existing Rules.
+const MAPPING_VERSION = 2;
 const json = (status, code, extra = {}) => Response.json({code, ...extra}, {
   status, headers: {'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff'}
 });
@@ -36,15 +37,23 @@ export function notionProperties(r) {
   const status = {'할 일':'확인 필요','진행 중':'문의 중','완료':'확정'}[r.status];
   if (!status || !['호텔','가족 일정','예산','혼인신고','신혼집','촬영','기타'].includes(r.category) ||
       typeof r.title !== 'string' || !r.title || r.title.length > 160 ||
-      typeof r.body !== 'string' || r.body.length > 4000 || !/^\d{4}-\d{2}-\d{2}$/.test(r.date)) throw Error('Invalid record');
+      typeof r.body !== 'string' || r.body.length > 4000 || !/^\d{4}-\d{2}-\d{2}$/.test(r.date) ||
+      !Number.isFinite(r.amount) || r.amount < 0 || r.amount > 1e9 ||
+      ('amountKind' in r && !['미분류','예상','견적','계약금액','실제지출'].includes(r.amountKind)) ||
+      ('nextAction' in r && (typeof r.nextAction !== 'string' || r.nextAction.length > 500)) ||
+      ('dueDate' in r && (typeof r.dueDate !== 'string' || (r.dueDate !== '' && !/^\d{4}-\d{2}-\d{2}$/.test(r.dueDate))))) throw Error('Invalid record');
   return {'기록 제목':{title:rich(r.title)}, '확인한 내용':{rich_text:rich(r.body)},
-    '분야':{select:{name:category}}, '상태':{status:{name:status}}, '일자':{date:{start:r.date}}};
+    '분야':{select:{name:category}}, '상태':{status:{name:status}}, '일자':{date:{start:r.date}},
+    '관련 금액':{number:r.amount}, '금액 구분':{select:{name:r.amountKind || '미분류'}},
+    ...('nextAction' in r ? {'다음 행동':{rich_text:rich(r.nextAction)}} : {}),
+    ...('dueDate' in r ? {'예정일':{date:r.dueDate ? {start:r.dueDate} : null}} : {})};
 }
 function decodeDocument(doc) {
   const out = {};
   for (const [key,value] of Object.entries(doc.fields || {})) {
     if ('stringValue' in value) out[key] = value.stringValue;
     if ('integerValue' in value) out[key] = Number(value.integerValue);
+    if ('doubleValue' in value) out[key] = value.doubleValue;
   }
   return out;
 }
@@ -108,7 +117,7 @@ export class WeddingSync {
         const key = `record:${id}`, storage = this.ctx.storage;
         const previous = await storage.get(key) || {};
         if (previous.state === 'sending' || previous.state === 'uncertain') return json(409,'check-notion');
-        if (previous.state === 'done' && previous.revision === revision) return json(200,'already-sent');
+        if (previous.state === 'done' && previous.revision === revision && previous.mappingVersion === MAPPING_VERSION) return json(200,'already-sent');
         if (previous.revision > revision) return json(409,'record-changed');
         const now = Date.now(), day = new Date(now).toISOString().slice(0,10);
         const usage = await storage.get('usage') || {};
@@ -117,7 +126,7 @@ export class WeddingSync {
         if (now - (usage.lastAttempt || 0) < 6000) return json(429,'slow-down');
         // Persist intent before the external side effect. Ambiguous results never retry automatically.
         await storage.put({usage:{day,count:count+1,lastAttempt:now},
-          [key]:{state:'sending',revision,pageId:previous.pageId || null}});
+          [key]:{state:'sending',revision,mappingVersion:MAPPING_VERSION,pageId:previous.pageId || null}});
         try {
           const result = await fetch('https://api.notion.com/v1/pages' + (previous.pageId ? `/${previous.pageId}` : ''), {
             method:previous.pageId ? 'PATCH' : 'POST', signal:AbortSignal.timeout(15000),
@@ -125,15 +134,15 @@ export class WeddingSync {
             body:JSON.stringify({...(previous.pageId ? {} : {parent:{type:'data_source_id',data_source_id:this.env.NOTION_DATA_SOURCE}}), properties})
           });
           if (!result.ok) {
-            await storage.put(key,{state:result.status < 500 ? 'rejected' : 'uncertain',revision,pageId:previous.pageId || null});
+            await storage.put(key,{state:result.status < 500 ? 'rejected' : 'uncertain',revision,mappingVersion:MAPPING_VERSION,pageId:previous.pageId || null});
             return json(503,result.status < 500 ? 'notion-rejected' : 'check-notion');
           }
           const page = await result.json();
           if (!/^[0-9a-f-]{32,36}$/i.test(page.id || '')) throw Error('Missing page identity');
-          await storage.put(key,{state:'done',revision,pageId:page.id});
+          await storage.put(key,{state:'done',revision,mappingVersion:MAPPING_VERSION,pageId:page.id});
           return json(200,'sent');
         } catch {
-          await storage.put(key,{state:'uncertain',revision,pageId:previous.pageId || null});
+          await storage.put(key,{state:'uncertain',revision,mappingVersion:MAPPING_VERSION,pageId:previous.pageId || null});
           return json(503,'check-notion');
         }
       });

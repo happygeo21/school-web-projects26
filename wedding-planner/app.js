@@ -4,13 +4,24 @@ let api, auth, db, allowed = false, records = [], stopRecords, stopMember;
 let editing = null, generation = 0, saving = false, exporting = false;
 const localDate = () => new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date());
 const message = (text, error = false) => { $('notice').textContent=text; $('notice').classList.toggle('error',error); };
+const categoryLabels={'호텔':'가족 식사·호텔','가족 일정':'가족 일정','촬영':'웨딩스냅','신혼집':'신혼집 구매','예산':'공통 예산','혼인신고':'혼인신고','기타':'기타'};
+const areas={'식사':['호텔','가족 일정'],'스냅':['촬영'],'집':['신혼집']};
+const inArea=(r,area)=>area==='전체'||(areas[area]?areas[area].includes(r.category):r.category===area);
+const examples={
+  '호텔':['예: 가족 식사 견적을 받았어요','룸·메뉴·이용 시간·취소 조건 등 확인한 사실을 적어요.'],
+  '촬영':['예: 봄 웨딩스냅 후보를 비교했어요','촬영 방식·장소·구성·우천 대안·보정 범위를 적어요.'],
+  '신혼집':['예: 신혼집 후보를 방문했어요','후보 별칭·장단점·확인한 조건을 적어요. 정확한 주소·계약서는 별도 보관해요.']
+};
+function updateExamples(){const example=examples[$('category').value]||['예: 함께 결정한 내용을 남겨요','확인한 사실과 아직 정하지 않은 부분을 나눠 적어 주세요.'];$('title').placeholder=example[0];$('body').placeholder=example[1];}
 function tab(name) {
   document.querySelectorAll('.view').forEach(el => el.hidden=el.id!==name);
   document.querySelectorAll('[data-tab]').forEach(el => el.setAttribute('aria-selected',String(el.dataset.tab===name)));
 }
 document.querySelectorAll('[data-tab]').forEach(el=>el.onclick=()=>tab(el.dataset.tab));
-document.querySelectorAll('[data-template]').forEach(el=>el.onclick=()=>{tab('journal');$('category').value=el.dataset.template;$('title').focus();});
-function resetForm() { editing=null; $('recordForm').reset(); $('date').value=localDate();$('formTitle').textContent='새 기록 남기기';$('cancelEdit').hidden=true; }
+document.querySelectorAll('[data-template]').forEach(el=>el.onclick=()=>{tab('journal');$('category').value=el.dataset.template;updateExamples();$('title').focus();});
+document.querySelectorAll('[data-area]').forEach(el=>el.onclick=()=>{tab('journal');$('filter').value=el.dataset.area;render();$('filter').focus();});
+$('category').onchange=updateExamples;
+function resetForm() { editing=null; $('recordForm').reset(); $('date').value=localDate();$('formTitle').textContent='새 기록 남기기';$('cancelEdit').hidden=true;updateExamples(); }
 function clearPrivate() {
   stopRecords?.();stopRecords=null;records=[];allowed=false;resetForm();render();
   $('save').disabled=true;$('backup').disabled=true;$('loginPanel').hidden=false;
@@ -18,19 +29,22 @@ function clearPrivate() {
 function button(text,fn) { const el=document.createElement('button');el.type='button';el.textContent=text;el.onclick=fn;return el; }
 function card(r) {
   const el=document.createElement('article');el.className='record';
-  const meta=document.createElement('div');meta.className='meta';meta.textContent=`${r.date} · ${r.category} · ${r.status}`;
+  const meta=document.createElement('div');meta.className='meta';meta.textContent=`${r.date} · ${categoryLabels[r.category]||r.category} · ${r.status}`;
   const title=document.createElement('h3');title.textContent=r.title;
   const body=document.createElement('p');body.textContent=r.body;
   el.append(meta,title,body);
-  if(r.amount){const amount=document.createElement('p');amount.textContent=`관련 금액 ${r.amount.toLocaleString('ko-KR')}원`;el.append(amount);}
+  if(r.amount||(r.amountKind&&r.amountKind!=='미분류')){const amount=document.createElement('p');amount.className='money';amount.textContent=`${r.amountKind||'미분류'} · ${r.amount.toLocaleString('ko-KR')}원`;el.append(amount);}
+  if(r.nextAction){const next=document.createElement('p');next.className='next-action';next.textContent=`다음 행동 · ${r.nextAction}`;el.append(next);}
+  if(r.dueDate){const due=document.createElement('p');due.className='due';due.textContent=`예정일 · ${r.dueDate}${r.status!=='완료'&&r.dueDate<localDate()?' · 일정 다시 확인':''}`;el.append(due);}
   const actions=document.createElement('div');actions.className='actions';
   actions.append(button('수정하기',()=>{
     if(!allowed)return;editing={id:r.id,revision:r.revision};
     for(const key of ['title','body','category','status','date','amount'])$(key).value=r[key];
+    $('amountKind').value=r.amountKind||'미분류';$('nextAction').value=r.nextAction||'';$('dueDate').value=r.dueDate||'';updateExamples();
     $('formTitle').textContent='기록 수정하기';$('cancelEdit').hidden=false;tab('journal');$('title').focus();
   }));
   if(notionEnabled)actions.append(button('노션에 보내기',async()=>{
-    if(!allowed||exporting||!auth.currentUser||!confirm('이 기록의 제목·내용·날짜·분야·상태를 Cloudflare 전송 서버를 거쳐 노션 공동 기록 DB로 보낼까요? 관련 금액은 보내지 않습니다.'))return;
+    if(!allowed||exporting||!auth.currentUser||!confirm('이 기록의 제목·내용·날짜·분야·상태와 관련 금액·금액 구분·다음 행동·예정일을 Cloudflare 전송 서버를 거쳐 노션 공동 기록 DB로 보낼까요?'))return;
     const epoch=generation;
     exporting=true;message('노션으로 보내는 중… 완료 표시를 기다려 주세요.');
     try{
@@ -55,7 +69,12 @@ function card(r) {
   el.append(actions);return el;
 }
 function render() {
-  const selected=records.filter(r=>$('filter').value==='전체'||r.category===$('filter').value);
+  const selected=records.filter(r=>inArea(r,$('filter').value));
+  for(const [area,categories] of Object.entries(areas)){
+    const items=records.filter(r=>categories.includes(r.category));
+    const count=document.querySelector(`[data-count="${area}"]`);
+    if(count)count.textContent=allowed?`${items.length}건 · 남은 일 ${items.filter(r=>r.status!=='완료').length}개`:'로그인 후 기록 확인';
+  }
   $('records').replaceChildren(...selected.map(card));
   if(!selected.length){const p=document.createElement('p');p.className='empty';p.textContent=allowed?'아직 기록이 없어요. 첫 소식을 남겨 주세요.':'로그인 후 공동 기록을 확인할 수 있어요.';$('records').append(p);}
   const todos=records.filter(r=>r.status!=='완료');$('todoList').replaceChildren(...todos.map(card));
@@ -68,7 +87,7 @@ $('recordForm').onsubmit=async e=>{
   e.preventDefault();if(!allowed||saving||!auth.currentUser)return;
   if(!navigator.onLine){message('오프라인입니다. 인터넷 연결 후 저장해 주세요. 입력 내용은 아직 공동 저장되지 않았습니다.',true);return;}
   const epoch=generation,uid=auth.currentUser.uid,target=editing?{...editing}:null;
-  const values={};for(const key of ['title','body','category','status','date'])values[key]=$(key).value.trim();
+  const values={};for(const key of ['title','body','category','status','date','amountKind','nextAction','dueDate'])values[key]=$(key).value.trim();
   values.amount=Number($('amount').value||0);
   if(!values.title||!Number.isFinite(values.amount)||values.amount<0||values.amount>1e9)return;
   saving=true;$('save').disabled=true;message('공동 저장 중… 이 화면을 닫지 마세요.');
@@ -93,7 +112,7 @@ window.addEventListener('offline',()=>message('인터넷 연결이 끊겼어요.
 window.addEventListener('online',()=>message('인터넷에 다시 연결되었습니다. 공동 저장 완료 여부를 확인해 주세요.'));
 window.addEventListener('beforeunload',e=>{if(saving||$('title').value||$('body').value){e.preventDefault();e.returnValue='';}});
 resetForm();render();
-if(notionEnabled&&notionEndpoint)$('notionStatus').textContent='기록별 ‘노션에 보내기’로 선택한 내용만 반영해요. 두 사람 합계 하루 200회까지, 같은 버전은 중복 생성하지 않아요. 노션의 수정은 자동으로 돌아오지 않아요.';
+if(notionEnabled&&notionEndpoint)$('notionStatus').textContent='저장 후 ‘노션에 보내기’를 누르면 관련 금액·금액 구분·다음 행동·예정일까지 반영해요. 예전에 보낸 기록도 다시 누르면 금액이 추가돼요. 노션의 수정은 자동으로 돌아오지 않아요.';
 async function boot(){
   if(!cloudConfig){$('connection').textContent='공동 저장 설정 중';message('공동 저장은 아직 준비 중이에요. 지금은 준비 가이드와 기존 계산기를 이용해 주세요.');return;}
   try {

@@ -1,8 +1,8 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import worker, {WeddingSync,notionProperties} from '../src/index.mjs';
-const record = {title:'연결 확인',body:'개인정보 없는 시험 기록',date:'2026-10-21',category:'기타',status:'완료',revision:1};
-const doc = r => ({fields:Object.fromEntries(Object.entries(r).map(([k,v])=>[k,typeof v==='number'?{integerValue:String(v)}:{stringValue:v}]))});
+const record = {title:'연결 확인',body:'개인정보 없는 시험 기록',date:'2026-10-21',category:'기타',status:'완료',revision:1,amount:123450};
+const doc = r => ({fields:Object.fromEntries(Object.entries(r).map(([k,v])=>[k,typeof v==='number'?(Number.isInteger(v)?{integerValue:String(v)}:{doubleValue:v}):{stringValue:v}]))});
 const pageId = '11111111-2222-3333-4444-555555555555';
 function fixture(t,initial={}) {
   const data = new Map(Object.entries(initial)); let queue = Promise.resolve();
@@ -81,10 +81,25 @@ test('IAM OAuth, wrong-project, unverified, non-Google and expired tokens never 
   // Well-shaped claims alone never grant access: the downstream Firestore denial is preserved.
   assert.equal((await send(jwt({}))).status,403);assert.equal(forwards,1);
 });
-test('mapping preserves long Unicode text, maps categories/status and excludes money',()=>{
+test('mapping preserves long Unicode text, categories, zero/money and planning fields',()=>{
   const body='😀'.repeat(2000);const result=notionProperties({...record,body,category:'신혼집',amount:100});
   assert.equal(result['분야'].select.name,'화정동 주택');assert.equal(result['상태'].status.name,'확정');
   assert.equal(result['확인한 내용'].rich_text.map(p=>p.text.content).join(''),body);
   assert.ok(result['확인한 내용'].rich_text.every(p=>p.text.content.length<=2000));
-  assert.ok(!JSON.stringify(result).includes('amount'));
+  assert.equal(result['관련 금액'].number,100);
+  const detailed=notionProperties({...record,amount:0,amountKind:'견적',nextAction:'비교 견적 확인',dueDate:'2027-03-01'});
+  assert.equal(detailed['관련 금액'].number,0);assert.equal(detailed['금액 구분'].select.name,'견적');
+  assert.equal(detailed['다음 행동'].rich_text[0].text.content,'비교 견적 확인');assert.equal(detailed['예정일'].date.start,'2027-03-01');
+  assert.equal(notionProperties({...record,dueDate:''})['예정일'].date,null);
+  assert.ok(!('다음 행동' in notionProperties(record)));
+  for(const amount of [NaN,Infinity,-1,1e9+1])assert.throws(()=>notionProperties({...record,amount}));
+});
+test('old completed mapping backfills money to the same page without a new revision or duplicate',async t=>{
+  const f=fixture(t,{'record:record-one':{state:'done',revision:1,pageId}});
+  f.control.record.amount=98765.5;
+  assert.equal((await (await f.send()).json()).code,'sent');
+  const call=f.calls.find(c=>c.url.includes('api.notion.com'));
+  assert.equal(call.options.method,'PATCH');assert.ok(call.url.endsWith(pageId));
+  assert.equal(JSON.parse(call.options.body).properties['관련 금액'].number,98765.5);
+  assert.equal((await (await f.send()).json()).code,'already-sent');
 });
