@@ -102,3 +102,9 @@ Firebase (필요한 프로젝트만)
 > `happygeo/student.html은 유지하고 캐릭터 이름과 결과 화면만 업데이트해줘.`
 
 이 방식으로 요청하면 현재 GitHub 파일을 기준으로 수정하고, 변경 내용은 Commit 기록으로 남기는 것을 원칙으로 합니다.
+
+## 이미지 제작 스타일 100
+
+- 🎨 [AI 이미지 스타일 100 — 검색형 라이브러리](./image-style-library/) (검색·키워드·교사용 프롬프트 구성)
+- [Notion 검색 색인](https://app.notion.com/p/400abbdcebdc81dcb60efaac72a3515d) · [원본 200개 프롬프트](https://www.jjcreative.co.kr/lounge/imgcode)
+- 이미지 제작 후보 3~4개 추천 지침: [`image-style-library/AGENTS.md`](./image-style-library/AGENTS.md). 원본 상세 프롬프트 및 예시 이미지는 저작권 존중을 위해 원 사이트로 안내합니다.
