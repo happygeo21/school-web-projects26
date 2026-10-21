@@ -12,6 +12,20 @@ async function readInput(request) {
   for(const chunk of chunks){bytes.set(chunk,at);at+=chunk.byteLength;}
   return new TextDecoder().decode(bytes);
 }
+function firebaseTokenShape(authorization,project) {
+  // Only Firebase ID tokens enter the REST path, never Google IAM OAuth access tokens.
+  // This is a format/claims filter. Firestore MUST still verify the signature and Rules.
+  const token=authorization?.match(/^Bearer ([A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)$/)?.[1];
+  if(!token||token.length>8000)return false;
+  try{
+    const decode=part=>JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(part.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0))));
+    const [header,claims]=token.split('.').slice(0,2).map(decode),now=Math.floor(Date.now()/1000);
+    return header.alg==='RS256' && claims.aud===project && claims.iss===`https://securetoken.google.com/${project}` &&
+      typeof claims.sub==='string' && claims.sub.length>0 && claims.sub.length<=128 &&
+      claims.email_verified===true && claims.firebase?.sign_in_provider==='google.com' &&
+      Number.isSafeInteger(claims.exp) && claims.exp>now && Number.isSafeInteger(claims.iat) && claims.iat<=now+60;
+  }catch{return false;}
+}
 const rich = value => {
   const chars = Array.from(value || ''), parts = [];
   for (let i = 0; i < chars.length; i += 900) parts.push({type:'text', text:{content:chars.slice(i,i+900).join('')}});
@@ -46,7 +60,7 @@ export default {
       'Access-Control-Max-Age':'600'
     }});
     else if (request.method !== 'POST') response = json(405,'method-not-allowed');
-    else if (!/^Bearer [A-Za-z0-9_.-]{20,8000}$/.test(request.headers.get('Authorization') || '')) response = json(401,'login-required');
+    else if (!firebaseTokenShape(request.headers.get('Authorization'),env.FIREBASE_PROJECT_ID)) response = json(401,'login-required');
     else if (!request.headers.get('Content-Type')?.startsWith('application/json')) response = json(415,'invalid-request');
     else if (!env.WEDDING_NOTION_TOKEN || !env.SYNC_STATE) response = json(503,'setup-required');
     else {

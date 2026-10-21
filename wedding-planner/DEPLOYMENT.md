@@ -37,10 +37,10 @@ Web 앱 식별자: `1:499305995229:web:8ae8f00c41b34849cfb434`. Firebase Console
 
 - Workers 대시보드에서 무료 일일 요청 100,000회, 기존 Worker와 새 Worker가 각각 존재함을 확인했다. 기존 학교용 Worker는 변경하지 않았다.
 - SQLite Durable Object를 바인딩해 전송 상태와 중복 방지 이력을 직렬화한다. 본문·이메일·토큰은 저장하지 않는다.
-- 실제 서버에서 비로그인 401, 잘못된 인증 403, 다른 Origin 403 확인.
+- 실제 서버에서 비로그인 401, 잘못된 인증 401, 다른 Origin 403 확인.
 - 운영 Pages에서 실제 Google 로그인 → 기존 개인정보 없는 시험 기록 저장 → 노션 생성 성공 확인. 같은 버전 다시 전송 시 `already-sent` 안내로 중복 차단. 기록 수정 후 다시 전송해 동일 Notion 페이지가 갱신됨을 별도 Notion 커넥터 조회로 확인. 해당 제목 접두어 SQL 결과는 1건, page ID는 `400abbdc-ebdc-81cc-9281-f4dab369c236`로 유지됐다.
 - 실제 무료 한도를 소진하는 검사는 하지 않았다. 일일 200회/6초 간격/UTC 초기화는 모의 테스트로 검증했다. 두 번째 계정 실제 로그인은 여전히 소유자 확인이 필요하다.
-- 모의 테스트 8개 통과: 접근 차단, 동시 중복 방지/수정 PATCH, stale revision, 불확실 응답 잠금, 일일 200회/6초 간격/초기화, 무료 한도 및 서버 오류, CORS, 긴 Unicode 매핑.
+- 모의 테스트 9개 통과: 접근 차단, 동시 중복 방지/수정 PATCH, stale revision, 불확실 응답 잠금, 일일 200회/6초 간격/초기화, 무료 한도 및 서버 오류, CORS, 긴 Unicode 매핑.
 - 상세 제한·복구·배포는 [worker/README.md](worker/README.md). 한도 도달 시 중단하며 유료 플랜으로 전환하는 코드는 없다.
 
 ## Cloud Functions 준비 코드 (미사용 이력)
@@ -69,7 +69,7 @@ Web 앱 식별자: `1:499305995229:web:8ae8f00c41b34849cfb434`. Firebase Console
 ## 검증 범위
 
 - 완료: 정적 화면/모바일/메뉴, Google 실제 로그인, Firebase 실제 생성/수정, 두 세션 반영, 오래된 revision 저장 충돌 차단, 로그아웃 시 데이터 제거, 비로그인 저장/백업 비활성화, 구문 검사, Notion 매핑/긴 텍스트 분할 2개 테스트, 익명 서버 접근 거부 및 두 번째 허용 이메일/목록 밖 이메일의 규칙 시뮬레이션.
-- 현재 추가 완료: Cloudflare 무료 서버와 암호화 비밀키 등록, 실제 Notion 생성·중복 차단·동일 페이지 수정 반영, 비로그인/잘못된 인증/다른 Origin 서버 거부, Worker 모의 테스트 8개.
+- 현재 추가 완료: Cloudflare 무료 서버와 암호화 비밀키 등록, 실제 Notion 생성·중복 차단·동일 페이지 수정 반영, 비로그인/잘못된 인증/다른 Origin 서버 거부, Worker 모의 테스트 9개.
 - 미완료: 두 번째 계정 소유자의 실제 로그인, 실제 오프라인 저장 시험, 실제 한도 소진 시험. 모든 Rules 입력 조합을 망라한 검사는 수행하지 않았다. 준비 코드와 실제 검증 결과를 구분한다.
 
 공식 참고: [Firebase Auth와 Rules](https://firebase.google.com/docs/rules/rules-and-auth), [Cloud Functions 시작](https://firebase.google.com/docs/functions/get-started), [Notion 페이지 생성](https://developers.notion.com/reference/post-page).

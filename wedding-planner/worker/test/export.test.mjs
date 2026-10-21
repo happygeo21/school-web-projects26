@@ -69,6 +69,18 @@ test('public endpoint denies absent auth and foreign origin; CORS only matches a
   const preflight=await worker.fetch(new Request('https://example/export',{method:'OPTIONS',headers:{Origin:env.ALLOWED_ORIGIN}}),env);
   assert.equal(preflight.status,204);
 });
+test('IAM OAuth, wrong-project, unverified, non-Google and expired tokens never reach storage',async()=>{
+  let forwards=0;const now=Math.floor(Date.now()/1000);
+  const env={ALLOWED_ORIGIN:'https://happygeo21.github.io',FIREBASE_PROJECT_ID:'test-project',WEDDING_NOTION_TOKEN:'test-placeholder',
+    SYNC_STATE:{idFromName:x=>x,get:()=>({fetch:async()=>{forwards++;return Response.json({code:'access-denied'},{status:403});}})}};
+  const claims={aud:'test-project',iss:'https://securetoken.google.com/test-project',sub:'test-user',email_verified:true,firebase:{sign_in_provider:'google.com'},exp:now+3600,iat:now};
+  const jwt=overrides=>[Buffer.from(JSON.stringify({alg:'RS256'})).toString('base64url'),Buffer.from(JSON.stringify({...claims,...overrides})).toString('base64url'),'fake-signature-for-test'].join('.');
+  const send=token=>worker.fetch(new Request('https://example/export',{method:'POST',headers:{Origin:env.ALLOWED_ORIGIN,Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({id:'test',revision:1})}),env);
+  for(const token of ['google-oauth-access-token',jwt({aud:'other-project'}),jwt({email_verified:false}),jwt({firebase:{sign_in_provider:'password'}}),jwt({exp:now-1})])assert.equal((await send(token)).status,401);
+  assert.equal(forwards,0);
+  // Well-shaped claims alone never grant access: the downstream Firestore denial is preserved.
+  assert.equal((await send(jwt({}))).status,403);assert.equal(forwards,1);
+});
 test('mapping preserves long Unicode text, maps categories/status and excludes money',()=>{
   const body='😀'.repeat(2000);const result=notionProperties({...record,body,category:'신혼집',amount:100});
   assert.equal(result['분야'].select.name,'화정동 주택');assert.equal(result['상태'].status.name,'확정');
