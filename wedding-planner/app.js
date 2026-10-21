@@ -18,8 +18,17 @@ function tab(name) {
   document.querySelectorAll('[data-tab]').forEach(el => el.setAttribute('aria-selected',String(el.dataset.tab===name)));
 }
 document.querySelectorAll('[data-tab]').forEach(el=>el.onclick=()=>tab(el.dataset.tab));
-document.querySelectorAll('[data-template]').forEach(el=>el.onclick=()=>{tab('journal');$('category').value=el.dataset.template;updateExamples();$('title').focus();});
-document.querySelectorAll('[data-area]').forEach(el=>el.onclick=()=>{tab('journal');$('filter').value=el.dataset.area;render();$('filter').focus();});
+document.querySelectorAll('[data-template]').forEach(el=>el.onclick=()=>{
+  if((editing||$('title').value||$('body').value||$('nextAction').value)&&!confirm('작성 중인 내용을 비우고 새 기록을 시작할까요? 아직 저장하지 않은 내용은 사라집니다.'))return;
+  resetForm();tab('journal');$('category').value=el.dataset.template;
+  $('filter').value=Object.keys(areas).find(area=>areas[area].includes(el.dataset.template))||'전체';
+  updateExamples();render();$('title').focus();
+});
+document.querySelectorAll('[data-area]').forEach(el=>el.onclick=()=>{
+  tab('journal');$('filter').value=el.dataset.area;
+  if(!editing&&!$('title').value&&!$('body').value&&!$('nextAction').value){$('category').value={'식사':'호텔','스냅':'촬영','집':'신혼집'}[el.dataset.area];updateExamples();}
+  render();$('filter').focus();
+});
 $('category').onchange=updateExamples;
 function resetForm() { editing=null; $('recordForm').reset(); $('date').value=localDate();$('formTitle').textContent='새 기록 남기기';$('cancelEdit').hidden=true;updateExamples(); }
 function clearPrivate() {

@@ -4,7 +4,13 @@ Firebase Spark 공동 저장 + Cloudflare Workers Free + SQLite Durable Object�
 
 ## 사용
 
-공동 기록에서 **노션에 보내기**를 누르면 현재 저장된 버전을 Wedding Journal DB에 반영합니다. 제목·내용·날짜·분야·상태만 보내며 금액은 보내지 않습니다. 노션 수정은 Firebase로 역전송되지 않습니다. 모든 기록의 무조건 자동 복사는 하지 않습니다.
+공동 기록에서 **노션에 보내기**를 누르면 현재 저장된 버전을 Wedding Journal DB에 반영합니다. 제목·내용·기록일·분야·상태·관련 금액(원)·금액 구분·다음 행동·예정일을 보냅니다. 노션 수정은 Firebase로 역전송되지 않습니다. 모든 기록의 무조건 자동 복사는 하지 않습니다.
+
+금액 구분은 미분류·예상·견적·계약금액·실제지출입니다. 금액 미정의 기존 0원을 실제 지출로 추정하지 않으며 견적과 계약금액·예약금·잔금을 합산하지 않습니다. 기존 Notion 분야 이름과 Firestore category 값은 보존하고 웹 화면만 가족 식사·웨딩스냅·신혼집 구매로 안내합니다.
+
+### 기존 전송 기록의 금액 보완
+
+`MAPPING_VERSION=2`를 전송 메타데이터에 저장합니다. 이전 버전에서 이미 보낸 revision도 새 매핑으로 한 번 PATCH하여 금액을 추가하며 기존 pageId를 유지합니다. 새 매핑까지 반영한 같은 revision은 재전송하지 않습니다. 기존 기록에 없는 nextAction/dueDate는 기존 노션 값을 덮어쓰지 않고, 새 양식에서 명시적으로 입력·비운 값만 반영합니다. 불확실 상태는 버전이 바뀌어도 자동 해제하지 않습니다.
 
 ## 비용 제한
 
@@ -24,7 +30,7 @@ Firebase Spark 공동 저장 + Cloudflare Workers Free + SQLite Durable Object�
 3. 서버가 읽은 원본만 전송합니다. 클라이언트가 바꾼 제목·내용을 믿지 않습니다. 현재 revision이 달라지면 거부합니다.
 4. 공개 Origin은 happygeo21.github.io로 제한합니다. Origin 검사는 보조 방어이며 실제 권한 경계는 Firestore Rules입니다.
 5. Notion 토큰은 전용 Worker의 **Secret** `WEDDING_NOTION_TOKEN`에만 암호화해 보관합니다. `.dev.vars`, `.env`, OAuth 로그인 파일, 토큰 출력은 공개 배포에 넣지 않습니다.
-6. Durable Object에는 노션 page ID·revision·상태·횟수만 저장합니다. 이메일·토큰·기록 본문은 저장하지 않습니다. Workers 로그와 추적은 비활성입니다. Cloudflare는 전송 처리자로 선택한 기록 및 일시적 로그인 인증값을 처리합니다.
+6. Durable Object에는 노션 page ID·revision·상태·횟수·전송 매핑 버전만 저장합니다. 이메일·토큰·기록 본문은 저장하지 않습니다. Workers 로그와 추적은 비활성입니다. Cloudflare는 전송 처리자로 선택한 기록 및 일시적 로그인 인증값을 처리합니다.
 7. 같은 버전은 중복 생성하지 않고 수정 버전은 같은 노션 페이지를 PATCH합니다. 네트워크/5xx/응답 해석 실패는 `uncertain`으로 잠가 자동 재시도를 차단합니다. 관리자 확인 없이 잠금을 해제하지 않습니다.
 
 ## 배포

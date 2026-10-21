@@ -93,6 +93,8 @@ test('mapping preserves long Unicode text, categories, zero/money and planning f
   assert.equal(notionProperties({...record,dueDate:''})['예정일'].date,null);
   assert.ok(!('다음 행동' in notionProperties(record)));
   for(const amount of [NaN,Infinity,-1,1e9+1])assert.throws(()=>notionProperties({...record,amount}));
+  assert.equal(notionProperties({...record,amount:1e9})['관련 금액'].number,1e9);
+  for(const bad of [{amountKind:'잘못된 구분'},{nextAction:'x'.repeat(501)},{dueDate:'not-a-date'}])assert.throws(()=>notionProperties({...record,...bad}));
 });
 test('old completed mapping backfills money to the same page without a new revision or duplicate',async t=>{
   const f=fixture(t,{'record:record-one':{state:'done',revision:1,pageId}});
