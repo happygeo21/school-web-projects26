@@ -10,7 +10,7 @@ export function createAttachments({endpoint,session,message}){
   try{const token=await s.user.getIdToken();if(!alive(s.generation))throw Error('로그아웃했습니다.');const headers={Authorization:`Bearer ${token}`,'X-Record-Id':r.id,'X-Record-Revision':String(r.revision)};
    if(opId)headers['X-Attachment-Id']=opId;if(file){headers['Content-Type']=file.type||'application/octet-stream';headers['X-File-Name']=encodeURIComponent(file.name);}
    const timeout=setTimeout(()=>controller.abort(),35000);let response;try{response=await fetch(base+'/attachments/'+path,{method:'POST',headers,body:file||undefined,signal:controller.signal});}finally{clearTimeout(timeout);}
-   if(!alive(s.generation))throw Error('로그아웃했습니다.');if(!response.ok){const result=await response.json();throw Error(errors[result.code]||'첨부를 불러오지 못했어요. 연결을 확인해 주세요.');}return response;
+   if(!alive(s.generation))throw Error('로그아웃했습니다.');if(!response.ok){const result=await response.json();throw Error(errors[result.code]||'첨부 연결 확인: '+result.code+' '+(result.stage||result.host||''));}return response;
   }finally{controllers.delete(controller);}
  }
  $('fileInput').onchange=async()=>{const s=current(),chosen=[...$('fileInput').files];$('fileInput').value='';if(chosen.length+pending.length>3){message('한 번에 파일 3개까지 선택할 수 있어요.',true);return;}busy=true;paint();

@@ -1,5 +1,5 @@
 import {cloudConfig, notionEnabled, notionEndpoint} from './cloud-config.js';
-import {createAttachments} from './attachments.js?v=20261022-files1';
+import {createAttachments} from './attachments.js?v=20261022-files2';
 const $ = id => document.getElementById(id);
 let api, auth, db, allowed = false, records = [], stopRecords, stopMember;
 let editing = null, generation = 0, saving = false, exporting = false;
