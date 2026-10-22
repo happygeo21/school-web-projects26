@@ -32,6 +32,7 @@ document.querySelectorAll('[data-area]').forEach(el=>el.onclick=()=>{
 $('category').onchange=updateExamples;
 function resetForm() { editing=null; $('recordForm').reset(); $('date').value=localDate();$('formTitle').textContent='새 기록 남기기';$('cancelEdit').hidden=true;updateExamples(); }
 function clearPrivate() {
+  $('guideTool').removeAttribute('src');$('toolPanel').hidden=true;
   stopRecords?.();stopRecords=null;records=[];allowed=false;resetForm();render();
   $('save').disabled=true;$('backup').disabled=true;$('loginPanel').hidden=false;
 }
@@ -160,3 +161,21 @@ async function boot(){
   }catch{$('connection').textContent='연결 실패';message('공동 저장 연결에 실패했습니다. 인터넷과 서비스 설정을 확인해 주세요.',true);}
 }
 boot();
+
+// Tools hand off a reviewed draft in memory; no URL or localStorage transfer.
+const toolPaths={'home-dashboard.html':'첫 집 · 다음 집 대시보드','guide.html':'가족 식사 계산기 · 백업'};
+document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{
+  if($('guideTool').hasAttribute('src')&&!confirm('열린 도구를 바꾸면 저장하지 않은 입력이 사라져요. 계속할까요?'))return;
+  $('toolTitle').textContent=toolPaths[b.dataset.tool];$('toolPanel').hidden=false;
+  $('guideTool').src=b.dataset.tool;$('toolPanel').scrollIntoView({behavior:'smooth'});
+});
+$('closeTool').onclick=()=>{if(!confirm('JSON 백업을 마쳤나요? 도구의 저장하지 않은 입력을 비울까요?'))return;$('guideTool').removeAttribute('src');$('toolPanel').hidden=true;};
+window.addEventListener('message',e=>{
+  if(e.origin!==location.origin||e.source!==$('guideTool').contentWindow)return;
+  const d=e.data;if(!d||d.type!=='wedding-draft-v1'||!['호텔','신혼집','촬영','가족 일정','예산','혼인신고','기타'].includes(d.category))return;
+  if(typeof d.title!=='string'||!d.title.trim()||d.title.length>160||typeof d.body!=='string'||d.body.length>4000||!Number.isFinite(d.amount)||d.amount<0||d.amount>1e9)return;
+  if((editing||$('title').value||$('body').value||$('nextAction').value)&&!confirm('작성 중인 기록을 도구의 초안으로 바꿀까요?'))return;
+  resetForm();for(const k of ['title','body','category','amount'])$(k).value=d[k];$('amountKind').value=d.amount?'예상':'미분류';
+  tab('journal');updateExamples();$('title').focus();message('도구의 초안을 가져왔어요. 민감한 내용과 금액을 확인한 뒤 공동 저장하고, 저장된 기록에서 노션에 보내기를 눌러 주세요.');
+});
+if(location.hash==='#guide')tab('guide');

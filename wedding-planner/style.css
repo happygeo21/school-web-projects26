@@ -3,3 +3,5 @@
 :root{color-scheme:light}.journal-grid>*,.two>*{min-width:0}input,select,textarea{min-width:0}
 .chapter-cards .actions a{font-size:13px;padding:9px 0;min-height:44px}
 nav button[aria-selected=true]:hover:enabled{background:var(--green);color:white}
+
+.tool-cards{margin-bottom:24px}.tool-cards article{display:flex;flex-direction:column}.tool-cards button{margin-top:auto}#guide>.cards:first-of-type article{display:flex;flex-direction:column}#guide>.cards:first-of-type article>p:first-of-type{flex:1}#guideTool{width:100%;height:850px;border:1px solid var(--line);border-radius:12px;background:#faf9f5}#toolPanel{margin:24px 0}#toolPanel[hidden]{display:none}
