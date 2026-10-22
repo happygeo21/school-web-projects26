@@ -21,12 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Test authenticated gateway behavior
-        run: >-
-          node --test
-          wedding-planner/functions/notion-payload.test.cjs
-          wedding-planner/worker/test/export.test.mjs
-          wedding-planner/worker/test/attachments.test.mjs
+      - name: Test the public login boundary
+        run: node --test scripts/public-boundary.test.mjs
       - name: Build public files without deploying
         run: node scripts/build-public-site.mjs
       - name: Check exact public artifact and local references
