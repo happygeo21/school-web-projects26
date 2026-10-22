@@ -95,7 +95,7 @@ E("restore").addEventListener("change",async function(){var f=this.files&&this.f
 E("print").addEventListener("click",function(){window.print()});
 E("logDate").value=new Date().toLocaleDateString("en-CA");
 function share(title,body,category,amount,recordDate){if(body.length>4000||amount>1e9){E("shareStatus").textContent=" 내용 4,000자·금액 10억원 이하로 나눠 주세요. 전체는 JSON으로 보관하세요.";return;}if(window.parent===window){E('shareStatus').textContent=' 플래너 준비가이드 안에서 이 도구를 열어 주세요. 입력은 JSON으로 백업할 수 있어요.';return;}window.parent.postMessage({type:'wedding-draft-v1',title:title,body:body,category:category,amount:Math.round(amount),date:recordDate||E("logDate").value},location.origin);}
-E('shareBudget').onclick=function(){share('가족 식사 8인 예산 비교','예상 예산 · 호텔 확정 견적 아님\n'+E('budgetParts').innerText+'\n기지출 참고: '+money(N(s.actual))+' (예산에 중복 합산하지 않음)','호텔',(N(s.meal)*8+Math.max(0,N(s.minimum)-N(s.meal)*8)+N(s.room)+N(s.photo)+N(s.flower)+N(s.travel)+N(s.reserve))*10000);};
+E('shareBudget').onclick=function(){share('가족 식사 8인 예산 비교','예상 예산 · 호텔 확정 견적 아님\n'+Array.from(E('budgetParts').children).map(function(row){return Array.from(row.children).map(function(v){return v.textContent}).join(': ')}).join('\n')+'\n기지출 참고: '+money(N(s.actual))+' (예산에 중복 합산하지 않음)','호텔',(N(s.meal)*8+Math.max(0,N(s.minimum)-N(s.meal)*8)+N(s.room)+N(s.photo)+N(s.flower)+N(s.travel)+N(s.reserve))*10000);};
 E('shareLog').onclick=function(){var title=E('logTitle').value.trim();if(!title){E('shareStatus').textContent=' 메모 제목을 입력해 주세요.';return;}share(title.slice(0,160),E('logBody').value,E('logCategory').value,0);};
 dateRender();budget();taskRender();logRender();
 })();
