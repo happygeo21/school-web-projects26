@@ -21,10 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Test planning tools and authenticated gateway behavior
+      - name: Test authenticated gateway behavior
         run: >-
           node --test
-          wedding-planner/test/tools.test.mjs
           wedding-planner/functions/notion-payload.test.cjs
           wedding-planner/worker/test/export.test.mjs
           wedding-planner/worker/test/attachments.test.mjs

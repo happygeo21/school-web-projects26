@@ -63,14 +63,8 @@
     "veteransgeo/project-config.js",
     "veteransgeo/public.html",
     "veteransgeo/teacher.html",
-    "wedding-planner/app.js",
-    "wedding-planner/attachments.js",
-    "wedding-planner/cloud-config.js",
     "wedding-planner/guide.html",
     "wedding-planner/home-dashboard.html",
-    "wedding-planner/home-dashboard.js",
-    "wedding-planner/index.html",
-    "wedding-planner/style.css",
-    "wedding-planner/tool-model.mjs"
+    "wedding-planner/index.html"
   ]
 }
