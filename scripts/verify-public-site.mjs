@@ -7,6 +7,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const out=path.join(root,'_site');
 const {files}=JSON.parse(await readFile(path.join(root,'scripts/public-files.json'),'utf8'));
 const allowed=new Set(files);
+assert.deepEqual(files.filter(file=>file.startsWith('wedding-planner/')).sort(),['wedding-planner/guide.html','wedding-planner/home-dashboard.html','wedding-planner/index.html'],'Only login portals may be published for the planner');
 async function walk(dir,prefix=''){
  const result=[];
  for(const name of await readdir(dir)){
