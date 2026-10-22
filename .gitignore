@@ -20,6 +20,7 @@ venv/
 __pycache__/
 *.pyc
 *.log
+/_site/
 .DS_Store
 
 # School private files belong outside the published static site
