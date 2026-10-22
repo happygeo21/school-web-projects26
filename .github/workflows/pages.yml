@@ -22,6 +22,9 @@ jobs:
       - name: Prepare allowlisted public files
         run: node scripts/build-public-site.mjs
 
+      - name: Verify public files before uploading
+        run: node scripts/verify-public-site.mjs
+
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
