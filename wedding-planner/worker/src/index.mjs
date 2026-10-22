@@ -1,3 +1,4 @@
+import {attachmentGateway,handleAttachment} from './attachments.mjs';
 // No service-account key: Firestore checks the caller's Firebase ID token and existing Rules.
 const MAPPING_VERSION = 2;
 const json = (status, code, extra = {}) => Response.json({code, ...extra}, {
@@ -59,6 +60,7 @@ function decodeDocument(doc) {
 }
 export default {
   async fetch(request, env) {
+    if(new URL(request.url).pathname.startsWith('/attachments'))return attachmentGateway(request,env,firebaseTokenShape);
     const origin = request.headers.get('Origin');
     if (origin !== env.ALLOWED_ORIGIN) return json(403,'origin-denied');
     const cors = {'Access-Control-Allow-Origin':env.ALLOWED_ORIGIN, 'Vary':'Origin'};
@@ -100,6 +102,7 @@ export class WeddingSync {
   constructor(ctx, env) { this.ctx = ctx; this.env = env; }
   async fetch(request) {
     try {
+      if(new URL(request.url).pathname.startsWith('/attachments/'))return await this.ctx.blockConcurrencyWhile(()=>handleAttachment(request,this.ctx.storage,this.env));
       return await this.ctx.blockConcurrencyWhile(async () => {
         const {id,revision} = await request.json();
         const auth = request.headers.get('Authorization');

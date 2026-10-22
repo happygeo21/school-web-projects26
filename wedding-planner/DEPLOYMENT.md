@@ -82,3 +82,14 @@ Web 앱 식별자: `1:499305995229:web:8ae8f00c41b34849cfb434`. Firebase Console
 - 미완료: 두 번째 계정 소유자의 실제 로그인, 실제 오프라인 저장 시험, 실제 한도 소진 시험. 모든 Rules 입력 조합을 망라한 검사는 수행하지 않았다. 준비 코드와 실제 검증 결과를 구분한다.
 
 공식 참고: [Firebase Auth와 Rules](https://firebase.google.com/docs/rules/rules-and-auth), [Cloud Functions 시작](https://firebase.google.com/docs/functions/get-started), [Notion 페이지 생성](https://developers.notion.com/reference/post-page).
+
+
+## 2026-10-22 · Private attachments
+
+Record files use the existing authorized Notion Journal via the existing Worker. No Firebase Storage, billing account, additional secret, membership change or Firestore schema change is required. Text stays in Firestore; file bytes stay in Notion. The Durable Object keeps filenames, sizes, MIME types and block/operation IDs, never file bytes, signed URLs or credentials. Photos are re-encoded in the browser (maximum 2048px long edge) before upload; original photo metadata is not copied. Documents retain original bytes.
+
+The three POST routes `/attachments/list`, `/attachments/upload` and `/attachments/download` enforce the exact CORS origin and Firebase token shape; every operation subsequently checks the same token against the source Firestore record. Downloads require a block ID in that record's private manifest, a matching Notion parent and a Notion-hosted S3 file. No signed storage URL is exposed or persisted. Executable/HTML/SVG/archive uploads are excluded; content signatures and byte limits are checked on the server. This does not constitute antivirus scanning of documents.
+
+Hard application limits: 5,000,000 bytes/file, 3 selected files/batch, 20 files/record, 40 upload attempts and 500 file opens per UTC day (09:00 KST reset). Existing record export limits remain separate. Uploaded blocks are appended; normal text exports preserve existing files. Successful operation IDs prevent repeat attachment; an ambiguous block append remains blocked to avoid duplicates. Check Notion before retrying an uncertain attachment with a new selection. If text saves but file upload fails, the UI keeps unsent files in memory and clearly reports partial success. Logout clears selections, previews and pending requests. JSON record backups exclude binary file bodies. Notion's existing page sharing permissions still apply; no sharing changes are made.
+
+References: https://developers.notion.com/guides/data-apis/uploading-small-files and https://developers.notion.com/guides/data-apis/working-with-files-and-media . HWP/HWPX are not accepted by this workflow; export to PDF first.

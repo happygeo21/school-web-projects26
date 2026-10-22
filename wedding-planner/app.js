@@ -1,9 +1,11 @@
 import {cloudConfig, notionEnabled, notionEndpoint} from './cloud-config.js';
+import {createAttachments} from './attachments.js?v=20261022-files1';
 const $ = id => document.getElementById(id);
 let api, auth, db, allowed = false, records = [], stopRecords, stopMember;
 let editing = null, generation = 0, saving = false, exporting = false;
 const localDate = () => new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date());
 const message = (text, error = false) => { $('notice').textContent=text; $('notice').classList.toggle('error',error); };
+const attachments=createAttachments({endpoint:notionEndpoint,session:()=>({allowed,user:auth?.currentUser,generation}),message});
 const categoryLabels={'호텔':'가족 식사·호텔','가족 일정':'가족 일정','촬영':'웨딩스냅','신혼집':'신혼집 구매','예산':'공통 예산','혼인신고':'혼인신고','기타':'기타'};
 const areas={'식사':['호텔','가족 일정'],'스냅':['촬영'],'집':['신혼집']};
 const inArea=(r,area)=>area==='전체'||(areas[area]?areas[area].includes(r.category):r.category===area);
@@ -19,7 +21,8 @@ function tab(name) {
 }
 document.querySelectorAll('[data-tab]').forEach(el=>el.onclick=()=>tab(el.dataset.tab));
 document.querySelectorAll('[data-template]').forEach(el=>el.onclick=()=>{
-  if((editing||$('title').value||$('body').value||$('nextAction').value)&&!confirm('작성 중인 내용을 비우고 새 기록을 시작할까요? 아직 저장하지 않은 내용은 사라집니다.'))return;
+  if(saving||attachments.isBusy())return message('파일 처리가 끝난 뒤 새 기록을 시작해 주세요.');
+  if((editing||$('title').value||$('body').value||$('nextAction').value||attachments.hasPending())&&!confirm('작성 중인 내용과 선택한 파일을 비우고 새 기록을 시작할까요?'))return;
   resetForm();tab('journal');$('category').value=el.dataset.template;
   $('filter').value=Object.keys(areas).find(area=>areas[area].includes(el.dataset.template))||'전체';
   updateExamples();render();$('title').focus();
@@ -30,10 +33,11 @@ document.querySelectorAll('[data-area]').forEach(el=>el.onclick=()=>{
   render();$('filter').focus();
 });
 $('category').onchange=updateExamples;
-function resetForm() { editing=null; $('recordForm').reset(); $('date').value=localDate();$('formTitle').textContent='새 기록 남기기';$('cancelEdit').hidden=true;updateExamples(); }
+function resetForm() { attachments.clearPending();editing=null; $('recordForm').reset(); $('date').value=localDate();$('formTitle').textContent='새 기록 남기기';$('cancelEdit').hidden=true;updateExamples(); }
 function clearPrivate() {
   $('guideTool').removeAttribute('src');$('toolPanel').hidden=true;
   stopRecords?.();stopRecords=null;records=[];allowed=false;resetForm();render();
+  attachments.clearPrivate();
   $('save').disabled=true;$('backup').disabled=true;$('loginPanel').hidden=false;
 }
 function button(text,fn) { const el=document.createElement('button');el.type='button';el.textContent=text;el.onclick=fn;return el; }
@@ -48,10 +52,13 @@ function card(r) {
   if(r.dueDate){const due=document.createElement('p');due.className='due';due.textContent=`예정일 · ${r.dueDate}${r.status!=='완료'&&r.dueDate<localDate()?' · 일정 다시 확인':''}`;el.append(due);}
   const actions=document.createElement('div');actions.className='actions';
   actions.append(button('수정하기',()=>{
-    if(!allowed)return;editing={id:r.id,revision:r.revision};
+    if(!allowed||saving||attachments.isBusy())return;
+    if((editing||$('title').value||$('body').value||attachments.hasPending())&&!confirm('현재 입력과 선택 파일을 비우고 이 기록을 수정할까요?'))return;
+    attachments.clearPending();editing={id:r.id,revision:r.revision};
     for(const key of ['title','body','category','status','date','amount'])$(key).value=r[key];
     $('amountKind').value=r.amountKind||'미분류';$('nextAction').value=r.nextAction||'';$('dueDate').value=r.dueDate||'';updateExamples();
     $('formTitle').textContent='기록 수정하기';$('cancelEdit').hidden=false;tab('journal');$('title').focus();
+    attachments.showExisting(r);
   }));
   if(notionEnabled)actions.append(button('노션에 보내기',async()=>{
     if(!allowed||exporting||!auth.currentUser||!confirm('이 기록의 제목·내용·날짜·분야·상태와 관련 금액·금액 구분·다음 행동·예정일을 Cloudflare 전송 서버를 거쳐 노션 공동 기록 DB로 보낼까요?'))return;
@@ -76,7 +83,7 @@ function card(r) {
     }catch(error){if(epoch===generation)message(error.name==='TimeoutError'||error.name==='TypeError'?'노션 반영을 확인하지 못했어요. 다시 누르기 전에 노션 기록을 먼저 확인해 주세요.':error.message,true);}
     finally{exporting=false;}
   }));
-  el.append(actions);return el;
+  el.append(actions);attachments.addCard(r,el);return el;
 }
 function render() {
   const selected=records.filter(r=>inArea(r,$('filter').value));
@@ -92,15 +99,16 @@ function render() {
   const done=records.length-todos.length;$('counts').textContent=allowed?`${done} / ${records.length} 완료`:'로그인 후 표시';
   $('progress').style.width=(records.length?done/records.length*100:0)+'%';
 }
-$('filter').onchange=render;$('cancelEdit').onclick=resetForm;
+$('filter').onchange=render;$('cancelEdit').onclick=()=>{if(saving||attachments.isBusy())return;if(attachments.hasPending()&&!confirm('선택한 첨부파일을 비우고 수정을 취소할까요?'))return;resetForm();};
 $('recordForm').onsubmit=async e=>{
-  e.preventDefault();if(!allowed||saving||!auth.currentUser)return;
+  e.preventDefault();if(!allowed||saving||attachments.isBusy()||!auth.currentUser)return;
+  if(attachments.hasPending()&&!confirm('이 기록과 선택한 파일을 비공개 노션 Wedding Journal에도 보관할까요? 사진은 크기와 위치정보를 정리한 사본이며 문서는 원본입니다. 민감한 정보가 없는지 확인해 주세요.'))return;
   if(!navigator.onLine){message('오프라인입니다. 인터넷 연결 후 저장해 주세요. 입력 내용은 아직 공동 저장되지 않았습니다.',true);return;}
   const epoch=generation,uid=auth.currentUser.uid,target=editing?{...editing}:null;
   const values={};for(const key of ['title','body','category','status','date','amountKind','nextAction','dueDate'])values[key]=$(key).value.trim();
   values.amount=Number($('amount').value||0);
   if(!values.title||!Number.isFinite(values.amount)||values.amount<0||values.amount>1e9)return;
-  saving=true;$('save').disabled=true;message('공동 저장 중… 이 화면을 닫지 마세요.');
+  saving=true;attachments.setBusy(true);let recordSaved=false;$('save').disabled=true;message('공동 저장 중… 이 화면을 닫지 마세요.');
   try {
     const ref=target?api.doc(db,'records',target.id):api.doc(api.collection(db,'records'));
     await api.runTransaction(db,async tx=>{
@@ -109,9 +117,14 @@ $('recordForm').onsubmit=async e=>{
       if(target&&(!snap.exists()||snap.data().revision!==target.revision))throw Error('다른 사람이 이 기록을 수정했어요. 수정 취소 후 최신 기록을 열어 다시 반영해 주세요.');
       tx.set(ref,{...values,revision:target?target.revision+1:1,updatedBy:uid,updatedAt:api.serverTimestamp()});
     });
-    if(epoch===generation){resetForm();message('공동 저장 완료 · 두 사람이 같은 기록을 볼 수 있어요.');}
-  }catch(err){if(epoch===generation)message(err.code==='resource-exhausted'?'무료 저장 한도에 도달해 저장하지 못했어요. 입력 내용을 복사해 보관하고 한도가 초기화된 뒤 다시 저장해 주세요.':err.message?.startsWith('다른 사람이')?err.message:'저장하지 못했습니다. 입력 내용을 유지했으니 연결과 권한을 확인한 뒤 다시 저장해 주세요.',true);}
-  finally{saving=false;$('save').disabled=!allowed;}
+    recordSaved=true;
+    if(epoch!==generation)return;
+    const saved={id:ref.id,revision:target?target.revision+1:1};
+    editing=saved;$('formTitle').textContent='기록 수정하기';$('cancelEdit').hidden=false;
+    const withFiles=attachments.hasPending();await attachments.uploadPending(saved);
+    if(epoch===generation){resetForm();message(withFiles?'기록과 파일 저장 완료 · 파일은 비공개 노션에 보관했어요. 기록의 사진·첨부파일 보기에서 확인하세요.':'공동 저장 완료 · 두 사람이 같은 기록을 볼 수 있어요.');}
+  }catch(err){if(epoch===generation)message(recordSaved?'기록은 공동 저장됐지만 첨부가 완료되지 않았어요. '+err.message+' 선택한 파일을 유지했으니 확인 후 다시 저장해 주세요.':err.code==='resource-exhausted'?'무료 저장 한도에 도달해 저장하지 못했어요. 입력 내용을 복사해 보관하고 한도가 초기화된 뒤 다시 저장해 주세요.':err.message?.startsWith('다른 사람이')?err.message:'저장하지 못했습니다. 입력 내용을 유지했으니 연결과 권한을 확인한 뒤 다시 저장해 주세요.',true);}
+  finally{saving=false;attachments.setBusy(false);$('save').disabled=!allowed;}
 };
 $('backup').onclick=()=>{
   if(!allowed||!confirm('개인 기록을 이 기기에 파일로 내려받습니다. 공용 기기에서는 저장하지 마세요.'))return;
@@ -120,7 +133,7 @@ $('backup').onclick=()=>{
 };
 window.addEventListener('offline',()=>message('인터넷 연결이 끊겼어요. 화면의 기록은 마지막으로 불러온 내용입니다. 새 입력은 아직 저장되지 않았습니다.',true));
 window.addEventListener('online',()=>message('인터넷에 다시 연결되었습니다. 공동 저장 완료 여부를 확인해 주세요.'));
-window.addEventListener('beforeunload',e=>{if(saving||$('title').value||$('body').value||$('guideTool').hasAttribute('src')){e.preventDefault();e.returnValue='';}});
+window.addEventListener('beforeunload',e=>{if(saving||attachments.hasPending()||attachments.isBusy()||$('title').value||$('body').value||$('guideTool').hasAttribute('src')){e.preventDefault();e.returnValue='';}});
 resetForm();render();
 if(notionEnabled&&notionEndpoint)$('notionStatus').textContent='저장 후 ‘노션에 보내기’를 누르면 관련 금액·금액 구분·다음 행동·예정일까지 반영해요. 예전에 보낸 기록도 다시 누르면 금액이 추가돼요. 노션의 수정은 자동으로 돌아오지 않아요.';
 async function boot(){
@@ -146,7 +159,7 @@ async function boot(){
       stopMember=f.onSnapshot(f.doc(db,'access','config'),member=>{
         if(epoch!==generation)return;
         if(!member.exists()||!user.emailVerified){clearPrivate();$('connection').textContent='접근 권한 필요';message('이 계정에는 공동 기록 접근 권한이 없습니다. 허용된 두 사람의 계정으로 로그인해 주세요.',true);return;}
-        if(allowed)return;allowed=true;$('loginPanel').hidden=true;$('save').disabled=false;$('backup').disabled=false;$('connection').textContent='둘만의 공동 공간';
+        if(allowed)return;allowed=true;attachments.refresh();$('loginPanel').hidden=true;$('save').disabled=false;$('backup').disabled=false;$('connection').textContent='둘만의 공동 공간';
         stopRecords=f.onSnapshot(f.query(f.collection(db,'records'),f.orderBy('updatedAt','desc'),f.limit(500)),{includeMetadataChanges:true},snapshot=>{
           if(epoch!==generation)return;records=snapshot.docs.map(d=>({id:d.id,...d.data()}));render();
           if(!saving)message(snapshot.metadata.fromCache?'연결 확인 중 · 마지막으로 불러온 기록입니다.':'최신 공동 기록을 불러왔어요. (최근 500건)');
@@ -171,10 +184,11 @@ document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{
 });
 $('closeTool').onclick=()=>{if(!confirm('JSON 백업을 마쳤나요? 도구의 저장하지 않은 입력을 비울까요?'))return;$('guideTool').removeAttribute('src');$('toolPanel').hidden=true;};
 window.addEventListener('message',e=>{
+  if(saving||attachments.isBusy())return;
   if(e.origin!==location.origin||e.source!==$('guideTool').contentWindow)return;
   const d=e.data;if(!d||d.type!=='wedding-draft-v1'||!['호텔','신혼집','촬영','가족 일정','예산','혼인신고','기타'].includes(d.category))return;
   if(typeof d.title!=='string'||!d.title.trim()||d.title.length>160||typeof d.body!=='string'||d.body.length>4000||!Number.isFinite(d.amount)||d.amount<0||d.amount>1e9)return;
-  if((editing||$('title').value||$('body').value||$('nextAction').value)&&!confirm('작성 중인 기록을 도구의 초안으로 바꿀까요?'))return;
+  if((editing||$('title').value||$('body').value||$('nextAction').value||attachments.hasPending())&&!confirm('작성 중인 기록과 선택 파일을 도구의 초안으로 바꿀까요?'))return;
   resetForm();for(const k of ['title','body','category','amount'])$(k).value=d[k];$('amountKind').value=d.amount?'예상':'미분류';
   if(typeof d.date==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(d.date))$('date').value=d.date;
   tab('journal');updateExamples();$('title').focus();message('도구의 초안을 가져왔어요. 민감한 내용과 금액을 확인한 뒤 공동 저장하고, 저장된 기록에서 노션에 보내기를 눌러 주세요.');
