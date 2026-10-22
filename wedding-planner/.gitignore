@@ -1,9 +1,0 @@
-node_modules/
-.wrangler/
-.dev.vars*
-.firebase/
-.env*
-!.env.example
-*-debug.log
-*.private.json
-service-account*.json
