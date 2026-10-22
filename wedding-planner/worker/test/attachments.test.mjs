@@ -15,7 +15,7 @@ function setup(t,initial={}){
   if(url.endsWith('/send')){assert.ok(init.body instanceof FormData);assert.equal(init.body.get('file').name,'test.png');return Response.json({status:'uploaded'});}
   if(url.endsWith('/children')){if(control.network)throw Error('uncertain');return Response.json({results:[{id:blockId}]},{status:control.append});}
   if(url.endsWith('/blocks/'+blockId))return Response.json({id:blockId,type:'image',parent:{page_id:control.parent},image:{type:'file',file:{url:control.url}}});
-  if(url.startsWith('https://prod-files-secure.'))return new Response(png);
+  if(url.startsWith('https://prod-files-secure.')){assert.equal(init.redirect,'manual');assert.ok(!init.headers?.Authorization);return new Response(png);}
   throw Error('unexpected request');
  });
  const object=new WeddingSync(ctx,env);

@@ -51,8 +51,8 @@ export async function handleAttachment(request,storage,env){
   await storage.put('fileReads',{day,count:count+1});
   let stage='metadata';try{const r=await notion('blocks/'+file.blockId);if(!r.ok)return reply(503,'attachment-metadata-failed');const block=await r.json(),media=block[block.type];
    if(block.archived||block.in_trash||(block.parent?.page_id||'').replaceAll('-','')!==mapping.pageId.replaceAll('-','')||media?.type!=='file')return reply(404,'attachment-not-found');
-   const url=new URL(media.file.url);if(url.protocol!=='https:'||!url.hostname.endsWith('.amazonaws.com')||url.username||url.password)return reply(503,'attachment-host-changed',{host:url.hostname});
-   stage='storage';const content=await fetch(url,{signal,redirect:'error'});if(!content.ok)return reply(503,'attachment-storage-failed');const bytes=await limitedBytes(content.body,MAX_FILE_BYTES,signal);
+   const url=new URL(media.file.url);if(url.protocol!=='https:'||!url.hostname.endsWith('.amazonaws.com')||url.username||url.password)return reply(503,'attachment-host-changed');
+   stage='storage';const content=await fetch(url,{signal,redirect:'manual'});if(!content.ok)return reply(503,'attachment-storage-failed');stage='download';const bytes=await limitedBytes(content.body,MAX_FILE_BYTES,signal);
    // Images alone can be previewed. Documents are downloaded as inert binary, never embedded HTML.
    stage='validation';validateFile(file.name,bytes);
    return new Response(bytes,{headers:{'Content-Type':file.mime.startsWith('image/')?file.mime:'application/octet-stream','Content-Disposition':`attachment; filename*=UTF-8''${encodeURIComponent(file.name)}`,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});

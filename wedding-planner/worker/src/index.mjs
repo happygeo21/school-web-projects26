@@ -97,7 +97,7 @@ export default {
 };
 
 // One SQLite-backed Durable Object serializes exports, including across devices.
-// Store only page IDs/revisions/status/counters; never tokens, emails or record bodies.
+// Store export IDs/status/counters and attachment metadata; never tokens, emails, record bodies or file bytes.
 export class WeddingSync {
   constructor(ctx, env) { this.ctx = ctx; this.env = env; }
   async fetch(request) {

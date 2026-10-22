@@ -10,7 +10,7 @@ export function createAttachments({endpoint,session,message}){
   try{const token=await s.user.getIdToken();if(!alive(s.generation))throw Error('로그아웃했습니다.');const headers={Authorization:`Bearer ${token}`,'X-Record-Id':r.id,'X-Record-Revision':String(r.revision)};
    if(opId)headers['X-Attachment-Id']=opId;if(file){headers['Content-Type']=file.type||'application/octet-stream';headers['X-File-Name']=encodeURIComponent(file.name);}
    const timeout=setTimeout(()=>controller.abort(),35000);let response;try{response=await fetch(base+'/attachments/'+path,{method:'POST',headers,body:file||undefined,signal:controller.signal});}finally{clearTimeout(timeout);}
-   if(!alive(s.generation))throw Error('로그아웃했습니다.');if(!response.ok){const result=await response.json();throw Error(errors[result.code]||'첨부 연결 확인: '+result.code+' '+(result.stage||result.host||''));}return response;
+   if(!alive(s.generation))throw Error('로그아웃했습니다.');if(!response.ok){const result=await response.json();throw Error(errors[result.code]||'파일을 열지 못했어요. 잠시 후 다시 시도하거나 노션 원본에서 확인해 주세요.');}return response;
   }finally{controllers.delete(controller);}
  }
  $('fileInput').onchange=async()=>{const s=current(),chosen=[...$('fileInput').files];$('fileInput').value='';if(chosen.length+pending.length>3){message('한 번에 파일 3개까지 선택할 수 있어요.',true);return;}busy=true;paint();
@@ -27,9 +27,9 @@ export function createAttachments({endpoint,session,message}){
    if(result.pageId){const a=document.createElement('a');a.href='https://www.notion.so/'+result.pageId.replaceAll('-','');a.target='_blank';a.rel='noopener noreferrer';a.textContent='노션 원본 열기 ↗';container.append(a);}
    for(const file of result.files){const row=document.createElement('div');row.className='attachment-row';const label=document.createElement('p');label.textContent=`${file.name} · ${(file.size/1e6).toFixed(2)}MB`;const download=document.createElement('button');download.type='button';download.textContent='파일 내려받기';
     async function load(preview){download.disabled=true;try{const response=await request('download',r,{opId:file.id}),blob=await response.blob();if(!alive(epoch))return;const url=URL.createObjectURL(blob);urls.add(url);
-      if(preview){const img=document.createElement('img');img.className='attachment-photo';img.alt=file.name;img.src=url;row.append(img);}else{const a=document.createElement('a');a.href=url;a.download=file.name;a.click();setTimeout(()=>{URL.revokeObjectURL(url);urls.delete(url);},30000);}
+      if(preview){const img=document.createElement('img');img.className='attachment-photo';img.alt=file.name;img.src=url;row.append(img);message('사진을 열었어요.');}else{const a=document.createElement('a');a.href=url;a.download=file.name;a.click();message('파일 내려받기를 시작했어요.');setTimeout(()=>{URL.revokeObjectURL(url);urls.delete(url);},30000);}
      }catch(e){if(alive(epoch))message(e.message,true);}finally{download.disabled=false;}}
-    download.onclick=()=>load(false);row.append(label,download);if(file.mime.startsWith('image/')){const preview=document.createElement('button');preview.type='button';preview.textContent='사진 보기';preview.onclick=async()=>{preview.disabled=true;await load(true);preview.disabled=false;};row.append(preview);}container.append(row);
+    download.onclick=()=>load(false);row.append(label,download);if(file.mime.startsWith('image/')){const preview=document.createElement('button');preview.type='button';preview.textContent='사진 보기';preview.onclick=async()=>{const shown=row.querySelector('img');if(shown){URL.revokeObjectURL(shown.src);urls.delete(shown.src);shown.remove();preview.textContent='사진 보기';return;}preview.disabled=true;await load(true);preview.textContent=row.querySelector('img')?'사진 닫기':'사진 보기';preview.disabled=false;};row.append(preview);}container.append(row);
    }
   }catch(e){if(alive(epoch))container.textContent=e.message;}
  }
