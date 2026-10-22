@@ -120,7 +120,7 @@ $('backup').onclick=()=>{
 };
 window.addEventListener('offline',()=>message('인터넷 연결이 끊겼어요. 화면의 기록은 마지막으로 불러온 내용입니다. 새 입력은 아직 저장되지 않았습니다.',true));
 window.addEventListener('online',()=>message('인터넷에 다시 연결되었습니다. 공동 저장 완료 여부를 확인해 주세요.'));
-window.addEventListener('beforeunload',e=>{if(saving||$('title').value||$('body').value){e.preventDefault();e.returnValue='';}});
+window.addEventListener('beforeunload',e=>{if(saving||$('title').value||$('body').value||$('guideTool').hasAttribute('src')){e.preventDefault();e.returnValue='';}});
 resetForm();render();
 if(notionEnabled&&notionEndpoint)$('notionStatus').textContent='저장 후 ‘노션에 보내기’를 누르면 관련 금액·금액 구분·다음 행동·예정일까지 반영해요. 예전에 보낸 기록도 다시 누르면 금액이 추가돼요. 노션의 수정은 자동으로 돌아오지 않아요.';
 async function boot(){
@@ -176,6 +176,7 @@ window.addEventListener('message',e=>{
   if(typeof d.title!=='string'||!d.title.trim()||d.title.length>160||typeof d.body!=='string'||d.body.length>4000||!Number.isFinite(d.amount)||d.amount<0||d.amount>1e9)return;
   if((editing||$('title').value||$('body').value||$('nextAction').value)&&!confirm('작성 중인 기록을 도구의 초안으로 바꿀까요?'))return;
   resetForm();for(const k of ['title','body','category','amount'])$(k).value=d[k];$('amountKind').value=d.amount?'예상':'미분류';
+  if(typeof d.date==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(d.date))$('date').value=d.date;
   tab('journal');updateExamples();$('title').focus();message('도구의 초안을 가져왔어요. 민감한 내용과 금액을 확인한 뒤 공동 저장하고, 저장된 기록에서 노션에 보내기를 눌러 주세요.');
 });
 if(location.hash==='#guide')tab('guide');
