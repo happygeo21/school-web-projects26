@@ -10,3 +10,11 @@ test('global representative routes have unique IDs, valid coordinates, dates and
  for(const r of routes){assert(r.year>=2022&&r.year<=2024);assert(['www.eia.gov','www.iea.org','www.rec-cer.gc.ca'].includes(new URL(r.source).hostname));for(const [lon,lat]of[r.start,...r.waypoints||[],r.end]){assert(Number.isFinite(lon)&&lon>=-180&&lon<=180);assert(Number.isFinite(lat)&&lat>=-90&&lat<=90);}}
  assert(routes.some(r=>r.mode==='가스관'));assert(routes.some(r=>r.mode==='철도·육로'));
 });
+
+test('legacy snapshots preserve baseline source and Firebase configuration values',()=>{
+ const crypto=require('node:crypto'),digest=text=>crypto.createHash('sha256').update(text.replace(/\r\n/g,'\n')).digest('hex');
+ const baseline={"student":"f693b7fc3840cd97adf4d6bb7e7c8cd9e17a1b76c2f2275285134e4f106f66f2","teacher":"4136d5756c3dcda55b6f5f406ad171eb44b5c408cd47a02b06d6e6642f35431b","config":"8210ab5dfaf0465747287a5ac1cc58be5e8dd135883ca3afa7d3e8da3387ad73"};
+ for(const role of ['student','teacher'])assert.equal(digest(fs.readFileSync(path.join(__dirname,'..','happygeo',role+'-legacy.html'),'utf8')),baseline[role]);
+ const config=fs.readFileSync(path.join(__dirname,'..','happygeo/firebase-config.js'),'utf8').split('(function()')[0];
+ assert.equal(digest(config),baseline.config);
+});

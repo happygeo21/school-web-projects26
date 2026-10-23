@@ -39,6 +39,11 @@ await run('오프라인 단일파일 데모 · 교사/학생 링크 · 외부 �
  const context=await browser.newContext();await context.route(/^https?:/,r=>r.abort());const page=await context.newPage(),errors=[],remote=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(/^https?:/.test(r.url()))remote.push(r.url())});const url=require('node:url').pathToFileURL(path.join(root,'..','happygeo-review.html')).href;
  await page.goto(url+'?role=teacher');await page.locator('#connection').filter({hasText:'격리 데모'}).waitFor();await page.locator('#classCode').fill('OFFLINE');await page.locator('#className').fill('오프라인 가상반');await page.locator('#createClass').click();await page.locator('#dashboard').waitFor({state:'visible'});await page.getByRole('link',{name:'② 학생 데모'}).click();await page.locator('[data-interest]').first().waitFor();await page.locator('#classCode').fill('OFFLINE');await page.locator('#studentNo').fill('99');await page.locator('#studentName').fill('가상학생');await page.locator('#joinBtn').click();await page.locator('#joinStatus').filter({hasText:'입장 완료'}).waitFor();assert.equal(await page.locator('[data-map-route]').count(),21);assert.deepEqual(remote,[]);assert.deepEqual(errors,[]);await context.close();
 });
+await run('기존 학생·교사 주소가 쿼리와 위치를 유지해 새 버전으로 연결',async()=>{
+ const context=await isolated(),page=await context.newPage();
+ for(const role of ['student','teacher']){await page.goto(origin+'/happygeo/'+role+'.html?demo=1#'+(role==='student'?'world':'dashboard'));await page.waitForURL('**/'+role+'-v2.html?demo=1#*');await page.locator('#connection').filter({hasText:'격리 데모'}).waitFor();assert.equal(await page.locator('body').getAttribute('data-role'),role);}
+ await context.close();
+});
 console.log(JSON.stringify({passed:count,results},null,2));
 }finally{await browser.close();server.close()}
 })().catch(e=>{console.error(e);server.close();process.exitCode=1});
