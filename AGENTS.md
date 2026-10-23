@@ -35,3 +35,8 @@ Updated: 2026-10-19 (Asia/Seoul).
 - For exploratory image generation requests, consult [image-style-library/README.md](image-style-library/README.md) and suggest 3–4 appropriate, distinct visual styles with one recommended option, unless the user specifies a style or asks for immediate generation.
 - The 100 slash-keywords are style labels, not native ChatGPT commands. Prompt details, not the labels alone, produce images. The original full prompts and illustrations are on the [JJ Creative reference site](https://www.jjcreative.co.kr/lounge/imgcode).
 - The standalone [image-style-library/](image-style-library/) contains the searchable catalog, scoped AGENTS.md, and Notion reference. For geography lessons, verify substantive spatial/statistical facts.
+
+## Cloud continuity and cross-device handoff (2026-10-23)
+- For Cloud Work and Codex Cloud collaboration, follow [docs/operations/cloud-continuity.md](docs/operations/cloud-continuity.md).
+- At the end of each meaningful task, update the sanitized [docs/PROJECT_HANDOFF.md](docs/PROJECT_HANDOFF.md) with actual branch/commit/PR, tests, and next action. Keep student data and secrets out.
+- Work local task sync, Codex Cloud environments and GitHub connectivity are **separate** permissions. An AGENTS.md file is an instruction, not an automated sync service.
