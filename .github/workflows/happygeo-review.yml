@@ -1,0 +1,25 @@
+name: Review happygeo curriculum without deploying
+on:
+  pull_request:
+    paths:
+      - 'happygeo/**'
+      - 'scripts/**'
+      - '.github/workflows/happygeo-review.yml'
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check isolated data and public boundary contracts
+        run: node --test scripts/happygeo-fixture.test.cjs scripts/happygeo-content.test.cjs scripts/public-boundary.test.mjs
+      - name: Check browser module syntax
+        run: node --check happygeo/two-lessons.js && node --check happygeo/two-lessons-store.js && node --check happygeo/energy-map.js
+      - name: Build allowlisted review artifact
+        run: node scripts/build-public-site.mjs
+      - name: Verify artifact independently
+        run: node scripts/verify-public-site.mjs

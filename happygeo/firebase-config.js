@@ -13,7 +13,7 @@ window.ENERGY_APP_SETTINGS = { databaseRoot: "energyMatchV10_3" };
 (function(){
   try{
     var p=(location.pathname||'').toLowerCase();
-    if(p.endsWith('/student.html') || p.endsWith('student.html')){
+    if(p.endsWith('/student.html') || p.endsWith('student.html') || p.endsWith('student-legacy.html')){
       var sc=document.createElement('script');
       sc.src='student-enhancements.js?v=20261007b';
       sc.async=false;
