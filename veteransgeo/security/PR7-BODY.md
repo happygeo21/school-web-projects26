@@ -1,5 +1,7 @@
 ## 목적과 운영 상태
 
+6차 후속: **실제 테스트 Firebase/Supabase는 아직 연결하지 못했습니다.** 프로젝트·가상 계정 정보가 없어 실연동 성공으로 표시하지 않습니다. 운영 연결 전 target/API key 검사, 비공개 test-web/Rules/Secrets 준비 도구, 실제 HTTPS 프로토콜 실행기를 추가했습니다. 기존 기능을 재개발하지 않았습니다. 구체적인 클릭 순서와 5단계 상태는 [LIVE-REHEARSAL.md](https://github.com/happygeo21/school-web-projects26/blob/codex/veteransgeo-upgrade/veteransgeo/security/LIVE-REHEARSAL.md)에 있습니다. 로컬 TLS/Mock 성공은 실제 서비스 성공이 아닙니다.
+
 기억의 좌표 LIVE의 학생 독립 작품 제출 → 교사 비공개 검토·승인 → 공개 카드 피드를 구현하고 안전한 운영 전환을 준비합니다. 학생/교사/공개 3페이지, 학생 3단계, 7학교, 기존 Google/이메일 인증, Firebase RTDB 루트와 e-GIS CSV를 유지합니다.
 
 **Draft 유지 / main 미병합 / 운영 미배포.** 운영 Rules·학생 자료·기존 Firebase 설정·다른 앱·요금제는 변경하지 않았습니다. Firebase Spark와 `MEDIA_UPLOAD_ENABLED=false`를 유지하며 Firebase Storage SDK 의존을 제거했습니다. 외부 미디어 Provider도 기본 비활성화입니다.

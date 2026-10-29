@@ -1,6 +1,7 @@
 import { createGateway } from "../../../server/gateway.mjs";
 import { verifyFirebaseToken } from "../../../server/firebase-token.mjs";
 import { createAdapters } from "../../../server/supabase-adapter.mjs";
+import { rehearsalTargets } from "../../../server/rehearsal-target.mjs";
 const required = (key: string) => {
   const v = Deno.env.get(key);
   if (!v) throw Error("Missing server configuration: " + key);
@@ -8,6 +9,11 @@ const required = (key: string) => {
 };
 const projectId = required("FIREBASE_PROJECT_ID"),
   databaseURL = required("FIREBASE_DATABASE_URL");
+const deployment = rehearsalTargets({
+  projectId,
+  databaseURL,
+  supabaseURL: required("SUPABASE_URL"),
+});
 // This implementation is for a separate rehearsal project. Production needs a new reviewed change.
 if (
   projectId === "school-project-26-1edf4" ||
@@ -41,6 +47,7 @@ Deno.serve(
     teachers,
     schoolActivityHashes,
     origins,
+    deployment,
     verify: (token: string) => verifyFirebaseToken(token, { projectId }),
   }),
 );

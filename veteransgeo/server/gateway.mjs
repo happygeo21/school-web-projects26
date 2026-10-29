@@ -51,6 +51,7 @@ export function createGateway({
   teachers,
   schoolActivityHashes,
   origins,
+  deployment = /** @type {Record<string, unknown> | null} */ (null),
   clock = () => Date.now(),
 }) {
   let inFlight = 0;
@@ -95,6 +96,27 @@ export function createGateway({
         });
       const url = new URL(request.url),
         publicId = url.searchParams.get("publicId");
+      if (
+        request.method === "GET" &&
+        url.searchParams.get("action") === "readiness"
+      ) {
+        if (!deployment)
+          fail("media/unavailable", "테스트 대상 설정을 확인하지 못했습니다.");
+        // Only non-secret, allowlisted target identifiers. No Auth/DB/Storage calls.
+        return json(
+          Object.fromEntries(
+            [
+              "kind",
+              "testOnly",
+              "apiVersion",
+              "firebaseProjectId",
+              "databaseHost",
+              "supabaseHost",
+              "storageBucket",
+            ].map((k) => [k, deployment[k]]),
+          ),
+        );
+      }
       if (request.method === "GET" && publicId) {
         if (!isAsset(publicId))
           fail("media/permission", "작품을 열 수 없어요.");

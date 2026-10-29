@@ -7,7 +7,12 @@
     "test:browser": "node --test browser.test.cjs",
     "test:core": "node --test core.test.mjs",
     "test:media": "node --test media-contract.test.mjs token.test.mjs media-sql.test.mjs media-browser.test.mjs",
-    "mock:media": "node mock-server.mjs"
+    "mock:media": "node mock-server.mjs",
+    "test:rehearsal": "node --test rehearsal.test.mjs",
+    "live:prepare": "node prepare-live-test.mjs",
+    "live:probe": "node live-test.mjs --probe-only",
+    "live:protocol": "node live-test.mjs",
+    "live:serve": "node serve-live-test.mjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.3.14",
