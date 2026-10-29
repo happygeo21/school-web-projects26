@@ -226,3 +226,64 @@ test("mock contract: upload failure, retry, uncertain orphan and teacher-only re
   assert.equal((await cleaned.json()).deleted, 1);
   assert.equal(f.state.rows.get(lost.asset).state, "deleted");
 });
+
+test("HTTP provider requires a ready ACK, reports progress, cancels without losing operation identity, and bounds offline RTDB waits", async () => {
+  const { createMediaProvider } = await import("../media-provider.js");
+  const { waitForAck } = await import("../media-policy.js");
+  let payload = '{"state":"ready"}',
+    hold = false,
+    progress = [];
+  const factory = () => ({
+    upload: {},
+    open() {},
+    setRequestHeader() {},
+    abort() {},
+    send() {
+      if (hold) return;
+      queueMicrotask(() => {
+        this.upload.onprogress({
+          lengthComputable: true,
+          loaded: 5,
+          total: 10,
+        });
+        this.status = 200;
+        this.responseText = payload;
+        this.onload();
+      });
+    },
+  });
+  const provider = createMediaProvider(
+    { enabled: true, endpoint: "https://mock.invalid/media" },
+    { xhrFactory: factory },
+  );
+  const args = {
+    file: new Blob(["test"], { type: "image/jpeg" }),
+    schoolId: "S1",
+    workId: "fixed-id",
+    activityCode: "TEST",
+    token: "synthetic-only",
+    onProgress: (n) => progress.push(n),
+  };
+  assert.equal((await provider.upload(args)).state, "ready");
+  assert.deepEqual(progress, [50]);
+  payload = "<html>access protection</html>";
+  await assert.rejects(provider.upload(args));
+  payload = "null";
+  await assert.rejects(provider.upload(args));
+  hold = true;
+  const controller = new AbortController(),
+    operation = provider.upload({ ...args, signal: controller.signal });
+  controller.abort();
+  await assert.rejects(operation, (e) => e.code === "media/canceled");
+  await assert.rejects(
+    waitForAck(new Promise(() => {}), undefined, 5),
+    (e) => e.code === "media/network",
+  );
+  const canceled = new AbortController();
+  canceled.abort();
+  await assert.rejects(
+    waitForAck(Promise.resolve(), canceled.signal),
+    (e) => e.code === "media/canceled",
+  );
+  assert.equal(await waitForAck(Promise.resolve("server-ack")), "server-ack");
+});

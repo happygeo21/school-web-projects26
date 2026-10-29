@@ -4,7 +4,7 @@
 
 ## 실제 런타임 변경
 
-- `index.html`, `media.js`: 상단 독립 제출 버튼, 같은 페이지 폼, 글/사진/포스터/카드뉴스/영상/PDF/링크 유형, 학교 재사용, 이미지·영상/PDF 미리보기, 이미지 1440px JPEG 재인코딩, SHA256·고정 작품 ID, 전송률/취소/재시도, 내 제출 상태. 파일 자체는 sessionStorage에 넣지 않으며 새로고침 후 같은 파일 재선택이 필요합니다. 최초 전송 후 다른 내용을 조용히 덮어쓰지 않습니다.
+- `index.html`, `media.js`: 상단 독립 제출 버튼, 같은 페이지 폼, 글/사진/포스터/카드뉴스/영상/PDF/링크 유형, 학교 재사용, 이미지·영상/PDF 미리보기, 이미지 1440px JPEG 재인코딩, SHA256·고정 작품 ID, 전송률/취소/재시도, 내 제출 상태. RTDB ACK 20초/파일 전송 90초 대기 제한과 서버 ready ACK 검사를 적용합니다. ACK가 늦어도 실제 RTDB 쓰기는 나중에 완료될 수 있어 같은 ID를 유지합니다. 파일 자체는 sessionStorage에 넣지 않으며 새로고침 후 같은 파일 재선택이 필요합니다. 최초 전송 후 다른 내용을 조용히 덮어쓰지 않습니다.
 - `teacher.html`, `media.js`: 검색·상태별 대기함, 비공개 미리보기, 승인/수정 요청/반려/승인 해제/보관/복원, 제목·소개 수정, 학생 원본/수정 이력, 사용량·고아 파일 점검. 보관 복원은 승인 대기로 돌아가 재검토합니다.
 - `public.html`, `media-gallery.js`, `media.css`: PC 3열/태블릿 2열/모바일 1열 피드, 글 타이포 카드, 이미지 지연 로드, 영상 클릭 재생(자동재생 없음), 최신순·6개씩 더 보기, 학교/시설/유형 필터, 상세·출처·지도 연계. 기존 지도·통계·CSV는 유지합니다. 이미지 한 개를 압축해 저장하며 별도 유료 이미지 변환 API는 쓰지 않습니다. 독립 썸네일 생성/보관은 구현하지 않았습니다.
 - `media-provider.js`, `media-policy.js`, `media-config.js`: Firebase Storage SDK 의존 제거, 외부 게이트웨이 Provider와 공통 검증·용량 정책. `MEDIA_UPLOAD_ENABLED=false`는 그대로이고 외부 Provider도 기본 `enabled:false`입니다. 계정 없이 실행하는 Mock은 `security/` 아래에만 있습니다.
@@ -57,7 +57,7 @@ Firebase Third-party Auth 직접 연결은 공식 문서에서 `role: authentica
 
 SQL은 실제 `storage.objects.metadata.size` 합계와 미완료 예약을 보수적으로 합산합니다. 70% 경고, 90%에 도달할 새 영상 거부, 1,000,000,000 bytes 초과 거부입니다. SQL 잠금으로 7학교의 동시 예약을 직렬화하고 UID당 하루 3작품·프로젝트 하루 300작품을 기본 제한합니다. 익명 UID 재생성으로 개인 제한을 피할 수 있어 학교 활동코드/전체 공간·일일 상한도 함께 둡니다. 무차별 함수 호출 자체의 DoS/플랫폼 사용량 소진을 완전히 막는 기능은 아닙니다.
 
-게이트웨이 전송 예약은 월 4GB/40만 다운로드에서 차단합니다. Range도 전체 파일 크기를 예약하므로 **보수적인 앱 추정치**이지 실제 청구 egress/전체 함수 invocation 계측이 아닙니다. 실패·preflight·인증 실패도 플랫폼 호출량을 쓸 수 있습니다. 실제 사용량은 Supabase Dashboard의 **Organization → Usage**와 비교해야 합니다. 자동 유료 결제/전환은 구현하지 않습니다.
+게이트웨이 전송 예약은 월 4GB/40만 다운로드에서 차단합니다. Range도 전체 파일 크기를 예약하므로 **보수적인 앱 추정치**이지 실제 청구 egress/전체 함수 invocation 계측이 아닙니다. 실패·preflight·인증 실패도 플랫폼 호출량을 쓸 수 있습니다. 스토리지 SQL 계측은 해당 프로젝트 범위이므로 조직의 다른 프로젝트 사용량을 포함한 수치라고 주장하지 않습니다. 전용 Free 조직/프로젝트의 기존 사용량도 확인해야 합니다. 실제 사용량은 Supabase Dashboard의 **Organization → Usage**와 비교해야 합니다. 자동 유료 결제/전환은 구현하지 않습니다.
 
 다음은 한 명당 한 작품, 저장 한도 1GB를 기준으로 계산한 **예상치**입니다. 압축 결과/실제 업로드 수는 아직 계측하지 않았습니다.
 
@@ -95,15 +95,17 @@ npm test
 |---|---|---|
 | 로컬 core | 9개 통과 | 기존 좌표/오류/보안 도구와 새 용량 경계 |
 | 기존 가상 브라우저 | 1개 통합 통과 | 7학교·permission_denied/새로고침·동일 ID·교사 수정/이력·CSV·지도·공식 캐시 가상 자료·모바일 회귀 |
-| 새 로컬 미디어 | 6개 통과 | 진짜 Chromium 이미지 재인코딩·WebM 파일 선택/업로드·취소·승인·공개 피드, Mock gateway 소유권/승인해제·불일치 복구·한도, 실제 RSA JWT 검증, Postgres WASM SQL/RLS/예약 검사 |
+| 새 로컬 미디어 | 7개 통과 | 진짜 Chromium 이미지 재인코딩·WebM 파일 선택/업로드·취소·승인·공개 피드, Mock gateway 소유권/승인해제·불일치 복구·한도, 실제 RSA JWT 검증, Postgres WASM SQL/RLS/예약 검사 |
 | Deno check | Edge 진입점 타입 검사 통과 | 실제 Edge 배포/권한/속도 통과와 다름 |
-| 로컬 Firebase Emulator | 다운로드 403으로 실행 불가 | 차단을 우회하지 않음. 기존 배포 없는 CI에서 실행 결과를 별도로 확인 |
+| Firebase Emulator | 로컬 다운로드 403. 구현 커밋 `9cfdcd079720fdfe2075d0b53f219ca6dfe7d8aa`의 [CI 성공](https://github.com/happygeo21/school-web-projects26/actions/runs/40818907191), 1분 58초 | claim 후보 7개 + 합성 이메일 파생본 7개를 실행하는 workflow 통과. 운영 원문 검증은 아님 |
 | 실제 테스트 Firebase/Supabase | **미실행** | 계정/프로젝트/승인 설정 미제공 |
 | 실제 운영 Firebase | **미실행** | 운영 테스트 금지 유지. permission_denied 원인 미확정 |
 
 요청한 추가 20항목 중 텍스트/이미지/영상, 형식/용량, 인증/소유권, 승인 전 비공개/승인/피드/해제, 재시도/정리, 7학교·권한 오류·교사 수정·공식 검색 UI·반응형·CSV·한도는 위 가상 테스트로 다룹니다. **공식 실데이터, 실제 Supabase API/RLS/Range/성능, 실제 Firebase 인증/Rules 4조합·교사 계정 수업 리허설은 미완료**입니다. Mock 파일 업로드 성공을 실제 Supabase 업로드 성공으로 표현하지 않습니다.
 
 기존 awarenessOriginal 필수 조건은 약화하지 않았습니다. 구형 새 제출이 strict 후보에서 거부되는 테스트와 미디어 원본/해시 변경 거부·신규 상태 테스트를 Emulator suite에 추가했습니다. 운영 전체 Rules 원본은 여전히 미제공이며 실제 병합본 검증을 완료로 표시하지 않습니다.
+
+직접 관찰한 Chromium 피드 격자는 1440px 3열 / 800px 2열 / 390px 1열입니다. 가상 작품으로 화면을 확인했고 실제 학생 자료를 사용하지 않았습니다.
 
 새 공개 빌드: Pages 99개 / 해당 Netlify 18개 allowlist. 서버·SQL·Supabase·security/를 산출물에서 제외했습니다. 실제 Netlify preview의 401 보호 뒤 artifact/백엔드는 여전히 사용자 확인 필요입니다. 두 preview를 운영 연결 가능 상태로 취급하며 쓰기 테스트를 하지 않았습니다.
 

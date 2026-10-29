@@ -53,13 +53,11 @@ test("real Chromium + local mock gateway: image compression/upload/retry, video,
       "base64",
     );
     await fill("사진 가상 작품");
-    await form
-      .locator("[name=file]")
-      .setInputFiles({
-        name: "synthetic.png",
-        mimeType: "image/png",
-        buffer: png,
-      });
+    await form.locator("[name=file]").setInputFiles({
+      name: "synthetic.png",
+      mimeType: "image/png",
+      buffer: png,
+    });
     await student
       .locator("#uploadStatus")
       .filter({ hasText: "파일 준비 완료" })
@@ -132,6 +130,7 @@ test("real Chromium + local mock gateway: image compression/upload/retry, video,
       .locator("#galleryStatus")
       .filter({ hasText: "승인 작품 1개" })
       .waitFor();
+    assert.equal(await pub.locator("#galleryMore").isVisible(), false);
     await pub.getByRole("button", { name: "승인 작품 보기" }).click();
     await pub.locator("dialog img").waitFor();
     assert.equal(await pub.locator("video[autoplay]").count(), 0);
@@ -175,13 +174,11 @@ test("real Chromium + local mock gateway: image compression/upload/retry, video,
         setTimeout(() => rec.stop(), 300);
       });
     });
-    await form
-      .locator("[name=file]")
-      .setInputFiles({
-        name: "synthetic.webm",
-        mimeType: "video/webm",
-        buffer: Buffer.from(webm),
-      });
+    await form.locator("[name=file]").setInputFiles({
+      name: "synthetic.webm",
+      mimeType: "video/webm",
+      buffer: Buffer.from(webm),
+    });
     await student
       .locator("#uploadStatus")
       .filter({ hasText: "파일 준비 완료" })
@@ -193,13 +190,11 @@ test("real Chromium + local mock gateway: image compression/upload/retry, video,
       .waitFor();
     assert.equal(f.state.objects.size, 2);
     await fill("잘못된 파일");
-    await form
-      .locator("[name=file]")
-      .setInputFiles({
-        name: "fake.jpg",
-        mimeType: "image/jpeg",
-        buffer: Buffer.from("<html>invalid</html>"),
-      });
+    await form.locator("[name=file]").setInputFiles({
+      name: "fake.jpg",
+      mimeType: "image/jpeg",
+      buffer: Buffer.from("<html>invalid</html>"),
+    });
     await student
       .locator("#uploadStatus")
       .filter({ hasText: "형식이 맞지" })
@@ -207,13 +202,11 @@ test("real Chromium + local mock gateway: image compression/upload/retry, video,
     assert.equal(f.state.objects.size, 2);
     // A genuine in-flight request: cancel must keep the title and not add another file.
     await fill("취소할 작품");
-    await form
-      .locator("[name=file]")
-      .setInputFiles({
-        name: "synthetic.png",
-        mimeType: "image/png",
-        buffer: png,
-      });
+    await form.locator("[name=file]").setInputFiles({
+      name: "synthetic.png",
+      mimeType: "image/png",
+      buffer: png,
+    });
     await student
       .locator("#uploadStatus")
       .filter({ hasText: "파일 준비 완료" })

@@ -21,7 +21,7 @@ import {
 } from "./upgrade-core.js";
 import { draftStore, opaquePublicId, safeTabStorage } from "./draft-store.js";
 import { createMediaProvider, prepareFile } from "./media-provider.js";
-import { WORK_STATUS, publicWork } from "./media-policy.js";
+import { WORK_STATUS, publicWork, waitForAck } from "./media-policy.js";
 import { setupGallery } from "./media-gallery.js";
 export { checkSignature } from "./media-policy.js";
 const $ = (id) => document.getElementById(id),
@@ -335,9 +335,12 @@ export function setupStudentMedia({
       $("uploadStatus").textContent = "작품 정보를 저장하고 있어요…";
       const token = await getAuth(app).currentUser.getIdToken();
       if (getIdentity().uid !== uid) throw { code: "auth/user-changed" };
-      await set(
-        ref(db, `${base()}/${pending.identity}/${pending.key}`),
-        pending.data,
+      await waitForAck(
+        set(
+          ref(db, `${base()}/${pending.identity}/${pending.key}`),
+          pending.data,
+        ),
+        controller.signal,
       );
       if (pending.data.submissionMode === "upload") {
         if (controller.signal.aborted)

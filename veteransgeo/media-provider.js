@@ -121,6 +121,15 @@ export function createMediaProvider(
           fn(value);
         };
         x.open("POST", endpoint + "?action=upload");
+        x.timeout = 90000;
+        x.ontimeout = () =>
+          done(
+            reject,
+            mediaError(
+              "media/network",
+              "업로드 확인이 늦어져요. 같은 작품으로 재시도하거나 외부 링크를 사용해주세요.",
+            ),
+          );
         for (const [k, v] of Object.entries({
           Authorization: `Bearer ${token}`,
           "Content-Type": file.type,
@@ -138,7 +147,8 @@ export function createMediaProvider(
           try {
             d = JSON.parse(x.responseText);
           } catch {}
-          x.status >= 200 && x.status < 300
+          if (!d || typeof d !== "object") d = {};
+          x.status >= 200 && x.status < 300 && d.state === "ready"
             ? done(resolve, d)
             : done(
                 reject,

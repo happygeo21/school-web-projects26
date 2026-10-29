@@ -15,6 +15,44 @@ export const MIME_GROUP = Object.freeze({
 export function mediaError(code, message) {
   return Object.assign(new Error(message), { code });
 }
+// RTDB may queue writes while offline. Keep the same ID, but release the UI on timeout/cancel.
+export function waitForAck(operation, signal, timeout = 20000) {
+  return new Promise((resolve, reject) => {
+    let finished = false;
+    const finish = (fn, value) => {
+      if (finished) return;
+      finished = true;
+      clearTimeout(timer);
+      signal?.removeEventListener("abort", abort);
+      fn(value);
+    };
+    const abort = () =>
+      finish(
+        reject,
+        mediaError(
+          "media/canceled",
+          "취소했어요. 작성 내용은 그대로 두고 같은 작품으로 다시 시도해주세요.",
+        ),
+      );
+    const timer = setTimeout(
+      () =>
+        finish(
+          reject,
+          mediaError(
+            "media/network",
+            "저장 확인이 늦어지고 있어요. 내용은 보관했어요. 같은 작품으로 다시 시도해주세요.",
+          ),
+        ),
+      timeout,
+    );
+    operation.then(
+      (v) => finish(resolve, v),
+      (e) => finish(reject, e),
+    );
+    if (signal?.aborted) abort();
+    else signal?.addEventListener("abort", abort, { once: true });
+  });
+}
 export function validateMedia(file) {
   const group = MIME_GROUP[file?.type];
   if (

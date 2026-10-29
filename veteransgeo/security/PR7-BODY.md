@@ -18,9 +18,9 @@
 ## 테스트와 미검증
 
 - [x] 로컬 core 9개 및 기존 가상 브라우저 통합 1개: 7학교·권한 오류/초안/동일 ID·교사 수정/이력·CSV/지도·모바일
-- [x] 신규 로컬 미디어 6개: Chromium 이미지 압축/WebM 업로드·취소·승인/피드/해제, Mock 게이트웨이 계약, 실제 RSA JWT 검증, Postgres WASM의 SQL/RLS/예약/한도
+- [x] 신규 로컬 미디어 7개: Chromium 이미지 압축/WebM 업로드·취소·승인/피드/해제, Mock 게이트웨이 계약, 실제 RSA JWT 검증, Postgres WASM의 SQL/RLS/예약/한도
 - [x] Edge 진입점 Deno 타입 검사, 공개 산출물 Pages 99개/Netlify 18개 경계 확인
-- [ ] 최신 head의 Firebase Emulator CI 결과는 Checks/최종 검토 기록에서 별도로 확인(로컬 JAR 다운로드 403)
+- [x] 구현 커밋 `9cfdcd079720fdfe2075d0b53f219ca6dfe7d8aa`의 [배포 없는 CI 성공](https://github.com/happygeo21/school-web-projects26/actions/runs/40818907191), 1분 58초. claim 후보 7개 + 합성 이메일 파생본 7개 Emulator 시나리오 포함. 운영 원문 검증과 다름(로컬 JAR 다운로드 403)
 - [ ] 실제 운영 전체 Rules 원문 병합/호환성 검증
 - [ ] 별도 Firebase 테스트 프로젝트 실제 Auth/7학교/구형·신규 4조합/승인 계정 리허설
 - [ ] 실제 Supabase Storage·Edge·RLS·Range·승인 해제 지연·동시 업로드/사용량 실측
