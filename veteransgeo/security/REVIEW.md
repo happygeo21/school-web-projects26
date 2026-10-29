@@ -1,3 +1,5 @@
+> PR #7의 현재 상태·preview 401 결과·최종 A/B/C/D 판정은 [PR7-FINAL-REVIEW.md](PR7-FINAL-REVIEW.md)를 우선 확인하세요. PR 제목/본문 대체안은 PR7-BODY.md이며 API 편집은 차단됐습니다.
+
 > 3차 운영 사전 검증의 최신 상태·교사용 클릭 순서·전환/복구 계획은 [RELEASE-PREFLIGHT.md](RELEASE-PREFLIGHT.md)를 우선 확인하세요. 아래는 2차 구현 검증 기록입니다. 운영 Rules 전체 원문은 아직 제공되지 않았습니다.
 
 # 기억의 좌표 LIVE — 2차 개발·실사용 검증 보고

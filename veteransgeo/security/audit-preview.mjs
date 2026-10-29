@@ -66,14 +66,14 @@ for (const site of ["veteransgeo", "happygeo"]) {
   report.title =
     (home.body.match(/<title>([^<]{0,160})<\/title>/i) || [])[1] || null;
   const config =
-    rootConfig.status === 200 && /projectId\s*:/.test(rootConfig.body)
+    rootConfig.status === 200 && /["']?projectId["']?\s*:/.test(rootConfig.body)
       ? rootConfig
       : nestedConfig;
   report.configStatus = config.status;
-  const project = (config.body.match(/projectId\s*:\s*["']([^"']+)["']/) ||
+  const project = (config.body.match(/["']?projectId["']?\s*:\s*["']([^"']+)["']/) ||
     [])[1];
-  const db = (config.body.match(/databaseURL\s*:\s*["']([^"']+)["']/) || [])[1];
-  const apiKey = (config.body.match(/apiKey\s*:\s*["']([^"']+)["']/) || [])[1];
+  const db = (config.body.match(/["']?databaseURL["']?\s*:\s*["']([^"']+)["']/) || [])[1];
+  const apiKey = (config.body.match(/["']?apiKey["']?\s*:\s*["']([^"']+)["']/) || [])[1];
   report.projectId = safeProject(project);
   try {
     report.databaseHost = new URL(db).hostname;
