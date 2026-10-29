@@ -6,7 +6,7 @@ const http = require("node:http"),
   fs = require("node:fs"),
   path = require("node:path");
 const root = path.resolve(__dirname, "../..");
-const sdk = `const state=window.__fixture;export const initializeApp=()=>({});export const getAuth=()=>state.auth;export const getDatabase=()=>({});export const getStorage=()=>({});export const ref=(db,path='')=>({path});export const push=r=>({path:r.path+'/fixed-id',key:'fixed-id'});export const get=async r=>({exists:()=>r.path.includes('/submissions/'),val:()=>r.path.includes('/teachers/')?true:r.path.includes('/submissions/')?state.record:null});export const set=async(r,d)=>{state.writes.push({path:r.path,data:d});if(state.deny)throw {code:'PERMISSION_DENIED'};state.data[r.path]=d;};export const update=async(r,d)=>{state.writes.push({path:r.path,data:d});};export const remove=async r=>{};export const onValue=(r,fn)=>{state.active++;queueMicrotask(()=>fn({val:()=>r.path.endsWith('/submissions')?state.submissions:r.path.endsWith('/publishedWorks')?(window.__publicWorks||state.publishedWorks):{}}));return()=>{state.active--;};};export const signInAnonymously=async()=>({user:{uid:'fictional-student',isAnonymous:true}});export class GoogleAuthProvider{setCustomParameters(){}}export const signInWithPopup=async()=>({user:state.teacher});export const signInWithEmailAndPassword=signInWithPopup;export const signOut=async()=>state.listener(null);export const onAuthStateChanged=(a,fn)=>{state.listener=u=>{state.auth.currentUser=u;fn(u);};queueMicrotask(()=>state.listener(state.isTeacher?state.teacher:null));return()=>{};};export const getBlob=async()=>new Blob(['test']);export const deleteObject=async()=>{};export const uploadBytesResumable=()=>({then:fn=>Promise.resolve(fn()),on:(name,progress,error,done)=>{progress({bytesTransferred:1,totalBytes:1});queueMicrotask(done);},cancel(){}});`;
+const sdk = `const state=window.__fixture;export const initializeApp=()=>({});export const getAuth=()=>state.auth;export const getDatabase=()=>({});export const getStorage=()=>({});export const ref=(db,path='')=>({path});export const push=r=>{const key='fixture-id-'+(state.keyCounter=(state.keyCounter||0)+1);return {path:r.path+'/'+key,key};};export const get=async r=>{const value=r.path.includes('/teachers/')?true:r.path.includes('/submissions/')?state.record:r.path.includes('/works/')?state.workRecord:r.path.includes('/audit/')?state.audit:null;return {exists:()=>value!=null,val:()=>value};};export const set=async(r,d)=>{state.writes.push({path:r.path,data:d});if(state.deny)throw {code:'PERMISSION_DENIED'};state.data[r.path]=d;};export const update=async(r,d)=>{state.writes.push({path:r.path,data:d});};export const remove=async r=>{};export const onValue=(r,fn)=>{state.active++;queueMicrotask(()=>fn({val:()=>r.path.endsWith('/submissions')?state.submissions:r.path.endsWith('/publishedWorks')?(window.__publicWorks||state.publishedWorks):r.path.endsWith('/works')?(state.works||{}):{}}));return()=>{state.active--;};};export const signInAnonymously=async()=>{const user={uid:'fictional-student',isAnonymous:true,getIdToken:async()=>{if(state.expire)throw {code:'auth/user-token-expired'};return 'fixture-token-not-real';}};state.auth.currentUser=user;return {user};};export class GoogleAuthProvider{setCustomParameters(){}}export const signInWithPopup=async()=>({user:state.teacher});export const signInWithEmailAndPassword=signInWithPopup;export const signOut=async()=>state.listener(null);export const onAuthStateChanged=(a,fn)=>{state.listener=u=>{state.auth.currentUser=u;fn(u);};queueMicrotask(()=>state.listener(state.auth.currentUser||(state.isTeacher?state.teacher:null)));return()=>{};};export const getBlob=async()=>new Blob(['test']);export const deleteObject=async()=>{};export const uploadBytesResumable=()=>({then:fn=>Promise.resolve(fn()),on:(name,progress,error,done)=>{progress({bytesTransferred:1,totalBytes:1});queueMicrotask(done);},cancel(){}});`;
 const leaflet = `const item=()=>({addTo(){return this},on(){return this},setView(){return this},setLatLng(){return this},bindPopup(){return this},openPopup(){return this},invalidateSize(){},removeLayer(){},clearLayers(){},getZoom(){return 12},dragging:{enable(){},disable(){}}});window.L={map:()=>{const m=item();m.handlers={};m.on=(k,fn)=>{m.handlers[k]=fn;return m};window.__map=m;return m;},tileLayer:item,marker:item,layerGroup:item};`;
 test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, official fallback, independent upload; teacher listener cleanup; public gallery", async () => {
   const server = http.createServer((req, res) => {
@@ -115,10 +115,22 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
     await page.locator("#submitBtn").click();
     await page.locator("#msg").filter({ hasText: "저장 권한" }).waitFor();
     assert.match(await page.locator("#rememberSentence").inputValue(), /가상/);
+    const firstAttempt = await page.evaluate(() => window.__fixture.writes[0]);
+    await page.reload();
+    await page.locator("#lockAwareness").waitFor();
+    assert.equal(await page.locator("#awarenessScore").inputValue(), "2");
+    assert.equal(await page.locator("#awarenessScore").isDisabled(), true);
+    assert.match(await page.locator("#rememberSentence").inputValue(), /가상/);
+    await page.locator('[data-step="1"]').click();
+    await page.locator("#confirmLocationBtn").click();
+    await page.locator('[data-step="2"]').click();
     await page.evaluate(() => (window.__fixture.deny = false));
     await page.locator("#submitBtn").click();
     await page.locator("#msg").filter({ hasText: "등록 완료" }).waitFor();
-    const writes = await page.evaluate(() => window.__fixture.writes);
+    const writes = [
+      firstAttempt,
+      ...(await page.evaluate(() => window.__fixture.writes)),
+    ];
     assert.equal(writes.length, 2);
     assert.equal(writes[0].path, writes[1].path);
     assert.equal(writes[1].data.awarenessOriginal.score, 2);
@@ -140,13 +152,11 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
     await form.locator("[name=introduction]").fill("테스트 전용 소개");
     await form.locator("[name=consent]").check();
     await form.locator("[name=submissionMode]").selectOption("upload");
-    await form
-      .locator("[name=file]")
-      .setInputFiles({
-        name: "test.jpg",
-        mimeType: "image/jpeg",
-        buffer: Buffer.from([255, 216, 255, 0]),
-      });
+    await form.locator("[name=file]").setInputFiles({
+      name: "test.jpg",
+      mimeType: "image/jpeg",
+      buffer: Buffer.from([255, 216, 255, 0]),
+    });
     await form.locator("button").first().click();
     await page
       .locator("#uploadStatus")
@@ -166,7 +176,7 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
     assert.equal(
       await page
         .locator("#mediaForm [name=submissionMode] [value=upload]")
-        .evaluate(el=>el.disabled),
+        .evaluate((el) => el.disabled),
       true,
     );
     await page.evaluate(() => (window.__fixture.deny = false));
@@ -197,6 +207,100 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
         mode,
       );
     }
+    // Six additional school flows; S1 was exercised above with deny+reload+retry.
+    for (let school = 2; school <= 7; school++) {
+      await page.evaluate(() => sessionStorage.clear());
+      await page.goto(origin + "/veteransgeo/index.html");
+      await page.locator("#mediaForm").waitFor();
+      await page.evaluate(() => (window.__fixture.deny = false));
+      await page.locator("#school").selectOption("S" + school);
+      await page.locator("#activityCode").fill("TEST");
+      await page.locator("#placeName").fill("가상 시설");
+      await page.locator("#awarenessScore").selectOption("1");
+      await page.locator("#lockAwareness").click();
+      await page.locator('[data-step="1"]').click();
+      await page.locator("#manualLocationBtn").click();
+      await page.evaluate(() =>
+        window.__map.handlers.click({ latlng: { lat: 36, lng: 127 } }),
+      );
+      await page.locator("#confirmLocationBtn").click();
+      await page
+        .locator("#placeDescription")
+        .fill("학교별 가상 장소 설명을 작성합니다.");
+      await page.locator("#sourceType").selectOption("나의 판단");
+      await page.locator("#sourceNote").fill("가상 출처");
+      await page.locator('[data-step="2"]').click();
+      await page
+        .locator("#scoreReason")
+        .fill("가상 테스트의 판단 근거를 작성합니다.");
+      await page
+        .locator("#rememberSentence")
+        .fill("가상 테스트의 기억 문장을 작성합니다.");
+      await page.locator("#keywords").fill("가상 테스트");
+      await page.evaluate(() => (window.__fixture.expire = true));
+      await page.locator("#submitBtn").click();
+      await page.locator("#msg").filter({ hasText: "학생 연결" }).waitFor();
+      assert.equal(
+        await page.evaluate(() => window.__fixture.writes.length),
+        0,
+      );
+      await page.evaluate(() => (window.__fixture.expire = false));
+      await page.locator("#submitBtn").click();
+      await page.locator("#msg").filter({ hasText: "등록 완료" }).waitFor();
+      const w = await page.evaluate(() => window.__fixture.writes[0]);
+      assert.ok(w.path.includes("/S" + school + "/fictional-student/"));
+      assert.equal(w.data.schoolId, "S" + school);
+    }
+    // Verified fixture only: actual production cache remains empty.
+    const facility = {
+      schemaVersion: 1,
+      status: "verified",
+      updatedAt: "2026-10-29",
+      crs: "EPSG:4326",
+      coordinateMapping: "test fixture axes",
+      license: "TEST ONLY",
+      facilities: [
+        {
+          id: "fictional-S1",
+          name: "가상 공식 시설",
+          address: "가상 주소",
+          region: "충남 공주",
+          latitude: 36,
+          longitude: 127,
+          sourceUrl: "https://mfis.mpva.go.kr/fixture",
+          verified: true,
+        },
+      ],
+    };
+    await page.route("**/official-facilities.json", (r) =>
+      r.fulfill({ json: facility }),
+    );
+    await page.evaluate(() => sessionStorage.clear());
+    await page.goto(origin + "/veteransgeo/index.html");
+    await page.locator("#mediaForm").waitFor();
+    await page.locator("#awarenessScore").selectOption("1");
+    await page.locator("#lockAwareness").click();
+    await page.locator("#facilityQuery").fill("가상 공식");
+    await page.locator("#facilityResults button").first().click();
+    assert.equal(
+      await page.locator("#placeName").inputValue(),
+      "가상 공식 시설",
+    );
+    assert.equal(await page.locator("#address").inputValue(), "가상 주소");
+    assert.equal(await page.locator("#lat").inputValue(), "36.000000");
+    assert.equal(
+      await page.locator("#officialStatus").inputValue(),
+      "confirmed",
+    );
+    await page.evaluate(() =>
+      window.__fixture.listener({
+        uid: "different-student",
+        isAnonymous: true,
+        getIdToken: async () => "",
+      }),
+    );
+    assert.equal(await page.locator("#submitBtn").isDisabled(), true);
+    page.once('dialog',d=>d.accept());await page.locator('#clearDraft').click();await page.locator('#mediaForm').waitFor();assert.equal(await page.locator('#placeName').inputValue(),'');
     await page.goto(origin + "/veteransgeo/teacher.html");
     await page.locator("#dash").waitFor({ state: "visible" });
     const record = {
@@ -267,6 +371,85 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
       ),
       true,
     );
+    await page.locator(".pub").click();
+    const publication = await page.evaluate(() =>
+      window.__fixture.writes.at(-1),
+    );
+    assert.match(publication.path, /\/published\/p_[a-f0-9]{64}$/);
+    assert.equal("uid" in publication.data, false);
+    assert.equal("activityCode" in publication.data, false);
+    page.once("dialog", (d) => d.accept());
+    await page.locator(".del").click();
+    const archived = await page.evaluate(
+      () => window.__fixture.writes.at(-1).data,
+    );
+    assert.ok(Object.keys(archived).some((k) => k.endsWith("/deletedAt")));
+    assert.equal(
+      Object.keys(archived).some((k) => k.endsWith("/awarenessScore")),
+      false,
+    );
+    await page.evaluate(
+      () =>
+        (window.__fixture.audit = {
+          test: {
+            before: { placeName: "<img src=x onerror=alert(1)>" },
+            after: { placeName: "가상 수정" },
+            editor: "fictional-teacher",
+            editedAt: 1,
+          },
+        }),
+    );
+    await page.locator(".history").click();
+    await page.locator("dialog pre").waitFor();
+    assert.equal(await page.locator("dialog img").count(), 0);
+    assert.match(await page.locator("dialog pre").textContent(), /가상 수정/);
+    await page.locator("dialog button").click();
+    await page.evaluate(() => {
+      window.__fixture.workRecord = {
+        schoolId: "S1",
+        activityCode: "PRIVATE_ACTIVITY_TEST",
+        facilityName: "가상 시설",
+        title: "가상 작품",
+        type: "홍보 기획안",
+        introduction: "가상 설명",
+        submissionMode: "text",
+        status: "pending",
+        createdAt: 1,
+      };
+      window.__fixture.works = {
+        S1: { "fictional-student": { work: window.__fixture.workRecord } },
+      };
+      window.__fixture.listener(window.__fixture.teacher);
+    });
+    await page
+      .locator("#workList button")
+      .filter({ hasText: "검토 후 공개 승인" })
+      .waitFor();
+    page.once("dialog", (d) => d.accept());
+    await page
+      .locator("#workList button")
+      .filter({ hasText: "검토 후 공개 승인" })
+      .click();
+    const workReview = await page.evaluate(
+      () => window.__fixture.writes.at(-1).data,
+    );
+    const pubEntry = Object.entries(workReview).find(
+      ([k, v]) => k.includes("/publishedWorks/p_") && v,
+    );
+    assert.ok(pubEntry);
+    assert.equal(
+      JSON.stringify(pubEntry[1]).includes("PRIVATE_ACTIVITY_TEST"),
+      false,
+    );
+    assert.equal(
+      JSON.stringify(pubEntry[1]).includes("fictional-student"),
+      false,
+    );
+    assert.equal("entryId" in pubEntry[1], false);
+    assert.equal(
+      Object.keys(workReview).some((k) => k.endsWith("/status")),
+      true,
+    );
     assert.equal(await page.evaluate(() => window.__fixture.active), 3);
     await page.evaluate(() => window.__fixture.listener(null));
     await page.locator("#dash").waitFor({ state: "hidden" });
@@ -310,6 +493,16 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
       .locator("#galleryStatus")
       .filter({ hasText: "승인 작품 0개" })
       .waitFor();
+    assert.equal(
+      (await page.locator("body").textContent()).includes("fictional-student"),
+      false,
+    );
+    await page.setViewportSize({ width: 390, height: 844 });
+    assert.ok(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth + 1,
+      ),
+    );
     assert.deepEqual(errors, []);
     await context.close();
   } finally {

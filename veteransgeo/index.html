@@ -208,13 +208,14 @@ show(0,false);
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getDatabase, ref, push, set, get } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 import { firebaseConfig, DB_ROOT } from "./firebase-config.js";
 import { PROJECT } from "./project-config.js";
 
 import {validateRecord,errorMessage,diagnostic} from "./upgrade-core.js";
 import {setupStudentMedia} from "./media.js";
+import {draftStore,captureFields,restoreFields} from "./draft-store.js";
 import {setupFacilities} from "./official-facilities.js";
 const $=id=>document.getElementById(id);
 $("officialMapLink").href=PROJECT.officialMapUrl;
@@ -344,17 +345,21 @@ $("placeSearchQuery").value=$("placeName").value.trim();updateSearchHint();
 
 ["importance","visibility"].forEach(id=>{const sl=$(id),sc=$(id+"Score");sl.oninput=()=>sc.textContent=sl.value;});
 
-let db=null,uid=null,app=null;
+let db=null,uid=null,app=null,pending=null,submitted=false,awarenessSnapshot=null;
+let tabStorage;try{tabStorage=sessionStorage;}catch{}
+const recovery=draftStore(tabStorage,"memory:v3:student"),savedDraft=recovery.read();
+let persistDraft=()=>{},draftCleared=false;
 async function connectStudent(){
  try{
-  app=app||initializeApp(firebaseConfig);const auth=getAuth(app);db=getDatabase(app);
+  app=app||initializeApp(firebaseConfig);const auth=getAuth(app);db=getDatabase(app);await auth.authStateReady?.();
+  if(auth.currentUser&&!auth.currentUser.isAnonymous){$("conn").textContent="교사 계정이 연결되어 있어요. 교사용 화면에서 로그아웃한 뒤 학생 연결을 눌러주세요.";uid=null;$("submitBtn").disabled=true;return;}
   const cred=auth.currentUser?.isAnonymous?{user:auth.currentUser}:await signInAnonymously(auth);uid=cred.user.uid;
   $("conn").textContent="● 학생 연결 완료 · 저장 권한은 제출 때 확인해요";$("conn").className="status ok";$("submitBtn").disabled=false;
- }catch(e){uid=null;diagnostic('auth',e);$("conn").textContent=errorMessage(e);$("conn").className="status err";}
+ }catch(e){uid=null;$("submitBtn").disabled=true;diagnostic('auth',e);$("conn").textContent=errorMessage(e);$("conn").className="status err";}
 }
 const reconnect=document.createElement('button');reconnect.textContent='학생 연결 다시 시도';reconnect.type='button';reconnect.className='gray';$('conn').after(reconnect);reconnect.onclick=connectStudent;
 await connectStudent();
-let awarenessSnapshot=null;
+
 const lock=document.createElement('button');lock.type='button';lock.className='primary';lock.id='lockAwareness';lock.textContent='탐색 시작 · 사전 응답 확정';$('awarenessScore').after(lock);const locked=document.createElement('input');locked.type='hidden';locked.id='awarenessLocked';lock.after(locked);
 lock.onclick=()=>{if(!$('awarenessScore').value){alert('검색 전 인지도를 먼저 골라주세요.');return;}awarenessSnapshot={score:Number($('awarenessScore').value),capturedAt:Date.now(),placeName:$('placeName').value.trim()||'장소 미선정',timing:'before-exploration'};$('awarenessScore').disabled=true;$('awarenessLocked').value='yes';lock.disabled=true;lock.textContent='사전 응답 보존됨 · 이제 장소를 탐색하세요';};
 function canExplore(){if(awarenessSnapshot)return true;alert('자료를 보기 전 인지도를 고르고 「탐색 시작」을 눌러주세요.');return false;}
@@ -362,11 +367,21 @@ for(const id of ['officialMapLink','officialMapLink2','placeAutoSearchBtn','goog
 document.addEventListener('memory-step-change',()=>{if(!$('awarenessScore').disabled&&document.querySelector('[data-step="1"]')?.getAttribute('aria-current')==='step')canExplore();});
 setupFacilities({canExplore,currentSchool,setPickedLocation,clearLocation});
 setupStudentMedia({app,getIdentity:()=>({uid,schoolId:$('school').value,activityCode:$('activityCode').value})});
-let pending=null,submitted=false;
+const recoveryNote=document.createElement('div');recoveryNote.className='note';recoveryNote.innerHTML='<span id="draftStatus" role="status">이 탭에서 작성 중인 내용을 2시간 동안 임시 보관해 새로고침 후 복원해요. 공용 기기에서는 마친 뒤 초안을 지워주세요. 파일·비밀번호는 보관하지 않아요.</span> <button id="clearDraft" type="button" class="gray">임시 초안 지우기</button>';$('conn').parentElement.after(recoveryNote);
+let recoveryOwner=savedDraft?.owner||null;
+if(savedDraft){restoreFields(savedDraft.fields);awarenessSnapshot=savedDraft.awareness||null;pending=savedDraft.pending||null;if(awarenessSnapshot){$('awarenessScore').value=String(awarenessSnapshot.score);$('awarenessScore').disabled=true;$('awarenessLocked').value='yes';lock.disabled=true;lock.textContent='복원된 사전 응답 · 변경하지 않아요';}if($('lat').value&&$('lng').value)setPickedLocation(Number($('lat').value),Number($('lng').value),$('placeName').value);$('locationConfirmed').value='';$('draftStatus').textContent='임시 초안을 복원했어요. 위치는 다시 확인해주세요. 재시도 중이었다면 같은 기록과 ID를 사용해요.';}
+persistDraft=()=>{if(submitted||draftCleared)return;const owner=pending?.owner||recoveryOwner||uid;const ok=recovery.save({fields:captureFields(),awareness:awarenessSnapshot,pending,owner});if(!ok)$('draftStatus').textContent='이 브라우저에서 임시 보관을 사용할 수 없어요. 화면을 닫기 전에 작성 내용을 따로 보관해주세요.';};
+$('clearDraft').onclick=()=>{if(!confirm('이 탭의 임시 초안을 지우고 처음부터 시작할까요?'))return;draftCleared=true;recovery.clear();location.reload();};
+for(const event of ['input','change'])document.addEventListener(event,e=>{if(e.target.closest('#mediaForm'))return;persistDraft();});lock.addEventListener('click',persistDraft);window.addEventListener('pagehide',persistDraft);document.addEventListener('memory-draft-change',persistDraft);
+if(app)onAuthStateChanged(getAuth(app),user=>{if(!user?.isAnonymous||user.uid!==uid){uid=null;$('submitBtn').disabled=true;$('conn').textContent='학생 연결이 바뀌었어요. 작성 내용은 보관했어요. 학생 연결을 다시 확인해주세요.';persistDraft();}});
+
 
 const v=id=>$(id).value.trim();
 $("submitBtn").onclick=async()=>{
   if(submitted||!uid||!db)return;
+  const user=getAuth(app).currentUser;
+  if(!user?.isAnonymous||user.uid!==uid||(recoveryOwner&&recoveryOwner!==uid)||(pending?.owner&&pending.owner!==uid)){$('msg').textContent='연결된 계정이 초안 작성 때와 달라요. 다른 학생의 ID로 재전송하지 않아요. 기존 초안을 따로 보관하고 선생님께 문의해주세요.';return;}
+
   if(!awarenessSnapshot){$("msg").textContent="탐색 시작 버튼으로 사전 인지도를 먼저 확정해주세요.";return;}
   const lat=v("lat"),lng=v("lng");
   if(!v("awarenessScore")||!v("sourceType")||!v("sourceNote")){
@@ -385,17 +400,21 @@ $("submitBtn").onclick=async()=>{
   };
   try{validateRecord(data);if(v('locationConfirmed')!=='yes')throw Error('위치를 확정해주세요.');}catch(e){$('msg').textContent=e.message;return;}
   const identity=`${data.schoolId}/${uid}`;
-  if(!pending||pending.identity!==identity){let saved=null;try{saved=sessionStorage.getItem('memory:submission:'+identity);}catch{}pending={identity,key:saved||push(ref(db,`${DB_ROOT}/submissions/${identity}`)).key,createdAt:Date.now()};try{sessionStorage.setItem('memory:submission:'+identity,pending.key);}catch{}}
-  data.createdAt=pending.createdAt;data.facilityId=$('placeName').dataset.facilityId||'';pending.data=pending.data||data;
+  if(!pending||pending.identity!==identity){pending={identity,owner:uid,key:push(ref(db,`${DB_ROOT}/submissions/${identity}`)).key,createdAt:Date.now()};}
+  if(pending.identity!==identity||pending.owner!==uid||!/^[A-Za-z0-9_-]+$/.test(pending.key)){$('msg').textContent='임시 제출 경로를 확인하지 못했어요. 선생님께 문의해주세요.';return;}
+  data.createdAt=pending.createdAt;data.facilityId=$('placeName').dataset.facilityId||'';pending.data=pending.data||data;recoveryOwner=uid;persistDraft();
+  try{validateRecord(pending.data);if(pending.data.schoolId!==data.schoolId)throw Error('학교가 다른 임시 기록이에요.');}catch(e){$('msg').textContent=e.message;return;}
   $('submitBtn').disabled=true;$('msg').textContent='제출 중… 연결이 지연되어도 같은 기록으로 재시도해요.';
   try{
+    await user.getIdToken();
+    if(getAuth(app).currentUser?.uid!==uid)throw {code:"auth/user-changed"};
     const p=ref(db,`${DB_ROOT}/submissions/${pending.identity}/${pending.key}`);
     await Promise.race([set(p,pending.data),new Promise((_,reject)=>setTimeout(()=>reject({code:'network-timeout'}),20000))]);
-    submitted=true;try{sessionStorage.removeItem('memory:submission:'+pending.identity);}catch{}
+    submitted=true;recovery.clear();
     $("msg").textContent="✓ 등록 완료! 이제 다른 지역의 기억과 비교해 보세요.";
     $("compareMission").classList.remove("hidden");
     $("compareMission").scrollIntoView({behavior:"smooth",block:"center"});
   }catch(e){diagnostic("submit",e);$("msg").textContent=errorMessage(e)+" 같은 제출 ID와 최초 시도 내용으로 재시도해요.";}
-  finally{$("submitBtn").disabled=submitted;}
+  finally{$("submitBtn").disabled=submitted||!uid;persistDraft();}
 };
 </script></body></html>

@@ -1,2 +1,4 @@
 [build]
-  publish = "."
+  base = "veteransgeo"
+  command = "node security/build-netlify.mjs"
+  publish = "_public"

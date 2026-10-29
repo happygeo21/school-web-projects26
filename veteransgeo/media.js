@@ -7,6 +7,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-storage.js";
 import {
   getDatabase,
+  get,
   ref,
   push,
   set,
@@ -23,6 +24,7 @@ import {
   diagnostic,
   externalLink,
 } from "./upgrade-core.js";
+import { draftStore, opaquePublicId, safeTabStorage } from "./draft-store.js";
 const $ = (id) => document.getElementById(id);
 const escape = (s) =>
   String(s ?? "").replace(
@@ -83,9 +85,40 @@ export function setupStudentMedia({ app, getIdentity }) {
   box.className = "card";
   box.innerHTML = `<h2>홍보 결과물 올리기</h2><p>탐구 기록 없이 작품만 제출해도 돼요. 얼굴·이름·연락처·사진 위치정보를 지우고, 직접 만들었거나 사용 허락을 받은 파일만 올리세요. 교사 검토 전에는 공개하지 않아요.</p><form id="mediaForm"><label>학교<select name="schoolId">${PROJECT.schools.map((s) => `<option value="${s.id}">${escape(s.school)}</option>`).join("")}</select></label><label>활동코드<input name="activityCode" maxlength="20" required></label><label>시설명<input name="facilityName" maxlength="100" required></label><label>작품 제목<input name="title" maxlength="100" required></label><label>유형<select name="type">${MEDIA_TYPES.map((t) => `<option>${t}</option>`).join("")}</select></label><label>소개 글<textarea name="introduction" maxlength="500" required></textarea></label><label>탐구 제출 ID (선택)<input name="entryId" maxlength="120"></label><label>제출 방식<select name="submissionMode"><option value="text">텍스트 소개·홍보 기획안</option><option value="external">외부 자료 링크</option><option value="upload">직접 파일 업로드 (설정 확인 후)</option></select></label><label>외부 자료 링크<input name="externalUrl" type="url" maxlength="2000" placeholder="https://drive.google.com/…"></label><p>Google Drive·문서·YouTube 링크만 지원합니다. 원본의 공개 범위는 해당 서비스에서 직접 정해야 해요. 링크 제출만으로 원본이 비공개가 되지는 않아요. 승인 전 링크는 이 앱의 공개 화면에 표시하지 않습니다.</p><label>파일<input type="file" name="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,application/pdf"></label><p>이미지 10MB · 영상 100MB · PDF 20MB. 브라우저는 실제 파일 내용 검사도 하지만, 공개 전 교사가 파일을 직접 확인해야 해요.</p><label><input type="checkbox" name="consent" required style="width:auto"> 개인정보·위치정보·저작권을 확인했어요.</label><button class="primary">작품 제출 · 실패 후 같은 작품으로 재시도</button><button type="button" id="cancelUpload" class="gray">진행 취소</button><progress id="uploadProgress" max="100" value="0" style="width:100%"></progress><p id="uploadStatus" role="status"></p></form>`;
   document.querySelector(".wrap").append(box);
-  let pending = null,
+  const store = draftStore(safeTabStorage(), "memory:v3:work");
+  const restored = store.read();
+  let pending = restored?.pending || null,
     task = null;
   const form = $("mediaForm");
+  if (restored?.fields)
+    for (const [key, value] of Object.entries(restored.fields))
+      if (form.elements[key] && key !== "file" && typeof value === "string")
+        form.elements[key].value = value;
+  const saveDraft = () =>
+    store.save({
+      fields: Object.fromEntries(
+        [...new FormData(form)].filter(
+          ([k, v]) => k !== "file" && typeof v === "string",
+        ),
+      ),
+      pending,
+    });
+  form.addEventListener("input", saveDraft);
+  form.addEventListener("change", saveDraft);
+  window.addEventListener("pagehide", saveDraft);
+  const clear = document.createElement("button");
+  clear.type = "button";
+  clear.className = "gray";
+  clear.textContent = "작품 임시 초안 지우기";
+  clear.onclick = () => {
+    if (confirm("작품 초안을 지울까요?")) {
+      store.clear();
+      pending = null;
+      form.reset();
+    }
+  };
+  form.append(clear);
+
   if (!MEDIA_UPLOAD_ENABLED) {
     form.elements.submissionMode.querySelector("[value=upload]").disabled =
       true;
@@ -98,6 +131,10 @@ export function setupStudentMedia({ app, getIdentity }) {
     const button = form.querySelector("button");
     try {
       const { uid } = getIdentity();
+      if (pending?.owner && pending.owner !== uid)
+        throw Error(
+          "작성 계정이 바뀌었어요. 이전 작품을 다른 계정으로 전송하지 않아요.",
+        );
       if (!uid || !app) throw { code: "auth/not-connected" };
       const data = workData(form),
         file = form.elements.file.files[0];
@@ -115,22 +152,31 @@ export function setupStudentMedia({ app, getIdentity }) {
       if (!pending || pending.identity !== identity)
         pending = {
           identity,
+          owner: uid,
           key: push(ref(db, base() + "/" + identity)).key,
           createdAt: Date.now(),
         };
       const path = `student-media/${pending.identity}/${pending.key}/file`;
+      pending.owner = uid;
+      saveDraft();
       button.disabled = true;
       if (data.submissionMode !== "upload") {
         delete data.file;
-        await set(ref(db, `${base()}/${pending.identity}/${pending.key}`), {
+        pending.data = pending.data || {
           ...data,
           status: "pending",
           createdAt: pending.createdAt,
-        });
+        };
+        saveDraft();
+        await set(
+          ref(db, `${base()}/${pending.identity}/${pending.key}`),
+          pending.data,
+        );
         $("uploadStatus").textContent =
           "제출 완료! 선생님이 링크 내용을 검토한 뒤 공개할 수 있어요.";
         pending = null;
         form.reset();
+        store.clear();
         return;
       }
       $("uploadStatus").textContent = "파일을 올리고 있어요…";
@@ -161,6 +207,7 @@ export function setupStudentMedia({ app, getIdentity }) {
         "제출 완료! 선생님이 검토한 뒤 공개할 수 있어요.";
       pending = null;
       form.reset();
+      store.clear();
     } catch (err) {
       diagnostic("media", err);
       $("uploadStatus").textContent = err.code
@@ -203,17 +250,18 @@ export function setupTeacherMedia({ app, db, user, subscribe }) {
   section.innerHTML =
     '<h2>학생 홍보 작품 검토</h2><p>공개 전 얼굴·개인정보·EXIF 위치정보·저작권·사실관계를 직접 확인하세요. 승인한 파일의 별도 공개 사본만 전시에 사용합니다.</p><p role="status" id="workStatus"></p><div id="workList"></div>';
   $("dash").append(section);
-  let urls = [], live = true;
+  let urls = [],
+    live = true;
   const fail = (e) => {
-    if(!live)return;
+    if (!live) return;
     diagnostic("review", e);
     $("workStatus").textContent = errorMessage(e);
   };
   subscribe(
     onValue(
       ref(db, base()),
-      (snap) => {
-        if(!live)return;
+      async (snap) => {
+        if (!live) return;
         urls.forEach((f) => f());
         urls = [];
         $("workList").replaceChildren();
@@ -223,10 +271,45 @@ export function setupTeacherMedia({ app, db, user, subscribe }) {
               const entry = document.createElement("article");
               entry.className = "entry";
               entry.innerHTML = `<h3>${escape(w.title)}</h3><p>${escape(w.schoolId)} · ${escape(w.facilityName)} · ${escape(w.type)} · ${escape(w.status)}</p><p>${escape(w.introduction)}</p>`;
-              const key = `${school}_${uid}_${id}`,
+              const key = await opaquePublicId(`${school}_${uid}_${id}`),
                 privateRef = ref(db, `${base()}/${school}/${uid}/${id}`),
                 publicRef = ref(db, `${DB_ROOT}/publishedWorks/${key}`),
                 publicPath = `published-media/${key}/file`;
+              if (!live) return;
+              const privatePath = `${base()}/${school}/${uid}/${id}`,
+                legacyKey = `${school}_${uid}_${id}`;
+              async function reviewWork(status, publicData = null, patch = {}) {
+                const current = await get(ref(db, privatePath));
+                if (
+                  !current.exists() ||
+                  (current.val().revision || 0) !== (w.revision || 0)
+                )
+                  throw Error(
+                    "다른 교사의 변경이 있어요. 목록을 다시 확인해주세요.",
+                  );
+                const timestamp = Date.now(),
+                  changes = {};
+                for (const [field, value] of Object.entries({
+                  ...patch,
+                  status,
+                  reviewedBy: user.uid,
+                  reviewedAt: timestamp,
+                  revision: (w.revision || 0) + 1,
+                }))
+                  changes[`${privatePath}/${field}`] = value;
+                changes[`${DB_ROOT}/publishedWorks/${key}`] = publicData;
+                changes[`${DB_ROOT}/publishedWorks/${legacyKey}`] = null;
+                const logId = push(
+                  ref(db, `${DB_ROOT}/workAudit/${legacyKey}`),
+                ).key;
+                changes[`${DB_ROOT}/workAudit/${legacyKey}/${logId}`] = {
+                  before: w,
+                  after: { ...w, ...patch, status },
+                  editor: user.uid,
+                  editedAt: timestamp,
+                };
+                await update(ref(db), changes);
+              }
               const button = (label, fn) => {
                 const b = document.createElement("button");
                 b.className = "gray";
@@ -262,7 +345,6 @@ export function setupTeacherMedia({ app, db, user, subscribe }) {
               });
               async function unpublish() {
                 if (["external", "text"].includes(w.submissionMode)) {
-                  await remove(publicRef);
                   return;
                 }
                 try {
@@ -270,7 +352,6 @@ export function setupTeacherMedia({ app, db, user, subscribe }) {
                 } catch (e) {
                   if (e.code !== "storage/object-not-found") throw e;
                 }
-                await remove(publicRef);
               }
               button("검토 후 공개 승인", async () => {
                 if (
@@ -287,13 +368,12 @@ export function setupTeacherMedia({ app, db, user, subscribe }) {
                 )
                   return;
                 if (["external", "text"].includes(w.submissionMode)) {
-                  await set(publicRef, {
+                  await reviewWork("approved", {
                     schoolId: school,
                     facilityName: w.facilityName,
                     title: w.title,
                     type: w.type,
                     introduction: w.introduction,
-                    entryId: w.entryId || "",
                     submissionMode: w.submissionMode,
                     ...(w.submissionMode === "external"
                       ? { externalUrl: externalLink(w.externalUrl) }
@@ -301,11 +381,7 @@ export function setupTeacherMedia({ app, db, user, subscribe }) {
                     approvedAt: Date.now(),
                     status: "approved",
                   });
-                  await update(privateRef, {
-                    status: "approved",
-                    reviewedAt: Date.now(),
-                    reviewedBy: user.uid,
-                  });
+
                   return;
                 }
                 const file = await getBlob(
@@ -321,22 +397,16 @@ export function setupTeacherMedia({ app, db, user, subscribe }) {
                     cacheControl: "no-store",
                   },
                 );
-                await set(publicRef, {
+                await reviewWork("approved", {
                   schoolId: school,
                   facilityName: w.facilityName,
                   title: w.title,
                   type: w.type,
                   introduction: w.introduction,
-                  entryId: w.entryId || "",
                   storagePath: publicPath,
                   contentType: w.contentType,
                   approvedAt: Date.now(),
                   status: "approved",
-                });
-                await update(privateRef, {
-                  status: "approved",
-                  reviewedAt: Date.now(),
-                  reviewedBy: user.uid,
                 });
               });
               for (const [label, status] of [
@@ -345,11 +415,7 @@ export function setupTeacherMedia({ app, db, user, subscribe }) {
               ])
                 button(label, async () => {
                   await unpublish();
-                  await update(privateRef, {
-                    status,
-                    reviewedAt: Date.now(),
-                    reviewedBy: user.uid,
-                  });
+                  await reviewWork(status);
                 });
               button("제목·소개 수정", async () => {
                 const title = prompt("작품 제목", w.title);
@@ -364,13 +430,7 @@ export function setupTeacherMedia({ app, db, user, subscribe }) {
                 )
                   throw Error("제목·소개 글 길이를 확인해주세요.");
                 await unpublish();
-                await update(privateRef, {
-                  title,
-                  introduction,
-                  status: "pending",
-                  reviewedAt: Date.now(),
-                  reviewedBy: user.uid,
-                });
+                await reviewWork("pending", null, { title, introduction });
               });
               $("workList").append(entry);
             }
@@ -379,7 +439,7 @@ export function setupTeacherMedia({ app, db, user, subscribe }) {
     ),
   );
   return () => {
-    live=false;
+    live = false;
     urls.forEach((f) => f());
     section.remove();
   };
@@ -422,6 +482,41 @@ export function setupPublicMedia({ app, db }) {
             a.rel = "noopener noreferrer";
             a.textContent = "승인된 외부 자료 열기";
             e.append(a);
+            const url = new URL(a.href);
+            let embed = null;
+            if (url.hostname === "drive.google.com") {
+              const m = url.pathname.match(
+                /^\/file\/d\/([A-Za-z0-9_-]+)(?:\/|$)/,
+              );
+              if (m) embed = `https://drive.google.com/file/d/${m[1]}/preview`;
+            }
+            const videoId =
+              url.hostname === "youtu.be"
+                ? url.pathname.slice(1)
+                : url.hostname === "www.youtube.com"
+                  ? url.searchParams.get("v")
+                  : null;
+            if (videoId && /^[A-Za-z0-9_-]{11}$/.test(videoId))
+              embed = `https://www.youtube-nocookie.com/embed/${videoId}`;
+            if (embed) {
+              const consent = document.createElement("button");
+              consent.textContent = "외부 미리보기 열기 (외부 서비스에 연결)";
+              consent.onclick = () => {
+                const frame = document.createElement("iframe");
+                frame.src = embed;
+                frame.title = w.title;
+                frame.loading = "lazy";
+                frame.referrerPolicy = "no-referrer";
+                frame.setAttribute(
+                  "sandbox",
+                  "allow-scripts allow-same-origin allow-presentation",
+                );
+                frame.style.cssText = "width:100%;height:320px;border:0";
+                e.append(frame);
+                consent.disabled = true;
+              };
+              e.append(consent);
+            }
           } else urls.push(await preview(app, w.storagePath, e, w.contentType));
           b.disabled = true;
         } catch {

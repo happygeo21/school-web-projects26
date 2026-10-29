@@ -1,0 +1,40 @@
+name: Veteransgeo isolated review (no deployment)
+on:
+  push:
+    branches: [codex/veteransgeo-upgrade]
+    paths: ['veteransgeo/**', 'scripts/public-files.json', '.github/workflows/veteransgeo-review.yml']
+  pull_request:
+    paths: ['veteransgeo/**', 'scripts/public-files.json', '.github/workflows/veteransgeo-review.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: veteransgeo/security/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - run: npm ci
+        working-directory: veteransgeo/security
+      - run: npx playwright install --with-deps chromium
+        working-directory: veteransgeo/security
+      - run: npm run test:core
+        working-directory: veteransgeo/security
+      - name: Browser fixtures (not production Firebase)
+        run: VETERANSGEO_BROWSER="$(node -p "require('playwright').chromium.executablePath()")" npm run test:browser
+        working-directory: veteransgeo/security
+      - name: Real local Emulator Rules tests (demo project only)
+        run: npm test
+        working-directory: veteransgeo/security
+      - run: node scripts/build-public-site.mjs
+      - run: node scripts/verify-public-site.mjs
+      - run: node veteransgeo/security/build-netlify.mjs

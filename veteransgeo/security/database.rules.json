@@ -14,8 +14,8 @@
           "$uid": {
             ".read": "(auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true) || (auth != null && auth.uid == $uid && auth.token.firebase.sign_in_provider == 'anonymous')",
             "$id": {
-              ".write": "(auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true) || (auth != null && auth.uid == $uid && auth.token.firebase.sign_in_provider == 'anonymous' && $school.matches(/^S[1-7]$/) && (!data.exists() || newData.val() == data.val()) && newData.exists())",
-              ".validate": "newData.hasChildren([\"schoolId\", \"createdAt\", \"activityCode\", \"placeName\", \"placeDescription\", \"latitude\", \"longitude\", \"awarenessScore\", \"importance\", \"visibility\", \"scoreReason\", \"sourceType\", \"sourceNote\", \"rememberSentence\", \"keywords\", \"category\", \"officialStatus\", \"placeOrigin\"]) && (!data.exists() || newData.child('awarenessScore').val() == data.child('awarenessScore').val()) && (data.exists() || newData.child('awarenessOriginal').exists()) && (!data.exists() || newData.val() == data.val() || (newData.child('revision').val() == (data.child('revision').exists() ? data.child('revision').val()+1 : 1))) && (!data.child('awarenessOriginal').exists() || newData.child('awarenessOriginal').val() == data.child('awarenessOriginal').val())",
+              ".write": "newData.exists() && ((auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true) || (auth != null && auth.uid == $uid && auth.token.firebase.sign_in_provider == 'anonymous' && $school.matches(/^S[1-7]$/) && (!data.exists() || (newData.child('activityCode').val() == data.child('activityCode').val() && newData.child('placeName').val() == data.child('placeName').val() && newData.child('placeDescription').val() == data.child('placeDescription').val() && newData.child('address').val() == data.child('address').val() && newData.child('scoreReason').val() == data.child('scoreReason').val() && newData.child('sourceNote').val() == data.child('sourceNote').val() && newData.child('rememberSentence').val() == data.child('rememberSentence').val() && newData.child('keywords').val() == data.child('keywords').val() && newData.child('message').val() == data.child('message').val() && newData.child('latitude').val() == data.child('latitude').val() && newData.child('longitude').val() == data.child('longitude').val() && newData.child('awarenessScore').val() == data.child('awarenessScore').val() && newData.child('importance').val() == data.child('importance').val() && newData.child('visibility').val() == data.child('visibility').val() && newData.child('category').val() == data.child('category').val() && newData.child('sourceType').val() == data.child('sourceType').val() && newData.child('placeOrigin').val() == data.child('placeOrigin').val() && newData.child('officialStatus').val() == data.child('officialStatus').val() && newData.child('schoolId').val() == data.child('schoolId').val() && newData.child('createdAt').val() == data.child('createdAt').val() && newData.child('schemaVersion').val() == data.child('schemaVersion').val() && newData.child('facilityId').val() == data.child('facilityId').val() && newData.child('updatedBy').val() == data.child('updatedBy').val() && newData.child('updatedAt').val() == data.child('updatedAt').val() && newData.child('revision').val() == data.child('revision').val() && newData.child('awarenessOriginal/score').val() == data.child('awarenessOriginal/score').val() && newData.child('awarenessOriginal/capturedAt').val() == data.child('awarenessOriginal/capturedAt').val() && newData.child('awarenessOriginal/placeName').val() == data.child('awarenessOriginal/placeName').val() && newData.child('awarenessOriginal/timing').val() == data.child('awarenessOriginal/timing').val() && newData.child('deletedAt').val() == data.child('deletedAt').val() && newData.child('deletedBy').val() == data.child('deletedBy').val()))))",
+              ".validate": "newData.hasChildren([\"schoolId\", \"createdAt\", \"activityCode\", \"placeName\", \"placeDescription\", \"latitude\", \"longitude\", \"awarenessScore\", \"importance\", \"visibility\", \"scoreReason\", \"sourceType\", \"sourceNote\", \"rememberSentence\", \"keywords\", \"category\", \"officialStatus\", \"placeOrigin\"]) && (!data.exists() || newData.child('awarenessScore').val() == data.child('awarenessScore').val()) && (data.exists() || newData.child('awarenessOriginal').exists()) && (!data.child('awarenessOriginal').exists() || (newData.child('awarenessOriginal/score').val() == data.child('awarenessOriginal/score').val() && newData.child('awarenessOriginal/capturedAt').val() == data.child('awarenessOriginal/capturedAt').val() && newData.child('awarenessOriginal/placeName').val() == data.child('awarenessOriginal/placeName').val() && newData.child('awarenessOriginal/timing').val() == data.child('awarenessOriginal/timing').val())) && (!data.exists() || (newData.child('activityCode').val() == data.child('activityCode').val() && newData.child('placeName').val() == data.child('placeName').val() && newData.child('placeDescription').val() == data.child('placeDescription').val() && newData.child('address').val() == data.child('address').val() && newData.child('scoreReason').val() == data.child('scoreReason').val() && newData.child('sourceNote').val() == data.child('sourceNote').val() && newData.child('rememberSentence').val() == data.child('rememberSentence').val() && newData.child('keywords').val() == data.child('keywords').val() && newData.child('message').val() == data.child('message').val() && newData.child('latitude').val() == data.child('latitude').val() && newData.child('longitude').val() == data.child('longitude').val() && newData.child('awarenessScore').val() == data.child('awarenessScore').val() && newData.child('importance').val() == data.child('importance').val() && newData.child('visibility').val() == data.child('visibility').val() && newData.child('category').val() == data.child('category').val() && newData.child('sourceType').val() == data.child('sourceType').val() && newData.child('placeOrigin').val() == data.child('placeOrigin').val() && newData.child('officialStatus').val() == data.child('officialStatus').val() && newData.child('schoolId').val() == data.child('schoolId').val() && newData.child('createdAt').val() == data.child('createdAt').val() && newData.child('schemaVersion').val() == data.child('schemaVersion').val() && newData.child('facilityId').val() == data.child('facilityId').val() && newData.child('updatedBy').val() == data.child('updatedBy').val() && newData.child('updatedAt').val() == data.child('updatedAt').val() && newData.child('revision').val() == data.child('revision').val() && newData.child('awarenessOriginal/score').val() == data.child('awarenessOriginal/score').val() && newData.child('awarenessOriginal/capturedAt').val() == data.child('awarenessOriginal/capturedAt').val() && newData.child('awarenessOriginal/placeName').val() == data.child('awarenessOriginal/placeName').val() && newData.child('awarenessOriginal/timing').val() == data.child('awarenessOriginal/timing').val() && newData.child('deletedAt').val() == data.child('deletedAt').val() && newData.child('deletedBy').val() == data.child('deletedBy').val()) || newData.child('revision').val() == (data.child('revision').exists() ? data.child('revision').val()+1 : 1))",
               "activityCode": {
                 ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 20"
               },
@@ -80,7 +80,7 @@
                 ".validate": "newData.val() == 2"
               },
               "awarenessOriginal": {
-                ".validate": "newData.hasChildren(['score','capturedAt','placeName','timing']) && newData.child('score').val() == newData.parent().child('awarenessScore').val() && (!data.exists() || newData.val() == data.val())",
+                ".validate": "newData.hasChildren(['score','capturedAt','placeName','timing']) && newData.child('score').val() == newData.parent().child('awarenessScore').val()",
                 "score": {
                   ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 4"
                 },
@@ -107,10 +107,16 @@
                 ".validate": "auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true && newData.isNumber() && newData.val() <= now"
               },
               "$other": {
-                ".validate": false
+                ".validate": "data.exists() && newData.val() == data.val()"
               },
               "revision": {
-                ".validate": "newData.isNumber() && ((!data.exists() && newData.val() == 1) || newData.val() == data.val()+1)"
+                ".validate": "newData.isNumber() && newData.val()%1 == 0 && (newData.val() == data.val() || (!data.exists() && newData.val() == 1) || newData.val() == data.val()+1)"
+              },
+              "deletedAt": {
+                ".validate": "auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true && newData.isNumber() && newData.val() > 0 && newData.val() <= now"
+              },
+              "deletedBy": {
+                ".validate": "auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true && newData.val() == auth.uid"
               }
             }
           }
@@ -119,7 +125,67 @@
       "published": {
         ".read": true,
         "$key": {
-          ".write": "auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true"
+          ".write": "auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true && (!newData.exists() || $key.matches(/^p_[a-f0-9]{64}$/))",
+          "publishedAt": {
+            ".validate": "newData.isNumber() && newData.val() <= now"
+          },
+          "schoolId": {
+            ".validate": "newData.isString() && newData.val().matches(/^S[1-7]$/)"
+          },
+          "category": {
+            ".validate": "newData.val() == \"일제강점기·독립운동\" || newData.val() == \"6·25전쟁·호국\" || newData.val() == \"민주화운동\" || newData.val() == \"경찰·치안\" || newData.val() == \"소방·재난안전\" || newData.val() == \"기타 보훈·공공기억\""
+          },
+          "placeOrigin": {
+            ".validate": "newData.val() == \"official_map\" || newData.val() == \"student_suggested\""
+          },
+          "placeName": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 100"
+          },
+          "placeDescription": {
+            ".validate": "newData.isString() && newData.val().length >= 10 && newData.val().length <= 350"
+          },
+          "address": {
+            ".validate": "newData.isString() && newData.val().length >= 0 && newData.val().length <= 160"
+          },
+          "latitude": {
+            ".validate": "newData.isNumber() && newData.val() >= 33 && newData.val() <= 39.5"
+          },
+          "longitude": {
+            ".validate": "newData.isNumber() && newData.val() >= 124 && newData.val() <= 132"
+          },
+          "officialStatus": {
+            ".validate": "newData.val() == \"confirmed\" || newData.val() == \"not_found\" || newData.val() == \"not_checked\""
+          },
+          "awarenessScore": {
+            ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 4 && newData.val() % 1 == 0"
+          },
+          "importance": {
+            ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 5 && newData.val() % 1 == 0"
+          },
+          "visibility": {
+            ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 5 && newData.val() % 1 == 0"
+          },
+          "scoreReason": {
+            ".validate": "newData.isString() && newData.val().length >= 10 && newData.val().length <= 300"
+          },
+          "sourceType": {
+            ".validate": "newData.val() == \"현장 안내판·표석\" || newData.val() == \"국가보훈부·현충시설정보\" || newData.val() == \"국가·지자체·공공기관 자료\" || newData.val() == \"박물관·기념관·지역사 자료\" || newData.val() == \"도서·논문·언론 자료\" || newData.val() == \"나의 판단\""
+          },
+          "sourceNote": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 300"
+          },
+          "rememberSentence": {
+            ".validate": "newData.isString() && newData.val().length >= 10 && newData.val().length <= 250"
+          },
+          "message": {
+            ".validate": "newData.isString() && newData.val().length >= 0 && newData.val().length <= 300"
+          },
+          "keywords": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 200"
+          },
+          "$other": {
+            ".validate": false
+          }
         }
       },
       "audit": {
@@ -137,8 +203,8 @@
           "$uid": {
             ".read": "auth != null && auth.uid == $uid && auth.token.firebase.sign_in_provider == 'anonymous'",
             "$id": {
-              ".write": "(auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true) || (auth != null && auth.uid == $uid && auth.token.firebase.sign_in_provider == 'anonymous' && $school.matches(/^S[1-7]$/) && !data.exists() && newData.child(\"status\").val() == \"pending\")",
-              ".validate": "newData.hasChildren(['schoolId','activityCode','facilityName','title','type','introduction','status','createdAt']) && ((newData.child('submissionMode').val() == 'upload' && newData.hasChildren(['storagePath','contentType','size'])) || (newData.child('submissionMode').val() == 'external' && newData.hasChild('externalUrl')) || newData.child('submissionMode').val() == 'text')",
+              ".write": "newData.exists() && ((auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true) || (auth != null && auth.uid == $uid && auth.token.firebase.sign_in_provider == 'anonymous' && $school.matches(/^S[1-7]$/) && ((!data.exists() && newData.child('status').val() == 'pending') || (newData.child('activityCode').val() == data.child('activityCode').val() && newData.child('facilityName').val() == data.child('facilityName').val() && newData.child('title').val() == data.child('title').val() && newData.child('introduction').val() == data.child('introduction').val() && newData.child('entryId').val() == data.child('entryId').val() && newData.child('schoolId').val() == data.child('schoolId').val() && newData.child('storagePath').val() == data.child('storagePath').val() && newData.child('type').val() == data.child('type').val() && newData.child('status').val() == data.child('status').val() && newData.child('size').val() == data.child('size').val() && newData.child('contentType').val() == data.child('contentType').val() && newData.child('createdAt').val() == data.child('createdAt').val() && newData.child('reviewedAt').val() == data.child('reviewedAt').val() && newData.child('reviewedBy').val() == data.child('reviewedBy').val() && newData.child('submissionMode').val() == data.child('submissionMode').val() && newData.child('externalUrl').val() == data.child('externalUrl').val() && newData.child('revision').val() == data.child('revision').val()))))",
+              ".validate": "newData.hasChildren(['schoolId','activityCode','facilityName','title','type','introduction','status','createdAt']) && ((newData.child('submissionMode').val() == 'upload' && newData.hasChildren(['storagePath','contentType','size'])) || (newData.child('submissionMode').val() == 'external' && newData.hasChild('externalUrl')) || newData.child('submissionMode').val() == 'text') && (!data.exists() || (newData.child('activityCode').val() == data.child('activityCode').val() && newData.child('facilityName').val() == data.child('facilityName').val() && newData.child('title').val() == data.child('title').val() && newData.child('introduction').val() == data.child('introduction').val() && newData.child('entryId').val() == data.child('entryId').val() && newData.child('schoolId').val() == data.child('schoolId').val() && newData.child('storagePath').val() == data.child('storagePath').val() && newData.child('type').val() == data.child('type').val() && newData.child('status').val() == data.child('status').val() && newData.child('size').val() == data.child('size').val() && newData.child('contentType').val() == data.child('contentType').val() && newData.child('createdAt').val() == data.child('createdAt').val() && newData.child('reviewedAt').val() == data.child('reviewedAt').val() && newData.child('reviewedBy').val() == data.child('reviewedBy').val() && newData.child('submissionMode').val() == data.child('submissionMode').val() && newData.child('externalUrl').val() == data.child('externalUrl').val() && newData.child('revision').val() == data.child('revision').val()) || newData.child('revision').val() == (data.child('revision').exists() ? data.child('revision').val()+1 : 1))",
               "activityCode": {
                 ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 20"
               },
@@ -189,6 +255,9 @@
               },
               "externalUrl": {
                 ".validate": "newData.isString() && newData.val().length <= 2000 && (newData.val() == '' || newData.val().matches(/^https:\\/\\/(drive\\.google\\.com|docs\\.google\\.com|www\\.youtube\\.com|youtu\\.be)\\//))"
+              },
+              "revision": {
+                ".validate": "auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true && newData.isNumber() && newData.val()%1 == 0 && ((!data.exists() && newData.val() == 1) || newData.val() == data.val()+1 || newData.val() == data.val())"
               }
             }
           }
@@ -197,8 +266,53 @@
       "publishedWorks": {
         ".read": true,
         "$key": {
-          ".write": "auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true",
-          ".validate": "newData.hasChildren(['schoolId','facilityName','title','type','introduction','approvedAt','status']) && newData.child('status').val() == 'approved' && ((newData.child('submissionMode').val() == 'external' && newData.child('externalUrl').val().matches(/^https:\\/\\/(drive\\.google\\.com|docs\\.google\\.com|www\\.youtube\\.com|youtu\\.be)\\//)) || newData.child('submissionMode').val() == 'text' || newData.child('storagePath').val() == 'published-media/' + $key + '/file')"
+          ".write": "auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true && (!newData.exists() || $key.matches(/^p_[a-f0-9]{64}$/))",
+          ".validate": "newData.hasChildren(['schoolId','facilityName','title','type','introduction','approvedAt','status']) && newData.child('status').val() == 'approved' && ((newData.child('submissionMode').val() == 'external' && newData.child('externalUrl').val().matches(/^https:\\/\\/(drive\\.google\\.com|docs\\.google\\.com|www\\.youtube\\.com|youtu\\.be)\\//)) || newData.child('submissionMode').val() == 'text' || newData.child('storagePath').val() == 'published-media/' + $key + '/file')",
+          "schoolId": {
+            ".validate": true
+          },
+          "facilityName": {
+            ".validate": true
+          },
+          "title": {
+            ".validate": true
+          },
+          "type": {
+            ".validate": true
+          },
+          "introduction": {
+            ".validate": true
+          },
+          "submissionMode": {
+            ".validate": true
+          },
+          "externalUrl": {
+            ".validate": "newData.isString() && newData.val().length <= 2000 && (newData.val() == '' || newData.val().matches(/^https:\\/\\/(drive\\.google\\.com|docs\\.google\\.com|www\\.youtube\\.com|youtu\\.be)\\//))"
+          },
+          "approvedAt": {
+            ".validate": true
+          },
+          "status": {
+            ".validate": true
+          },
+          "storagePath": {
+            ".validate": "newData.val() == 'published-media/' + $key + '/file'"
+          },
+          "contentType": {
+            ".validate": true
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      },
+      "workAudit": {
+        ".read": "auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true",
+        "$key": {
+          "$rev": {
+            ".write": "auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true && !data.exists() && newData.exists()",
+            ".validate": "newData.hasChildren(['before','after','editor','editedAt']) && newData.child('editor').val() == auth.uid && newData.child('editedAt').isNumber() && newData.child('editedAt').val() <= now"
+          }
         }
       }
     }

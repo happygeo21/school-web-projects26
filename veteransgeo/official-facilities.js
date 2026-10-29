@@ -14,8 +14,13 @@ export function verifiedFacilities(cache) {
       r.verified === true &&
       /^[A-Za-z0-9_-]+$/.test(r.id) &&
       typeof r.name === "string" &&
+      r.name.trim().length > 0 &&
+      r.name.length <= 100 &&
       typeof r.address === "string" &&
+      r.address.trim().length > 0 &&
+      r.address.length <= 160 &&
       typeof r.region === "string" &&
+      r.region.trim().length > 0 &&
       Number.isFinite(r.latitude) &&
       Number.isFinite(r.longitude) &&
       r.latitude >= 33 &&
@@ -45,7 +50,7 @@ export async function setupFacilities({
   } catch {}
   const records = verifiedFacilities(cache);
   const render = () => {
-    if (!canExplore()) return;
+    if (!$("awarenessScore").disabled) return;
     const region = currentSchool().region;
     const q = $("facilityQuery").value.trim();
     const list = records
@@ -65,6 +70,7 @@ export async function setupFacilities({
       b.onclick = () => {
         if (!setPickedLocation(r.latitude, r.longitude, r.name)) return;
         $("placeName").value = r.name;
+        $("placeSearchQuery").value = r.name;
         $("placeName").dataset.facilityId = r.id;
         $("address").value = r.address;
         $("sourceNote").value =
@@ -72,17 +78,30 @@ export async function setupFacilities({
         $("sourceType").value = "국가보훈부·현충시설정보";
         $("officialStatus").value = "confirmed";
         $("placeOrigin").value = "official_map";
+        document.dispatchEvent(new Event("memory-draft-change"));
       };
       $("facilityResults").append(b);
     }
   };
-  $("facilitySearch").onclick = render;
+  $("facilityQuery").setAttribute("aria-controls", "facilityResults");
+  $("facilityQuery").setAttribute("autocomplete", "off");
+  $("facilityQuery").addEventListener("input", render);
+  $("facilityQuery").addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown") {
+      $("facilityResults").querySelector("button")?.focus();
+      e.preventDefault();
+    }
+  });
+  $("facilitySearch").onclick = () => {
+    if (canExplore()) render();
+  };
   $("school").addEventListener("change", () => {
     if ($("awarenessScore").disabled) render();
   });
   $("lockAwareness").addEventListener("click", () => {
     if ($("awarenessScore").disabled) render();
   });
+  if ($("awarenessScore").disabled) render();
   const invalidate = () => {
     delete $("placeName").dataset.facilityId;
     if ($("placeOrigin").value === "official_map") {

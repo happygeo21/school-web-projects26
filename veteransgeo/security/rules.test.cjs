@@ -7,7 +7,12 @@ const {
   assertFails,
 } = require("@firebase/rules-unit-testing");
 const { ref, set, get, update } = require("firebase/database");
-const { ref: sr, uploadBytes, getBytes } = require("firebase/storage");
+const {
+  ref: sr,
+  uploadBytes,
+  getBytes,
+  deleteObject,
+} = require("firebase/storage");
 let env;
 const ROOT = "memoryTemperature2026";
 const anon = (uid) =>
@@ -107,7 +112,7 @@ test("validation and raw awareness immutable, even for approved teacher", async 
   );
 });
 test("only approved teacher can publish; audit is append-only; atomic withdraw and edit", async () => {
-  const p = ROOT + "/published/test";
+  const p = ROOT + "/published/p_" + "a".repeat(64);
   await assertFails(
     set(ref(anon("student").database(), p), { placeName: "가상" }),
   );
@@ -166,7 +171,7 @@ test("private media hidden; size/MIME constraints; teacher-only approved copy; r
       contentType: "video/mp4",
     }),
   );
-  const pub = "published-media/test/file";
+  const pub = "published-media/p_" + "b".repeat(64) + "/file";
   await assertFails(
     uploadBytes(sr(storage, pub), file, {
       contentType: "image/jpeg",
@@ -208,6 +213,7 @@ test("independent media metadata: owner create, teacher review, public collectio
   await assertSucceeds(
     update(ref(teacher().database(), path), {
       status: "approved",
+      revision: 1,
       reviewedBy: "teacher",
       reviewedAt: Date.now() - 1,
     }),
@@ -215,4 +221,63 @@ test("independent media metadata: owner create, teacher review, public collectio
   await assertFails(
     set(ref(anon("student").database(), ROOT + "/publishedWorks/test"), d),
   );
+});
+
+test("idempotent work retry, stale teacher revisions, raw deletion and public private fields are rejected", async () => {
+  const db = anon("work-owner").database(),
+    p = ROOT + "/works/S2/work-owner/text";
+  const d = {
+    schoolId: "S2",
+    activityCode: "TEST",
+    facilityName: "가상 시설",
+    title: "가상 작품",
+    type: "홍보 기획안",
+    introduction: "가상 텍스트",
+    submissionMode: "text",
+    createdAt: Date.now() - 10,
+    status: "pending",
+  };
+  await assertSucceeds(set(ref(db, p), d));
+  await assertSucceeds(set(ref(db, p), d));
+  await assertFails(get(ref(anon("other").database(), p)));
+  await assertSucceeds(
+    update(ref(teacher().database(), p), {
+      status: "approved",
+      revision: 1,
+      reviewedBy: "teacher",
+      reviewedAt: Date.now() - 1,
+    }),
+  );
+  await assertFails(
+    update(ref(teacher().database(), p), { title: "오래된 수정", revision: 1 }),
+  );
+  await assertFails(
+    set(ref(teacher().database(), ROOT + "/submissions/S1/student/one"), null),
+  );
+  await assertFails(
+    update(ref(teacher().database(), ROOT + "/submissions/S1/student/one"), {
+      awarenessOriginal: null,
+      revision: 2,
+    }),
+  );
+  const pub = ROOT + "/publishedWorks/p_" + "c".repeat(64),
+    publicData = {
+      schoolId: "S2",
+      facilityName: "가상 시설",
+      title: "가상 작품",
+      type: "홍보 기획안",
+      introduction: "가상 텍스트",
+      submissionMode: "text",
+      approvedAt: Date.now() - 1,
+      status: "approved",
+    };
+  await assertSucceeds(set(ref(teacher().database(), pub), publicData));
+  await assertFails(
+    update(ref(teacher().database(), pub), {
+      uid: "private-user",
+      activityCode: "private-code",
+    }),
+  );
+  await assertSucceeds(set(ref(teacher().database(), pub), null));
+  await assertSucceeds(get(ref(env.unauthenticatedContext().database(), pub)));
 });

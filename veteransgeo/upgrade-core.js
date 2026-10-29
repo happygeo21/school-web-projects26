@@ -84,7 +84,7 @@ export function errorMessage(e) {
     return "로그인과 저장 권한은 달라요. 작성한 내용은 그대로 있어요. 선생님께 저장 권한 확인을 부탁하고 다시 시도하세요.";
   if (/auth\//.test(code))
     return "학생 연결에 실패했어요. 인터넷 연결을 확인하고 학생 연결을 다시 눌러주세요.";
-  if (/network|retry|unavailable|timeout|canceled/i.test(code))
+  if (/network|retry|unavailable|timeout|canceled|disconnected/i.test(code))
     return "연결이 불안정해요. 작성한 내용은 그대로 두고 잠시 뒤 다시 시도하세요.";
   return "저장하지 못했어요. 입력 내용을 확인하고 다시 시도해주세요.";
 }
@@ -100,7 +100,7 @@ export function diagnostic(stage, e) {
         ? "permission"
         : /auth\//.test(e?.code || "")
           ? "auth"
-          : /network|timeout|unavailable/i.test(e?.code || "")
+          : /network|timeout|unavailable|disconnected/i.test(e?.code || "")
             ? "network"
             : /storage\//.test(e?.code || "")
               ? "storage"

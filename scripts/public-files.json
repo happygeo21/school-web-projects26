@@ -80,6 +80,7 @@
     "tools/github-ai-connector/install_openslide_windows.ps1",
     "tools/kordoc-simple/index.html",
     "veteransgeo/deploy-version.json",
+    "veteransgeo/draft-store.js",
     "veteransgeo/firebase-config.js",
     "veteransgeo/index.html",
     "veteransgeo/media.js",

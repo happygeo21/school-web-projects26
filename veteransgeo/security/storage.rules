@@ -14,8 +14,8 @@ service firebase.storage {
    allow delete: if teacher();
   }
   match /published-media/{work}/file {
-   allow read: if resource.metadata.approved == 'true';
-   allow create, update: if teacher() && validFile() && request.resource.metadata.approved == 'true';
+   allow read: if work.matches('p_[a-f0-9]{64}') && resource.metadata.approved == 'true';
+   allow create, update: if teacher() && work.matches('p_[a-f0-9]{64}') && validFile() && request.resource.metadata.approved == 'true';
    allow delete: if teacher();
   }
  }
