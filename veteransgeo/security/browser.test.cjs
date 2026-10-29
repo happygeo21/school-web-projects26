@@ -145,18 +145,14 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
         () => document.documentElement.scrollWidth <= innerWidth + 1,
       ),
     );
+    await page.locator("#openWorkSubmission").click();
     const form = page.locator("#mediaForm");
     await form.locator("[name=activityCode]").fill("TEST");
     await form.locator("[name=facilityName]").fill("가상 시설");
     await form.locator("[name=title]").fill("가상 작품");
     await form.locator("[name=introduction]").fill("테스트 전용 소개");
     await form.locator("[name=consent]").check();
-    await form.locator("[name=submissionMode]").selectOption("upload");
-    await form.locator("[name=file]").setInputFiles({
-      name: "test.jpg",
-      mimeType: "image/jpeg",
-      buffer: Buffer.from([255, 216, 255, 0]),
-    });
+    await form.locator("[name=submissionMode]").selectOption("text");
     await form.locator("button").first().click();
     await page
       .locator("#uploadStatus")
@@ -172,7 +168,8 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
       }),
     );
     await page.reload();
-    await page.locator("#mediaForm").waitFor();
+    await page.locator("#openWorkSubmission").click();
+    await page.locator("#mediaForm").waitFor({state:"attached"});
     assert.equal(
       await page
         .locator("#mediaForm [name=submissionMode] [value=upload]")
@@ -211,7 +208,7 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
     for (let school = 2; school <= 7; school++) {
       await page.evaluate(() => sessionStorage.clear());
       await page.goto(origin + "/veteransgeo/index.html");
-      await page.locator("#mediaForm").waitFor();
+      await page.locator("#mediaForm").waitFor({state:"attached"});
       await page.evaluate(() => (window.__fixture.deny = false));
       await page.locator("#school").selectOption("S" + school);
       await page.locator("#activityCode").fill("TEST");
@@ -277,7 +274,7 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
     );
     await page.evaluate(() => sessionStorage.clear());
     await page.goto(origin + "/veteransgeo/index.html");
-    await page.locator("#mediaForm").waitFor();
+    await page.locator("#mediaForm").waitFor({state:"attached"});
     await page.locator("#awarenessScore").selectOption("1");
     await page.locator("#lockAwareness").click();
     await page.locator("#facilityQuery").fill("가상 공식");
@@ -300,7 +297,7 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
       }),
     );
     assert.equal(await page.locator("#submitBtn").isDisabled(), true);
-    page.once('dialog',d=>d.accept());await page.locator('#clearDraft').click();await page.locator('#mediaForm').waitFor();assert.equal(await page.locator('#placeName').inputValue(),'');
+    page.once('dialog',d=>d.accept());await page.locator('#clearDraft').click();await page.locator('#mediaForm').waitFor({state:'attached'});assert.equal(await page.locator('#placeName').inputValue(),'');
     await page.goto(origin + "/veteransgeo/teacher.html");
     await page.locator("#dash").waitFor({ state: "visible" });
     const record = {

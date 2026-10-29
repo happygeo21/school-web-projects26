@@ -32,6 +32,9 @@ jobs:
       - name: Browser fixtures (not production Firebase)
         run: VETERANSGEO_BROWSER="$(node -p "require('playwright').chromium.executablePath()")" npm run test:browser
         working-directory: veteransgeo/security
+      - name: Local media gateway, SQL, JWT and browser contracts (no external services)
+        run: VETERANSGEO_BROWSER="$(node -p "require('playwright').chromium.executablePath()")" npm run test:media
+        working-directory: veteransgeo/security
       - name: Real local Emulator Rules tests (demo project only)
         run: npm test
         working-directory: veteransgeo/security

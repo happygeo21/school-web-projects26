@@ -1,32 +1,6 @@
 import { PROJECT, MEDIA_LINK_HOSTS } from "./project-config.js";
-export const MEDIA_TYPES = [
-  "포스터",
-  "카드뉴스",
-  "사진",
-  "영상",
-  "PDF",
-  "홍보 기획안",
-];
-export const LIMITS = {
-  image: 10 * 1024 * 1024,
-  video: 100 * 1024 * 1024,
-  pdf: 20 * 1024 * 1024,
-};
-export function checkFile(file) {
-  const group = {
-    "image/jpeg": "image",
-    "image/png": "image",
-    "image/webp": "image",
-    "video/mp4": "video",
-    "video/webm": "video",
-    "application/pdf": "pdf",
-  }[file?.type];
-  if (!group || !file.size || file.size > LIMITS[group])
-    throw Error(
-      "이미지(JPG·PNG·WebP)는 10MB, 영상(MP4·WebM)은 100MB, PDF는 20MB까지 올릴 수 있어요.",
-    );
-  return group;
-}
+export const MEDIA_TYPES = ['글','사진','포스터','카드뉴스','영상','PDF','링크','홍보 기획안'];
+export {MEDIA_LIMITS as LIMITS,validateMedia as checkFile} from './media-policy.js';
 export function coordinates(lat, lng) {
   return (
     typeof lat === "number" &&

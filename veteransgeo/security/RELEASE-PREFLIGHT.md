@@ -1,3 +1,5 @@
+> 무료 미디어 후속 구현은 [MEDIA-IMPLEMENTATION.md](MEDIA-IMPLEMENTATION.md)를 우선 확인하세요. 실제 Firebase/Supabase 연동은 미완료이며 아래는 이전 시점의 검토 기록입니다. 운영 설정·승인 조건은 유지합니다.
+
 # 3차 운영 적용 사전 검증 — 교사용 실행 안내
 
 > PR #7 후속 정리: [운영 자료 수집표·테스트 프로젝트 연결·awarenessOriginal 검증 계획](OPERATIONS-INPUT-CHECKLIST.md)을 먼저 확인하세요. 미확보 운영 항목은 모두 **사용자 확인 필요**이며 실제 병합/운영 검증은 미완료입니다. 아래 과거 CI와 현재 상태를 구분합니다.

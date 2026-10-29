@@ -25,13 +25,15 @@
 </style><style id="mobile-content-boundaries">
 .card,.grid>*{min-width:0}.word{max-width:100%;overflow-wrap:anywhere}.entry,pre{overflow-wrap:anywhere}.entry a{word-break:break-word}
 @media(max-width:650px){.barrow{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 35px}.bartrack{min-width:0}}
-</style></head><body><div class="wrap">
+</style><link rel="stylesheet" href="./media.css">
+</head><body><div class="wrap">
 
 <section class="hero">
 <span class="badge">학생용 · 7개 학교 공동 탐구</span>
 <h1>🧭 기억의 좌표 LIVE</h1>
 <p><strong>공식적으로 기록된 장소</strong>와 <strong>학생들이 실제로 알고 있던 생활 속 기억</strong>의 차이를 지도 위에 기록합니다.</p>
 </section>
+<div class="media-launch"><button id="openWorkSubmission" type="button" class="purple" aria-controls="workSubmission">홍보 결과물 올리기</button><span>탐구 없이 작품만 제출할 수 있어요.</span></div>
 
 <div class="card"><div class="toolbar">
 <span id="conn" class="status">제출 연결 확인 중…</span>
@@ -356,7 +358,7 @@ async function connectStudent(){
  try{
   app=app||initializeApp(firebaseConfig);const auth=getAuth(app);db=getDatabase(app);await auth.authStateReady?.();
   if(auth.currentUser&&!auth.currentUser.isAnonymous){$("conn").textContent="교사 계정이 연결되어 있어요. 교사용 화면에서 로그아웃한 뒤 학생 연결을 눌러주세요.";uid=null;$("submitBtn").disabled=true;return;}
-  const cred=auth.currentUser?.isAnonymous?{user:auth.currentUser}:await signInAnonymously(auth);uid=cred.user.uid;
+  const cred=auth.currentUser?.isAnonymous?{user:auth.currentUser}:await signInAnonymously(auth);uid=cred.user.uid;document.dispatchEvent(new Event("memory-auth-change"));
   $("conn").textContent="● 학생 연결 완료 · 저장 권한은 제출 때 확인해요";$("conn").className="status ok";$("submitBtn").disabled=false;
  }catch(e){uid=null;$("submitBtn").disabled=true;diagnostic('auth',e);$("conn").textContent=errorMessage(e);$("conn").className="status err";}
 }

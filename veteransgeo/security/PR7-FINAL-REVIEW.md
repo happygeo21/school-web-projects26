@@ -1,3 +1,5 @@
+> 무료 미디어 후속 구현은 [MEDIA-IMPLEMENTATION.md](MEDIA-IMPLEMENTATION.md)를 우선 확인하세요. 실제 Firebase/Supabase 연동은 미완료이며 아래는 이전 시점의 검토 기록입니다. 운영 설정·승인 조건은 유지합니다.
+
 # PR #7 최종 검토 — 운영 전환 보류
 
 > 후속 정리(2026-10-29 KST): [교사용 운영 자료 수집표](OPERATIONS-INPUT-CHECKLIST.md)에 확인 화면·비공개 전달 범위·401 판별·테스트 연결·awarenessOriginal 충돌 실측 계획을 모았습니다. 원문/테스트 프로젝트/preview 설정은 **사용자 확인 필요**입니다. 이번에는 기능을 추가하지 않으며 아래 검증 이력의 범위를 확대해 주장하지 않습니다.

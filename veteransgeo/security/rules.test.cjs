@@ -291,3 +291,26 @@ test("idempotent work retry, stale teacher revisions, raw deletion and public pr
   await assertSucceeds(set(ref(teacher().database(), pub), null));
   await assertSucceeds(get(ref(env.unauthenticatedContext().database(), pub)));
 });
+
+test('awareness compatibility, gateway metadata immutability, new statuses and public private-ID exclusion', async () => {
+  const db=anon('student').database(),p=ROOT+'/submissions/S1/student/legacy-new';
+  const legacy=data('S1');delete legacy.awarenessOriginal;delete legacy.schemaVersion;
+  await assertFails(set(ref(db,p),legacy)); // New ID: old payload cannot pass strict candidate.
+  const workPath=ROOT+'/works/S1/student/gateway';
+  const original={schoolId:'S1',activityCode:'TEST',facilityName:'가상 시설',title:'가상 작품',type:'사진',introduction:'가상 설명',entryId:'',submissionMode:'upload'};
+  const work={...original,studentOriginal:original,status:'pending',createdAt:Date.now()-1000,mediaProvider:'gateway',mediaAssetId:'p_'+'d'.repeat(64),sha256:'a'.repeat(64),contentType:'image/jpeg',size:100};
+  await assertSucceeds(set(ref(db,workPath),work));await assertSucceeds(set(ref(db,workPath),work));
+  await assertFails(update(ref(db,workPath),{mediaAssetId:'p_'+'f'.repeat(64)}));
+  await assertFails(update(ref(db,workPath),{sha256:'b'.repeat(64)}));
+  await assertFails(set(ref(db,ROOT+'/works/S1/student/oversize'),{...work,size:3145729}));
+  await assertFails(get(ref(anon('other').database(),workPath)));
+  const tdb=teacher().database();
+  await assertSucceeds(update(ref(tdb,workPath),{status:'changes_requested',reviewedBy:'teacher',reviewedAt:Date.now()-1,revision:1}));
+  await assertFails(update(ref(tdb,workPath),{studentOriginal:null,revision:2}));
+  await assertSucceeds(update(ref(tdb,workPath),{status:'archived',revision:2}));
+  await assertSucceeds(update(ref(tdb,workPath),{status:'pending',revision:3}));
+  const publicId='p_'+'d'.repeat(64),pub={schoolId:'S1',facilityName:'가상 시설',title:'가상 작품',type:'사진',introduction:'가상 설명',submissionMode:'upload',contentType:'image/jpeg',mediaPublicId:publicId,approvedAt:Date.now()-1,status:'approved'};
+  await assertSucceeds(set(ref(tdb,ROOT+'/publishedWorks/'+publicId),pub));
+  await assertFails(update(ref(tdb,ROOT+'/publishedWorks/'+publicId),{mediaAssetId:work.mediaAssetId}));
+  await assertFails(update(ref(tdb,ROOT+'/publishedWorks/'+publicId),{activityCode:'PRIVATE'}));
+});

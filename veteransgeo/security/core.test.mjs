@@ -11,9 +11,9 @@ import {
 import { verifiedFacilities } from "../official-facilities.js";
 test("file boundaries, invalid MIME and coordinates are rejected", () => {
   for (const [type, max] of [
-    ["image/jpeg", 10485760],
-    ["video/mp4", 104857600],
-    ["application/pdf", 20971520],
+    ["image/jpeg", 3145728],
+    ["video/mp4", 15728640],
+    ["application/pdf", 5242880],
   ]) {
     assert.doesNotThrow(() => checkFile({ type, size: max }));
     assert.throws(() => checkFile({ type, size: max + 1 }));
