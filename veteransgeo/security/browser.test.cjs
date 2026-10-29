@@ -321,7 +321,7 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
       sourceType: "나의 판단",
       sourceNote: "가상 테스트",
       rememberSentence: "가상 테스트 기억 문장입니다.",
-      keywords: "가상,테스트",
+      keywords: "A".repeat(180),
       message: "",
       createdAt: 1,
     };
@@ -333,6 +333,7 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
       window.__fixture.listener(window.__fixture.teacher);
     }, record);
     await page.locator(".edit").waitFor();
+    await page.setViewportSize({width:390,height:844});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),"teacher mobile long keyword overflow");await page.setViewportSize({width:1440,height:1000});
     const download = page.waitForEvent("download");
     await page.locator("#egisBtn").click();
     const csv = fs.readFileSync(await (await download).path(), "utf8");
