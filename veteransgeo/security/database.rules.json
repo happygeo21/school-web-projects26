@@ -1,0 +1,206 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "memoryTemperature2026": {
+      "teachers": {
+        "$uid": {
+          ".read": "auth != null && auth.uid == $uid"
+        }
+      },
+      "submissions": {
+        ".read": "auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true",
+        "$school": {
+          "$uid": {
+            ".read": "(auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true) || (auth != null && auth.uid == $uid && auth.token.firebase.sign_in_provider == 'anonymous')",
+            "$id": {
+              ".write": "(auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true) || (auth != null && auth.uid == $uid && auth.token.firebase.sign_in_provider == 'anonymous' && $school.matches(/^S[1-7]$/) && (!data.exists() || newData.val() == data.val()) && newData.exists())",
+              ".validate": "newData.hasChildren([\"schoolId\", \"createdAt\", \"activityCode\", \"placeName\", \"placeDescription\", \"latitude\", \"longitude\", \"awarenessScore\", \"importance\", \"visibility\", \"scoreReason\", \"sourceType\", \"sourceNote\", \"rememberSentence\", \"keywords\", \"category\", \"officialStatus\", \"placeOrigin\"]) && (!data.exists() || newData.child('awarenessScore').val() == data.child('awarenessScore').val()) && (data.exists() || newData.child('awarenessOriginal').exists()) && (!data.exists() || newData.val() == data.val() || (newData.child('revision').val() == (data.child('revision').exists() ? data.child('revision').val()+1 : 1))) && (!data.child('awarenessOriginal').exists() || newData.child('awarenessOriginal').val() == data.child('awarenessOriginal').val())",
+              "activityCode": {
+                ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 20"
+              },
+              "placeName": {
+                ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 100"
+              },
+              "placeDescription": {
+                ".validate": "newData.isString() && newData.val().length >= 10 && newData.val().length <= 350"
+              },
+              "address": {
+                ".validate": "newData.isString() && newData.val().length >= 0 && newData.val().length <= 160"
+              },
+              "scoreReason": {
+                ".validate": "newData.isString() && newData.val().length >= 10 && newData.val().length <= 300"
+              },
+              "sourceNote": {
+                ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 300"
+              },
+              "rememberSentence": {
+                ".validate": "newData.isString() && newData.val().length >= 10 && newData.val().length <= 250"
+              },
+              "keywords": {
+                ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 200"
+              },
+              "message": {
+                ".validate": "newData.isString() && newData.val().length >= 0 && newData.val().length <= 300"
+              },
+              "latitude": {
+                ".validate": "newData.isNumber() && newData.val() >= 33 && newData.val() <= 39.5"
+              },
+              "longitude": {
+                ".validate": "newData.isNumber() && newData.val() >= 124 && newData.val() <= 132"
+              },
+              "awarenessScore": {
+                ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 4 && newData.val() % 1 == 0"
+              },
+              "importance": {
+                ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 5 && newData.val() % 1 == 0"
+              },
+              "visibility": {
+                ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 5 && newData.val() % 1 == 0"
+              },
+              "category": {
+                ".validate": "newData.val() == \"일제강점기·독립운동\" || newData.val() == \"6·25전쟁·호국\" || newData.val() == \"민주화운동\" || newData.val() == \"경찰·치안\" || newData.val() == \"소방·재난안전\" || newData.val() == \"기타 보훈·공공기억\""
+              },
+              "sourceType": {
+                ".validate": "newData.val() == \"현장 안내판·표석\" || newData.val() == \"국가보훈부·현충시설정보\" || newData.val() == \"국가·지자체·공공기관 자료\" || newData.val() == \"박물관·기념관·지역사 자료\" || newData.val() == \"도서·논문·언론 자료\" || newData.val() == \"나의 판단\""
+              },
+              "placeOrigin": {
+                ".validate": "newData.val() == \"official_map\" || newData.val() == \"student_suggested\""
+              },
+              "officialStatus": {
+                ".validate": "newData.val() == \"confirmed\" || newData.val() == \"not_found\" || newData.val() == \"not_checked\""
+              },
+              "schoolId": {
+                ".validate": "newData.val() == $school"
+              },
+              "createdAt": {
+                ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now && (!data.exists() || newData.val() == data.val())"
+              },
+              "schemaVersion": {
+                ".validate": "newData.val() == 2"
+              },
+              "awarenessOriginal": {
+                ".validate": "newData.hasChildren(['score','capturedAt','placeName','timing']) && newData.child('score').val() == newData.parent().child('awarenessScore').val() && (!data.exists() || newData.val() == data.val())",
+                "score": {
+                  ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 4"
+                },
+                "capturedAt": {
+                  ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now"
+                },
+                "placeName": {
+                  ".validate": "newData.isString() && newData.val().length <= 100"
+                },
+                "timing": {
+                  ".validate": "newData.val() == 'before-exploration'"
+                },
+                "$other": {
+                  ".validate": false
+                }
+              },
+              "facilityId": {
+                ".validate": "newData.isString() && newData.val().length <= 100"
+              },
+              "updatedBy": {
+                ".validate": "auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true && newData.val() == auth.uid"
+              },
+              "updatedAt": {
+                ".validate": "auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true && newData.isNumber() && newData.val() <= now"
+              },
+              "$other": {
+                ".validate": false
+              },
+              "revision": {
+                ".validate": "newData.isNumber() && ((!data.exists() && newData.val() == 1) || newData.val() == data.val()+1)"
+              }
+            }
+          }
+        }
+      },
+      "published": {
+        ".read": true,
+        "$key": {
+          ".write": "auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true"
+        }
+      },
+      "audit": {
+        ".read": "auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true",
+        "$key": {
+          "$rev": {
+            ".write": "auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true && !data.exists() && newData.exists()",
+            ".validate": "newData.hasChildren(['before','after','editor','editedAt']) && newData.child('editor').val() == auth.uid && newData.child('editedAt').isNumber() && newData.child('editedAt').val() <= now"
+          }
+        }
+      },
+      "works": {
+        ".read": "auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true",
+        "$school": {
+          "$uid": {
+            ".read": "auth != null && auth.uid == $uid && auth.token.firebase.sign_in_provider == 'anonymous'",
+            "$id": {
+              ".write": "(auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true) || (auth != null && auth.uid == $uid && auth.token.firebase.sign_in_provider == 'anonymous' && $school.matches(/^S[1-7]$/) && !data.exists() && newData.child(\"status\").val() == \"pending\")",
+              ".validate": "newData.hasChildren(['schoolId','activityCode','facilityName','title','type','introduction','status','createdAt']) && ((newData.child('submissionMode').val() == 'upload' && newData.hasChildren(['storagePath','contentType','size'])) || (newData.child('submissionMode').val() == 'external' && newData.hasChild('externalUrl')) || newData.child('submissionMode').val() == 'text')",
+              "activityCode": {
+                ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 20"
+              },
+              "facilityName": {
+                ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 100"
+              },
+              "title": {
+                ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 100"
+              },
+              "introduction": {
+                ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 500"
+              },
+              "entryId": {
+                ".validate": "newData.isString() && newData.val().length >= 0 && newData.val().length <= 120"
+              },
+              "schoolId": {
+                ".validate": "newData.val() == $school"
+              },
+              "storagePath": {
+                ".validate": "newData.val() == 'student-media/' + $school + '/' + $uid + '/' + $id + '/file'"
+              },
+              "type": {
+                ".validate": "newData.val().matches(/^(포스터|카드뉴스|사진|영상|PDF|홍보 기획안)$/)"
+              },
+              "status": {
+                ".validate": "newData.val().matches(/^(pending|approved|rejected|private)$/)"
+              },
+              "size": {
+                ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= 104857600"
+              },
+              "contentType": {
+                ".validate": "newData.val().matches(/^(image\\/(jpeg|png|webp)|video\\/(mp4|webm)|application\\/pdf)$/)"
+              },
+              "createdAt": {
+                ".validate": "newData.isNumber() && newData.val() <= now"
+              },
+              "reviewedAt": {
+                ".validate": "auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true && newData.isNumber() && newData.val() <= now"
+              },
+              "reviewedBy": {
+                ".validate": "auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true && newData.val() == auth.uid"
+              },
+              "$other": {
+                ".validate": false
+              },
+              "submissionMode": {
+                ".validate": "newData.val() == 'upload' || newData.val() == 'external' || newData.val() == 'text'"
+              },
+              "externalUrl": {
+                ".validate": "newData.isString() && newData.val().length <= 2000 && (newData.val() == '' || newData.val().matches(/^https:\\/\\/(drive\\.google\\.com|docs\\.google\\.com|www\\.youtube\\.com|youtu\\.be)\\//))"
+              }
+            }
+          }
+        }
+      },
+      "publishedWorks": {
+        ".read": true,
+        "$key": {
+          ".write": "auth != null && auth.token.teacher == true && root.child('memoryTemperature2026/teachers').child(auth.uid).val() == true",
+          ".validate": "newData.hasChildren(['schoolId','facilityName','title','type','introduction','approvedAt','status']) && newData.child('status').val() == 'approved' && ((newData.child('submissionMode').val() == 'external' && newData.child('externalUrl').val().matches(/^https:\\/\\/(drive\\.google\\.com|docs\\.google\\.com|www\\.youtube\\.com|youtu\\.be)\\//)) || newData.child('submissionMode').val() == 'text' || newData.child('storagePath').val() == 'published-media/' + $key + '/file')"
+        }
+      }
+    }
+  }
+}

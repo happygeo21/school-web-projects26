@@ -194,7 +194,7 @@ const optional=document.createElement('details');optional.className='optional-fi
 blocks[4].querySelector('.callout').remove();
 const scoreCards=blocks[3].querySelectorAll('.card');scoreCards[0].querySelector('h3').textContent='이 장소는 역사적으로 얼마나 중요할까요?';scoreCards[0].querySelector('p').textContent='1 근거가 부족함 · 3 지역 역사에 의미 있음 · 5 역사적 근거가 분명함';scoreCards[0].querySelector('.small').textContent='장소의 가치를 서열화하는 점수가 아니에요. 확인한 근거로 판단하세요.';scoreCards[1].querySelector('h3').textContent='지나가는 사람이 쉽게 알아볼까요?';scoreCards[1].querySelector('p').textContent='1 알아보기 어려움 · 3 어느 정도 보임 · 5 쉽게 보이고 의미도 알 수 있음';scoreCards[1].querySelector('.small').textContent='현장·사진·로드뷰에서 확인하세요. 못 봤다면 근거에 적어주세요.';
 let step=0;
-const rules=[[['activityCode','활동코드를 적어주세요.',1],['placeName','장소 이름을 적어주세요.',1],['awarenessScore','검색 전 인지도를 선택해주세요.',1]],[['locationConfirmed','장소를 고른 뒤 「이 위치가 맞아요」를 눌러주세요.',1],['placeDescription','장소 설명을 10자 이상 적어주세요.',10],['sourceType','자료 종류를 선택해주세요.',1],['sourceNote','자료 이름이나 출처를 적어주세요.',1]],[['scoreReason','점수의 근거를 10자 이상 적어주세요.',10],['rememberSentence','기억해야 할 이유를 10자 이상 적어주세요.',10],['keywords','핵심 단어를 적어주세요.',1]]];
+const rules=[[['activityCode','활동코드를 적어주세요.',1],['placeName','장소 이름을 적어주세요.',1],['awarenessScore','검색 전 인지도를 선택해주세요.',1],['awarenessLocked','탐색 시작 버튼으로 사전 응답을 확정해주세요.',1]],[['locationConfirmed','장소를 고른 뒤 「이 위치가 맞아요」를 눌러주세요.',1],['placeDescription','장소 설명을 10자 이상 적어주세요.',10],['sourceType','자료 종류를 선택해주세요.',1],['sourceNote','자료 이름이나 출처를 적어주세요.',1]],[['scoreReason','점수의 근거를 10자 이상 적어주세요.',10],['rememberSentence','기억해야 할 이유를 10자 이상 적어주세요.',10],['keywords','핵심 단어를 적어주세요.',1]]];
 function check(i){for(const [id,msg,min] of rules[i]){if($(id).value.trim().length<min){panels[i].querySelector('.step-error').textContent=msg;const d=$(id).closest('details');if(d)d.open=true;$(id).classList.add('invalid');if(id==='locationConfirmed'){$('locationStatus').scrollIntoView({block:'center'});$('confirmLocationBtn').focus();}else $(id).focus();return false;}}panels[i].querySelector('.step-error').textContent='';return true;}
 function show(i,focus=true){step=i;panels.forEach((p,j)=>p.hidden=i!==j);nav.querySelectorAll('button').forEach((b,j)=>j===i?b.setAttribute('aria-current','step'):b.removeAttribute('aria-current'));document.dispatchEvent(new Event('memory-step-change'));if(focus){nav.scrollIntoView({behavior:'smooth',block:'start'});panels[i].querySelector('h2').focus({preventScroll:true});}}
 panels.forEach((p,i)=>{const error=document.createElement('p');error.className='step-error';error.setAttribute('role','alert');p.append(error);const actions=document.createElement('div');actions.className='step-actions';if(i){const b=document.createElement('button');b.type='button';b.className='gray';b.textContent='← 이전';b.onclick=()=>show(i-1);actions.append(b);}if(i<2){const b=document.createElement('button');b.type='button';b.className='primary';b.textContent=i===0?'다음: 위치·자료 확인 →':'다음: 내 생각 쓰기 →';b.onclick=()=>{if(check(i))show(i+1);};actions.append(b);}p.append(actions);});
@@ -209,10 +209,13 @@ show(0,false);
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+import { getDatabase, ref, push, set, get } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 import { firebaseConfig, DB_ROOT } from "./firebase-config.js";
 import { PROJECT } from "./project-config.js";
 
+import {validateRecord,errorMessage,diagnostic} from "./upgrade-core.js";
+import {setupStudentMedia} from "./media.js";
+import {setupFacilities} from "./official-facilities.js";
 const $=id=>document.getElementById(id);
 $("officialMapLink").href=PROJECT.officialMapUrl;
 $("officialMapLink2").href=PROJECT.officialMapUrl;
@@ -341,17 +344,30 @@ $("placeSearchQuery").value=$("placeName").value.trim();updateSearchHint();
 
 ["importance","visibility"].forEach(id=>{const sl=$(id),sc=$(id+"Score");sl.oninput=()=>sc.textContent=sl.value;});
 
-let db=null,uid=null;
-try{
-  const app=initializeApp(firebaseConfig),auth=getAuth(app);db=getDatabase(app);
-  const cred=await signInAnonymously(auth);uid=cred.user.uid;
-  $("conn").textContent=`● 제출 준비 완료`;$("conn").className="status ok";$("submitBtn").disabled=false;
-}catch(e){
-  console.error(e);$("conn").textContent=`연결 실패 · ${e.code||e.message}`;$("conn").className="status err";
+let db=null,uid=null,app=null;
+async function connectStudent(){
+ try{
+  app=app||initializeApp(firebaseConfig);const auth=getAuth(app);db=getDatabase(app);
+  const cred=auth.currentUser?.isAnonymous?{user:auth.currentUser}:await signInAnonymously(auth);uid=cred.user.uid;
+  $("conn").textContent="● 학생 연결 완료 · 저장 권한은 제출 때 확인해요";$("conn").className="status ok";$("submitBtn").disabled=false;
+ }catch(e){uid=null;diagnostic('auth',e);$("conn").textContent=errorMessage(e);$("conn").className="status err";}
 }
+const reconnect=document.createElement('button');reconnect.textContent='학생 연결 다시 시도';reconnect.type='button';reconnect.className='gray';$('conn').after(reconnect);reconnect.onclick=connectStudent;
+await connectStudent();
+let awarenessSnapshot=null;
+const lock=document.createElement('button');lock.type='button';lock.className='primary';lock.id='lockAwareness';lock.textContent='탐색 시작 · 사전 응답 확정';$('awarenessScore').after(lock);const locked=document.createElement('input');locked.type='hidden';locked.id='awarenessLocked';lock.after(locked);
+lock.onclick=()=>{if(!$('awarenessScore').value){alert('검색 전 인지도를 먼저 골라주세요.');return;}awarenessSnapshot={score:Number($('awarenessScore').value),capturedAt:Date.now(),placeName:$('placeName').value.trim()||'장소 미선정',timing:'before-exploration'};$('awarenessScore').disabled=true;$('awarenessLocked').value='yes';lock.disabled=true;lock.textContent='사전 응답 보존됨 · 이제 장소를 탐색하세요';};
+function canExplore(){if(awarenessSnapshot)return true;alert('자료를 보기 전 인지도를 고르고 「탐색 시작」을 눌러주세요.');return false;}
+for(const id of ['officialMapLink','officialMapLink2','placeAutoSearchBtn','googleMapSearchBtn'])$(id)?.addEventListener('click',e=>{if(!canExplore()){e.preventDefault();e.stopImmediatePropagation();}},true);
+document.addEventListener('memory-step-change',()=>{if(!$('awarenessScore').disabled&&document.querySelector('[data-step="1"]')?.getAttribute('aria-current')==='step')canExplore();});
+setupFacilities({canExplore,currentSchool,setPickedLocation,clearLocation});
+setupStudentMedia({app,getIdentity:()=>({uid,schoolId:$('school').value,activityCode:$('activityCode').value})});
+let pending=null,submitted=false;
 
 const v=id=>$(id).value.trim();
 $("submitBtn").onclick=async()=>{
+  if(submitted||!uid||!db)return;
+  if(!awarenessSnapshot){$("msg").textContent="탐색 시작 버튼으로 사전 인지도를 먼저 확정해주세요.";return;}
   const lat=v("lat"),lng=v("lng");
   if(!v("awarenessScore")||!v("sourceType")||!v("sourceNote")){
     $("msg").textContent="활동 전 인지도·근거 유형·출처(자료명 또는 현장 안내판과 날짜)를 확인해 주세요.";return;
@@ -360,21 +376,26 @@ $("submitBtn").onclick=async()=>{
     $("msg").textContent="활동코드·장소 이름·장소 설명(10자 이상)·지도 위치·판단 근거(10자 이상)·기억 문장·핵심어를 확인해 주세요.";return;
   }
   const data={
-    createdAt:Date.now(),schoolId:v("school"),activityCode:v("activityCode"),category:v("category"),
+    schemaVersion:2,awarenessOriginal:awarenessSnapshot,createdAt:Date.now(),schoolId:v("school"),activityCode:v("activityCode"),category:v("category"),
     placeOrigin:v("placeOrigin"),placeName:v("placeName"),placeDescription:v("placeDescription"),address:v("address"),latitude:Number(lat),longitude:Number(lng),
-    officialStatus:v("officialStatus"),awarenessScore:Number(v("awarenessScore")),
+    officialStatus:v("officialStatus"),awarenessScore:awarenessSnapshot.score,
     importance:Number(v("importance")),visibility:Number(v("visibility")),
     scoreReason:v("scoreReason"),sourceType:v("sourceType"),sourceNote:v("sourceNote"),
     rememberSentence:v("rememberSentence"),message:v("message"),keywords:v("keywords")
   };
-  $("submitBtn").disabled=true;$("msg").textContent="제출 중…";
+  try{validateRecord(data);if(v('locationConfirmed')!=='yes')throw Error('위치를 확정해주세요.');}catch(e){$('msg').textContent=e.message;return;}
+  const identity=`${data.schoolId}/${uid}`;
+  if(!pending||pending.identity!==identity){let saved=null;try{saved=sessionStorage.getItem('memory:submission:'+identity);}catch{}pending={identity,key:saved||push(ref(db,`${DB_ROOT}/submissions/${identity}`)).key,createdAt:Date.now()};try{sessionStorage.setItem('memory:submission:'+identity,pending.key);}catch{}}
+  data.createdAt=pending.createdAt;data.facilityId=$('placeName').dataset.facilityId||'';pending.data=pending.data||data;
+  $('submitBtn').disabled=true;$('msg').textContent='제출 중… 연결이 지연되어도 같은 기록으로 재시도해요.';
   try{
-    const p=push(ref(db,`${DB_ROOT}/submissions/${data.schoolId}/${uid}`));
-    await set(p,data);
+    const p=ref(db,`${DB_ROOT}/submissions/${pending.identity}/${pending.key}`);
+    await Promise.race([set(p,pending.data),new Promise((_,reject)=>setTimeout(()=>reject({code:'network-timeout'}),20000))]);
+    submitted=true;try{sessionStorage.removeItem('memory:submission:'+pending.identity);}catch{}
     $("msg").textContent="✓ 등록 완료! 이제 다른 지역의 기억과 비교해 보세요.";
     $("compareMission").classList.remove("hidden");
     $("compareMission").scrollIntoView({behavior:"smooth",block:"center"});
-  }catch(e){console.error(e);$("msg").textContent=`제출 실패 · ${e.code||e.message}`;}
-  finally{$("submitBtn").disabled=false;}
+  }catch(e){diagnostic("submit",e);$("msg").textContent=errorMessage(e)+" 같은 제출 ID와 최초 시도 내용으로 재시도해요.";}
+  finally{$("submitBtn").disabled=submitted;}
 };
 </script></body></html>

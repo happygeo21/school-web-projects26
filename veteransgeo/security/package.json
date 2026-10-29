@@ -1,0 +1,16 @@
+{
+  "name": "veteransgeo-security-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "firebase emulators:exec --project demo-veteransgeo --only database,storage 'node --test rules.test.cjs'",
+    "test:browser": "node --test browser.test.cjs",
+    "test:core": "node --test core.test.mjs"
+  },
+  "devDependencies": {
+    "firebase-tools": "14.22.0",
+    "@firebase/rules-unit-testing": "4.0.1",
+    "firebase": "11.10.0",
+    "playwright": "1.62.1"
+  }
+}

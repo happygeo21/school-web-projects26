@@ -116,10 +116,12 @@ Google 계정이 없어도 Firebase에 교사용 계정을 미리 만들어두�
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signInWithEmailAndPassword,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-import {getDatabase,ref,onValue,set,remove} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+import {getDatabase,ref,onValue,set,remove,update,push,get} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 import {firebaseConfig,DB_ROOT} from "./firebase-config.js";
-import {PROJECT} from "./project-config.js";
+import {PROJECT,TEACHER_AUTH_MODE} from "./project-config.js";
 
+import {validateRecord,coordinates,EDITABLE,errorMessage,diagnostic,publication} from "./upgrade-core.js";
+import {setupTeacherMedia} from "./media.js";
 const $=id=>document.getElementById(id);
 $("officialMapBtn").href=PROJECT.officialMapUrl;
 
@@ -160,7 +162,9 @@ const map=L.map("teacherMap").setView([36.15,127.7],7);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
 const markers=L.layerGroup().addTo(map);
 
-let rows=[],published={};
+let rows=[],published={},unsubscribers=[],authEpoch=0,disposeMedia=()=>{};
+function clearSession(){unsubscribers.splice(0).forEach(fn=>fn());disposeMedia();disposeMedia=()=>{};rows=[];published={};render();$("dash").classList.add("hidden");}
+function reviewError(e){diagnostic("review",e);alert(errorMessage(e));}
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 const info=id=>PROJECT.schools.find(x=>x.id===id)||{school:id,region:""};
 const key=r=>`${r.schoolId}_${r.uid}_${r.entryId}`;
@@ -206,35 +210,55 @@ function render(){
 
   markers.clearLayers();
   rs.forEach(r=>{
+    if(!coordinates(Number(r.latitude),Number(r.longitude)))return;
     const tags=`${r.officialStatus==="confirmed"?'<span class="official-tag">공식지도 확인</span>':r.officialStatus==="not_found"?'<span class="outside-tag">공식지도에서 찾지 못함</span>':""} ${isGap(r)?'<span class="gap-tag">기억 사각지대 후보</span>':""}`;
-    L.marker([r.latitude,r.longitude]).addTo(markers).bindPopup(`<strong>${esc(r.placeName)}</strong><br>${tags}<br>${esc(info(r.schoolId).school)}<br>활동 전 인지도 ${esc(awarenessLabel(r.awarenessScore))}<br>중요 ${r.importance} · 발견 ${r.visibility}<hr>${esc(r.rememberSentence)}`);
+    L.marker([r.latitude,r.longitude]).addTo(markers).bindPopup(`<strong>${esc(r.placeName)}</strong><br>${tags}<br>${esc(info(r.schoolId).school)}<br>활동 전 인지도 ${esc(awarenessLabel(r.awarenessScore))}<br>중요 ${esc(r.importance)} · 발견 ${esc(r.visibility)}<hr>${esc(r.rememberSentence)}`);
   });
 
-  $("blindList").innerHTML=blinds.length?blinds.map(r=>`<div class="entry blind"><div class="meta">${esc(info(r.schoolId).region)} · ${esc(info(r.schoolId).school)}</div><h4>${esc(r.placeName)} <span class="gap-tag">기억 사각지대 후보</span></h4><div>활동 전 인지도 <strong>${esc(awarenessLabel(r.awarenessScore))}</strong> · 발견도 <strong>${r.visibility}</strong></div><p><strong>판단 근거:</strong> ${esc(r.scoreReason||"")}</p></div>`).join(""):'<p class="muted">현재 조건에서 공식 기억 사각지대 후보가 없습니다.</p>';
+  $("blindList").innerHTML=blinds.length?blinds.map(r=>`<div class="entry blind"><div class="meta">${esc(info(r.schoolId).region)} · ${esc(info(r.schoolId).school)}</div><h4>${esc(r.placeName)} <span class="gap-tag">기억 사각지대 후보</span></h4><div>활동 전 인지도 <strong>${esc(awarenessLabel(r.awarenessScore))}</strong> · 발견도 <strong>${esc(r.visibility)}</strong></div><p><strong>판단 근거:</strong> ${esc(r.scoreReason||"")}</p></div>`).join(""):'<p class="muted">현재 조건에서 공식 기억 사각지대 후보가 없습니다.</p>';
 
   $("outsideList").innerHTML=outside.length?outside.map(r=>`<div class="entry"><div class="meta">${esc(info(r.schoolId).region)} · ${esc(r.category)}</div><h4>${esc(r.placeName)} <span class="outside-tag">공식지도에서 찾지 못함</span></h4><p>${esc(r.rememberSentence)}</p><div class="small muted">※ ‘찾지 못함’은 비지정 확정이 아닙니다. 검색 방식·명칭 차이 가능성이 있으므로 교사가 확인하세요.</div></div>`).join(""):'<p class="muted">현재 조건에 해당하는 자료가 없습니다.</p>';
 
   $("entries").innerHTML=rs.length?rs.sort((a,b)=>b.createdAt-a.createdAt).map(r=>{
     const k=key(r),isPub=!!published[k],s=info(r.schoolId);
     return `<div class="entry"><div class="meta">${esc(s.region)} · ${esc(s.school)} · 활동코드 ${esc(r.activityCode)}</div><h4>${esc(r.placeName)}</h4>
-    <p><strong>장소 선택:</strong> ${r.placeOrigin==="student_suggested"?"내가 직접 제안한 장소":"공식 현충시설 지도에서 찾은 장소"}<br><strong>공식지도 확인:</strong> ${esc(officialLabel(r.officialStatus))}<br><strong>활동 전 인지도:</strong> ${esc(awarenessLabel(r.awarenessScore))}<br><strong>중요도 / 발견도:</strong> ${r.importance} / ${r.visibility}</p>
+    <p><strong>장소 선택:</strong> ${r.placeOrigin==="student_suggested"?"내가 직접 제안한 장소":"공식 현충시설 지도에서 찾은 장소"}<br><strong>공식지도 확인:</strong> ${esc(officialLabel(r.officialStatus))}<br><strong>활동 전 인지도:</strong> ${esc(awarenessLabel(r.awarenessScore))}<br><strong>중요도 / 발견도:</strong> ${esc(r.importance)} / ${esc(r.visibility)}</p>
     <p><strong>장소 설명:</strong> ${esc(r.placeDescription||"미입력")}</p>
     <p><strong>위치 확인:</strong> <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${r.latitude},${r.longitude}`)}" target="_blank" rel="noopener">Google 지도에서 열기</a></p>
     <p><strong>판단 근거:</strong> ${esc(r.scoreReason||"")}</p>
     <p><strong>근거:</strong> ${esc(r.sourceType||"")}${r.sourceNote?` · ${esc(r.sourceNote)}`:""}</p>
     <p><strong>왜 기억해야 하나:</strong> ${esc(r.rememberSentence)}</p>
-    <div class="toolbar"><button class="${isPub?'amber':'green'} pub" data-k="${esc(k)}">${isPub?'공개 승인 해제':'공개 승인'}</button><button class="red del" data-k="${esc(k)}">🗑 삭제</button></div></div>`;
+    <div class="toolbar"><button class="${isPub?'amber':'green'} pub" data-k="${esc(k)}">${isPub?'공개 승인 해제':'공개 승인'}</button><button class="gray edit" data-k="${esc(k)}">수정 · 재검토</button><button class="red del" data-k="${esc(k)}">🗑 삭제</button></div></div>`;
   }).join(""):'<p class="muted">현재 조건의 제출이 없습니다.</p>';
 
-  document.querySelectorAll(".pub").forEach(b=>b.onclick=()=>togglePub(b.dataset.k));
-  document.querySelectorAll(".del").forEach(b=>b.onclick=()=>del(b.dataset.k));
+  document.querySelectorAll(".pub").forEach(b=>b.onclick=()=>togglePub(b.dataset.k).catch(reviewError));
+  document.querySelectorAll(".edit").forEach(b=>b.onclick=()=>editRecord(b.dataset.k));
+  document.querySelectorAll(".del").forEach(b=>b.onclick=()=>del(b.dataset.k).catch(reviewError));
+}
+async function editRecord(k){
+ const original=rows.find(r=>key(r)===k);if(!original)return;
+ const dialog=document.createElement('dialog');dialog.style.cssText='max-width:760px;width:calc(100% - 24px);max-height:90vh;overflow:auto';
+ const form=document.createElement('form');form.innerHTML='<h2>자료 수정 · 저장하면 공개 해제 후 재검토</h2><p>사전 인지도·학생 원자료는 수정하지 않습니다.</p>';
+ const labels={placeName:'장소명',placeDescription:'설명',category:'분류',address:'주소',latitude:'위도',longitude:'경도',sourceType:'근거 유형',sourceNote:'출처',scoreReason:'점수 근거',importance:'중요도',visibility:'발견도',rememberSentence:'기억 문장',message:'한마디',keywords:'핵심어',officialStatus:'공식 확인'};
+ for(const field of EDITABLE){const label=document.createElement('label');label.textContent=labels[field];const input=document.createElement('textarea');input.name=field;input.value=original[field]??'';input.maxLength=500;label.append(input);form.append(label);}
+ const status=document.createElement('p');status.setAttribute('role','alert');const save=document.createElement('button');save.textContent='검증 후 수정 저장';save.className='primary';const cancel=document.createElement('button');cancel.type='button';cancel.textContent='취소';cancel.onclick=()=>dialog.close();form.append(status,save,cancel);dialog.append(form);document.body.append(dialog);dialog.onclose=()=>dialog.remove();dialog.showModal();
+ form.onsubmit=async e=>{e.preventDefault();save.disabled=true;try{const patch=Object.fromEntries(new FormData(form));for(const k of ['latitude','longitude','importance','visibility'])patch[k]=Number(patch[k]);const next={...original,...patch};validateRecord(next);
+ const path=`${DB_ROOT}/submissions/${original.schoolId}/${original.uid}/${original.entryId}`;
+ const current=await get(ref(db,path));if(!current.exists()||JSON.stringify(Object.entries(current.val()).sort())!==JSON.stringify(Object.entries(original).filter(([k])=>!['uid','entryId'].includes(k)).sort()))throw Error('다른 수정 또는 삭제가 감지되었습니다. 목록을 새로 확인해주세요.');
+ const timestamp=Date.now(),revision=push(ref(db,`${DB_ROOT}/audit/${k}`)).key;
+ const changes={};for(const field of EDITABLE)changes[`${path}/${field}`]=next[field];
+ changes[`${path}/revision`]=(original.revision||0)+1;
+ changes[`${path}/updatedBy`]=auth.currentUser.uid;changes[`${path}/updatedAt`]=timestamp;
+ changes[`${DB_ROOT}/audit/${k}/${revision}`]={before:publication(original),after:publication(next),editor:auth.currentUser.uid,editedAt:timestamp};
+ changes[`${DB_ROOT}/published/${k}`]=null;
+ await update(ref(db),changes);dialog.close();}catch(e){status.textContent=e.code?errorMessage(e):e.message;diagnostic('review',e);}finally{save.disabled=false;}};
 }
 async function togglePub(k){
   const r=rows.find(x=>key(x)===k);if(!r)return;
   if(published[k]) await remove(ref(db,`${DB_ROOT}/published/${k}`));
   else {
-    if(!validScore(r.awarenessScore,4)||!validScore(r.importance,5)||!validScore(r.visibility,5)){
-      alert("인지도·중요도·발견도에 누락되거나 범위를 벗어난 점수가 있습니다. 원자료를 확인한 뒤 승인해 주세요.");return;
+    if(!coordinates(Number(r.latitude),Number(r.longitude))||!validScore(r.awarenessScore,4)||!validScore(r.importance,5)||!validScore(r.visibility,5)){
+      alert("좌표·인지도·중요도·발견도에 누락되거나 범위를 벗어난 점수가 있습니다. 원자료를 확인한 뒤 승인해 주세요.");return;
     }
     await set(ref(db,`${DB_ROOT}/published/${k}`),{
     publishedAt:Date.now(),schoolId:r.schoolId,category:r.category,placeOrigin:r.placeOrigin||"official_map",placeName:r.placeName,placeDescription:r.placeDescription||"",address:r.address||"",
@@ -273,14 +297,19 @@ $("exportBtn").onclick=()=>{
 };
 
 ["schoolFilter","catFilter","officialFilter","search"].forEach(id=>{$(id).addEventListener("change",render);$(id).addEventListener("input",render);});
-onAuthStateChanged(auth,user=>{
-  if(!user||user.isAnonymous){$("login").classList.remove("hidden");$("dash").classList.add("hidden");if(user?.isAnonymous)$("loginMsg").textContent="학생용 익명 로그인 상태입니다. Google 로그인 버튼을 눌러주세요.";return;}
-  $("loginMsg").textContent=`인증됨: ${user.email}`;
-  onValue(ref(db,`${DB_ROOT}/submissions`),snap=>{
-    rows=[];const obj=snap.val()||{};
-    Object.entries(obj).forEach(([schoolId,users])=>Object.entries(users||{}).forEach(([uid,items])=>Object.entries(items||{}).forEach(([entryId,v])=>rows.push({schoolId,uid,entryId,...v}))));
-    $("login").classList.add("hidden");$("dash").classList.remove("hidden");setTimeout(()=>map.invalidateSize(),100);render();
-  },e=>$("loginMsg").textContent=`DB 권한 실패 · ${e.code||e.message}`);
-  onValue(ref(db,`${DB_ROOT}/published`),snap=>{published=snap.val()||{};render();});
+onAuthStateChanged(auth,async user=>{
+ const epoch=++authEpoch;clearSession();$('login').classList.remove('hidden');
+ if(!user||user.isAnonymous){$('loginMsg').textContent='교사 계정으로 로그인해주세요.';return;}
+ try{if(TEACHER_AUTH_MODE==='claims-and-allowlist'){const token=await user.getIdTokenResult();const allowed=await get(ref(db,`${DB_ROOT}/teachers/${user.uid}`));if(epoch!==authEpoch)return;if(token.claims.teacher!==true||allowed.val()!==true)throw {code:'permission-denied'};}
+ $('loginMsg').textContent='로그인 완료 · 기존 DB 교사 읽기 권한 확인 중…';
+ unsubscribers.push(onValue(ref(db,`${DB_ROOT}/submissions`),snap=>{
+ if(epoch!==authEpoch)return;
+ rows=[];const obj=snap.val()||{};
+ Object.entries(obj).forEach(([schoolId,users])=>Object.entries(users||{}).forEach(([uid,items])=>Object.entries(items||{}).forEach(([entryId,v])=>rows.push({...v,schoolId,uid,entryId}))));
+ $('loginMsg').textContent='DB 교사 읽기 권한 확인됨';$('login').classList.add('hidden');$('dash').classList.remove('hidden');setTimeout(()=>map.invalidateSize(),100);render();
+ },e=>{if(epoch!==authEpoch)return;clearSession();$('login').classList.remove('hidden');$('loginMsg').textContent=errorMessage(e);}));
+ unsubscribers.push(onValue(ref(db,`${DB_ROOT}/published`),snap=>{if(epoch!==authEpoch)return;published=snap.val()||{};render();},e=>{if(epoch===authEpoch)$('loginMsg').textContent=errorMessage(e);}));
+ disposeMedia=setupTeacherMedia({app,db,user,subscribe:fn=>unsubscribers.push(fn)});
+ }catch(e){if(epoch!==authEpoch)return;$('loginMsg').textContent=errorMessage(e);}
 });
 </script></body></html>
