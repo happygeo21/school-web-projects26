@@ -192,6 +192,34 @@ test("mock contract: video, invalid signature/hash/size, quota thresholds, no un
   assert.equal((await tiny.upload()).response.status, 429);
   assert.equal(tiny.state.objects.size, 0);
 });
+test("mock contract: no-token upload denied; approved Range forwards and revoked Range never reads storage", async () => {
+  const f = await fixture();
+  const unauth = await f.gateway(new Request(origin + "/media?action=upload", {
+    method: "POST", headers: { Origin: origin, "Content-Type": "image/jpeg" }, body: new Uint8Array([255, 216, 255, 0]),
+  }));
+  assert.equal(unauth.status, 401);
+  assert.equal(f.state.objects.size, 0);
+  const { asset } = await f.upload();
+  const row = f.state.rows.get(asset);
+  const w = f.state.works.get(`${row.school_id}/${row.owner_uid}/${row.work_id}`);
+  let reads = 0;
+  // Explicit synthetic partial-response fixture, not a real Storage Range test.
+  f.blobs.read = async (_key, range) => {
+    reads++;
+    assert.equal(range, "bytes=0-1");
+    return new Response(new Uint8Array([255, 216]), { status: 206, headers: { "Content-Range": "bytes 0-1/4", "Content-Length": "2" } });
+  };
+  const range = () => f.gateway(new Request(origin + "/media?publicId=" + asset, { headers: { Origin: origin, Range: "bytes=0-1" } }));
+  f.state.published.set(asset, publicWork(w, asset, Date.now()));
+  const approved = await range();
+  assert.equal(approved.status, 206);
+  assert.equal(approved.headers.get("content-range"), "bytes 0-1/4");
+  assert.match(approved.headers.get("cache-control"), /no-store/);
+  assert.deepEqual([...new Uint8Array(await approved.arrayBuffer())], [255, 216]);
+  f.state.published.delete(asset);
+  assert.equal((await range()).status, 403);
+  assert.equal(reads, 1);
+});
 test("mock contract: upload failure, retry, uncertain orphan and teacher-only reconciliation; DB outage never deletes", async () => {
   let now = Date.now();
   const f = await fixture({ clock: () => now });

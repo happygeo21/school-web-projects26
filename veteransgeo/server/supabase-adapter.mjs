@@ -1,5 +1,6 @@
 // Server-only REST adapters. Never import this module from a public client bundle.
 import { mediaError } from "../media-policy.js";
+import { serverKeyHeaders } from "./supabase-key.mjs";
 export function createAdapters({
   supabaseURL,
   serviceKey,
@@ -19,10 +20,7 @@ export function createAdapters({
     !/^[a-z0-9-]+$/.test(bucket)
   )
     throw Error("invalid server configuration");
-  const credentials = {
-    apikey: serviceKey,
-    Authorization: `Bearer ${serviceKey}`,
-  };
+  const credentials = serverKeyHeaders(serviceKey);
   async function rest(path, options = {}) {
     const r = await fetcher(sb.origin + path, {
       ...options,

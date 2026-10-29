@@ -1,6 +1,6 @@
 ## 목적과 운영 상태
 
-6차 후속: **실제 테스트 Firebase/Supabase는 아직 연결하지 못했습니다.** 프로젝트·가상 계정 정보가 없어 실연동 성공으로 표시하지 않습니다. 운영 연결 전 target/API key 검사, 비공개 test-web/Rules/Secrets 준비 도구, 실제 HTTPS 프로토콜 실행기를 추가했습니다. 기존 기능을 재개발하지 않았습니다. 구체적인 클릭 순서와 5단계 상태는 [LIVE-REHEARSAL.md](https://github.com/happygeo21/school-web-projects26/blob/codex/veteransgeo-upgrade/veteransgeo/security/LIVE-REHEARSAL.md)에 있습니다. 로컬 TLS/Mock 성공은 실제 서비스 성공이 아닙니다.
+7차: **테스트 Firebase/Supabase 생성·비공개 버킷/SQL/RLS 적용은 사용자 확인, 실제 HTTP 실연동은 미실행입니다.** 비공개 설정에 알려진 대상과 새 테스트 코드를 반영했고 미확인 Web/가상 계정 값은 null로 보관했습니다(저장소 밖, 0600). 현재 관리 연결이 없고 실제 대상 GET은 클라우드 프록시 CONNECT 403입니다. 최신 Supabase 서버 키 형식을 지원하도록 보완했으며 무인증 업로드/승인·해제 후 Range 검사를 준비했습니다. Pages 99개 파일·하위 경로·신규 모듈 로딩·비공개 파일 제외·1/2/3열 검사를 실행했습니다. 로컬 SDK/지도 fixture 통과는 실제 Firebase/Supabase 성공이 아닙니다. 입력/명령/결과/제약은 [LIVE-REHEARSAL.md](https://github.com/happygeo21/school-web-projects26/blob/codex/veteransgeo-upgrade/veteransgeo/security/LIVE-REHEARSAL.md)에 있습니다.
 
 기억의 좌표 LIVE의 학생 독립 작품 제출 → 교사 비공개 검토·승인 → 공개 카드 피드를 구현하고 안전한 운영 전환을 준비합니다. 학생/교사/공개 3페이지, 학생 3단계, 7학교, 기존 Google/이메일 인증, Firebase RTDB 루트와 e-GIS CSV를 유지합니다.
 

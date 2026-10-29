@@ -116,6 +116,14 @@ export async function runLiveTest(
       report.complete = true;
       return report;
     }
+    expect(
+      await request("unauthenticated-upload-denied", c.mediaEndpoint + "?action=upload", {
+        method: "POST",
+        headers: { Origin: c.webOrigin, "Content-Type": "image/jpeg" },
+        bytes: new Uint8Array([255, 216, 255, 0]),
+      }),
+      [401, 403],
+    );
     const media = await syntheticMedia();
     report.fixtureBytes = Object.fromEntries(
       media.map((m) => [m.name, m.bytes.length]),
@@ -477,6 +485,15 @@ export async function runLiveTest(
       );
       if (!Buffer.from(publicResult.body).equals(bytes))
         throw Error("전송된 파일 바이트가 일치하지 않습니다.");
+      const end = Math.min(31, bytes.length - 1);
+      const partial = expect(
+        await request(name + "-approved-range", publicURL, {
+          headers: { Origin: c.webOrigin, Range: `bytes=0-${end}` },
+        }),
+        [206],
+      );
+      if (!Buffer.from(partial.body).equals(bytes.subarray(0, end + 1)))
+        throw Error("Range 요청의 파일 바이트가 일치하지 않습니다.");
       const pub = expect(
         await request(
           name + "-public-projection",
@@ -492,6 +509,12 @@ export async function runLiveTest(
         throw Error("공개 사본에 비공개 식별자가 있습니다.");
       w = await action(school, id, w, "private", asset);
       expect(await request(name + "-revoked-public-denied", publicURL), [403]);
+      expect(
+        await request(name + "-revoked-range-denied", publicURL, {
+          headers: { Origin: c.webOrigin, Range: "bytes=0-31" },
+        }),
+        [403],
+      );
     }
     const usage = expect(await gateway("usage", {}, teacher.token), [
       200,

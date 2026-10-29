@@ -43,4 +43,7 @@ jobs:
         working-directory: veteransgeo/security
       - run: node scripts/build-public-site.mjs
       - run: node scripts/verify-public-site.mjs
+      - name: Pages artifact under repository subpath (SDK and map fixtures only)
+        run: VETERANSGEO_BROWSER="$(node -p "require('playwright').chromium.executablePath()")" npm run test:pages
+        working-directory: veteransgeo/security
       - run: node veteransgeo/security/build-netlify.mjs

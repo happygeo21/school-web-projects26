@@ -2,6 +2,7 @@ import { createGateway } from "../../../server/gateway.mjs";
 import { verifyFirebaseToken } from "../../../server/firebase-token.mjs";
 import { createAdapters } from "../../../server/supabase-adapter.mjs";
 import { rehearsalTargets } from "../../../server/rehearsal-target.mjs";
+import { serverKeyFromEnvironment } from "../../../server/supabase-key.mjs";
 const required = (key: string) => {
   const v = Deno.env.get(key);
   if (!v) throw Error("Missing server configuration: " + key);
@@ -37,7 +38,7 @@ if (
   throw Error("Invalid allowlists");
 const adapters = createAdapters({
   supabaseURL: required("SUPABASE_URL"),
-  serviceKey: required("SUPABASE_SERVICE_ROLE_KEY"),
+  serviceKey: serverKeyFromEnvironment((key: string) => Deno.env.get(key)),
   bucket: "veterans-private",
   databaseURL,
 });
