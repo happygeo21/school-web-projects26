@@ -171,7 +171,7 @@ const markers=L.layerGroup().addTo(map);
 let publicIds=new Map(),snapshotSeq=0;
 const publicationKey=r=>publicIds.get(key(r));
 let rows=[],published={},unsubscribers=[],authEpoch=0,disposeMedia=()=>{};
-function clearSession(){unsubscribers.splice(0).forEach(fn=>fn());disposeMedia();disposeMedia=()=>{};rows=[];published={};render();$("dash").classList.add("hidden");}
+function clearSession(){document.querySelectorAll('dialog').forEach(dialog=>{dialog.close();dialog.remove();});unsubscribers.splice(0).forEach(fn=>fn());disposeMedia();disposeMedia=()=>{};rows=[];published={};render();$("dash").classList.add("hidden");}
 function reviewError(e){diagnostic("review",e);alert(errorMessage(e));}
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 const info=id=>PROJECT.schools.find(x=>x.id===id)||{school:id,region:""};
@@ -245,7 +245,7 @@ function render(){
   document.querySelectorAll(".del").forEach(b=>b.onclick=()=>del(b.dataset.k).catch(reviewError));
 }
 async function showHistory(k){
- const snap=await get(ref(db,`${DB_ROOT}/audit/${k}`));const dialog=document.createElement('dialog');dialog.style.cssText='max-width:760px;width:calc(100% - 24px);max-height:85vh;overflow:auto';const heading=document.createElement('h2');heading.textContent='수정·보관 이력';dialog.append(heading);
+ const epoch=authEpoch,snap=await get(ref(db,`${DB_ROOT}/audit/${k}`));if(epoch!==authEpoch||!auth.currentUser||auth.currentUser.isAnonymous)return;const dialog=document.createElement('dialog');dialog.style.cssText='max-width:760px;width:calc(100% - 24px);max-height:85vh;overflow:auto';const heading=document.createElement('h2');heading.textContent='수정·보관 이력';dialog.append(heading);
  for(const event of Object.values(snap.val()||{}).sort((a,b)=>a.editedAt-b.editedAt)){const pre=document.createElement('pre');pre.style.whiteSpace='pre-wrap';pre.textContent=JSON.stringify(event,null,2);dialog.append(pre);}if(!snap.exists())dialog.append(document.createTextNode('저장된 이력이 없습니다.'));const close=document.createElement('button');close.textContent='닫기';close.onclick=()=>dialog.close();dialog.append(close);dialog.onclose=()=>dialog.remove();document.body.append(dialog);dialog.showModal();
 }
 async function editRecord(k){

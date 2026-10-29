@@ -11,7 +11,7 @@ const projectId = required("FIREBASE_PROJECT_ID"),
 // This implementation is for a separate rehearsal project. Production needs a new reviewed change.
 if (
   projectId === "school-project-26-1edf4" ||
-  databaseURL.includes("school-project-26-1edf4")
+  databaseURL.toLowerCase().includes("school-project-26-1edf4")
 )
   throw Error("Production Firebase is forbidden in rehearsal");
 const teachers = JSON.parse(required("APPROVED_TEACHER_UIDS")),

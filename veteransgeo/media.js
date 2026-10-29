@@ -613,6 +613,7 @@ export function setupTeacherMedia({
           });
           button("수정 이력", async () => {
             const s = await get(ref(db, `${DB_ROOT}/workAudit/${legacyKey}`));
+            if (!live) return;
             const dialog = document.createElement("dialog");
             dialog.className = "media-detail";
             const pre = document.createElement("pre");

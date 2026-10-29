@@ -257,6 +257,17 @@ test("real Chromium + local mock gateway: image compression/upload/retry, video,
         ),
       );
     }
+    await teacher
+      .getByRole("button", { name: "학생 원본 보기", exact: true })
+      .first()
+      .click();
+    await teacher.locator("dialog pre").waitFor();
+    await teacher.evaluate(async () => {
+      const sdk = await import("/__mock/firebase.js");
+      await sdk.signOut();
+    });
+    await teacher.locator("#dash").waitFor({ state: "hidden" });
+    assert.equal(await teacher.locator("dialog").count(), 0);
     assert.deepEqual(errors, []);
     await context.close();
   } finally {
