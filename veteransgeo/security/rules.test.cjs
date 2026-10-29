@@ -22,6 +22,7 @@ const anon = (uid) =>
 const teacher = () =>
   env.authenticatedContext("teacher", {
     teacher: true,
+    email: "fixture-teacher@example.invalid",
     firebase: { sign_in_provider: "password" },
   });
 const data = (school) => ({
@@ -54,12 +55,17 @@ const data = (school) => ({
   message: "",
 });
 before(async () => {
+  let rules=fs.readFileSync(__dirname+'/database.rules.json','utf8');
+  if(process.env.VETERANSGEO_RULE_MODE==='existing'){
+    const {execFileSync}=require('node:child_process'),os=require('node:os'),path=require('node:path');
+    const dir=fs.mkdtempSync(path.join(os.tmpdir(),'veterans-email-rules-'));try{const current=path.join(dir,'current.json'),merged=path.join(dir,'merged.json');fs.writeFileSync(current,JSON.stringify({rules:{'.read':false,'.write':false,memoryTemperature2026:{submissions:{'.read':"auth != null && auth.token.email == 'fixture-teacher@example.invalid'"}},unrelatedApp:{'.read':false,'.write':false}}}));execFileSync(process.execPath,[__dirname+'/merge-rules.mjs',current,__dirname+'/database.rules.json',merged,'existing']);rules=fs.readFileSync(merged,'utf8');}finally{fs.rmSync(dir,{recursive:true,force:true});}
+  }
   env = await initializeTestEnvironment({
     projectId: "demo-veteransgeo",
     database: {
       host: "127.0.0.1",
       port: 9000,
-      rules: fs.readFileSync(__dirname + "/database.rules.json", "utf8"),
+      rules,
     },
     storage: {
       host: "127.0.0.1",
@@ -67,6 +73,8 @@ before(async () => {
       rules: fs.readFileSync(__dirname + "/storage.rules", "utf8"),
     },
   });
+  await env.clearDatabase();
+  await env.clearStorage();
   await env.withSecurityRulesDisabled(async (c) => {
     await set(ref(c.database(), ROOT + "/teachers/teacher"), true);
   });
@@ -187,6 +195,8 @@ test("private media hidden; size/MIME constraints; teacher-only approved copy; r
   await assertSucceeds(
     getBytes(sr(env.unauthenticatedContext().storage(), pub)),
   );
+  await assertSucceeds(deleteObject(sr(teacher().storage(),pub)));
+  await assertFails(getBytes(sr(env.unauthenticatedContext().storage(),pub)));
 });
 test("independent media metadata: owner create, teacher review, public collection isolated", async () => {
   const path = ROOT + "/works/S1/student/work",
