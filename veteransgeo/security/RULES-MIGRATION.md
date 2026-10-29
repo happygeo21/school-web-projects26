@@ -1,5 +1,7 @@
 # 운영 Rules 점검·이행 (게시하지 않는 절차)
 
+> **현재 실제 운영 전체 원문 미제공: 실제 병합/호환 검증 미완료.** [운영 자료 수집표](OPERATIONS-INPUT-CHECKLIST.md#1-한눈에-보는-정보-수집표)의 F1~F5는 사용자 확인 필요입니다. 구형 제출의 awarenessOriginal 누락은 [4조합 테스트 계획](OPERATIONS-INPUT-CHECKLIST.md#4-awarenessoriginal-충돌-검증-계획)으로 확인합니다. 기존 합성 이메일 Emulator 결과를 실제 원문 검증으로 대체하지 않습니다.
+
 현재 앱의 `TEACHER_AUTH_MODE='existing-rules'`와 Google/이메일 로그인을 유지합니다. 화면에서 확인한 이메일 승인 목록을 공개 저장소로 복사하지 않습니다. Spark를 유지하며 Storage는 비활성화합니다.
 
 1. Console에서 실제 게시된 **전체** RTDB Rules를 저장소 밖의 비공개 파일로 내보냅니다. 화면 캡처만으로 게시 시점·전체 원문이 일치한다고 가정하지 않습니다. 이전 규칙의 원본 해시와 확인 시각을 함께 보관합니다.

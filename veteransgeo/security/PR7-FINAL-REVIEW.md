@@ -1,5 +1,7 @@
 # PR #7 최종 검토 — 운영 전환 보류
 
+> 후속 정리(2026-10-29 KST): [교사용 운영 자료 수집표](OPERATIONS-INPUT-CHECKLIST.md)에 확인 화면·비공개 전달 범위·401 판별·테스트 연결·awarenessOriginal 충돌 실측 계획을 모았습니다. 원문/테스트 프로젝트/preview 설정은 **사용자 확인 필요**입니다. 이번에는 기능을 추가하지 않으며 아래 검증 이력의 범위를 확대해 주장하지 않습니다.
+
 ## PR 메타데이터와 범위
 
 새 PR을 만들지 않습니다. 대상은 https://github.com/happygeo21/school-web-projects26/pull/7 입니다. 검토 시작 head `ac68ba7bdca90ee18702c4eb29509615da82eb55`는 main 대비 6개 커밋·31개 파일이며 main은 `c5ef2c140c3a1eaa740fa1a14bd7c9b247b322a5`입니다. 작업 도중 정적 점검 도구/문서가 추가되어 최종 head와 수는 최종 보고·PR 화면을 기준으로 합니다.

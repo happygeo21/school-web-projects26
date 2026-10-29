@@ -4,6 +4,8 @@
 
 **운영 적용 판정은 보류입니다.** main 병합·운영 Rules 게시·운영 데이터 수정/삭제·실제 production 배포·Blaze 변경을 하지 않았습니다. MEDIA_UPLOAD_ENABLED=false를 유지합니다. 이 PR을 자동 병합하지 마세요.
 
+**Draft 유지. 이번 후속 작업은 문서 정리만 하며 기능을 추가하지 않습니다.** 최신 정보 수집 항목과 테스트 연결 절차는 [운영 자료 수집표](https://github.com/happygeo21/school-web-projects26/blob/codex/veteransgeo-upgrade/veteransgeo/security/OPERATIONS-INPUT-CHECKLIST.md), 기존 전환/복구 기준은 [RELEASE-PREFLIGHT.md](https://github.com/happygeo21/school-web-projects26/blob/codex/veteransgeo-upgrade/veteransgeo/security/RELEASE-PREFLIGHT.md), [RULES-MIGRATION.md](https://github.com/happygeo21/school-web-projects26/blob/codex/veteransgeo-upgrade/veteransgeo/security/RULES-MIGRATION.md)를 참조하세요. 이 본문은 API Forbidden에 대비한 붙여넣기 완성본이며 PR 실제 반영 여부와 별개입니다.
+
 ## 구현 내용
 
 - 학생: 사전 인지도 고정, 수동 위치/공식지도 대체 입력, 탭 초안 복원, 동일 제출 ID·최초 payload 재시도, 인증/권한/네트워크 오류 안내.
@@ -32,13 +34,23 @@
 - [ ] 공식 API 응답·좌표계/축·이용 조건과 실데이터 캐시 확보
 - [ ] Storage 실제 권한·비용·버킷·파일 공개 검증(이번 전환 대상 제외)
 
-CI 성공은 운영 Firebase 실사용 성공을 의미하지 않습니다. 상세 실행 기록은 veteransgeo/security/REVIEW.md 및 RELEASE-PREFLIGHT.md를 참조하세요.
+확인한 [기존 CI](https://github.com/happygeo21/school-web-projects26/actions/runs/40812211435)는 `8cffa728b6a061888b19593ed4645f9550a91c16`에서 Success(1분 12초)입니다. 위 체크는 기존 검증 범위이며 이번 문서 수정으로 실제 서비스 실측이 추가된 것은 아닙니다. CI 성공은 운영 Firebase 실사용 성공을 의미하지 않습니다. 최신 문서 커밋의 Checks는 해당 head의 결과를 별도로 확인하세요.
+
+### 사용자 확인 필요 — 추가 개발로 대신하지 않는 자료
+
+- Firebase: 게시된 전체 Rules 비공개 원문/해시·다른 앱/전역 권한·경로별 승인식, 실제 Auth 제공자/승인 도메인, 별도 테스트 projectId/DB 호스트.
+- Netlify 두 사이트: Published deploy ID/SHA·현재 운영 주소, base/build/publish/context, preview 산출물의 실제 Firebase 대상, 401 보호 설정과 승인된 관리자의 접근 결과, security/ artifact 제외 여부.
+- 복구 기준: 이전 Pages SHA·두 사이트 Published ID·해당 앱 Rules 백업. 공식 시설 원자료·좌표계/축·이용 조건은 미확보입니다.
+
+전체 운영 Rules 원문이 제공되기 전에는 **실제 병합본 생성·컴파일·호환 검증 완료로 표시하지 않습니다.** 별도 테스트 프로젝트도 아직 연결하지 않았습니다. 구형/신규 코드 × 기존/신규 Rules 네 조합, 신규 경로·미승인 계정·인지도 위변조 검증은 수집표의 미실행 계획입니다.
 
 ## PR #7 Deploy Preview 주의
 
 Netlify veteransgeo/happygeo Deploy Preview 성공은 production 배포와 구분합니다. 정적 GET 전용 점검 CI에서 두 preview의 홈/설정 파일은 HTTP 401로 보호되어 실제 Firebase 연결값을 읽지 못했습니다. 저장소 설정은 운영 프로젝트 school-project-26-1edf4를 가리키므로, 인증된 Deploy file browser에서 확인하기 전까지 운영 연결 가능성으로 취급합니다.
 
 미리보기에서 제출·수정·삭제·교사 로그인 테스트를 하지 마세요. 학생 페이지의 익명 인증이나 공개 페이지의 구독은 페이지 실행만으로 운영 서비스에 접속할 수 있습니다. 이번 점검은 JS를 실행하지 않고 정적 파일 및 public Auth 설정 GET만 설계했으며 DB/Storage/학생 자료 요청은 하지 않았습니다. 보호 화면으로 막혀 실제 Auth 승인 도메인과 로그인 후 security/ 경계는 미확인입니다.
+
+401만으로 배포 실패를 단정하지 않습니다. 승인된 관리자 화면에서 해당 SHA의 Deploy log와 Visitor access/Deploy protection 설정을 구분해 확인해야 합니다. 인증 우회·보호 해제는 하지 않습니다. 현재 빌드는 Firebase 설정을 그대로 복사하므로 **Netlify 환경변수만 넣어서는 테스트 프로젝트로 바뀌지 않습니다.** 우선 저장소 밖 로컬 웹 복사본에만 테스트 설정을 넣고 정적으로 projectId/DB 호스트를 확인하는 절차를 마련했습니다. preview 빌드 오버레이·별도 배포는 이번에 구현/적용하지 않습니다. 기존 운영 firebase-config.js는 변경하지 않습니다.
 
 happygeo 소스는 main 대비 변경하지 않았습니다. 같은 Firebase 프로젝트의 다른 앱 루트를 보존해야 하며, happygeo Deploy Preview 성공이 기억의 좌표의 운영 권한 검증을 대신하지 않습니다.
 
@@ -55,3 +67,5 @@ happygeo 소스는 main 대비 변경하지 않았습니다. 같은 Firebase 프
 ## Notion
 
 미반영입니다. 이번 작업은 PR #7 정리·검증 범위이며 Notion 외부 쓰기를 수행하지 않았습니다. 자동 동기화 설치나 기록 성공을 주장하지 않습니다.
+
+추가 문안: “기억의 좌표 LIVE PR #7 운영 자료 수집표 정리 / Draft 유지 / 전체 게시 Rules·preview 정적 설정/401 보호·별도 테스트 프로젝트는 사용자 확인 필요 / awarenessOriginal 충돌 실측 및 로컬 테스트 연결 계획 작성 / 운영 적용 보류 / main·운영 Firebase·배포·Storage·Blaze 변경 없음”. 커밋 SHA/KST는 최종 Git 기록을 함께 기재합니다.

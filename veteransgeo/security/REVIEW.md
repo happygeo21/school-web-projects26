@@ -1,4 +1,4 @@
-> PR #7의 현재 상태·preview 401 결과·최종 A/B/C/D 판정은 [PR7-FINAL-REVIEW.md](PR7-FINAL-REVIEW.md)를 우선 확인하세요. PR 제목/본문 대체안은 PR7-BODY.md이며 API 편집은 차단됐습니다.
+> PR #7의 최신 운영 자료 수집·사용자 확인 필요 항목·테스트 연결 계획은 [OPERATIONS-INPUT-CHECKLIST.md](OPERATIONS-INPUT-CHECKLIST.md)를 확인하세요. 4차 검증 근거는 [PR7-FINAL-REVIEW.md](PR7-FINAL-REVIEW.md)입니다. PR 제목/본문 대체안은 PR7-BODY.md이며 API 편집은 차단됐습니다. 아래 과거 수동 PR 생성 안내 대신 기존 PR #7만 사용합니다.
 
 > 3차 운영 사전 검증의 최신 상태·교사용 클릭 순서·전환/복구 계획은 [RELEASE-PREFLIGHT.md](RELEASE-PREFLIGHT.md)를 우선 확인하세요. 아래는 2차 구현 검증 기록입니다. 운영 Rules 전체 원문은 아직 제공되지 않았습니다.
 

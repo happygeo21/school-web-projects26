@@ -1,5 +1,7 @@
 # 3차 운영 적용 사전 검증 — 교사용 실행 안내
 
+> PR #7 후속 정리: [운영 자료 수집표·테스트 프로젝트 연결·awarenessOriginal 검증 계획](OPERATIONS-INPUT-CHECKLIST.md)을 먼저 확인하세요. 미확보 운영 항목은 모두 **사용자 확인 필요**이며 실제 병합/운영 검증은 미완료입니다. 아래 과거 CI와 현재 상태를 구분합니다.
+
 **상태: 운영 적용 보류.** 기능을 확장하는 작업이 아닙니다. 운영 Rules 전체 원문·실제 Netlify 주소·별도 테스트 프로젝트 정보가 아직 없어 실제 병합본/서비스 검증은 완료하지 못했습니다. 지금은 main 병합·Rules 게시·배포·Storage/Blaze 변경을 하지 않습니다.
 
 ## 1. 확인된 기준과 증거
@@ -24,9 +26,9 @@
 
 ### GitHub
 
-1. [비교 화면](https://github.com/happygeo21/school-web-projects26/compare/main...codex/veteransgeo-upgrade?expand=1)을 열고 로그인합니다.
+1. 기존 [PR #7](https://github.com/happygeo21/school-web-projects26/pull/7)을 열고 로그인합니다. 새 PR은 만들지 않습니다.
 2. base=`main`, compare=`codex/veteransgeo-upgrade`인지 확인하고 Files changed에서 다른 앱 소스가 바뀌지 않았는지 확인합니다.
-3. Create pull request → 제목·설명 입력 → 버튼 옆 ▼ → **Create draft pull request**를 선택합니다. 기존 PR이 표시되면 새로 만들지 않고 그 PR을 사용합니다.
+3. 제목 옆 **Edit**와 첫 본문 **Edit → Update comment**에서 [PR7-BODY.md](PR7-BODY.md)를 반영합니다. Draft를 유지하고 Ready for review를 누르지 않습니다. API 편집은 Forbidden으로 차단되어 수동 반영이 필요합니다.
 4. Actions/Checks에서 검토 workflow 결과와 커밋을 확인합니다. 공식 자료 점검 run → `public-source` 작업 → Summary의 `Official source probe`에서 status/jsonParsed/배열 필드/Origin 응답을 확인합니다. API 키·개인정보 없이 이 결과만 전달합니다.
 5. **Merge pull request, Enable auto-merge는 누르지 않습니다.** main push는 Pages 자동 배포를 시작하므로 병합 자체가 배포 승인과 연결됩니다.
 
