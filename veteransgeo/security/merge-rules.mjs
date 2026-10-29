@@ -1,5 +1,5 @@
 // Offline review artifact only. Never publish, read production, or overwrite existing files.
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile, realpath } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 const [currentFile, candidateFile, out, mode = "existing"] =
@@ -15,11 +15,26 @@ const checkout = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../..",
 );
-const target = path.resolve(out);
+const target = path.join(
+  await realpath(path.dirname(path.resolve(out))),
+  path.basename(out),
+);
+const source = await realpath(currentFile);
+if (source === checkout || source.startsWith(checkout + path.sep))
+  throw Error("운영 Rules 원본은 저장소 밖에서만 읽습니다.");
 if (target === checkout || target.startsWith(checkout + path.sep))
   throw Error("운영 교사 목록이 포함될 수 있으므로 출력은 저장소 밖에 두세요.");
-const current = JSON.parse(await readFile(currentFile, "utf8")),
-  candidate = JSON.parse(await readFile(candidateFile, "utf8")),
+async function readRules(file) {
+  try {
+    return JSON.parse(await readFile(file, "utf8"));
+  } catch {
+    throw Error(
+      "Rules 파일을 읽거나 JSON으로 해석하지 못했습니다. 원문 내용은 출력하지 않습니다.",
+    );
+  }
+}
+const current = await readRules(currentFile),
+  candidate = await readRules(candidateFile),
   name = "memoryTemperature2026";
 if (!current.rules?.[name] || !candidate.rules?.[name])
   throw Error("명시한 프로젝트 루트가 없습니다.");

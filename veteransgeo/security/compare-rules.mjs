@@ -1,14 +1,27 @@
 // Read a privately exported Rules JSON; only output expression hashes and changed paths.
 // Never print teacher emails, tokens, student records, or write back to the source.
-import { readFile } from "node:fs/promises";
+import { readFile, realpath } from "node:fs/promises";
 import { createHash } from "node:crypto";
 const [currentFile, draftFile] = process.argv.slice(2);
 if (!currentFile || !draftFile)
   throw Error(
     "CURRENT.json DRAFT.json을 지정하세요. 운영 전체 Rules 파일은 저장소 밖에 두세요.",
   );
-const current = JSON.parse(await readFile(currentFile, "utf8")),
-  draft = JSON.parse(await readFile(draftFile, "utf8"));
+async function readRules(file) {
+  try {
+    return JSON.parse(await readFile(file, "utf8"));
+  } catch {
+    throw Error(
+      "Rules 파일을 읽거나 JSON으로 해석하지 못했습니다. 원문 내용은 출력하지 않습니다.",
+    );
+  }
+}
+const checkout = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
+const source = await realpath(currentFile);
+if (source === checkout || source.startsWith(checkout + "/"))
+  throw Error("운영 Rules 원본은 저장소 밖에서만 읽습니다.");
+const current = await readRules(currentFile),
+  draft = await readRules(draftFile);
 const root = "memoryTemperature2026";
 const hash = (x) =>
   createHash("sha256")

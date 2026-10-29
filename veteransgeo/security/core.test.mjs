@@ -1,3 +1,4 @@
+import * as fsForPrivateTest from "node:fs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -220,6 +221,56 @@ test("read-only Rules comparison redacts emails; offline merge preserves unrelat
       execFileSync(
         process.execPath,
         [path.join(here, "merge-rules.mjs"), input, candidate, out, "existing"],
+        { stdio: "pipe" },
+      ),
+    );
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("private Rules failures do not print source text and symlinked checkout outputs are blocked", () => {
+  const dir = mkdtempSync(path.join(tmpdir(), "veterans-private-test-"));
+  try {
+    const here = path.dirname(fileURLToPath(import.meta.url)),
+      input = path.join(dir, "invalid.json");
+    writeFileSync(
+      input,
+      '{"rules": "fictional-private@example.invalid" BROKEN}',
+    );
+    for (const script of ["compare-rules.mjs", "merge-rules.mjs"]) {
+      try {
+        execFileSync(
+          process.execPath,
+          [
+            path.join(here, script),
+            input,
+            path.join(here, "database.rules.json"),
+            path.join(dir, "out.json"),
+          ],
+          { encoding: "utf8", stdio: "pipe" },
+        );
+        assert.fail("invalid JSON accepted");
+      } catch (e) {
+        assert.equal(
+          String(e.stderr).includes("fictional-private@example.invalid"),
+          false,
+        );
+        assert.match(String(e.stderr), /원문 내용은 출력하지 않습니다/);
+      }
+    }
+    const { symlinkSync } = fsForPrivateTest;
+    const alias = path.join(dir, "checkout-alias");
+    symlinkSync(path.resolve(here, "../.."), alias, "dir");
+    assert.throws(() =>
+      execFileSync(
+        process.execPath,
+        [
+          path.join(here, "merge-rules.mjs"),
+          input,
+          path.join(here, "database.rules.json"),
+          path.join(alias, "private-rules-output.json"),
+        ],
         { stdio: "pipe" },
       ),
     );
