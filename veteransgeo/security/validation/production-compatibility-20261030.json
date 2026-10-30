@@ -1,6 +1,6 @@
 {
   "kind": "sanitized-production-transition-blockers",
-  "checkedAt": "2026-10-30T04:03:24.269Z",
+  "checkedAt": "2026-10-30T04:35:19.279Z",
   "sourceBaseCommit": "8e318c7b79eb3377f3200f5e553b25fe24726de2",
   "productionSnapshot": {
     "total": 20,
@@ -121,7 +121,9 @@
     "pointFeatures": 3,
     "facilityNameAndCoordinateAttributesVerified": true,
     "existingEGISProjectSaved": false,
-    "syntheticOnly": true
+    "syntheticOnly": true,
+    "distinctCoordinateRetest": true,
+    "originalDownloadPreserved": true
   },
   "previousSuccessfulSuitesNotRerun": [
     "personal Rules 6",
@@ -158,8 +160,89 @@
     "Approve separate upload authorization codes",
     "Final production Rules/server/Pages cutover approval",
     "Production gateway configuration/deployment and actual-student transfer require a separate final approval",
-    "Physical phone/tablet and all seven actual production account sign-ins remain unverified"
+    "Physical phone/tablet and remaining six actual production account sign-ins remain unverified"
   ],
   "productionDataMutations": false,
-  "privateValuesOmitted": true
+  "privateValuesOmitted": true,
+  "predeploymentReview": {
+    "sourceBaseCommit": "e25667556557ae1247b51ec713979e8611f29a97",
+    "deno": {
+      "kind": "full-production-entry-local-deno",
+      "deno": "2.9.6",
+      "passed": 16,
+      "failed": 0,
+      "checks": [
+        "invalid-config-1-rejected",
+        "invalid-config-2-rejected",
+        "invalid-config-3-rejected",
+        "invalid-config-4-rejected",
+        "invalid-config-5-rejected",
+        "invalid-config-6-rejected",
+        "invalid-config-7-rejected",
+        "invalid-config-8-rejected",
+        "invalid-config-9-rejected",
+        "full-entry-import-and-handler-created",
+        "production-readiness-local",
+        "readiness-does-not-leak-config",
+        "pages-cors-and-independent-header",
+        "foreign-origin-denied",
+        "unsigned-upload-denied",
+        "zero-hosted-network-attempts"
+      ],
+      "networkAttempts": 0,
+      "cloudDeployment": false,
+      "realServerKeyUsed": false
+    },
+    "deployBundleFiles": 7,
+    "deployRequestPrepared": true,
+    "cloudDeployed": false,
+    "relatedNodeSecurityTests": {
+      "passed": 10,
+      "failed": 0
+    },
+    "independentSchoolCodes": {
+      "count": 7,
+      "reused": true,
+      "codeHashPairsMatch": true,
+      "teacherApproved": false,
+      "publicValuesOrHashes": false
+    },
+    "realServerKeyUsed": false,
+    "platformServerKeySelectionChecked": true,
+    "publicArtifact": {
+      "files": 99,
+      "veteransgeoFiles": 18,
+      "privateValueMatches": 0,
+      "serverFiles": 0
+    },
+    "rollback": {
+      "approvedTeacherReads": 7,
+      "approvedTeacherWritesDenied": 7,
+      "passed": 14,
+      "failed": 0,
+      "productionWrites": 0
+    },
+    "distinctCoordinateMap": {
+      "syntheticRows": 3,
+      "distinctCoordinates": 3,
+      "validCoordinates": 3,
+      "invalidCoordinates": 0,
+      "realEGISLayerCreated": true,
+      "threeSeparatedPinsVisuallyConfirmed": true,
+      "originalTeacherCSVPreserved": true,
+      "productionDataChanged": false
+    },
+    "manualAcceptance": {
+      "physicalPhone": false,
+      "physicalTablet": false,
+      "allSevenProductionTeacherSignIns": false,
+      "existingProductionTeacherSessionVerified": true,
+      "existingProductionRecordsReadOnlyRendered": 20,
+      "remainingProductionTeacherAccountsManual": 6
+    },
+    "publicConnectionConfiguration": {
+      "active": false,
+      "proposalPrepared": true
+    }
+  }
 }
