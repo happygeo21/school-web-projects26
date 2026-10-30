@@ -1,0 +1,16 @@
+{
+  "synthetic": true,
+  "period": "2025",
+  "sheet": "합성",
+  "header_start": 1,
+  "header_depth": 1,
+  "code_system": "GIS",
+  "columns": {
+    "name": "지역명",
+    "code": "code",
+    "sido": "시도명",
+    "year": "통계연도",
+    "value": "연습값"
+  },
+  "output_value": "연습값"
+}

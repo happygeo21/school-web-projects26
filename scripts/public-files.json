@@ -89,6 +89,19 @@
     "veteransgeo/teacher.html",
     "wedding-planner/guide.html",
     "wedding-planner/home-dashboard.html",
-    "wedding-planner/index.html"
+    "wedding-planner/index.html",
+    "kosis-egis-tool/core.js",
+    "kosis-egis-tool/reference.json",
+    "kosis-egis-tool/studio.css",
+    "kosis-egis-tool/README.md",
+    "kosis-egis-tool/conversion-worker.js",
+    "kosis-egis-tool/spatial.js",
+    "kosis-egis-tool/sido-reference.json",
+    "kosis-egis-tool/sido-2025.geojson",
+    "kosis-egis-tool/sigungu-2025.geojson",
+    "kosis-egis-tool/boundary-provenance.json",
+    "kosis-egis-tool/statistics-catalog.json",
+    "kosis-egis-tool/vendor/xlsx-0.20.3.full.min.js",
+    "kosis-egis-tool/vendor/SheetJS-LICENSE.txt"
   ]
 }
