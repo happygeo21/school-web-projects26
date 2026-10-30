@@ -1,0 +1,25 @@
+{
+  "kind": "review-only-test-media-deployment",
+  "testOnly": true,
+  "firebaseProject": "veteransgeo-test-2026",
+  "supabaseProject": "jfkjuhxkcctfmwojhpci",
+  "function": "media",
+  "files": {
+    "supabase/functions/media/index.ts": "1d4443fc8251fbc7173ccfa11b2f50db9f426ce68acf8ed1d5d09b2538c7267c",
+    "server/gateway.mjs": "807cd7aa845dbb772b6d7946f30a58dbff4ba4d5242d302dc0e22c3515e6a717",
+    "server/upload-access.mjs": "8917d4e186dfcdb439e25bb456713bab30f243e147de8386091186df1988603c",
+    "server/invite-policy.mjs": "6575530af9a8d2e4b8025b9bc8a1c1bce16bee8be5a6c04634bd3c0533949e4f",
+    "server/firebase-token.mjs": "5a23e5d507f1e0b21257f762e562d52a97a2bda15073ba52b09b6c4516689141",
+    "server/supabase-adapter.mjs": "0f56f60f9351a7732638763cb19248e15d6483f348c1e7ac1ddab4c7cc524bf8",
+    "server/supabase-key.mjs": "aac76ebf44c444ec5fb617f3c1bd203a5a12e95e5437a5c33ecd321fdb810ee3",
+    "server/rehearsal-target.mjs": "85962ace7d08f0ef67e3625952cb769c579f8181a3c15f5f7552a301889b002d",
+    "media-policy.js": "d3617757aa346cf04a74c1f647e8b66e9d320dbd9258f88537b1f693929292f9",
+    "supabase/config.toml": "b89be122dd94f682237042821d6e1bd93c2841a58142404280878e633e1462a7"
+  },
+  "migration": {
+    "path": "supabase/migrations/202610300001_upload_invites.sql",
+    "sha256": "8d3e66f501e6fd3c84e2bd16bcef6e345d6823b19fdefe102ea88bebc1ba23bb"
+  },
+  "preflight": "security/upload-invites-preflight.sql",
+  "remoteApplied": false
+}

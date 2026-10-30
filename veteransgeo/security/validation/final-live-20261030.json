@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "kind": "sanitized-final-live-recheck",
+  "checkedAtKST": "2026-10-30T09:40:09.334033+09:00",
+  "sourceBaseCommit": "c41e4b372ddece443a87dc205f60da123f9fc9d7",
+  "success": true,
+  "personalEmulator": {
+    "passed": 6,
+    "failed": 0,
+    "exactExternalRules": true,
+    "personalRulesAndHashesOmitted": true
+  },
+  "consoleRules": {
+    "jsonEquivalent": true,
+    "canonicalHashesMatched": true,
+    "republished": false
+  },
+  "probe": {
+    "complete": true,
+    "requests": 2
+  },
+  "protocol": {
+    "complete": true,
+    "requests": 81,
+    "oneUninterruptedRun": true,
+    "previousFailure": "Fast client review timestamp rejected by server Rules; fixed using server timestamps without changing Rules"
+  },
+  "actualBrowser": {
+    "mocked": false,
+    "complete": true,
+    "checks": {
+      "studentJPEGUpload": true,
+      "studentWebMUpload": true,
+      "teacherPendingAndApproval": true,
+      "onlyApprovedPublicFeed": true,
+      "realImageDecoded": true,
+      "realWebMPlayback": true,
+      "withdrawnFeedRemoved": true,
+      "withdrawnFileAndRangeDenied": true
+    },
+    "newAccessAfterWithdrawalStatuses": [
+      403,
+      403,
+      403,
+      403
+    ],
+    "cleanupVerified": true,
+    "studentUploadThenTeacherPublicContinuation": true
+  },
+  "productionReady": false,
+  "productionBlockers": [
+    "Operating Rules and legacy-data compatibility acceptance",
+    "Separately reviewed production gateway; rehearsal production block retained",
+    "Two-device/mobile/CSV/map acceptance",
+    "Explicit production cutover approval"
+  ],
+  "productionMutations": false
+}

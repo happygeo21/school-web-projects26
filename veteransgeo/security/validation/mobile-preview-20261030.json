@@ -1,0 +1,84 @@
+{
+  "kind": "actual-mobile-test-preview",
+  "recordedAt": "2026-10-30T07:34:54.1609707Z",
+  "origin": "https://principles-maximum-appeals-issue.trycloudflare.com",
+  "firebaseProject": "veteransgeo-test-2026",
+  "supabaseProject": "jfkjuhxkcctfmwojhpci",
+  "mocked": false,
+  "physicalDevice": false,
+  "passed": 10,
+  "failed": 0,
+  "studentJPEGUpload": true,
+  "studentWebMUpload": true,
+  "continuedSameTwoWorks": true,
+  "continuationReason": "Async module startup and offscreen lazy media required continuation; original partial evidence retained privately",
+  "checks": {
+    "virtualTeacherLogin": true,
+    "pendingOriginalPreview": true,
+    "teacherApprovedBoth": true,
+    "mobileApprovedFeed": true,
+    "imageDecoded": true,
+    "webmPlayback": true,
+    "withdrawnFeedRemoved": true,
+    "withdrawnGETAndRange403": true
+  },
+  "withdrawalStatuses": [
+    403,
+    403,
+    403,
+    403
+  ],
+  "productionNetworkRequests": 0,
+  "productionRuntimeAttemptsBlocked": 3,
+  "authorizedDomainConfirmed": true,
+  "cors": [
+    {
+      "origin": "http://localhost:8765",
+      "status": 204
+    },
+    {
+      "origin": "https://deploy-preview-7--veteransgeo.netlify.app",
+      "status": 204
+    },
+    {
+      "origin": "https://principles-maximum-appeals-issue.trycloudflare.com",
+      "status": 204
+    }
+  ],
+  "netlifyPreview": "Skipped: account credit usage exceeded; stale preview not recommended",
+  "fallback": "Temporary HTTPS tunnel, available while PC and server/tunnel processes remain running",
+  "testMediaSourceVersion": 3,
+  "testMediaPlatformVersion": 5,
+  "sourceBundleSHA256": "bc370f40ce0197fb17ea78c9046fe66297fe225d7e1b7f26408aac8e7b860b59",
+  "mediaSourceChanged": false,
+  "testOnlyChanges": [
+    "Exact Firebase Auth domains",
+    "Test media ALLOWED_ORIGINS",
+    "Two synthetic works"
+  ],
+  "storage": {
+    "ledger": 9,
+    "objects": 9,
+    "orphans": 0,
+    "deleted": 0
+  },
+  "syntheticWorksLeftApproved": false,
+  "pathsHTTP200": [
+    "/",
+    "/teacher.html",
+    "/public.html"
+  ],
+  "privatePathsHTTP404": [
+    "/security/database.rules.json",
+    "/server/production-media-entry.ts",
+    "/.env"
+  ],
+  "pending": [
+    "School privacy confirmation",
+    "Physical phone/tablet human check",
+    "Six actual teacher sign-ins on existing operating page",
+    "Separate final production approval"
+  ],
+  "operatingChanges": 0,
+  "draftPR": 7
+}

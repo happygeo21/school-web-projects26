@@ -1,0 +1,90 @@
+name: Veteransgeo isolated review (no deployment)
+on:
+  push:
+    branches: [codex/veteransgeo-upgrade]
+    paths: ['veteransgeo/**', 'scripts/public-files.json', '.github/workflows/veteransgeo-review.yml']
+  pull_request:
+    paths: ['veteransgeo/**', 'scripts/public-files.json', '.github/workflows/veteransgeo-review.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: veteransgeo/security/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - run: npm ci
+        working-directory: veteransgeo/security
+      - run: npx playwright install --with-deps chromium
+        working-directory: veteransgeo/security
+      - run: npm run test:core
+        working-directory: veteransgeo/security
+      - name: Native HTTPS transport with generated localhost TLS (no live services)
+        run: npm run test:windows
+        working-directory: veteransgeo/security
+      - name: Browser fixtures (not production Firebase)
+        run: VETERANSGEO_BROWSER="$(node -p "require('playwright').chromium.executablePath()")" npm run test:browser
+        working-directory: veteransgeo/security
+      - name: Local media gateway, SQL, JWT and browser contracts (no external services)
+        run: VETERANSGEO_BROWSER="$(node -p "require('playwright').chromium.executablePath()")" npm run test:media
+        working-directory: veteransgeo/security
+      - name: Test-only target guards and private preparation (no live services)
+        run: VETERANSGEO_BROWSER="$(node -p "require('playwright').chromium.executablePath()")" npm run test:rehearsal
+        working-directory: veteransgeo/security
+      - name: Real local Emulator Rules tests (demo project only)
+        run: npm test
+        working-directory: veteransgeo/security
+      - run: node scripts/build-public-site.mjs
+      - run: node scripts/verify-public-site.mjs
+      - name: Pages artifact under repository subpath (SDK and map fixtures only)
+        run: VETERANSGEO_BROWSER="$(node -p "require('playwright').chromium.executablePath()")" npm run test:pages
+        working-directory: veteransgeo/security
+      - run: node veteransgeo/security/build-netlify.mjs
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: veteransgeo/security/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - run: npm ci
+        working-directory: veteransgeo/security
+      - run: npx playwright install chromium
+        working-directory: veteransgeo/security
+      - name: Select the installed browser
+        working-directory: veteransgeo/security
+        run: |
+          $browser = node -p "require('playwright').chromium.executablePath()"
+          "VETERANSGEO_BROWSER=$browser" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+      - run: npm run test:core
+        working-directory: veteransgeo/security
+      - run: npm run test:windows
+        working-directory: veteransgeo/security
+      - name: Demo Emulator only, synthetic shared Rules (no personal package in CI)
+        run: npm test
+        working-directory: veteransgeo/security
+      - run: node scripts/build-public-site.mjs
+      - run: node scripts/verify-public-site.mjs
+      - name: Pages artifact and canonical subpaths, fixtures only, no deployment
+        run: npm run test:pages
+        working-directory: veteransgeo/security

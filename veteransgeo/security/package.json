@@ -1,0 +1,27 @@
+{
+  "name": "veteransgeo-security-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node run-emulator-tests.mjs",
+    "test:browser": "node --test browser.test.cjs",
+    "test:core": "node --test core.test.mjs",
+    "test:media": "node --test media-contract.test.mjs token.test.mjs media-sql.test.mjs media-browser.test.mjs supabase-key.test.mjs upload-invites.test.mjs upload-invites-browser.test.mjs invite-permissions.test.mjs",
+    "mock:media": "node mock-server.mjs",
+    "mock:invites": "node mock-server.mjs --invite-links",
+    "test:rehearsal": "node --test rehearsal.test.mjs cutover-smoke.test.mjs deployment-safety.test.mjs predeploy-screen.test.mjs netlify-rehearsal.test.mjs",
+    "test:pages": "node --test pages-artifact.test.mjs",
+    "live:prepare": "node prepare-live-test.mjs",
+    "live:probe": "node live-test.mjs --probe-only",
+    "live:protocol": "node live-test.mjs",
+    "live:serve": "node serve-live-test.mjs",
+    "test:windows": "node --test windows.test.mjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.3.14",
+    "@firebase/rules-unit-testing": "4.0.1",
+    "firebase": "11.10.0",
+    "firebase-tools": "14.22.0",
+    "playwright": "1.62.1"
+  }
+}
