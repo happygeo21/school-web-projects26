@@ -45,7 +45,7 @@ tests/kosis-egis/build_windows_kit.py로 검토한 소스에서 재생성합니�
 - 로컬 브라우저18시나리오 통과. 네트워크는127.0.0.1만 허용하고 SheetJS는 로컬로 제공하며 외부요청은 차단. 실제 사이트 자동 조작이 아님.
 - 기존 타프로젝트 회귀8개 통과(3개 파일의 내부 테스트 개수).
 - Windows키트 합성4개·직접엑셀대조6개·사용자 화순군 기준 재현7개·시도 직접엑셀대조6개 통과(이번 Linux/Node 실행). Windows CMD3개·로컬 Edge의 최신 CI 상태는 PR #8 실행 로그를 확인합니다. 학교 PC 실기는 별도입니다. run-all-tests는 현재 실행의 요약 파일 존재·시각·테스트개수까지 검사해 로그를 저장.
-- 공개 산출물100개 빌드/정확한 allowlist·원본바이트·참조검사 통과.
+- 공개 산출물102개 빌드/정확한 allowlist·원본바이트·참조검사 통과.
 - 실패한 기능 테스트0. 실제 통계3종·실제 지도UI·학교 Windows10/11 실기·초보학생 관찰은 미검증. 과거 KOSIS 접속 실패는 기능테스트 통과와 별도로 기록.
 
 ## 7. 수업 합격기준
@@ -77,3 +77,5 @@ A~G를 실제 근거로 완료하고, 통계 출처·경계연도·지역범위�
 Notion 수동기록 문구: ‘2026-10-30 KST / PR8 수업준비 보완 / 원본값대조 CSV·JSON·XLSX와 Windows 독립비교도구 추가 / 엔진20·보안4·로컬브라우저11·기존회귀8 및 키트합성10 통과 / 실제통계3종·지도UI·Windows실기 미검증 / 수업운영최종승인·병합·배포 보류 / Notion 미반영(연결도구 없음).’
 
 CI 근거: https://github.com/happygeo21/school-web-projects26/actions/runs/41002997063 (43d4e29의 Linux validate와 Windows windows-kit 모두 SUCCESS). 초기 Windows 한국어 패키징 기본인코딩 문제는 UTF-8 명시 후 해결·재검증했습니다. Windows CI 성공은 실제 KOSIS·실제 e-GIS 외부 UI 성공을 뜻하지 않습니다.
+
+최종 릴리스 검사·Netlify 영향 확인에 따른 병합 보류·라이브러리 보안 교체와 운영 인계는 [릴리스 검사](release-readiness.md)를 확인하세요.

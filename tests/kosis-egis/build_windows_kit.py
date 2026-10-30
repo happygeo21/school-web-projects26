@@ -22,7 +22,9 @@ for folder,files in {'kosis-egis':['index.html'],'kosis-egis-tool':['app.js','co
 js=source/'node_modules/xlsx/dist/xlsx.full.min.js'
 if not js.exists():raise SystemExit('Run npm ci --ignore-scripts in tests/kosis-egis first, then rebuild in a new directory.')
 shutil.copy2(js,kit/'site/kosis-egis-tool/xlsx.full.min.js');shutil.copy2(js.parent.parent/'LICENSE',kit/'SheetJS-LICENSE.txt')
-p=kit/'site/kosis-egis/index.html';p.write_text(p.read_text(encoding='utf-8').replace('https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js','../kosis-egis-tool/xlsx.full.min.js'),encoding='utf-8')
+vendor=kit/'site/kosis-egis-tool/vendor';vendor.mkdir()
+if js.read_bytes()!=(root/'kosis-egis-tool/vendor/xlsx-0.20.3.full.min.js').read_bytes():raise SystemExit('Reviewed SheetJS bundle differs from installed pinned package.')
+shutil.copy2(js,vendor/'xlsx-0.20.3.full.min.js');shutil.copy2(js.parent.parent/'LICENSE',vendor/'SheetJS-LICENSE.txt')
 shutil.copy2(root/'docs/kosis-egis/windows-guide.md',kit/'WINDOWS-START-HERE.md');shutil.copy2(root/'docs/kosis-egis/classroom-checklist.md',kit/'PR8-CHECKLIST.md')
 shutil.copy2(root/'docs/kosis-egis/hwasun-2024-followup.md',kit/'hwasun-2024-followup.md')
 shutil.copy2(root/'docs/kosis-egis/spatial-units.md',kit/'SPATIAL-UNITS.md')

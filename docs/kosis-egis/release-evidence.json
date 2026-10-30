@@ -1,0 +1,46 @@
+{
+  "checked_kst": "2026-10-30T14:54:33.724758+09:00",
+  "baseline_main": "c5ef2c140c3a1eaa740fa1a14bd7c9b247b322a5",
+  "functional_reference": "17f9877e9ea62dfe65011b06f7223535a5a58d6a",
+  "other_public_files_checked": 82,
+  "other_public_byte_differences": 0,
+  "protected_app_trees_equal": true,
+  "public_file_count": 102,
+  "public_deleted": [],
+  "public_added": [
+    "kosis-egis-tool/README.md",
+    "kosis-egis-tool/boundary-provenance.json",
+    "kosis-egis-tool/conversion-worker.js",
+    "kosis-egis-tool/core.js",
+    "kosis-egis-tool/reference.json",
+    "kosis-egis-tool/sido-2025.geojson",
+    "kosis-egis-tool/sido-reference.json",
+    "kosis-egis-tool/sigungu-2025.geojson",
+    "kosis-egis-tool/spatial.js",
+    "kosis-egis-tool/statistics-catalog.json",
+    "kosis-egis-tool/studio.css",
+    "kosis-egis-tool/vendor/SheetJS-LICENSE.txt",
+    "kosis-egis-tool/vendor/xlsx-0.20.3.full.min.js"
+  ],
+  "limited_secret_pattern_matches": [],
+  "netlify_production_commit": "7bbedd6f0bbb2e6c6d6e10087460ac140a67349e",
+  "netlify_auto_publish_isolation": "unverified",
+  "merge_and_new_pages_deploy": "blocked",
+  "npm_audit_before": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 1,
+    "critical": 0,
+    "total": 1
+  },
+  "npm_audit_after": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "actual_KOSIS_and_eGIS_UI": "pending_Aside"
+}

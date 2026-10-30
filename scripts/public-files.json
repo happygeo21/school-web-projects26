@@ -100,6 +100,8 @@
     "kosis-egis-tool/sido-2025.geojson",
     "kosis-egis-tool/sigungu-2025.geojson",
     "kosis-egis-tool/boundary-provenance.json",
-    "kosis-egis-tool/statistics-catalog.json"
+    "kosis-egis-tool/statistics-catalog.json",
+    "kosis-egis-tool/vendor/xlsx-0.20.3.full.min.js",
+    "kosis-egis-tool/vendor/SheetJS-LICENSE.txt"
   ]
 }

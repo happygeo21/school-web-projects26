@@ -14,7 +14,7 @@
 ## 파일과 기준표
 
 - CSV/TXT: UTF-8 BOM/UTF-8/EUC-KR 자동 디코딩, CSV 인용부호·줄바꿈·탭을 처리합니다. 중복 헤더는 번호로 구분합니다.
-- XLSX/XLS: 외부 SheetJS `xlsx@0.18.5`를 사용합니다. 여러 시트·병합 헤더는 선택 후 구조를 확인하세요. 라이브러리를 읽을 수 없으면 CSV로 저장해 다시 넣습니다. 이 버전은 기존 버전을 유지한 것으로 보안 감사를 완료했다는 뜻이 아닙니다. 신뢰할 수 있는 KOSIS 파일만 넣으세요.
+- XLSX/XLS: 공식 배포 패키지에서 검증한 SheetJS `0.20.3`을 같은 사이트의 고정 파일로 제공합니다. 여러 시트·병합 헤더는 선택 후 구조를 확인하세요. 라이브러리를 읽을 수 없으면 CSV로 저장해 다시 넣습니다. 2026-10-30 알려진 취약점 검사 결과와 원본 해시는 릴리스 문서에 기록합니다. 신뢰할 수 있는 KOSIS 파일만 넣으세요.
 - 20MB·100,000행·500열 제한. 변환은 Web Worker로 실행해 화면을 계속 조작할 수 있습니다. Excel 파싱 자체는 메인 스레드이므로 큰 파일은 KOSIS에서 범위를 줄이는 편이 좋습니다.
 - CSV: `code,name,sido,sido_name,base_year,선택 통계열...`, UTF-8 BOM. 값 0·음수·소수·퍼센트포인트를 보존하고 결측을 0으로 바꾸지 않습니다. 잘못된 숫자는 보고하고 비웁니다. CSV를 Excel에서 열 때 코드를 텍스트로 가져오세요. XLSX의 코드·시도 코드는 텍스트 셀입니다.
 - `reference.json`은 기존 2025년 252개 내장 기준표를 그대로 추출했습니다. 현재 실제 레이어의 원본 파일은 제공되지 않아 공식 레이어와의 전수 일치는 **미검증**입니다. 252개가 모든 통계표의 지역 수라는 의미는 아닙니다.
@@ -43,7 +43,7 @@ npx playwright install chromium
 CHROMIUM_PATH="$(node -e "console.log(require('playwright').chromium.executablePath())")" npm run test:browser
 ```
 
-이미 설치된 Chromium은 `CHROMIUM_PATH=/usr/bin/chromium`으로 선택합니다. 별도 설치 경로는 `PLAYWRIGHT_NODEJS_PATH`(playwright 모듈 탐색 루트), `KOSIS_QA_MODULES`(xlsx를 포함한 node_modules 경로)로 지정할 수 있습니다. 브라우저 테스트는 SheetJS 네트워크 요청을 같은 버전의 로컬 파일로 대체하므로 라이브 CDN 가용성을 검증하지 않습니다. 생성 화면에는 합성자료만 사용합니다.
+이미 설치된 Chromium은 `CHROMIUM_PATH=/usr/bin/chromium`으로 선택합니다. 별도 설치 경로는 `PLAYWRIGHT_NODEJS_PATH`(playwright 모듈 탐색 루트), `KOSIS_QA_MODULES`(xlsx를 포함한 node_modules 경로)로 지정할 수 있습니다. 브라우저 테스트는 배포 대상의 고정 SheetJS 파일을 로컬 서버에서 직접 불러오며 외부 요청은 차단합니다. 생성 화면에는 합성자료만 사용합니다.
 
 ## 교사용 API Worker — 별도 배포 필요
 
