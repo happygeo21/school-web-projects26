@@ -89,6 +89,11 @@
     "veteransgeo/teacher.html",
     "wedding-planner/guide.html",
     "wedding-planner/home-dashboard.html",
-    "wedding-planner/index.html"
+    "wedding-planner/index.html",
+    "kosis-egis-tool/core.js",
+    "kosis-egis-tool/reference.json",
+    "kosis-egis-tool/studio.css",
+    "kosis-egis-tool/README.md",
+    "kosis-egis-tool/conversion-worker.js"
   ]
 }

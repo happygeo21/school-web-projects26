@@ -1,0 +1,33 @@
+name: Validate KOSIS e-GIS without deploying
+on:
+  pull_request:
+    paths:
+      - 'kosis-egis/**'
+      - 'kosis-egis-tool/**'
+      - 'egis-student-guide/**'
+      - 'tests/kosis-egis/**'
+      - 'scripts/public-files.json'
+      - '.github/workflows/kosis-egis-review.yml'
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --ignore-scripts
+        working-directory: tests/kosis-egis
+      - run: npx playwright install --with-deps chromium
+        working-directory: tests/kosis-egis
+      - run: npm test
+        working-directory: tests/kosis-egis
+      - name: Browser functional checks
+        working-directory: tests/kosis-egis
+        run: |
+          export CHROMIUM_PATH="$(node -e "console.log(require('playwright').chromium.executablePath())")"
+          npm run test:browser
+      - run: node scripts/build-public-site.mjs
+      - run: node scripts/verify-public-site.mjs
