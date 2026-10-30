@@ -1,0 +1,16 @@
+{
+  "synthetic": true,
+  "period": "2025",
+  "scope": "all",
+  "code_system": "GIS",
+  "source": {
+    "title": "synthetic-national-252 (SYNTHETIC)"
+  },
+  "columns": {
+    "code": "code",
+    "name": "지역명",
+    "sido": "시도명",
+    "year": "통계연도",
+    "value": "연습값"
+  }
+}

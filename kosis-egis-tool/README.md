@@ -57,3 +57,9 @@ CHROMIUM_PATH="$(node -e "console.log(require('playwright').chromium.executableP
 교사용 Worker 주소는 기본값을 비워 무단 호출을 유도하지 않습니다. 브라우저는 credentials를 포함하므로 실제 인증 도메인의 쿠키 SameSite·HTTPS·CORS 정책과 로그인 절차도 배포자가 구성해야 합니다. 이 저장소는 인증 서비스를 새로 배포하지 않습니다. 샘플 모의 테스트가 통과해도 실제 교사 인증·실 API 호출은 별도 검증이 필요합니다. 기존 공개 Worker는 코드 커밋만으로 변경되지 않으므로 운영자가 인증·rate limit을 적용하거나 중지해야 합니다.
 
 진단·결과·실제 서비스 수동 검증은 [점검 보고서](../docs/kosis-egis/review.md)를 참고하세요.
+
+## 수업 준비 후속 검증
+
+[Windows 실행·실제자료 전수 대조 안내](../docs/kosis-egis/windows-guide.md)와 [수업 체크리스트](../docs/kosis-egis/classroom-checklist.md)를 참고하세요. 학생 화면은 원본값대조 CSV·JSON 및 XLSX 시트를 함께 제공합니다. 이는 파일 내부의 변환 전후 점검이며 실제 KOSIS 출처 검증·교사가 다운로드한 파일과의 독립 비교·지도 UI 검증을 대신하지 않습니다.
+
+개발자가 검토한 체크아웃에서 `python3 tests/kosis-egis/build_windows_kit.py /tmp/새폴더`로 오프라인 키트를 재생성할 수 있습니다. 먼저 tests/kosis-egis에서 npm ci --ignore-scripts가 필요합니다. 교사 PC에서는 완성 ZIP과 Node.js22 이상만 필요합니다.

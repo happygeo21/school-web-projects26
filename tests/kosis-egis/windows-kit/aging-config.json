@@ -1,0 +1,28 @@
+{
+  "synthetic": false,
+  "period": "2024",
+  "period_value": "2024",
+  "sheet": "REPLACE_WITH_EXACT_SHEET_NAME",
+  "header_start": 1,
+  "header_depth": 1,
+  "code_system": "SOURCE",
+  "columns": {
+    "code": "REPLACE_OR_LEAVE_EMPTY",
+    "name": "REPLACE",
+    "sido": "REPLACE_OR_LEAVE_EMPTY",
+    "year": "REPLACE_OR_LEAVE_EMPTY",
+    "value": "REPLACE"
+  },
+  "output_value": "REPLACE_WITH_DOWNLOADED_CSV_VALUE_COLUMN",
+  "exclude_rows": {},
+  "row_regions": {},
+  "source": {
+    "title": "REPLACE",
+    "table_id": "DT_1YL20631",
+    "item": "T10",
+    "unit": "REPLACE",
+    "reference_date": "REPLACE",
+    "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20631",
+    "download_date": "REPLACE"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "synthetic": false,
+  "period": "REPLACE_WITH_4_DIGIT_YEAR",
+  "period_value": "REPLACE_WITH_EXACT_PERIOD_IF_A_YEAR_COLUMN_EXISTS",
+  "sheet": "REPLACE_WITH_EXACT_SHEET_NAME",
+  "header_start": 1,
+  "header_depth": 1,
+  "code_system": "SOURCE",
+  "columns": {"code":"REPLACE_OR_LEAVE_EMPTY", "name":"REPLACE", "sido":"REPLACE_OR_LEAVE_EMPTY", "year":"REPLACE_OR_LEAVE_EMPTY", "value":"REPLACE"},
+  "output_value": "REPLACE_WITH_DOWNLOADED_CSV_VALUE_COLUMN",
+  "exclude_rows": {},
+  "row_regions": {},
+  "source": {"title":"REPLACE", "table_id":"REPLACE", "item":"REPLACE", "unit":"REPLACE", "reference_date":"REPLACE", "url":"REPLACE", "download_date":"REPLACE"}
+}

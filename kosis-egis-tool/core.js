@@ -73,11 +73,13 @@ function convert(ref,a,settings){
  let duplicates=0;for(const [key,hits] of groups)if(hits.length>1){duplicates++;for(const h of hits)issues.push({row:h.row,type:'중복 지역',region:h.match.name,code:key,detail:'연도·지표·성별을 하나로 선택하세요. 모든 중복값은 비웁니다.'});}
  const outputRefs=scope==='sample'?ref.filter(r=>groups.has(r.code)):target;
  const output=outputRefs.map(r=>{const hits=groups.get(r.code),hit=hits?.length===1?hits[0]:null;return {...r,...Object.fromEntries(metricHeaders.map((h,j)=>[h,hit?hit.values[j].value:'']))};});
+ const outputByCode=new Map(output.map(r=>[r.code,r])),audit=[];
+ for(const [key,hits] of groups)for(const hit of hits)metrics.forEach((column,j)=>{const original=a.src[hit.row-1]?.[column]??'',value=outputByCode.get(key)?.[metricHeaders[j]];audit.push({source_row:hit.row,source_code:code>=0?clean(a.src[hit.row-1]?.[code]):'',gis_code:key,name:hit.match.name,metric:metricHeaders[j],original_value:original,normalized_value:hit.values[j].value,output_value:value,value_kind:hit.values[j].kind,comparison:hits.length>1?'중복 미비교':hit.values[j].kind==='invalid'?'수치 오류':value===hit.values[j].value?'일치':'불일치'});});
  const matched=[...groups.values()].filter(h=>h.length===1).length,missing=outputRefs.filter(r=>!groups.has(r.code)).map(r=>r.code),empty=output.filter(r=>metricHeaders.some(h=>r[h]==='')).length;
  const period=settings.period||'',periods=[...years];const boundaryWarning=!period||ref.some(r=>r.base_year!==period)||periods.some(y=>y!==period);
  const stopped=!matched||duplicates>0||periods.length>1||issues.some(x=>/불일치|수치 오류|시도 오류|수동 코드 오류/.test(x.type));
  const status=stopped?'결합 중단':unmatched||missing.length||empty||outside||boundaryWarning||scope==='sample'?'확인 필요':'결합 가능';
- return {output,headers:['code','name','sido','sido_name','base_year',...metricHeaders],issues,summary:{status,input,matched,duplicates,aggregate,unmatched,missing,empty,outside,scope,period,periods,boundaryWarning,referenceCount:ref.length,expected:scope==='sample'?null:target.length}};
+ return {output,audit,headers:['code','name','sido','sido_name','base_year',...metricHeaders],issues,summary:{status,input,matched,duplicates,aggregate,unmatched,missing,empty,outside,scope,period,periods,boundaryWarning,referenceCount:ref.length,expected:scope==='sample'?null:target.length}};
 }
 function csv(rows,headers){const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';return '\uFEFF'+[headers.map(q).join(','),...rows.map(r=>headers.map(h=>q(r[h])).join(','))].join('\r\n');}
 const api={clean,norm,province,validateReference,parseDelimited,decode,number,expand,structure,convert,csv};if(typeof module!=='undefined')module.exports=api;else root.KosisCore=api;

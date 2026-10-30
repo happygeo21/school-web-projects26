@@ -1,0 +1,7 @@
+const http=require('node:http'),fs=require('node:fs'),path=require('node:path');
+const root=fs.realpathSync(path.join(__dirname,'site'));
+const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8'};
+const server=http.createServer((req,res)=>{try{if(!['GET','HEAD'].includes(req.method)){res.writeHead(405).end();return;}let file=path.resolve(root,'.'+decodeURIComponent(new URL(req.url,'http://127.0.0.1').pathname));if(!file.startsWith(root+path.sep)){res.writeHead(403).end();return;}if(fs.statSync(file).isDirectory())file=path.join(file,'index.html');const real=fs.realpathSync(file);if(!real.startsWith(root+path.sep)||!fs.statSync(real).isFile()){res.writeHead(403).end();return;}res.setHeader('Content-Type',mime[path.extname(real)]||'application/octet-stream');res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');if(req.method==='HEAD')res.end();else fs.createReadStream(real).pipe(res);}catch{res.writeHead(404).end();}});
+server.on('error',e=>{console.error(e.code==='EADDRINUSE'?'8000 포트가 사용 중입니다. 자신의 이전 키트 창만 닫고 다시 실행하세요.':e.message);process.exitCode=1;});
+const port=Number(process.env.EGIS_LOCAL_PORT||8000);
+server.listen(port,'127.0.0.1',()=>{console.log('Local only: http://127.0.0.1:'+port+'/kosis-egis/');console.log('위 주소를 Edge에서 여세요. Ctrl+C로 종료합니다. 이 서버는 외부 네트워크에 요청하지 않습니다.');});
