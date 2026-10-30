@@ -212,7 +212,8 @@
       "files": 99,
       "veteransgeoFiles": 18,
       "privateValueMatches": 0,
-      "serverFiles": 0
+      "serverFiles": 0,
+      "privateValueMatchScope": "veteransgeo public files only"
     },
     "rollback": {
       "approvedTeacherReads": 7,
@@ -415,5 +416,72 @@
     },
     "decision": "CONDITIONAL",
     "phase2Executed": false
+  },
+  "finalPreparation": {
+    "checkedAt": "2026-10-30T06:00:15.186Z",
+    "sourceBaseCommit": "607ca6e3cde43bfee91266fb03d7c0b8e5c80178",
+    "deployBundleMatchesCheckout": true,
+    "deployFiles": 7,
+    "secretsPresent": 8,
+    "secretsFormatAndTargetsValid": 8,
+    "uploadCodeHashPairsMatched": 7,
+    "schoolPolicyConfirmed": false,
+    "schoolGateRejectsUnconfirmedDeployment": true,
+    "secretsApplied": false,
+    "teacherMappingReused": 7,
+    "realPasswordLoginsPending": 6,
+    "publicFiles": 99,
+    "privateValueLeaks": 0,
+    "legacyOtherAppMatches": 1,
+    "privateScreenExcluded": true,
+    "recoverySHA": "c5ef2c140c3a1eaa740fa1a14bd7c9b247b322a5",
+    "canonicalURLStatus": [
+      200,
+      200,
+      200
+    ],
+    "pagesBrowserConfirmationPending": false,
+    "candidatePagesGuardPrepared": true,
+    "activeMainGuardAlreadyEffective": false,
+    "productionOperations": 0,
+    "pagesDeploymentReadFromLiveBrowser": true,
+    "currentDeploymentId": 7269999204,
+    "currentRules": {
+      "source": "live-console",
+      "rulesEquivalent": true,
+      "normalizedHashMatch": true,
+      "published": false
+    },
+    "currentRecords": {
+      "checkedAt": "2026-10-30T05:52:29.461Z",
+      "source": "fresh-live-console-export-verified-on-disk",
+      "baselineTotal": 20,
+      "unchanged": 20,
+      "changed": 0,
+      "missing": 0,
+      "totalNow": 20,
+      "existingPublishedUnchanged": true,
+      "dataWrites": 0
+    },
+    "pagesDefaultWindowsHTTPSVerified": true,
+    "planExecuted": false,
+    "plannedMethods": [
+      "GET",
+      "OPTIONS"
+    ],
+    "operatingSmoke": {
+      "success": false,
+      "failed": 1,
+      "expectedBlockedBecauseFunctionNotDeployed": true,
+      "writes": 0
+    },
+    "newTargetedTests": {
+      "passed": 7,
+      "failed": 0
+    },
+    "simulatedStepFailuresStopped": 10,
+    "actualCommandsExecuted": 0,
+    "approvalRequested": false,
+    "decision": "HOLD-school-devices-account-acceptance-required"
   }
 }

@@ -8,7 +8,7 @@
     "test:core": "node --test core.test.mjs",
     "test:media": "node --test media-contract.test.mjs token.test.mjs media-sql.test.mjs media-browser.test.mjs supabase-key.test.mjs",
     "mock:media": "node mock-server.mjs",
-    "test:rehearsal": "node --test rehearsal.test.mjs cutover-smoke.test.mjs",
+    "test:rehearsal": "node --test rehearsal.test.mjs cutover-smoke.test.mjs deployment-safety.test.mjs predeploy-screen.test.mjs",
     "test:pages": "node --test pages-artifact.test.mjs",
     "live:prepare": "node prepare-live-test.mjs",
     "live:probe": "node live-test.mjs --probe-only",
