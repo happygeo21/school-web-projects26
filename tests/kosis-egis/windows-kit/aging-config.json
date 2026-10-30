@@ -23,6 +23,8 @@
     "unit": "REPLACE",
     "reference_date": "REPLACE",
     "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20631",
-    "download_date": "REPLACE"
-  }
+    "download_date": "REPLACE",
+    "org_id": "101"
+  },
+  "source_profile": "aging_2024"
 }

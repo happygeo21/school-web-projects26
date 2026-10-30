@@ -13,7 +13,7 @@ for(const r of ref){const a=actual.get(r.code);if(!a)layerDifferences.push({code
 if(actual.size!==props.length||actual.size!==ref.length||layerDifferences.length)throw Error('Actual layer and reference differ; review layer version first.');
 const a=C.structure(data,[]); // no merged cells in CSV
 const code=cfg.code_system==='GIS'?col('code'):-1;
-const result=C.convert(ref,a,{name:col('name'),code,sido:col('sido'),year:col('year'),metrics:[col('value')],period:cfg.period,scope:cfg.scope||'all'});
+const result=C.convert(ref,a,{name:col('name'),code,sido:col('sido'),year:col('year'),metrics:[col('value')],period:cfg.period,sourceProfile:cfg.source_profile||'',scope:cfg.scope||'all'});
 const valueHeader=result.headers[5],lookup=new Map(result.output.map(r=>[r.code,r])),checks=[],unresolved=[],expectedCodes=new Set();
 const simple=v=>String(v??'').trim().replace(/\s+/g,'').normalize('NFC');
 for(let i=1;i<data.length;i++){

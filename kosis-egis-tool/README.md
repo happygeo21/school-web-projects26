@@ -63,3 +63,7 @@ CHROMIUM_PATH="$(node -e "console.log(require('playwright').chromium.executableP
 [Windows 실행·실제자료 전수 대조 안내](../docs/kosis-egis/windows-guide.md)와 [수업 체크리스트](../docs/kosis-egis/classroom-checklist.md)를 참고하세요. 학생 화면은 원본값대조 CSV·JSON 및 XLSX 시트를 함께 제공합니다. 이는 파일 내부의 변환 전후 점검이며 실제 KOSIS 출처 검증·교사가 다운로드한 파일과의 독립 비교·지도 UI 검증을 대신하지 않습니다.
 
 개발자가 검토한 체크아웃에서 `python3 tests/kosis-egis/build_windows_kit.py /tmp/새폴더`로 오프라인 키트를 재생성할 수 있습니다. 먼저 tests/kosis-egis에서 npm ci --ignore-scripts가 필요합니다. 교사 PC에서는 완성 ZIP과 Node.js22 이상만 필요합니다.
+
+## 화순군2024 원본코드 확인
+
+원본표·항목에 따라46790 / 1236370 / 2017zone_3637을 별개 코드체계로 취급합니다. 원본 통계표를 선택하고 전라남도·2024년을 확인한 화순군 한 지역 교차표만 GIS46790으로 연결합니다.12760은 이름만으로 채택하지 않습니다. 인식된 원본코드는 열 선택을 해제해도 검증하므로 미확인 코드를 이름매칭으로 우회할 수 없습니다. 사용자 기준수치와 공식원본·전남전수의 차이는 [후속 보고](../docs/kosis-egis/hwasun-2024-followup.md)를 참고하세요.

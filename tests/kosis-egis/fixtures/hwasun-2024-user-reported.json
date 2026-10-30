@@ -1,0 +1,16 @@
+{
+  "provenance": {
+    "kind": "user_reported_external_KOSIS_lookup",
+    "recorded_date_kst": "2026-10-30",
+    "independently_downloaded_by_agent": false,
+    "original_KOSIS_files_provided": false,
+    "scope": "화순군 한 지역, 세 지표; 전남22개 전수검증 아님",
+    "note": "사용자 메시지의 실제 조회 기준값을 회귀 재현에 사용. 공식 다운로드 원본으로 표시하지 않음. 12760은 원본표·시점·행정단계를 확인하지 않은 이름 검색 후보로서 채택 금지."
+  },
+  "region": {"name":"화순군","sido_name":"전라남도","year":"2024","gis_code":"46790"},
+  "cases": [
+    {"profile":"population_2024","orgId":"101","tableId":"DT_1B040A3","itemId":"T20","source_code":"46790","value":60735,"raw_value":"60,735","unit":"명"},
+    {"profile":"aging_2024","orgId":"101","tableId":"DT_1YL20631","itemId":"T10","source_code":"1236370","value":30.9,"raw_value":"30.9%","unit":"%"},
+    {"profile":"business_2024","orgId":"118","tableId":"DT_118N_SAUPM78","itemId":"16118ED_1","source_code":"2017zone_3637","value":2605,"raw_value":"2,605","unit":"개","conditions":{"industry":"전체","size":"전규모"}}
+  ]
+}
