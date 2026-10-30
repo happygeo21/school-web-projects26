@@ -32,7 +32,7 @@
                 ".validate": "newData.isString() && newData.val().length >= 10 && newData.val().length <= 300"
               },
               "sourceNote": {
-                ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 300"
+                ".validate": "(newData.isString() && newData.val().length >= 1 && newData.val().length <= 300) || (data.exists() && data.val() == '' && newData.val() == '' && !data.parent().child('awarenessOriginal').exists() && data.parent().child('schemaVersion').val() != 2)"
               },
               "rememberSentence": {
                 ".validate": "newData.isString() && newData.val().length >= 10 && newData.val().length <= 250"

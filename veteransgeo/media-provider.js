@@ -91,16 +91,20 @@ export function createMediaProvider(
   }
   return {
     enabled,
+    requiresUploadCode: config.uploadAuthorization === "school-upload-code",
     upload({
       file,
       schoolId,
       workId,
       activityCode,
+      uploadCode,
       token,
       signal,
       onProgress = () => {},
     }) {
       requireReady();
+      if (config.uploadAuthorization === "school-upload-code" && (!uploadCode || uploadCode.length > 128))
+        throw mediaError("media/permission", "파일 업로드 인증코드를 확인해주세요.");
       return new Promise((resolve, reject) => {
         const x = xhrFactory();
         const abort = () => {
@@ -135,7 +139,9 @@ export function createMediaProvider(
           "Content-Type": file.type,
           "X-School-Id": schoolId,
           "X-Work-Id": workId,
-          "X-Activity-Code": encodeURIComponent(activityCode),
+          ...(config.uploadAuthorization === "school-upload-code"
+            ? {"X-Upload-Code": encodeURIComponent(uploadCode)}
+            : {"X-Activity-Code": encodeURIComponent(activityCode)}),
         }))
           x.setRequestHeader(k, v);
         x.upload.onprogress = (e) => {

@@ -50,6 +50,8 @@ export function createGateway({
   blobs,
   teachers,
   schoolActivityHashes,
+  schoolUploadHashes,
+  allowLegacyActivityCodeUpload = false,
   origins,
   deployment = /** @type {Record<string, unknown> | null} */ (null),
   clock = () => Date.now(),
@@ -90,7 +92,7 @@ export function createGateway({
             ...cors,
             "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
             "Access-Control-Allow-Headers":
-              "Authorization, Content-Type, X-School-Id, X-Work-Id, X-Activity-Code, Range",
+              "Authorization, Content-Type, X-School-Id, X-Work-Id, X-Activity-Code, X-Upload-Code, Range",
             "Access-Control-Max-Age": "300",
           },
         });
@@ -187,28 +189,29 @@ export function createGateway({
           workId: request.headers.get("X-Work-Id"),
           ownerUid: p.sub,
         };
+        const independentUploadAuth = !!schoolUploadHashes && (!allowLegacyActivityCodeUpload || request.headers.has("X-Upload-Code"));
         let activity;
         try {
           activity = decodeURIComponent(
-            request.headers.get("X-Activity-Code") || "",
+            request.headers.get(independentUploadAuth ? "X-Upload-Code" : "X-Activity-Code") || "",
           );
         } catch {
-          fail("media/permission", "활동코드를 확인해주세요.");
+          fail("media/permission", "파일 업로드 인증코드를 확인해주세요.");
         }
-        const expected = schoolActivityHashes[body.schoolId];
+        const expected = (independentUploadAuth ? schoolUploadHashes : schoolActivityHashes)?.[body.schoolId];
         if (
           !activity ||
-          activity.length > 20 ||
+          activity.length > (independentUploadAuth ? 128 : 20) ||
           !expected ||
           expected !== (await digestBytes(new TextEncoder().encode(activity)))
         )
-          fail("media/permission", "학교와 활동코드를 선생님께 확인해주세요.");
+          fail("media/permission", "학교와 파일 업로드 인증코드를 선생님께 확인해주세요.");
         const w = await work(body, p, token);
         if (
           w.status !== "pending" ||
           w.submissionMode !== "upload" ||
           w.mediaProvider !== "gateway" ||
-          w.activityCode !== activity ||
+          (!independentUploadAuth && w.activityCode !== activity) ||
           !isAsset(w.mediaAssetId) ||
           !/^[a-f0-9]{64}$/.test(w.sha256 || "")
         )

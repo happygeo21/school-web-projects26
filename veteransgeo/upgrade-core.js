@@ -13,7 +13,7 @@ export function coordinates(lat, lng) {
     lng <= 132
   );
 }
-export function validateRecord(d) {
+function validateRecordFields(d, legacyOriginal) {
   if (!PROJECT.schools.some((s) => s.id === d.schoolId))
     throw Error("학교를 다시 선택해주세요.");
   const fields = {
@@ -27,13 +27,11 @@ export function validateRecord(d) {
     keywords: [1, 200],
     message: [0, 300],
   };
-  for (const [k, [min, max]] of Object.entries(fields))
-    if (
-      typeof d[k] !== "string" ||
-      d[k].trim().length < min ||
-      d[k].length > max
-    )
+  for (const [k, [min, max]] of Object.entries(fields)) {
+    const preservedEmptyNote = k === "sourceNote" && d[k] === "" && legacyOriginal?.sourceNote === "";
+    if (!preservedEmptyNote && (typeof d[k] !== "string" || d[k].trim().length < min || d[k].length > max))
       throw Error("설명·근거·기억 문장과 입력 길이를 확인해주세요.");
+  }
   if (!coordinates(d.latitude, d.longitude))
     throw Error("대한민국 안의 정확한 위치를 확인해주세요.");
   for (const [key, max] of [
@@ -47,10 +45,17 @@ export function validateRecord(d) {
     !PROJECT.categories.includes(d.category) ||
     !PROJECT.sourceTypes.includes(d.sourceType) ||
     !PROJECT.officialStatuses.some((s) => s.value === d.officialStatus) ||
-    !["official_map", "student_suggested"].includes(d.placeOrigin)
+    (!["official_map", "student_suggested"].includes(d.placeOrigin) && (!legacyOriginal || d.placeOrigin !== legacyOriginal.placeOrigin))
   )
     throw Error("분류·출처·장소 선택 방식을 확인해주세요.");
   return d;
+}
+export function validateRecord(d) { return validateRecordFields(d, null); }
+// Historical empty notes/old origin labels may remain unchanged during a teacher edit.
+// The saved original is checked again by the teacher UI and RTDB Rules. New submissions stay strict.
+export function validateRecordEdit(d, original) {
+  const legacy = original && !original.awarenessOriginal && original.schemaVersion !== 2 ? original : null;
+  return validateRecordFields(d, legacy);
 }
 export function errorMessage(e) {
   const code = String(e?.code || "");

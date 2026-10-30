@@ -47,6 +47,8 @@ Deno.serve(
     ...adapters,
     teachers,
     schoolActivityHashes,
+    schoolUploadHashes: schoolActivityHashes,
+    allowLegacyActivityCodeUpload: true, // Rehearsal compatibility only; production never enables this.
     origins,
     deployment,
     verify: (token: string) => verifyFirebaseToken(token, { projectId }),

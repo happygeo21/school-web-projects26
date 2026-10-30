@@ -1,0 +1,147 @@
+{
+  "kind": "sanitized-production-transition-blockers",
+  "checkedAt": "2026-10-30T02:49:19.823Z",
+  "sourceBaseCommit": "8e318c7b79eb3377f3200f5e553b25fe24726de2",
+  "productionSnapshot": {
+    "total": 20,
+    "schoolCounts": {
+      "S1": 2,
+      "S2": 18,
+      "S3": 0,
+      "S4": 0,
+      "S5": 0,
+      "S6": 0,
+      "S7": 0
+    },
+    "missingAwarenessOriginal": 20,
+    "oldOrMissingSchemaVersion": 20,
+    "requiredFieldMissing": 0,
+    "typeErrors": 0,
+    "strictNewFormIncompatibilities": {
+      "emptySourceNote": 2,
+      "oldPlaceOrigin": 1
+    },
+    "legacyEditsAfterFix": {
+      "passed": 20,
+      "failed": 0
+    },
+    "studentOriginalAndActivityIdentifiersPreserved": true,
+    "historicalActivityCodeVariants": {
+      "S1": 2,
+      "S2": 17,
+      "S3": null,
+      "S4": null,
+      "S5": null,
+      "S6": null,
+      "S7": null
+    }
+  },
+  "publishedKeys": {
+    "existing": 12,
+    "opaque": 0,
+    "collisions": 0,
+    "unmatched": 0,
+    "modified": false
+  },
+  "otherAppAndGlobalRulesPreserved": true,
+  "teacherMapping": {
+    "approved": 7,
+    "mapped": 7,
+    "missing": 0,
+    "extra": 0,
+    "duplicateUIDs": 0,
+    "emulatorAllowedReads": 7,
+    "unapprovedDenied": true,
+    "productionServerUIDListPrepared": true,
+    "serverSecretsChanged": false,
+    "sevenRealProductionLogins": false
+  },
+  "compatibility": {
+    "oldWebOldRules": true,
+    "newWebOldRules": false,
+    "oldWebNewRules": false,
+    "newWebNewRulesLegacyAcceptance": true
+  },
+  "independentUploadAuth": {
+    "metadataActivityCodePreserved": true,
+    "authorizationHeader": "X-Upload-Code",
+    "authorizationInDraftOrDatabase": false,
+    "productionActivityCodeFallback": false,
+    "proposedSchoolCodes": 7,
+    "teacherApproved": false
+  },
+  "testServer": {
+    "mediaVersion": 3,
+    "existingVersion2EvidencePreserved": true,
+    "newJPEGObjects": 1,
+    "priorSixDeleted": false,
+    "ledger": 7,
+    "objects": 7,
+    "orphanObjects": 0
+  },
+  "newLiveChecks": {
+    "kind": "actual-test-server-independent-upload-auth",
+    "mocked": false,
+    "complete": true,
+    "checks": {
+      "activityIdentifierNotUploadAuthorization": true,
+      "independentAuthJPEGUpload": true,
+      "uploadCodeCleared": true,
+      "authNotInSessionDraft": true,
+      "sameWorkRetryNoDuplicate": true,
+      "activityIdentifierPreserved": true,
+      "noUploadSecretInRecord": true,
+      "actualApprovedTeacherLogin": true,
+      "realCSVDownload": true,
+      "approvedImageDecoded": true,
+      "withdrawnGETAndRangeDenied": true
+    },
+    "uploadStatuses": [
+      403,
+      200
+    ],
+    "continuedExistingUpload": true,
+    "revokeStatuses": [
+      403,
+      403
+    ]
+  },
+  "csv": {
+    "kind": "downloaded-csv-local-parser-import",
+    "source": "actual-test-teacher-download",
+    "rows": 3,
+    "utf8BOM": true,
+    "firstFourHeadersCorrect": true,
+    "validCoordinates": 3,
+    "privateColumnsAbsent": true,
+    "actualEGISServiceImport": false
+  },
+  "previousSuccessfulSuitesNotRerun": [
+    "personal Rules 6",
+    "live probe 2",
+    "full live protocol 81",
+    "WebM playback"
+  ],
+  "pages": {
+    "deployedSHA": "c5ef2c140c3a1eaa740fa1a14bd7c9b247b322a5",
+    "deployedRun": 39899032848,
+    "canonicalPathsUnchanged": true,
+    "newDeployment": false
+  },
+  "productionMedia": {
+    "entryOutsideAutomaticDeployment": true,
+    "dedicatedStorageRequired": true,
+    "rehearsalProjectRejected": true,
+    "deletionDisabledPendingPolicy": true
+  },
+  "productionReady": false,
+  "remainingDecisions": [
+    "Approve separate upload authorization codes",
+    "Approve school storage region, overseas residency if applicable, retention and publication process",
+    "Choose and approve a dedicated Free production project without reusing rehearsal storage",
+    "Physical phone/tablet and actual eGIS import acceptance",
+    "Final production Rules/server/Pages cutover approval"
+  ],
+  "productionDataMutations": false,
+  "privateValuesOmitted": true
+}

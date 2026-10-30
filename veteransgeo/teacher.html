@@ -125,7 +125,7 @@ import {getDatabase,ref,onValue,set,remove,update,push,get} from "https://www.gs
 import {firebaseConfig,DB_ROOT} from "./firebase-config.js";
 import {PROJECT,TEACHER_AUTH_MODE} from "./project-config.js";
 
-import {validateRecord,coordinates,EDITABLE,errorMessage,diagnostic,publication} from "./upgrade-core.js";
+import {validateRecord,validateRecordEdit,coordinates,EDITABLE,errorMessage,diagnostic,publication} from "./upgrade-core.js";
 import {opaquePublicId} from "./draft-store.js";
 import {setupTeacherMedia} from "./media.js";
 import {databaseTimestamp} from "./media-policy.js";
@@ -256,7 +256,7 @@ async function editRecord(k){
  const labels={placeName:'장소명',placeDescription:'설명',category:'분류',address:'주소',latitude:'위도',longitude:'경도',sourceType:'근거 유형',sourceNote:'출처',scoreReason:'점수 근거',importance:'중요도',visibility:'발견도',rememberSentence:'기억 문장',message:'한마디',keywords:'핵심어',officialStatus:'공식 확인'};
  for(const field of EDITABLE){const label=document.createElement('label');label.textContent=labels[field];const input=document.createElement('textarea');input.name=field;input.value=original[field]??'';input.maxLength=500;label.append(input);form.append(label);}
  const status=document.createElement('p');status.setAttribute('role','alert');const save=document.createElement('button');save.textContent='검증 후 수정 저장';save.className='primary';const cancel=document.createElement('button');cancel.type='button';cancel.textContent='취소';cancel.onclick=()=>dialog.close();form.append(status,save,cancel);dialog.append(form);document.body.append(dialog);dialog.onclose=()=>dialog.remove();dialog.showModal();
- form.onsubmit=async e=>{e.preventDefault();save.disabled=true;try{const patch=Object.fromEntries(new FormData(form));for(const k of ['latitude','longitude','importance','visibility'])patch[k]=Number(patch[k]);const next={...original,...patch};validateRecord(next);
+ form.onsubmit=async e=>{e.preventDefault();save.disabled=true;try{const patch=Object.fromEntries(new FormData(form));for(const k of ['latitude','longitude','importance','visibility'])patch[k]=Number(patch[k]);const next={...original,...patch};validateRecordEdit(next,original);
  const path=`${DB_ROOT}/submissions/${original.schoolId}/${original.uid}/${original.entryId}`;
  const current=await get(ref(db,path));if(!current.exists()||JSON.stringify(Object.entries(current.val()).sort())!==JSON.stringify(Object.entries(original).filter(([k])=>!['uid','entryId'].includes(k)).sort()))throw Error('다른 수정 또는 삭제가 감지되었습니다. 목록을 새로 확인해주세요.');
  const timestamp=databaseTimestamp(),revision=push(ref(db,`${DB_ROOT}/audit/${k}`)).key;
