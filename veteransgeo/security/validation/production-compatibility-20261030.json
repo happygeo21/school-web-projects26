@@ -68,7 +68,7 @@
     "authorizationInDraftOrDatabase": false,
     "productionActivityCodeFallback": false,
     "proposedSchoolCodes": 7,
-    "teacherApproved": false
+    "teacherApproved": true
   },
   "testServer": {
     "mediaVersion": 3,
@@ -157,10 +157,9 @@
   },
   "productionReady": false,
   "remainingDecisions": [
-    "Approve separate upload authorization codes",
-    "Final production Rules/server/Pages cutover approval",
-    "Production gateway configuration/deployment and actual-student transfer require a separate final approval",
-    "Physical phone/tablet and remaining six actual production account sign-ins remain unverified"
+    "School confirmation of processing/publication/overseas transfers and retention review criteria before real student files",
+    "Physical phone/tablet and remaining six teacher sign-ins; existing approved PC session verified",
+    "Separate phase-2 authorization for production Secrets/media/Rules/main/Pages; synthetic smoke checks before student opening"
   ],
   "productionDataMutations": false,
   "privateValuesOmitted": true,
@@ -243,6 +242,124 @@
     "publicConnectionConfiguration": {
       "active": false,
       "proposalPrepared": true
+    }
+  },
+  "stage1Approval": {
+    "checkedAt": "2026-10-30T05:08:46.684Z",
+    "sourceBaseCommit": "10135549b608d2ed1d93c12b1a08021dd5fb8f7b",
+    "approvalScope": "private-upload-code-adoption-and-read-only-preparation",
+    "codesAdopted": 7,
+    "codeValuesChanged": 0,
+    "activityCodesChanged": false,
+    "secretsDraftEntries": 8,
+    "privateDeployBundleIntegrity": true,
+    "teachers": {
+      "checkedAt": "2026-10-30T05:03:23.639Z",
+      "source": "live-Firebase-Console-UI",
+      "approved": 7,
+      "matched": 7,
+      "missing": 0,
+      "duplicateUIDs": 0,
+      "totalEmailAccounts": 8,
+      "otherEmailAccounts": 1,
+      "providers": {
+        "password": 6,
+        "google": 1
+      },
+      "actualNewSignInsTested": 0,
+      "previousExistingApprovedPCSessionVerified": 1,
+      "remainingManualAccountSignIns": 6,
+      "accountChanges": 0
+    },
+    "rules": {
+      "checkedAt": "2026-10-30T05:04:56.758Z",
+      "source": "live-Firebase-Console-editor",
+      "jsonEquivalent": true,
+      "normalizedHashMatch": true,
+      "privateBackupSaved": true,
+      "published": false
+    },
+    "touch": {
+      "checkedAt": "2026-10-30T05:07:08.647Z",
+      "kind": "real-test-web-touch-emulation-no-submissions",
+      "physicalDevices": false,
+      "mockedSDK": false,
+      "results": [
+        {
+          "device": "phone-touch-emulation",
+          "physicalDevice": false,
+          "touch": true,
+          "sevenSchoolsSelectable": true,
+          "independentUploadCodeVisible": true,
+          "uploadCodeNotInLocalStorage": true,
+          "landscapeNoOverflow": true,
+          "submissionClicked": false
+        },
+        {
+          "device": "tablet-touch-emulation",
+          "physicalDevice": false,
+          "touch": true,
+          "sevenSchoolsSelectable": true,
+          "independentUploadCodeVisible": true,
+          "uploadCodeNotInLocalStorage": true,
+          "landscapeNoOverflow": true,
+          "submissionClicked": false
+        }
+      ],
+      "passed": 2,
+      "failed": 0,
+      "productionAttempts": 0,
+      "blockedWrites": 0,
+      "submittedWorks": 0
+    },
+    "storage": {
+      "region": "ap-northeast-2",
+      "healthy": true,
+      "bucketPublic": false,
+      "objects": 0,
+      "ledgerRows": 0,
+      "rls": true,
+      "anonDirectAccess": false,
+      "authenticatedDirectAccess": false,
+      "serverRPCs": 4,
+      "publicRPCExecute": false,
+      "functions": 0
+    },
+    "pages": {
+      "deployedSHA": "c5ef2c140c3a1eaa740fa1a14bd7c9b247b322a5",
+      "deploymentId": 7269999204,
+      "successfulRun": 39899032848,
+      "backupIntegrity": true,
+      "canonicalURLsUnchanged": true
+    },
+    "existingEvidenceReused": {
+      "personalRules": 6,
+      "liveProbe": 2,
+      "liveProtocolRequests": 81,
+      "productionRecords": 20,
+      "denoEntryAssertions": 16,
+      "nodeRelatedTests": 10,
+      "rollbackAssertions": 14
+    },
+    "policy": {
+      "mediaPrimaryRegion": "Seoul",
+      "existingFirebaseRegion": "Singapore",
+      "edgeRuntimeRegionPinned": false,
+      "domesticOnlyProcessingGuaranteed": false,
+      "retention": "teacher-selected-delete",
+      "automaticDeletion": false,
+      "schoolOperationalPolicyConfirmed": false,
+      "realStudentTransferAuthorized": false,
+      "publicationConsentConfirmed": false
+    },
+    "phase2": {
+      "authorized": false,
+      "secretsApplied": false,
+      "mediaDeployed": false,
+      "productionRulesPublished": false,
+      "mainMerged": false,
+      "pagesDeployed": false,
+      "studentDataMutated": false
     }
   }
 }
