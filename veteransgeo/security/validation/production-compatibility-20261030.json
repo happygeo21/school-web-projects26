@@ -399,6 +399,7 @@
     },
     "rollback": {
       "frontendDisableAloneInsufficient": true,
+      "maintenanceReadOnlyUntilPagesProbe": true,
       "newReservationsServerStopPrepared": true,
       "localSQLPermissionTestPassed": true,
       "serviceRoleNotSuperuser": true,
