@@ -36,7 +36,7 @@
 
 ## 5. Windows 키트
 
-tests/kosis-egis/build_windows_kit.py로 검토한 소스에서 재생성합니다. 교사에게는 ZIP과 SHA256를 제공합니다. Node.js22 이상만 필요하고 Python·npm install은 필요 없습니다. 1-start.cmd는 루프백 서버만, 2-test.cmd는 합성검사와 자동로그, 3-compare.cmd는 원본엑셀/다운로드CSV 독립 비교를 실행합니다. 시트·열·출처 설정을 확인한 후 실행합니다. 코드 교차표·제외행·원본 해시는 보고서에 남깁니다. Windows CMD는 Windows용으로 작성했지만 Windows에서 실제 실행하지는 않았습니다. 안전 실행과 무결성 검사는 windows-guide.md를 따릅니다.
+tests/kosis-egis/build_windows_kit.py로 검토한 소스에서 재생성합니다. 교사에게는 ZIP과 SHA256를 제공합니다. Node.js22 이상만 필요하고 Python·npm install은 필요 없습니다. 1-start.cmd는 루프백 서버만, 2-test.cmd는 합성검사와 자동로그, 3-compare.cmd는 원본엑셀/다운로드CSV 독립 비교를 실행합니다. 시트·열·출처 설정을 확인한 후 실행합니다. 코드 교차표·제외행·원본 해시는 보고서에 남깁니다. Windows CMD는 Windows용으로 작성했지만 Windows CI에서 CMD3개와 로컬 Edge 테스트가 통과했습니다. 학교 Windows10/11 실제 PC 확인은 별도입니다. 안전 실행과 무결성 검사는 windows-guide.md를 따릅니다.
 
 ## 6. 테스트
 
@@ -44,9 +44,9 @@ tests/kosis-egis/build_windows_kit.py로 검토한 소스에서 재생성합니�
 - Worker 모의4개 통과(실제 배포·API 인증 미검증).
 - 로컬 브라우저11시나리오 통과. 네트워크는127.0.0.1만 허용하고 SheetJS는 로컬로 제공하며 외부요청은 차단. 실제 사이트 자동 조작이 아님.
 - 기존 타프로젝트 회귀8개 통과(3개 파일의 내부 테스트 개수).
-- Windows키트 합성4개·직접엑셀대조6개 통과(Linux/Node). run-all-tests는 현재 실행의 요약 파일 존재·시각·테스트개수까지 검사해 로그를 저장.
+- Windows키트 합성4개·직접엑셀대조6개 통과(Linux/Node 및 Windows CI). Windows CMD3개·로컬 Edge11시나리오도 CI 통과. run-all-tests는 현재 실행의 요약 파일 존재·시각·테스트개수까지 검사해 로그를 저장.
 - 공개 산출물94개 빌드/정확한 allowlist·원본바이트·참조검사 통과.
-- 실패한 기능 테스트0. 실제 통계3종·실제 지도UI·Windows실기·초보학생 관찰은 미검증. 과거 KOSIS 접속 실패는 기능테스트 통과와 별도로 기록.
+- 실패한 기능 테스트0. 실제 통계3종·실제 지도UI·학교 Windows10/11 실기·초보학생 관찰은 미검증. 과거 KOSIS 접속 실패는 기능테스트 통과와 별도로 기록.
 
 ## 7. 수업 합격기준
 
@@ -75,3 +75,5 @@ tests/kosis-egis/build_windows_kit.py로 검토한 소스에서 재생성합니�
 A~G를 실제 근거로 완료하고, 통계 출처·경계연도·지역범위와 실제 숫자를 확인하며, Windows/Edge에서 실행·다운로드·결측표시를 확인해야 합니다. PR최신 CI 성공과 실제 지도 검증은 별개입니다. 그 후에만 사용자가 병합·운영배포 여부를 결정합니다.
 
 Notion 수동기록 문구: ‘2026-10-30 KST / PR8 수업준비 보완 / 원본값대조 CSV·JSON·XLSX와 Windows 독립비교도구 추가 / 엔진20·보안4·로컬브라우저11·기존회귀8 및 키트합성10 통과 / 실제통계3종·지도UI·Windows실기 미검증 / 수업운영최종승인·병합·배포 보류 / Notion 미반영(연결도구 없음).’
+
+CI 근거: https://github.com/happygeo21/school-web-projects26/actions/runs/41002997063 (43d4e29의 Linux validate와 Windows windows-kit 모두 SUCCESS). 초기 Windows 한국어 패키징 기본인코딩 문제는 UTF-8 명시 후 해결·재검증했습니다. Windows CI 성공은 실제 KOSIS·실제 e-GIS 외부 UI 성공을 뜻하지 않습니다.
