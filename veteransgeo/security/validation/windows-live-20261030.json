@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "kind": "sanitized-local-validation-attestation",
+  "checkedAtKST": "2026-10-30T08:36:35.553594+09:00",
+  "sourceCommit": "05a6eda0ed5719eb87889befdf1a60eb8a830f30",
+  "success": true,
+  "environment": {
+    "os": "Windows native",
+    "node": "24.19.0",
+    "java": "21.0.13",
+    "python": "3.12.14",
+    "tlsCertificateVerification": true
+  },
+  "personalRulesEmulator": {
+    "passed": 6,
+    "failed": 0,
+    "exactExternalRules": true,
+    "originalPackageUnchanged": true,
+    "personalRulesAndHashesOmitted": true
+  },
+  "publishedRules": {
+    "jsonEquivalent": true,
+    "canonicalHashesMatched": true,
+    "republished": false
+  },
+  "liveChecks": {
+    "liveTargetProbe": true,
+    "jpegAndWebMActualUpload": true,
+    "duplicateUploadPrevention": true,
+    "approvedPublicFilesAndRange": true,
+    "unapprovedTeacherAndOtherStudentDenied": true,
+    "realPublicImageDisplay": true,
+    "realPublicWebMPlayback": true,
+    "withdrawnFeedRemoved": true,
+    "withdrawnFileAndRangeDenied": true,
+    "awarenessOriginalImmutable": true,
+    "temporaryServerStopped": true
+  },
+  "originalProtocolUninterruptedComplete": false,
+  "requestedChecksCompletedByStateReadbackAndContinuation": true,
+  "testMedia": {
+    "syntheticOnly": true,
+    "jpegBytes": 2366,
+    "webmBytes": 4342,
+    "finalVisibility": "private",
+    "finalPublicFeedCount": 0
+  },
+  "deployment": {
+    "mainMerged": false,
+    "productionDeployed": false,
+    "edgeFunctionRedeployed": false,
+    "sqlReapplied": false,
+    "storageRecreated": false
+  },
+  "notRun": [
+    "real-student-data",
+    "second-device",
+    "mobile-CSV-map-complete-suite",
+    "quota-exhaustion",
+    "organization-billing-meter",
+    "production-deployment"
+  ]
+}

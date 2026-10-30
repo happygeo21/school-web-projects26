@@ -261,7 +261,7 @@ test("private Rules failures do not print source text and symlinked checkout out
     }
     const { symlinkSync } = fsForPrivateTest;
     const alias = path.join(dir, "checkout-alias");
-    symlinkSync(path.resolve(here, "../.."), alias, "dir");
+    symlinkSync(path.resolve(here, "../.."), alias, process.platform === "win32" ? "junction" : "dir");
     assert.throws(() =>
       execFileSync(
         process.execPath,

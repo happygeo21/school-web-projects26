@@ -1,7 +1,8 @@
-import { readFile, realpath, stat } from "node:fs/promises";
+import { readFile, realpath } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { rehearsalTargets } from "../server/rehearsal-target.mjs";
+import { assertPrivateFile } from "./private-file-access.mjs";
 export const checkout = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../..",
@@ -80,13 +81,11 @@ export async function readLiveConfig(file) {
     throw Error(
       "비공개 테스트 설정 파일을 --config로 지정하세요. 운영 설정으로 대체하지 않습니다.",
     );
-  const p = await privatePath(file),
-    s = await stat(p);
-  if ((s.mode & 0o077) !== 0)
-    throw Error("테스트 설정 파일 권한을 0600으로 제한하세요.");
+  const p = await privatePath(file);
+  await assertPrivateFile(p);
   let data;
   try {
-    data = JSON.parse(await readFile(p, "utf8"));
+    data = JSON.parse((await readFile(p, "utf8")).replace(/^\uFEFF/, ""));
   } catch {
     throw Error(
       "비공개 설정 JSON을 읽지 못했습니다. 원문은 출력하지 않습니다.",

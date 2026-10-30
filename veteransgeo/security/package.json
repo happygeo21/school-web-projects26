@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "firebase emulators:exec --project demo-veteransgeo --only database,storage 'node --test rules.test.cjs && VETERANSGEO_RULE_MODE=existing node --test rules.test.cjs'",
+    "test": "node run-emulator-tests.mjs",
     "test:browser": "node --test browser.test.cjs",
     "test:core": "node --test core.test.mjs",
     "test:media": "node --test media-contract.test.mjs token.test.mjs media-sql.test.mjs media-browser.test.mjs supabase-key.test.mjs",
@@ -13,7 +13,8 @@
     "live:prepare": "node prepare-live-test.mjs",
     "live:probe": "node live-test.mjs --probe-only",
     "live:protocol": "node live-test.mjs",
-    "live:serve": "node serve-live-test.mjs"
+    "live:serve": "node serve-live-test.mjs",
+    "test:windows": "node --test windows.test.mjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.3.14",

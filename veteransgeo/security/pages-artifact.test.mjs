@@ -22,7 +22,7 @@ test("Pages artifact: subpath imports/CSS/JSON, private 404, three pages and res
   const sdk = fixture.match(/const sdk = `([\s\S]*?)`;/)[1];
   const leaflet = fixture.match(/const leaflet = `([\s\S]*?)`;/)[1];
   const server = http.createServer(async (req, res) => {
-    const pathname = new URL(req.url, "http://localhost").pathname;
+    const requestURL = new URL(req.url, "http://localhost"), pathname = requestURL.pathname;
     let file = pathname.startsWith(prefix) ? pathname.slice(prefix.length) : "";
     if (file.endsWith("/")) file += "index.html";
     if (!allowed.has(file)) {
@@ -33,7 +33,9 @@ test("Pages artifact: subpath imports/CSS/JSON, private 404, three pages and res
       const body = await readFile(checkout + "/_site/" + file);
       res.setHeader(
         "Content-Type",
-        file.endsWith(".js")
+        requestURL.searchParams.has("artifact-bytes")
+          ? "application/octet-stream"
+          : file.endsWith(".js")
           ? "text/javascript"
           : file.endsWith(".css")
             ? "text/css"
@@ -52,7 +54,9 @@ test("Pages artifact: subpath imports/CSS/JSON, private 404, three pages and res
   try {
     const hashes = {};
     for (const file of selected) {
-      const response = await fetch(origin + prefix + file);
+      // Verify exact bytes as binary. Local Windows HTML filters can inject scripts;
+      // the browser behavior check below still uses the normal HTML response.
+      const response = await fetch(origin + prefix + file + "?artifact-bytes=1");
       assert.equal(response.status, 200, file);
       const bytes = Buffer.from(await response.arrayBuffer());
       assert(
@@ -87,6 +91,9 @@ test("Pages artifact: subpath imports/CSS/JSON, private 404, three pages and res
     for (const file of [
       "security/database.rules.json",
       "security/package.json",
+      "security/Run-Windows-Validation.ps1",
+      "security/run-personal-rules.py",
+      "security/validation/windows-live-20261030.json",
       "server/gateway.mjs",
       "server/supabase-key.mjs",
       "supabase/functions/media/index.ts",

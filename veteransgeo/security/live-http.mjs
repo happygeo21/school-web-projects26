@@ -6,8 +6,10 @@ import { once } from "node:events";
 import { promisify } from "node:util";
 import path from "node:path";
 import os from "node:os";
+import { createNativeLiveHTTP } from "./live-http-native.mjs";
 const exec = promisify(execFile);
 export function createLiveHTTP({ spawn = nodeSpawn, caFile } = {}) {
+  if (process.platform === "win32" && spawn === nodeSpawn) return createNativeLiveHTTP({ caFile });
   const evidence =
     spawn !== nodeSpawn
       ? "isolated-transport"
