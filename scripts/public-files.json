@@ -97,6 +97,8 @@
     "veteransgeo/public.html",
     "veteransgeo/teacher.html",
     "veteransgeo/upgrade-core.js",
+    "veteransgeo/upload-access.js",
+    "veteransgeo/upload-invites-ui.js",
     "wedding-planner/guide.html",
     "wedding-planner/home-dashboard.html",
     "wedding-planner/index.html"

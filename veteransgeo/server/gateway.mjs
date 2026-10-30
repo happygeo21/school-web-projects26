@@ -4,6 +4,7 @@ import {
   digestBytes,
   mediaError,
 } from "../media-policy.js";
+import { createUploadAccess } from "./upload-access.mjs";
 /** @returns {never} */
 const fail = (code, message) => {
   throw mediaError(code, message);
@@ -52,11 +53,13 @@ export function createGateway({
   schoolActivityHashes = null,
   schoolUploadHashes = null,
   allowLegacyActivityCodeUpload = false,
+  uploadInvites = null, // Explicit opt-in only. Never enabled by an adapter spread.
   origins,
   deployment = /** @type {Record<string, unknown> | null} */ (null),
   clock = () => Date.now(),
 }) {
   let inFlight = 0;
+  const access = uploadInvites && createUploadAccess(uploadInvites);
   const teacher = (p) =>
     teachers.includes(p.sub) && p.firebase?.sign_in_provider !== "anonymous";
   async function work(body, p, token) {
@@ -92,7 +95,7 @@ export function createGateway({
             ...cors,
             "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
             "Access-Control-Allow-Headers":
-              "Authorization, Content-Type, X-School-Id, X-Work-Id, X-Activity-Code, X-Upload-Code, Range",
+              "Authorization, Content-Type, X-School-Id, X-Work-Id, X-Activity-Code, X-Upload-Code, X-Upload-Grant, Range",
             "Access-Control-Max-Age": "300",
           },
         });
@@ -189,23 +192,27 @@ export function createGateway({
           workId: request.headers.get("X-Work-Id"),
           ownerUid: p.sub,
         };
-        const independentUploadAuth = !!schoolUploadHashes && (!allowLegacyActivityCodeUpload || request.headers.has("X-Upload-Code"));
+        const grant = request.headers.get("X-Upload-Grant");
+        const permit = access && await access.authorize(grant, p.sub, body.schoolId);
+        const independentUploadAuth = !!access || (!!schoolUploadHashes && (!allowLegacyActivityCodeUpload || request.headers.has("X-Upload-Code")));
         let activity;
-        try {
-          activity = decodeURIComponent(
-            request.headers.get(independentUploadAuth ? "X-Upload-Code" : "X-Activity-Code") || "",
-          );
-        } catch {
-          fail("media/permission", "파일 업로드 인증코드를 확인해주세요.");
+        if (!access) {
+          try {
+            activity = decodeURIComponent(
+              request.headers.get(independentUploadAuth ? "X-Upload-Code" : "X-Activity-Code") || "",
+            );
+          } catch {
+            fail("media/permission", "파일 업로드 인증코드를 확인해주세요.");
+          }
+          const expected = (independentUploadAuth ? schoolUploadHashes : schoolActivityHashes)?.[body.schoolId];
+          if (
+            !activity ||
+            activity.length > (independentUploadAuth ? 128 : 20) ||
+            !expected ||
+            expected !== (await digestBytes(new TextEncoder().encode(activity)))
+          )
+            fail("media/permission", "학교와 파일 업로드 인증코드를 선생님께 확인해주세요.");
         }
-        const expected = (independentUploadAuth ? schoolUploadHashes : schoolActivityHashes)?.[body.schoolId];
-        if (
-          !activity ||
-          activity.length > (independentUploadAuth ? 128 : 20) ||
-          !expected ||
-          expected !== (await digestBytes(new TextEncoder().encode(activity)))
-        )
-          fail("media/permission", "학교와 파일 업로드 인증코드를 선생님께 확인해주세요.");
         const w = await work(body, p, token);
         if (
           w.status !== "pending" ||
@@ -230,6 +237,8 @@ export function createGateway({
           fail("media/permission", "작품 경로가 맞지 않아요.");
         const type = request.headers.get("Content-Type");
         validateMedia({ type, size: w.size });
+        if (permit && w.size > permit.maxBytes)
+          fail("media/invalid-file", "이 수업 링크의 파일 용량 제한을 넘었어요. 파일을 줄이거나 선생님께 확인해주세요.");
         if (type !== w.contentType)
           fail(
             "media/invalid-file",
@@ -239,6 +248,8 @@ export function createGateway({
         if (bytes.length !== w.size || (await digestBytes(bytes)) !== w.sha256)
           fail("media/invalid-file", "최초 제출과 같은 파일을 선택해주세요.");
         await checkSignature(new Blob([bytes], { type }));
+        const claim = { asset_id: calculated, work_id: body.workId, size: bytes.length, sha256: w.sha256 };
+        if (access) await access.authorize(grant, p.sub, body.schoolId, claim, "claim");
         const reservation = await ledger.reserve({
           asset_id: calculated,
           school_id: body.schoolId,
@@ -248,16 +259,19 @@ export function createGateway({
           content_type: type,
           sha256: w.sha256,
         });
-        if (reservation.existing)
+        if (reservation.existing) {
+          if (access) await access.authorize(grant, p.sub, body.schoolId, claim, "commit");
           return json({
             state: "ready",
             duplicate: true,
             warning: reservation.warning,
           });
+        }
         try {
           await blobs.put(reservation.object_key, bytes, type);
-          await ledger.ready(calculated);
-        } catch {
+          if (access) await access.authorize(grant, p.sub, body.schoolId, claim, "commit");
+          else await ledger.ready(calculated);
+        } catch (e) {
           // Keep bytes reserved until DELETE is confirmed. Never hide an uncertain orphan.
           try {
             await blobs.delete(reservation.object_key);
@@ -265,6 +279,7 @@ export function createGateway({
           } catch {
             /* reconciliation keeps the reservation */
           }
+          if (e?.code === "media/permission" || e?.code === "media/quota-full") throw e;
           fail(
             "media/network",
             "파일을 저장하지 못했어요. 같은 작품으로 재시도해주세요.",
@@ -279,6 +294,20 @@ export function createGateway({
         );
       } catch {
         fail("media/invalid-request", "요청 정보를 확인해주세요.");
+      }
+      if (["invite-issue", "invite-list", "invite-revoke", "invite-redeem", "invite-check"].includes(body.action)) {
+        if (!access) fail("media/permission", "수업 링크 업로드가 아직 연결되지 않았어요.");
+        if (["invite-issue", "invite-list", "invite-revoke"].includes(body.action)) {
+          if (!teacher(p)) fail("media/permission", "승인된 교사만 수업 링크를 관리할 수 있어요.");
+          if (body.action === "invite-revoke") {
+            if (!/^[a-f0-9-]{36}$/.test(body.id || "")) fail("media/invalid-id", "링크를 다시 선택해주세요.");
+            return json(await access.revoke(body.id, p.sub));
+          }
+          if (!isSchool(body.schoolId)) fail("media/invalid-id", "학교를 선택해주세요.");
+          return json(body.action === "invite-issue" ? await access.issue(body, p.sub) : await access.list(body.schoolId, p.sub));
+        }
+        if (p.firebase?.sign_in_provider !== "anonymous") fail("media/permission", "학생 연결로 수업 링크를 열어주세요.");
+        return json(body.action === "invite-redeem" ? await access.redeem(body.inviteToken, p.sub) : await access.authorize(body.grantToken, p.sub, body.schoolId));
       }
       if (body.action === "usage") {
         if (!teacher(p))
@@ -318,6 +347,7 @@ export function createGateway({
           if (row.state === "uploading" && age > 10 * 60000) {
             const exists = await blobs.head(row.object_key);
             if (
+              !access && // Invite mode never promotes an orphan without atomic capability revalidation.
               exists &&
               exists.size === row.size &&
               exists.type === row.content_type &&

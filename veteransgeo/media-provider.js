@@ -1,4 +1,5 @@
 import { MEDIA_CONFIG } from "./media-config.js";
+import { authorizeUpload } from "./upload-access.js";
 import {
   validateMedia,
   checkSignature,
@@ -91,6 +92,11 @@ export function createMediaProvider(
   }
   return {
     enabled,
+    usesInviteLinks: config.uploadAuthorization === "teacher-invite-link",
+    authorizeUpload: (identity) => { requireReady(); return authorizeUpload(call, identity); },
+    issueInvite: (body, token) => call("invite-issue", body, token),
+    listInvites: (schoolId, token) => call("invite-list", { schoolId }, token),
+    revokeInvite: (id, token) => call("invite-revoke", { id }, token),
     requiresUploadCode: config.uploadAuthorization === "school-upload-code",
     upload({
       file,
@@ -98,11 +104,14 @@ export function createMediaProvider(
       workId,
       activityCode,
       uploadCode,
+      uploadGrant,
       token,
       signal,
       onProgress = () => {},
     }) {
       requireReady();
+      if (config.uploadAuthorization === "teacher-invite-link" && !/^g_[a-f0-9]{64}$/.test(uploadGrant || ""))
+        throw mediaError("media/permission", "선생님이 준 업로드 링크로 학생 연결을 확인해주세요. 글과 파일은 유지돼요.");
       if (config.uploadAuthorization === "school-upload-code" && (!uploadCode || uploadCode.length > 128))
         throw mediaError("media/permission", "파일 업로드 인증코드를 확인해주세요.");
       return new Promise((resolve, reject) => {
@@ -139,7 +148,9 @@ export function createMediaProvider(
           "Content-Type": file.type,
           "X-School-Id": schoolId,
           "X-Work-Id": workId,
-          ...(config.uploadAuthorization === "school-upload-code"
+          ...(config.uploadAuthorization === "teacher-invite-link"
+            ? {"X-Upload-Grant": uploadGrant}
+            : config.uploadAuthorization === "school-upload-code"
             ? {"X-Upload-Code": encodeURIComponent(uploadCode)}
             : {"X-Activity-Code": encodeURIComponent(activityCode)}),
         }))

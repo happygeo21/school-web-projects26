@@ -1,5 +1,23 @@
 <!doctype html><html lang="ko"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<script>
+// Capture before any third-party resources. Fragments are never sent in HTTP requests.
+// A replacement link can be opened in this tab without reloading or losing the selected File.
+(() => {
+  const capture = () => {
+    const fragment = new URLSearchParams(location.hash.slice(1));
+    if (!fragment.has('upload-invite')) return;
+    const value = fragment.get('upload-invite');
+    fragment.delete('upload-invite');
+    history.replaceState(null, '', location.pathname + location.search + (fragment.size ? '#' + fragment : ''));
+    import('./upload-access.js').then(m => m.acceptInvite(value)).catch(() => {});
+  };
+  capture();
+  window.addEventListener('hashchange', capture);
+  window.addEventListener('pagehide', () => import('./upload-access.js').then(m => m.clearUploadAccess()));
+})();
+</script>
 <title>기억의 좌표 LIVE | 학생용</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>

@@ -7,7 +7,7 @@ import { createGateway } from "../server/gateway.mjs";
 import { digestBytes } from "../media-policy.js";
 import { createMockMedia } from "./mock-media.mjs";
 const root = fileURLToPath(new URL("../", import.meta.url));
-export async function createMockServer() {
+export async function createMockServer({ uploadInvites = null, ledger = null } = {}) {
   const env = createMockMedia(),
     tree = {
       memoryTemperature2026: {
@@ -40,6 +40,8 @@ export async function createMockServer() {
   const hash = await digestBytes(new TextEncoder().encode("TEST"));
   const gateway = createGateway({
     ...env,
+    ...(ledger ? { ledger } : {}),
+    uploadInvites,
     db: {
       work: async (p) => {
         if (env.state.failDB) throw Error("offline");
@@ -150,7 +152,7 @@ export async function createMockServer() {
         );
       else if (file === "media-config.js")
         content = Buffer.from(
-          `export const MEDIA_CONFIG={enabled:true,endpoint:${JSON.stringify(origin + "/__mock/media")}};`,
+          `export const MEDIA_CONFIG={enabled:true,endpoint:${JSON.stringify(origin + "/__mock/media")},uploadAuthorization:${JSON.stringify(uploadInvites ? "teacher-invite-link" : "legacy-mock")}};`,
         );
       else if (/\.(html|js)$/.test(file)) {
         let text = content
@@ -186,10 +188,14 @@ export async function createMockServer() {
   return { server, origin, state: env.state, tree, lookup, write };
 }
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const { origin } = await createMockServer();
+  const inviteDB = process.argv.includes("--invite-links")
+    ? await (await import("./invite-fixture.mjs")).inviteDatabase() : null;
+  const { origin, server } = await createMockServer(inviteDB ? { uploadInvites: inviteDB.store, ledger: inviteDB.ledger } : {});
+  const stop = () => server.close(async () => { await inviteDB?.close(); process.exit(0); });
+  process.once("SIGINT", stop); process.once("SIGTERM", stop);
   console.log(
     "LOCAL MOCK ONLY: " +
       origin +
-      " · teacher.html · public.html · activity TEST",
+      " · teacher.html · public.html · activity TEST" + (inviteDB ? " · timed invite links / local PostgreSQL" : ""),
   );
 }

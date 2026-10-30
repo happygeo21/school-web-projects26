@@ -122,7 +122,8 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
     assert.equal(await page.locator("#awarenessScore").isDisabled(), true);
     assert.match(await page.locator("#rememberSentence").inputValue(), /가상/);
     await page.locator('[data-step="1"]').click();
-    await page.locator("#placeName").fill("가상 시설");
+    // Restored coordinates need confirmation; editing the name deliberately clears the location.
+    assert.equal(await page.locator("#placeName").inputValue(), "가상 시설");
     await page.locator("#confirmLocationBtn").click();
     await page.locator('[data-step="2"]').click();
     await page.evaluate(() => (window.__fixture.deny = false));
@@ -216,6 +217,7 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
       await page.locator("#awarenessScore").selectOption("1");
       await page.locator("#lockAwareness").click();
       await page.locator('[data-step="1"]').click();
+      await page.locator("#placeName").fill("학교별 가상 시설");
       await page.locator("#manualLocationBtn").click();
       await page.evaluate(() =>
         window.__map.handlers.click({ latlng: { lat: 36, lng: 127 } }),

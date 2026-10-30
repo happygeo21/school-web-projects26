@@ -45,6 +45,7 @@ const adapters = createAdapters({
 Deno.serve(
   createGateway({
     ...adapters,
+    uploadInvites: Deno.env.get("UPLOAD_AUTH_MODE") === "teacher-invite-link" ? adapters.inviteStore : null,
     teachers,
     schoolActivityHashes,
     schoolUploadHashes: schoolActivityHashes,

@@ -30,6 +30,10 @@ export function createAdapters({
     });
     if (!r.ok) {
       const d = await r.json().catch(() => ({}));
+      if (/invite_denied/i.test(d.message || ""))
+        throw mediaError("media/permission", "업로드 링크가 만료되었거나 학교·학생 연결이 달라요. 선생님께 새 링크를 받아 같은 화면에서 열어주세요. 글과 선택한 파일은 유지돼요.");
+      if (/invite_quota/i.test(d.message || ""))
+        throw mediaError("media/quota-full", "이 수업 링크의 제출 한도에 도달했어요. 선생님께 확인해주세요. 글과 선택한 파일은 유지돼요.");
       if (/quota|daily_limit/i.test(d.message || ""))
         throw mediaError(
           "media/quota-full",
@@ -79,6 +83,7 @@ export function createAdapters({
     "/" +
     key.split("/").map(encodeURIComponent).join("/");
   return {
+    inviteStore: (action, data) => rpc("veterans_upload_access", { a: action, p: data }),
     db: {
       work: (p, t) => readDB(["works", p.schoolId, p.ownerUid, p.workId], t),
       published: (id) => readDB(["publishedWorks", id]),

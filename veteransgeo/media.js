@@ -23,6 +23,7 @@ import { draftStore, opaquePublicId, safeTabStorage } from "./draft-store.js";
 import { createMediaProvider, prepareFile } from "./media-provider.js";
 import { WORK_STATUS, publicWork, waitForAck, databaseTimestamp, creationForRetry } from "./media-policy.js";
 import { setupGallery } from "./media-gallery.js";
+import { setupStudentInvites, setupTeacherInvites } from "./upload-invites-ui.js";
 export { checkSignature } from "./media-policy.js";
 const $ = (id) => document.getElementById(id),
   base = () => `${DB_ROOT}/works`;
@@ -95,6 +96,7 @@ export function setupStudentMedia({
   } else if (getIdentity().schoolId)
     form.elements.schoolId.value = getIdentity().schoolId;
   const save = () => store.save({ fields: fields(form), pending });
+  const disposeInvites = setupStudentInvites({ provider, auth: getAuth(app), form, getIdentity, hasPending: () => !!pending });
   const syncIdentity = () => {
     if (!pending) {
       const v = getIdentity();
@@ -299,6 +301,15 @@ export function setupStudentMedia({
         throw Error(
           "올릴 파일을 다시 선택해주세요. 새로고침 후에는 같은 파일을 골라주세요.",
         );
+      busy = true;
+      button.disabled = true;
+      controller = new AbortController();
+      const token = await getAuth(app).currentUser.getIdToken();
+      const permit = d.submissionMode === "upload" && provider.usesInviteLinks
+        ? await provider.authorizeUpload({ uid, schoolId: d.schoolId, token, signal: controller.signal }) : null;
+      if (getIdentity().uid !== uid) throw { code: "auth/user-changed" };
+      if (permit && prepared.file.size > permit.maxBytes)
+        throw Error("이 수업 링크의 파일 용량 제한을 넘었어요. 파일을 줄이거나 선생님께 확인해주세요.");
       const db = getDatabase(app);
       pending = pending || {
         identity: `${d.schoolId}/${uid}`,
@@ -337,9 +348,7 @@ export function setupStudentMedia({
       busy = true;
       $("uploadProgress").value = 0;
       button.disabled = true;
-      controller = new AbortController();
       $("uploadStatus").textContent = "작품 정보를 저장하고 있어요…";
-      const token = await getAuth(app).currentUser.getIdToken();
       if (getIdentity().uid !== uid) throw { code: "auth/user-changed" };
       const target = ref(db, `${base()}/${pending.identity}/${pending.key}`);
       const existing = await get(target);
@@ -356,6 +365,7 @@ export function setupStudentMedia({
           workId: pending.key,
           activityCode: pending.data.activityCode,
           uploadCode: form.elements.uploadCode?.value,
+          uploadGrant: permit?.grantToken,
           token,
           signal: controller.signal,
           onProgress: (n) => ($("uploadProgress").value = n),
@@ -387,6 +397,7 @@ export function setupStudentMedia({
     }
   };
   return () => {
+    disposeInvites();
     authUnsub();
     ownUnsub?.();
     controller?.abort();
@@ -411,6 +422,7 @@ export function setupTeacherMedia({
       "",
     )}</select></label><label>학교·시설·제목 검색<input id="workSearch" maxlength="100"></label><div class="media-toolbar"><button id="mediaUsage" class="gray">무료 사용량 확인</button><button id="reconcileMedia" class="gray">미디어 상태 점검·고아 파일 정리</button></div><p id="workStatus" role="status"></p><div id="workList"></div>`;
   $("dash").append(section);
+  const disposeInvites = setupTeacherInvites({ section, provider, user });
   let records = {},
     live = true,
     sequence = 0,
@@ -668,6 +680,7 @@ export function setupTeacherMedia({
   );
   return () => {
     live = false;
+    disposeInvites();
     ++sequence;
     urls.forEach((f) => f());
     section.remove();
