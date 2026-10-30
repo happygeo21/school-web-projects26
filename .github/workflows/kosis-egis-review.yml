@@ -31,3 +31,46 @@ jobs:
           npm run test:browser
       - run: node scripts/build-public-site.mjs
       - run: node scripts/verify-public-site.mjs
+  windows-kit:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --ignore-scripts
+        working-directory: tests/kosis-egis
+      - name: Package Windows kit
+        shell: pwsh
+        run: python tests/kosis-egis/build_windows_kit.py "$env:RUNNER_TEMP/egis-validation-kit"
+      - name: Exercise CMD launchers on Windows
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $env:EGIS_QA_NONINTERACTIVE = '1'
+          Push-Location "$env:RUNNER_TEMP/egis-validation-kit/windows-kit"
+          $server = $null
+          try {
+            cmd /d /c 2-test.cmd
+            if ($LASTEXITCODE -ne 0) { throw 'Synthetic tests failed' }
+            cmd /d /c '3-compare.cmd fixtures\synthetic-original.xlsx fixtures\synthetic-downloaded.csv excel-synthetic-config.json evidence\windows-cmd'
+            if ($LASTEXITCODE -ne 0) { throw 'Excel comparison failed' }
+            $server = Start-Process $env:ComSpec -ArgumentList '/d','/c','1-start.cmd' -PassThru
+            $ready = $false
+            for ($i = 0; $i -lt 15; $i++) {
+              try {
+                $response = Invoke-WebRequest 'http://127.0.0.1:8000/kosis-egis/'
+                if ($response.StatusCode -eq 200 -and $response.Content.Contains('id="audit"')) { $ready = $true; break }
+              } catch { Start-Sleep -Seconds 1 }
+            }
+            if (-not $ready) { throw 'Local kit server failed readiness' }
+          } finally {
+            if ($null -ne $server -and -not $server.HasExited) { taskkill /PID $server.Id /T /F | Out-Null }
+            Pop-Location
+          }
+      - name: Local Edge functional tests
+        shell: pwsh
+        run: |
+          $env:CHROMIUM_PATH = 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe'
+          if (-not (Test-Path $env:CHROMIUM_PATH)) { throw 'Edge not installed; do not silently skip browser verification' }
+          node tests/kosis-egis/browser.test.cjs
