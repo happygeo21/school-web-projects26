@@ -2,16 +2,16 @@
 'use strict';
 document.addEventListener('DOMContentLoaded',()=>{
  const $=id=>document.getElementById(id),stepNames=['지역 선택','자료 입력','자동 변환 및 결과 확인','e-GIS 지도 제작'];
- let mode='easy',step=0,visited=1,route='',needsPractice=false,downloaded=false,guideStep=0;
+ let mode='easy',step=0,visited=1,route='',needsPractice=false,needsFile=false,downloaded=false,guideStep=0;
  let state={ready:false,busy:false,hasData:false,canExport:false,status:'',rows:0,metrics:[],preview:[],issues:[]};
  const steps=[...document.querySelectorAll('[data-flow-step]')];
  ['sourceProfile','name','code','sido','year','tableTitle'].forEach(id=>$(id).closest('label').classList.add('expert-field'));
  const practice=document.createElement('p');practice.id='practiceReady';practice.className='notice';$('upload').querySelector('h2').after(practice);
  function change(id,value){$(id).value=value;$(id).dispatchEvent(new Event('change',{bubbles:true}));}
  function focusStep(){const el=$('flowHeading');el.focus({preventScroll:true});$('flowWizard').scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});}
- function setStep(n){if(n===3&&!state.hasData)return;if(n===4&&!state.canExport)return;step=n;visited=Math.max(visited,n);render();if(n)focusStep();}
+ function setStep(n){if(n===3&&(!state.hasData||(route==='file'&&needsFile)))return;if(n===4&&!state.canExport)return;step=n;visited=Math.max(visited,n);render();if(n)focusStep();}
  function show(next){mode=next;if(mode==='easy'){if(!step&&state.hasData){step=3;visited=3;route=state.synthetic?'practice':'file';}if(step===4&&!state.canExport)step=state.hasData?3:2;}document.body.dataset.view=mode;$('modeEasy').setAttribute('aria-pressed',String(mode==='easy'));$('modeDetailed').setAttribute('aria-pressed',String(mode==='detailed'));$('viewSwitch').dataset.currentMode=mode;render();}
- function choose(kind){if(!state.ready)return;const different=route!==kind;route=kind;document.body.dataset.route=route;needsPractice=kind!=='file'&&(different||!state.hasData);if(different||!state.hasData){change('analysisMode',kind==='jeonnam'?'regional':kind==='sido'?'sido':'auto');change('scope',kind==='jeonnam'?'46':'all');}visited=1;setStep(1);}
+ function choose(kind){if(!state.ready)return;const different=route!==kind;route=kind;document.body.dataset.route=route;needsPractice=kind!=='file'&&(different||!state.hasData);needsFile=kind==='file'&&(!state.hasData||state.synthetic);if(different||!state.hasData){change('analysisMode',kind==='jeonnam'?'regional':kind==='sido'?'sido':'auto');change('scope',kind==='jeonnam'?'46':'all');}visited=1;setStep(1);}
  function review(){
   const box=$('easyDetected');box.replaceChildren();
   const labels={sido:'시도별',sgg:'시군구별',city:'상위 시·군별',unknown:'직접 확인 필요'};
@@ -25,13 +25,13 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('startStatus').textContent=state.ready?'파일은 이 브라우저에서만 처리해요.':state.error?'기준표를 준비하지 못했어요. 연결을 확인한 뒤 새로고침해 주세요.':'지역 기준표를 준비하고 있어요…';
   $('flowPosition').textContent=step+' / 4 단계';$('flowHeading').textContent=stepNames[Math.max(0,step-1)];$('flowProgress').value=step||1;
   const briefs=[state.scopeLabel||'지역 고르기',state.hasData?(state.synthetic?'연습자료':state.title)+' · '+state.rows+'행':'파일 넣기',state.status||'지역과 숫자 확인','같은 단위의 지도에 연결'];
-  steps.forEach((b,i)=>{const n=i+1;b.disabled=n>visited||state.busy||(n===3&&!state.hasData)||(n===4&&!state.canExport);if(n===step)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');b.querySelector('.step-brief').textContent=n<step?briefs[i]:'';});
+  steps.forEach((b,i)=>{const n=i+1;b.disabled=n>visited||state.busy||(n===3&&(!state.hasData||(route==='file'&&needsFile)))||(n===4&&!state.canExport);if(n===step)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');b.querySelector('.step-brief').textContent=n<step?briefs[i]:'';});
   practice.hidden=route==='file';practice.textContent=state.hasData?'연습자료 '+state.rows+'개를 준비했어요. 가상 수치이며 실제 통계가 아니에요.':'연습자료를 준비하고 있어요…';
-  const hints={1:locked?'선택한 연습자료와 같은 지역이에요. 확인하고 다음으로 가세요.':'자료의 지역을 모르면 자동 추천을 선택하세요. 파일을 읽은 뒤 다시 확인할 수 있어요.',2:state.busy?'파일을 읽고 있어요…':state.hasData?'자료가 준비됐어요. 다음에서 지역·통계값·연도를 확인해요.':'엑셀이나 CSV 파일을 넣으세요. 시트가 여러 개면 자료가 담긴 시트를 골라요.',3:state.busy?'지역과 숫자를 확인하고 있어요…':state.status==='결합 중단'?'고쳐야 할 문제가 있어요. 아래 문제와 해결 방법을 확인하세요.':state.canExport?'변환 결과를 확인한 뒤 CSV를 받고 지도 만들기로 가세요.':'자동으로 읽은 내용과 미리보기를 확인하고 지역 단위 확인에 체크하세요.',4:'같은 지역 단위의 경계에 CSV를 연결하세요. 안내를 눌러 한 단계씩 따라 해요.'};
+  const hints={1:locked?'선택한 연습자료와 같은 지역이에요. 확인하고 다음으로 가세요.':'자료의 지역을 모르면 자동 추천을 선택하세요. 파일을 읽은 뒤 다시 확인할 수 있어요.',2:state.busy?'파일을 읽고 있어요…':needsFile?'내 엑셀이나 CSV 파일을 넣어 주세요. 이전 연습자료는 새 파일 대신 사용하지 않아요.':state.hasData?'자료가 준비됐어요. 다음에서 지역·통계값·연도를 확인해요.':'엑셀이나 CSV 파일을 넣으세요. 시트가 여러 개면 자료가 담긴 시트를 골라요.',3:state.busy?'지역과 숫자를 확인하고 있어요…':state.status==='결합 중단'?'고쳐야 할 문제가 있어요. 아래 문제와 해결 방법을 확인하세요.':state.canExport?'변환 결과를 확인한 뒤 CSV를 받고 지도 만들기로 가세요.':'자동으로 읽은 내용과 미리보기를 확인하고 지역 단위 확인에 체크하세요.',4:'같은 지역 단위의 경계에 CSV를 연결하세요. 안내를 눌러 한 단계씩 따라 해요.'};
   $('flowHint').textContent=state.error?'파일을 읽거나 변환하지 못했어요. '+state.error+' 상세 모드에서 시트와 열을 확인할 수 있어요.':hints[step]||'';
   $('flowPrev').disabled=state.busy;$('flowPrev').textContent=step===1?'처음 선택으로':'이전 단계';
   let next='다음 단계';if(step===1)next='② 자료 입력으로';if(step===2)next='③ 자동 분석 확인하기';if(step===3)next=state.status==='결합 중단'?'상세 모드에서 문제 고치기':state.canExport?(downloaded?'④ 지도 만들기로':'CSV 받고 ④ 지도 만들기'):'확인한 내용으로 변환하기';if(step===4)next='CSV 다시 받기';
-  $('flowNext').textContent=next;$('flowNext').disabled=!state.ready||state.busy||(step===2&&!state.hasData)||(step===4&&!state.canExport);
+  $('flowNext').textContent=next;$('flowNext').disabled=!state.ready||state.busy||(step===2&&(!state.hasData||(route==='file'&&needsFile)))||(step===4&&!state.canExport);
   $('flowActions').hidden=mode!=='easy'||!step;
   const blocked=state.status==='결합 중단',warning=state.status==='확인 필요';
   $('easyFeedback').textContent=blocked?'잘못 연결된 지역이나 통계값이 있어 CSV를 만들지 않았어요. 상세 모드에서 지역·코드·시트·통계 열을 확인하고 다시 변환하세요.':warning?'누락·빈칸·연도 차이 등 확인할 내용이 있어요. 아래 안내와 원본을 확인하세요. 빈칸은 0으로 바꾸지 않아요.':state.canExport?'변환이 끝났어요. CSV를 받아 e-GIS에서 지도와 연결하세요.':'';
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  $('csv').addEventListener('click',()=>{if(state.canExport){downloaded=true;render();}});
  document.addEventListener('kosis:state',e=>{
   state=e.detail;if(['changed','loading','analyzed','running','error'].includes(state.phase))downloaded=false;
-  if(state.phase==='loading'){route='file';needsPractice=false;}
+  if(state.phase==='loading'){route='file';needsPractice=false;needsFile=true;}if(state.phase==='analyzed'&&!state.synthetic)needsFile=false;
   if(state.phase==='analyzed'&&mode==='easy'&&$('analysisMode').value==='auto'&&['sido','sgg'].includes(state.unit))$('useRecommended').click();
   if(mode==='easy'&&step===4&&!state.canExport)step=state.hasData?3:2;
   render();if(state.phase==='converted'&&mode==='easy'&&step===3)$('result').scrollIntoView({block:'start',behavior:'smooth'});

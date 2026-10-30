@@ -22,5 +22,6 @@
   "external_example_content": "user supplied link; content/access not independently verified",
   "deployment": "not merged and not deployed; production unchanged",
   "netlify": "no unlock or settings/write operations",
-  "notion": "no connector; no external writes"
+  "notion": "no connector; no external writes",
+  "new_upload_required_after_switching_from_practice": true
 }
