@@ -14,8 +14,9 @@ for f in (source/'windows-kit').iterdir():
   else:shutil.copy2(f,kit/f.name)
 for f in ['core.js','reference.json']:shutil.copy2(root/'kosis-egis-tool'/f,kit/f)
 shutil.copy2(source/'fixtures/egis-sigungu-2025.geojson',kit/'egis-sigungu.geojson')
+shutil.copy2(root/'kosis-egis-tool/sido-2025.geojson',kit/'egis-sido-2025.geojson')
 shutil.copytree(source/'fixtures',kit/'fixtures')
-for folder,files in {'kosis-egis':['index.html'],'kosis-egis-tool':['app.js','core.js','reference.json','conversion-worker.js','studio.css']}.items():
+for folder,files in {'kosis-egis':['index.html'],'kosis-egis-tool':['app.js','core.js','reference.json','conversion-worker.js','studio.css','spatial.js','sido-reference.json','sido-2025.geojson','sigungu-2025.geojson','boundary-provenance.json','statistics-catalog.json']}.items():
  dest=kit/'site'/folder;dest.mkdir(parents=True)
  for name in files:shutil.copy2(root/folder/name,dest/name)
 js=source/'node_modules/xlsx/dist/xlsx.full.min.js'
@@ -24,6 +25,7 @@ shutil.copy2(js,kit/'site/kosis-egis-tool/xlsx.full.min.js');shutil.copy2(js.par
 p=kit/'site/kosis-egis/index.html';p.write_text(p.read_text(encoding='utf-8').replace('https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js','../kosis-egis-tool/xlsx.full.min.js'),encoding='utf-8')
 shutil.copy2(root/'docs/kosis-egis/windows-guide.md',kit/'WINDOWS-START-HERE.md');shutil.copy2(root/'docs/kosis-egis/classroom-checklist.md',kit/'PR8-CHECKLIST.md')
 shutil.copy2(root/'docs/kosis-egis/hwasun-2024-followup.md',kit/'hwasun-2024-followup.md')
+shutil.copy2(root/'docs/kosis-egis/spatial-units.md',kit/'SPATIAL-UNITS.md')
 (kit/'README.md').write_text('Start with WINDOWS-START-HERE.md. Node.js 22+ required. No Python or npm install is needed on the teacher PC.\n',encoding='utf-8')
 manifest={str(p.relative_to(kit)).replace('\\','/'):hashlib.sha256(p.read_bytes()).hexdigest() for p in kit.rglob('*') if p.is_file()}
 (kit/'sha256-manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')

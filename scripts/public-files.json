@@ -94,6 +94,12 @@
     "kosis-egis-tool/reference.json",
     "kosis-egis-tool/studio.css",
     "kosis-egis-tool/README.md",
-    "kosis-egis-tool/conversion-worker.js"
+    "kosis-egis-tool/conversion-worker.js",
+    "kosis-egis-tool/spatial.js",
+    "kosis-egis-tool/sido-reference.json",
+    "kosis-egis-tool/sido-2025.geojson",
+    "kosis-egis-tool/sigungu-2025.geojson",
+    "kosis-egis-tool/boundary-provenance.json",
+    "kosis-egis-tool/statistics-catalog.json"
   ]
 }

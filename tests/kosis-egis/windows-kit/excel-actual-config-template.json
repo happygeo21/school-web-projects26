@@ -6,9 +6,24 @@
   "header_start": 1,
   "header_depth": 1,
   "code_system": "SOURCE",
-  "columns": {"code":"REPLACE_OR_LEAVE_EMPTY", "name":"REPLACE", "sido":"REPLACE_OR_LEAVE_EMPTY", "year":"REPLACE_OR_LEAVE_EMPTY", "value":"REPLACE"},
+  "columns": {
+    "code": "REPLACE_OR_LEAVE_EMPTY",
+    "name": "REPLACE",
+    "sido": "REPLACE_OR_LEAVE_EMPTY",
+    "year": "REPLACE_OR_LEAVE_EMPTY",
+    "value": "REPLACE"
+  },
   "output_value": "REPLACE_WITH_DOWNLOADED_CSV_VALUE_COLUMN",
   "exclude_rows": {},
   "row_regions": {},
-  "source": {"title":"REPLACE", "table_id":"REPLACE", "item":"REPLACE", "unit":"REPLACE", "reference_date":"REPLACE", "url":"REPLACE", "download_date":"REPLACE"}
+  "source": {
+    "title": "REPLACE",
+    "table_id": "REPLACE",
+    "item": "REPLACE",
+    "unit": "REPLACE",
+    "reference_date": "REPLACE",
+    "url": "REPLACE",
+    "download_date": "REPLACE"
+  },
+  "target_unit": "sgg"
 }
