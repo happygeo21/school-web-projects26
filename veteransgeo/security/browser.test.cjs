@@ -275,8 +275,9 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
     await page.evaluate(() => sessionStorage.clear());
     await page.goto(origin + "/veteransgeo/index.html");
     await page.locator("#mediaForm").waitFor({state:"attached"});
-    await page.locator("#awarenessScore").selectOption("1");
-    await page.locator("#lockAwareness").click();
+    await page.locator("#dontKnowPlace").click();
+    assert.equal(await page.locator("#awarenessScore").inputValue(), "1");
+    assert.equal(await page.locator("#awarenessScore").isDisabled(), true);
     await page.locator("#facilityQuery").fill("가상 공식");
     await page.locator("#facilityResults button").first().click();
     assert.equal(
