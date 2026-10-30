@@ -2,9 +2,9 @@
 
 ## 버전과 담당
 
-- 현재 운영 Pages main: `c5ef2c140c3a1eaa740fa1a14bd7c9b247b322a5` — 2026-10-23 기존 Pages 배포 성공 이력, 이번2026-10-30 HTTP200 확인. 개선판이 아닙니다.
+- 개선판 이전 정상 Pages 기준: `c5ef2c140c3a1eaa740fa1a14bd7c9b247b322a5` — 2026-10-23 기존 Pages 배포 성공 이력, 이번2026-10-30 HTTP200 확인. 복구 비교 기준으로 보존합니다.
 - 기능 검증 기준: `17f9877e9ea62dfe65011b06f7223535a5a58d6a` / PR #8. 최종 정리는 같은 PR의 후속 커밋입니다. PR 최종 HEAD는 [PR #8](https://github.com/happygeo21/school-web-projects26/pull/8)에서 확인합니다.
-- 개선판 운영 배포: **보류**. Netlify의 다른 앱에 대한 main 자동 게시 영향이 확인되기 전 병합하지 않습니다. 확인 후 정상 merge 및 Pages 실행 성공 SHA를 릴리스 기록에 추가해야 합니다.
+- 개선판 운영 배포: 사용자가 happygeo/veteransgeo의 Auto Publishing Locked·기존 Published main@7bbedd6 보존·Unlock하지 않음을 확인해 배포 승인을 갱신했습니다. 최신 운영 SHA·배포 KST·실제 공개 검사와 복구 기준은 [PR #8의 배포 기록](https://github.com/happygeo21/school-web-projects26/pull/8)을 확인합니다. Netlify 잠금은 변경하지 않습니다.
 - Codex: 코드/보안/패키지/CI/배포 및 운영 기록. 어사이드: 실제 KOSIS 원본·실제 e-GIS 지도·수업 사용 검증. [인수인계](aside-handoff.md).
 
 대표 학생 URL: https://happygeo21.github.io/school-web-projects26/kosis-egis/ . `/kosis-egis-tool/`와 `/egis-student-guide/`도 유지합니다. [학생 사용법](spatial-units.md), [Windows 키트](windows-guide.md), [결과 체크리스트](classroom-checklist.md).

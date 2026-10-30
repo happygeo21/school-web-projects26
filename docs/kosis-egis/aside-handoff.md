@@ -1,6 +1,6 @@
 # 어사이드 실전 검증 인수인계
 
-**2026-10-30 KST: 개선판 배포 대기. 아래 운영 주소는 HTTP200이지만 현재는 main의 기존 버전입니다. PR #8 병합·Pages 배포 성공 SHA가 기록되기 전에는 개선판 검증을 시작하지 마세요.** Codex는 KOSIS/e-GIS의 실제 통계 다운로드·지도 제작을 이번 작업에서 실행하지 않습니다.
+**배포 판정은 [PR #8의 최신 배포 기록](https://github.com/happygeo21/school-web-projects26/pull/8)에서 merge SHA·Pages build/deploy 성공·공개 기능 확인을 기준으로 합니다. 해당 기록이 완료되면 아래 운영 주소에서 개선판을 검증하세요. CI 성공만으로 실제 배포 또는 실수업 검증을 완료 처리하지 않습니다.** Codex는 KOSIS/e-GIS의 실제 통계 다운로드·지도 제작을 이번 작업에서 실행하지 않습니다.
 
 - 학생 대표: https://happygeo21.github.io/school-web-projects26/kosis-egis/
 - 같은 엔진의 보조 주소: https://happygeo21.github.io/school-web-projects26/kosis-egis-tool/

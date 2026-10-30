@@ -24,8 +24,8 @@
   ],
   "limited_secret_pattern_matches": [],
   "netlify_production_commit": "7bbedd6f0bbb2e6c6d6e10087460ac140a67349e",
-  "netlify_auto_publish_isolation": "unverified",
-  "merge_and_new_pages_deploy": "blocked",
+  "netlify_auto_publish_isolation": "user confirmed both Auto Publishing Locked; no Unlock; Production deploy and Agent Runner paused by credits",
+  "merge_and_new_pages_deploy": "authorized; verify latest merge/build/deploy/public results in PR #8 release record",
   "npm_audit_before": {
     "info": 0,
     "low": 0,
@@ -42,5 +42,7 @@
     "critical": 0,
     "total": 0
   },
-  "actual_KOSIS_and_eGIS_UI": "pending_Aside"
+  "actual_KOSIS_and_eGIS_UI": "pending_Aside",
+  "netlify_lock_evidence_source": "user settings-screen report in current conversation; authenticated Netlify settings not independently read",
+  "release_record_url": "https://github.com/happygeo21/school-web-projects26/pull/8"
 }

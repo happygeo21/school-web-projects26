@@ -1,10 +1,10 @@
-# 최종 릴리스 안전검사 — 배포 보류
+# 최종 릴리스 안전검사 — 게시 잠금 확인 및 배포 승인
 
 검사일2026-10-30 KST. 기존 PR #8 / feat/kosis-egis-validation. 시작 HEAD `17f9877e9ea62dfe65011b06f7223535a5a58d6a`, 기존 main `c5ef2c140c3a1eaa740fa1a14bd7c9b247b322a5`. 실제 KOSIS·지도 조작을 반복하지 않고 기존 기능 유지·보안·배포 영향을 검사했습니다.
 
-**개선판 병합·신규 Pages 배포는 아직 하지 않았습니다.** 이번 요청은 안전검사 통과 시 배포를 승인했지만 “검증 불가능한 다른 프로젝트 배포 영향이 있으면 병합 중단” 조건에 해당합니다. 코드/자동검사 준비와 실제 배포·실수업 승인을 구별합니다.
+**이전 Netlify 게시 영향 차단 조건은 사용자 확인으로 해소됐습니다.** happygeo/veteransgeo 모두 Auto Publishing Locked, 기존 Published main@7bbedd6 유지, Production deploy/Agent Runner는 크레딧 소진으로 중단, Unlock하지 않음을 사용자가 확인했습니다. 확인 근거는 사용자 설정 화면 점검 보고이며 Codex가 잠금을 변경하거나 인증된 관리 화면을 직접 조회한 것은 아닙니다. 이번 요청의 승인을 기준으로 PR #8 정상 병합·Pages 배포를 진행하며 실제 결과는 [PR #8의 최신 배포 기록](https://github.com/happygeo21/school-web-projects26/pull/8)에서 확인합니다. 아래 차단 근거는 이전 검사 이력으로 보존합니다. 개발/배포와 실수업 승인을 구별합니다.
 
-## 병합 차단 근거
+## 이전 병합 차단 근거와 해소 이력
 
 | 확인 | 실제 결과 |
 |---|---|
@@ -17,7 +17,7 @@
 | 체크 한계 | Netlify의 “All files already uploaded” 체크는 업로드 중복 여부이며 현재 Production과 동일하거나 main 게시가 막혔다는 증거가 아님 |
 | 판정 | main 병합이 누적된 다른 앱 변경을 게시할 수 있는지 입증하지 못해 **병합 중단**. Netlify 설정을 임의로 바꾸거나 보호/인증을 우회하지 않음 |
 
-확인이 필요한 최소 정보: happygeo·veteransgeo의 Production branch / Base directory / Publish directory / 자동 게시·게시 잠금 상태. 두 사이트의 운영 배포가 의도치 않게 바뀌지 않음이 확인돼야 이번 승인 범위의 정상 merge를 재개할 수 있습니다. 다른 프로젝트 자동 배포를 일방적으로 변경하지 않습니다.
+이전 확인 요청 정보: happygeo·veteransgeo의 Production branch / Base directory / Publish directory / 자동 게시·게시 잠금 상태. 두 사이트의 운영 배포가 의도치 않게 바뀌지 않음이 확인돼야 이번 승인 범위의 정상 merge를 재개할 수 있습니다. 다른 프로젝트 자동 배포를 일방적으로 변경하지 않습니다.
 
 ## 기능·공개 파일 검사
 
@@ -52,11 +52,11 @@
 - https://happygeo21.github.io/school-web-projects26/egis-student-guide/ — 기존 학생 안내
 - 기존 Pages happygeo / veteransgeo / wedding-planner 및 두 Netlify 루트도200 확인. 공개 응답과 소스 해시를 별도로 기록했으며 Firebase/학생자료를 읽거나 쓰지 않았습니다.
 
-현재 main은 c5ef2c1 그대로이며 마지막 성공 Pages 배포는 기존 커밋입니다. 신규 배포/실수업 승인으로 표시하지 않습니다. 병합이 재개되면 실제 merge SHA·KST·Pages Actions 성공·공개 자산/기능을 확인한 뒤 이 문서를 갱신합니다.
+배포 전 main은 c5ef2c1이며 복구 비교 기준으로 보존합니다. 신규 운영 merge SHA·KST·Pages 성공 실행·실제 공개 자산과 기능 결과는 PR #8 배포 기록을 확인합니다. 실수업 승인은 어사이드의 실제 검증과 별도입니다.
 
 ## 인계와 최소 후속 작업
 
-1. Netlify 설정을 확인해 두 사이트가 main 병합으로 의도치 않게 게시되지 않음을 확인합니다.
+1. 사용자 확인한 Netlify 두 사이트의 Auto Publishing Locked를 유지하고 운영 Published 커밋을 전후 비교합니다.
 2. 최종 CI 성공·전체 diff·민감정보/allowlist·다른 앱 무결성을 확인한 뒤 PR #8만 정상 병합합니다. 우회/force push/main reset은 금지합니다.
 3. Pages 성공과 실제3URL 자산·업로드·연습·CSV/XLSX 다운로드 및 다른 앱 URL을 한 번 확인하고 운영 SHA·KST를 기록합니다.
 4. [어사이드](aside-handoff.md)에 시도/시군구 지도1개씩의 실전 검증을 인계합니다. [유지관리·복구](operations.md), [Notion 붙여넣기](notion-update.md)를 사용합니다. 현재 Notion 연결이 없어 미반영입니다.
