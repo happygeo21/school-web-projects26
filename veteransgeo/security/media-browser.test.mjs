@@ -30,6 +30,12 @@ test("real Chromium + local mock gateway: image compression/upload/retry, video,
     const form = student.locator("#mediaForm");
     assert.equal(await student.locator(".step-panel").count(), 3);
     assert.equal(await form.locator("[name=schoolId] option").count(), 7);
+    assert.equal(await form.locator("[name=schoolId]").isHidden(), true);
+    assert.match(await student.locator("#workSchoolDisplay").innerText(), /공주여자고등학교/);
+    await student.locator("#school").selectOption("S2");
+    assert.equal(await form.locator("[name=schoolId]").inputValue(), "S2");
+    await student.locator("#school").selectOption("S1");
+    assert.equal(await form.locator("[name=schoolId]").inputValue(), "S1");
     async function fill(title, type = "사진", mode = "upload") {
       await form.locator("[name=type]").selectOption(type);
       await form.locator("[name=submissionMode]").selectOption(mode);
