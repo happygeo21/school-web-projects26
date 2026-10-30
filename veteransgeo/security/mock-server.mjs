@@ -24,7 +24,13 @@ export async function createMockServer() {
       .split("/")
       .filter(Boolean)
       .reduce((o, k) => o?.[k], tree) ?? null;
+  const resolveTimestamp = value => value && typeof value === "object"
+    ? (Object.keys(value).length === 1 && value[".sv"] === "timestamp" ? Date.now()
+      : Array.isArray(value) ? value.map(resolveTimestamp)
+      : Object.fromEntries(Object.entries(value).map(([k,v]) => [k,resolveTimestamp(v)]))) : value;
   const write = (p, v) => {
+    // Model Firebase server timestamps in fixtures; this is still a local mock.
+    v = resolveTimestamp(v);
     const parts = p.split("/").filter(Boolean);
     let node = tree;
     for (const k of parts.slice(0, -1)) node = node[k] ??= {};

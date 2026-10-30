@@ -10,7 +10,7 @@ import {
   assertReadiness,
   assertAuthProject,
 } from "../server/rehearsal-target.mjs";
-import { digestBytes, publicWork } from "../media-policy.js";
+import { digestBytes, publicWork, databaseTimestamp } from "../media-policy.js";
 import { createLiveHTTP } from "./live-http.mjs";
 import { syntheticMedia } from "./live-fixtures.mjs";
 const ROOT = "memoryTemperature2026";
@@ -229,7 +229,7 @@ export async function runLiveTest(
     const getWork = (school, id, token) =>
       request("fixture-read", db(["works", school, student.uid, id], token));
     const action = async (school, id, w, status, publicId, patch = {}) => {
-      const now = Date.now(),
+      const now = databaseTimestamp(),
         after = {
           ...w,
           ...patch,
@@ -263,7 +263,11 @@ export async function runLiveTest(
         }),
         [200],
       );
-      return after;
+      // Resolve server timestamps before this object becomes the next audit "before" snapshot.
+      const saved = expect(await getWork(school, id, teacher.token), [200]).json();
+      if (saved.status !== status || saved.revision !== after.revision || !Number.isSafeInteger(saved.reviewedAt))
+        throw Error("교사 저장 시각/상태 재확인 실패");
+      return saved;
     };
     for (let n = 1; n <= 7; n++) {
       const school = "S" + n,

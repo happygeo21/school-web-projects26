@@ -219,6 +219,7 @@ import { firebaseConfig, DB_ROOT } from "./firebase-config.js";
 import { PROJECT } from "./project-config.js";
 
 import {validateRecord,errorMessage,diagnostic} from "./upgrade-core.js";
+import {creationForRetry} from "./media-policy.js";
 import {setupStudentMedia} from "./media.js";
 import {draftStore,captureFields,restoreFields} from "./draft-store.js";
 import {setupFacilities} from "./official-facilities.js";
@@ -414,7 +415,8 @@ $("submitBtn").onclick=async()=>{
     await user.getIdToken();
     if(getAuth(app).currentUser?.uid!==uid)throw {code:"auth/user-changed"};
     const p=ref(db,`${DB_ROOT}/submissions/${pending.identity}/${pending.key}`);
-    await Promise.race([set(p,pending.data),new Promise((_,reject)=>setTimeout(()=>reject({code:'network-timeout'}),20000))]);
+    const existing=await get(p),writeData=creationForRetry(pending.data,existing.exists()?existing.val():null);
+    await Promise.race([set(p,writeData),new Promise((_,reject)=>setTimeout(()=>reject({code:'network-timeout'}),20000))]);
     submitted=true;recovery.clear();
     $("msg").textContent="✓ 등록 완료! 이제 다른 지역의 기억과 비교해 보세요.";
     $("compareMission").classList.remove("hidden");

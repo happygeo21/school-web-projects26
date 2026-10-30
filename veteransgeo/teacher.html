@@ -128,6 +128,7 @@ import {PROJECT,TEACHER_AUTH_MODE} from "./project-config.js";
 import {validateRecord,coordinates,EDITABLE,errorMessage,diagnostic,publication} from "./upgrade-core.js";
 import {opaquePublicId} from "./draft-store.js";
 import {setupTeacherMedia} from "./media.js";
+import {databaseTimestamp} from "./media-policy.js";
 const $=id=>document.getElementById(id);
 $("officialMapBtn").href=PROJECT.officialMapUrl;
 
@@ -258,7 +259,7 @@ async function editRecord(k){
  form.onsubmit=async e=>{e.preventDefault();save.disabled=true;try{const patch=Object.fromEntries(new FormData(form));for(const k of ['latitude','longitude','importance','visibility'])patch[k]=Number(patch[k]);const next={...original,...patch};validateRecord(next);
  const path=`${DB_ROOT}/submissions/${original.schoolId}/${original.uid}/${original.entryId}`;
  const current=await get(ref(db,path));if(!current.exists()||JSON.stringify(Object.entries(current.val()).sort())!==JSON.stringify(Object.entries(original).filter(([k])=>!['uid','entryId'].includes(k)).sort()))throw Error('다른 수정 또는 삭제가 감지되었습니다. 목록을 새로 확인해주세요.');
- const timestamp=Date.now(),revision=push(ref(db,`${DB_ROOT}/audit/${k}`)).key;
+ const timestamp=databaseTimestamp(),revision=push(ref(db,`${DB_ROOT}/audit/${k}`)).key;
  const changes={};for(const field of EDITABLE)changes[`${path}/${field}`]=next[field];
  changes[`${path}/revision`]=(original.revision||0)+1;
  changes[`${path}/updatedBy`]=auth.currentUser.uid;changes[`${path}/updatedAt`]=timestamp;
@@ -276,7 +277,7 @@ async function togglePub(k){
       alert("좌표·인지도·중요도·발견도에 누락되거나 범위를 벗어난 점수가 있습니다. 원자료를 확인한 뒤 승인해 주세요.");return;
     }
     await set(ref(db,`${DB_ROOT}/published/${publicId}`),{
-    publishedAt:Date.now(),schoolId:r.schoolId,category:r.category,placeOrigin:r.placeOrigin||"official_map",placeName:r.placeName,placeDescription:r.placeDescription||"",address:r.address||"",
+    publishedAt:databaseTimestamp(),schoolId:r.schoolId,category:r.category,placeOrigin:r.placeOrigin||"official_map",placeName:r.placeName,placeDescription:r.placeDescription||"",address:r.address||"",
     latitude:r.latitude,longitude:r.longitude,officialStatus:r.officialStatus||"not_checked",awarenessScore:Number(r.awarenessScore),
     importance:r.importance,visibility:r.visibility,scoreReason:r.scoreReason||"",sourceType:r.sourceType||"",sourceNote:r.sourceNote||"",
     rememberSentence:r.rememberSentence,message:r.message||"",keywords:r.keywords
@@ -285,7 +286,7 @@ async function togglePub(k){
 }
 async function del(k){
  const r=rows.find(x=>key(x)===k);if(!r||!confirm(`${r.deletedAt?'보관 기록을 복원할까요?':'공개를 해제하고 원본은 보관할까요?'}\n\n${r.placeName}`))return;
- const path=`${DB_ROOT}/submissions/${r.schoolId}/${r.uid}/${r.entryId}`,timestamp=Date.now(),user=auth.currentUser;
+ const path=`${DB_ROOT}/submissions/${r.schoolId}/${r.uid}/${r.entryId}`,timestamp=databaseTimestamp(),user=auth.currentUser;
  if(!user||user.isAnonymous)throw {code:'permission-denied'};
  const revision=push(ref(db,`${DB_ROOT}/audit/${k}`)).key;
  const changes={[`${path}/deletedAt`]:r.deletedAt?null:timestamp,[`${path}/deletedBy`]:r.deletedAt?null:user.uid,[`${path}/revision`]:(r.revision||0)+1,[`${path}/updatedAt`]:timestamp,[`${path}/updatedBy`]:user.uid,[`${DB_ROOT}/published/${k}`]:null,[`${DB_ROOT}/published/${publicationKey(r)}`]:null,[`${DB_ROOT}/audit/${k}/${revision}`]:{action:r.deletedAt?'restore':'archive',before:publication(r),after:publication(r),editor:user.uid,editedAt:timestamp}};

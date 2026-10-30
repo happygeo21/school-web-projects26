@@ -144,3 +144,11 @@ export function publicWork(w, publicId, approvedAt) {
     ...(w.sourceNote ? { sourceNote: w.sourceNote } : {}),
   };
 }
+
+// Firebase resolves this atomically before Rules validation, independent of a fast device clock.
+export const databaseTimestamp = () => ({ ".sv": "timestamp" });
+export function creationForRetry(payload, existing) {
+  if (existing != null && (!Number.isSafeInteger(existing.createdAt) || existing.createdAt < 1))
+    throw Error("기존 생성 시각을 확인하지 못했어요. 새 작품으로 덮어쓰지 않습니다.");
+  return { ...payload, createdAt: existing == null ? databaseTimestamp() : existing.createdAt };
+}

@@ -278,3 +278,13 @@ test("private Rules failures do not print source text and symlinked checkout out
     rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test("server timestamps resist a fast device clock while retries freeze the stored creation time", async () => {
+  const { creationForRetry, databaseTimestamp } = await import("../media-policy.js");
+  const draft = { title: "synthetic", createdAt: Date.now() + 86400000 };
+  assert.deepEqual(creationForRetry(draft, null).createdAt, { ".sv": "timestamp" });
+  assert.equal(creationForRetry(draft, { createdAt: 123 }).createdAt, 123);
+  assert.equal(draft.createdAt > Date.now(), true);
+  assert.deepEqual(databaseTimestamp(), { ".sv": "timestamp" });
+  assert.throws(() => creationForRetry(draft, {}));
+});

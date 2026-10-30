@@ -21,7 +21,7 @@ import {
 } from "./upgrade-core.js";
 import { draftStore, opaquePublicId, safeTabStorage } from "./draft-store.js";
 import { createMediaProvider, prepareFile } from "./media-provider.js";
-import { WORK_STATUS, publicWork, waitForAck } from "./media-policy.js";
+import { WORK_STATUS, publicWork, waitForAck, databaseTimestamp, creationForRetry } from "./media-policy.js";
 import { setupGallery } from "./media-gallery.js";
 export { checkSignature } from "./media-policy.js";
 const $ = (id) => document.getElementById(id),
@@ -335,13 +335,10 @@ export function setupStudentMedia({
       $("uploadStatus").textContent = "작품 정보를 저장하고 있어요…";
       const token = await getAuth(app).currentUser.getIdToken();
       if (getIdentity().uid !== uid) throw { code: "auth/user-changed" };
-      await waitForAck(
-        set(
-          ref(db, `${base()}/${pending.identity}/${pending.key}`),
-          pending.data,
-        ),
-        controller.signal,
-      );
+      const target = ref(db, `${base()}/${pending.identity}/${pending.key}`);
+      const existing = await get(target);
+      const writeData = creationForRetry(pending.data, existing.exists() ? existing.val() : null);
+      await waitForAck(set(target, writeData), controller.signal);
       if (pending.data.submissionMode === "upload") {
         if (controller.signal.aborted)
           throw Error("취소했어요. 같은 작품으로 다시 시도해주세요.");
@@ -483,7 +480,7 @@ export function setupTeacherMedia({
               throw Error(
                 "다른 교사의 변경이 있어요. 목록을 다시 확인해주세요.",
               );
-            const timestamp = Date.now(),
+            const timestamp = databaseTimestamp(),
               after = {
                 ...w,
                 ...patch,
