@@ -72,4 +72,4 @@ CHROMIUM_PATH="$(node -e "console.log(require('playwright').chromium.executableP
 
 첫 화면의 전국 시도 / 전국 시군구 / 특정 시도 / 자동 추천으로 시작합니다. `spatial.js`가 기존 `core.js` 앞에서 단위를 분석하고 학생 확인·불일치 차단·시도 직접 결합·안전한 집계를 처리합니다. 기존 시군구 엔진은 그대로 유지합니다.
 
-실제 e-GIS 배포 시도17 경계·기준표와 원본 provenance를 포함했습니다. 통계청 출처는 e-GIS 카탈로그 표기를 확인한 것으로 원기관 파일 독립 대조와 실제 지도 UI는 미검증입니다. 상세 [공간 단위·집계·검증 구분](../docs/kosis-egis/spatial-units.md)을 참고하세요. `node tests/kosis-egis/spatial.test.cjs`로 공간 단위26개 검사를 실행합니다. 실제 KOSIS 원본과 실제 지도 제작 성공을 합성·로컬 화면 테스트로 대신하지 않습니다.
+실제 e-GIS 배포 시도17 경계·기준표와 원본 provenance를 포함했습니다. 통계청 출처는 e-GIS 카탈로그 표기를 확인한 것으로 원기관 파일 독립 대조와 실제 지도 UI는 미검증입니다. 상세 [공간 단위·집계·검증 구분](../docs/kosis-egis/spatial-units.md)을 참고하세요. `node tests/kosis-egis/spatial.test.cjs`로 공간 단위27개 검사를 실행합니다. 실제 KOSIS 원본과 실제 지도 제작 성공을 합성·로컬 화면 테스트로 대신하지 않습니다.

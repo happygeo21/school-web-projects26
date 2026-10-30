@@ -76,11 +76,12 @@ function prepareSgg(refs,a,settings){
  return {analysis:{...a,src},totals};
 }
 function aggregate(refs,a,settings,detection){
+ if(settings.customReference)return blocked(refs,a,settings,detection,'교체한 기준표의 일부 지역을 시도 전체로 집계할 수 없습니다. 내장 전수 기준표를 사용하고 모든 하위 지역을 확인하세요.');
  const method=settings.aggregation||'none',metrics=settings.metrics||[];
  if(method==='none')return blocked(refs,a,settings,detection,'시군구 통계를 시도 지도에 붙이려면 집계 방식과 원자료를 먼저 확인하세요.');
  if(!['sum','ratio','density'].includes(method))return blocked(refs,a,settings,detection,'비율·평균을 단순 평균하지 않습니다. 분자·분모 또는 합산 가능한 원자료가 필요합니다.');
  if(!settings.additiveConfirmed)return blocked(refs,a,settings,detection,'서로 겹치지 않는 지역의 합산 가능한 원자료인지 확인해 주세요.');
- if(method==='sum'&&(settings.measure!=='count'||metrics.some(i=>/비율|율|평균|밀도|지수|%/.test(a.headers[i]||''))||a.src.slice(a.dataStart).some(r=>metrics.some(i=>/%\s*$/.test(clean(r[i]))))))return blocked(refs,a,settings,detection,'비율·평균·밀도는 합하거나 단순 평균할 수 없습니다. 인구수·시설수처럼 더해도 되는 수량만 합계합니다.');
+ if(method==='sum'&&(settings.measure!=='count'||metrics.some(i=>/비율|율|평균|밀도|지수|%|\brate\b|\bmean\b|\baverage\b/i.test(a.headers[i]||''))||a.src.slice(a.dataStart).some(r=>metrics.some(i=>/%\s*$/.test(clean(r[i]))))))return blocked(refs,a,settings,detection,'비율·평균·밀도는 합하거나 단순 평균할 수 없습니다. 인구수·시설수처럼 더해도 되는 수량만 합계합니다.');
  const numerator=Number(settings.numerator),denominator=Number(settings.denominator);
  if(method!=='sum'&&(!Number.isInteger(numerator)||!Number.isInteger(denominator)||numerator<0||denominator<0||numerator===denominator||!a.headers[numerator]||!a.headers[denominator]))return blocked(refs,a,settings,detection,'분자와 분모의 서로 다른 원자료 열을 선택하세요.');
  if(method==='density'&&(settings.areaUnit!=='km2'||/ha|헥타르|㎡|(?:^|[^k])m²/i.test(a.headers[denominator]||'')))return blocked(refs,a,settings,detection,'인구밀도 재산출에는 km² 단위 면적이 필요합니다. 단위를 확인하세요.');
