@@ -2,6 +2,8 @@
 
 검증일: 2026-10-30 KST. 기준: PR #7 Draft, `e500b7e51763dc38fac9119974ef58874a3ac744`. 이 문서는 이번 변경의 로컬 검증 기록이며 호스팅된 테스트 프로젝트나 운영 수업 합격 보고가 아니다. 최신 변경 커밋/실제 CI 링크는 PR #7 작업 보고에 기록한다.
 
+최초 변경 `da08eff724190b24c2082311ef33b7a73b6ab4af`의 [PR CI](https://github.com/happygeo21/school-web-projects26/actions/runs/41039288474)는 Linux/Windows 모두 성공했다. CI에서는 아래 로컬 미검증 항목(Windows TLS/ACL, file:// 화면, demo Rules)도 통과했다. 같은 SHA의 push CI에서는 신규 동시성 테스트가 「1번 작품이 반드시 먼저 승인된다」고 가정해 실패했다. 실제 승인된 작품으로 재시도를 검사하도록 수정했다. 서버 한도/권한 코드는 바꾸지 않았다. 최종 SHA의 CI 결과는 PR 보고를 확인한다.
+
 | 검사 | 결과 | 근거와 한계 |
 |---|---|---|
 | 기존 업로드 + 새 초대 링크 | 통과 14개 | `npm run test:media`: 이미지 압축/재시도, 영상, 소유권, 공개/철회, JWT, 키 격리, 기존 SQL, 새 SQL/브라우저 |

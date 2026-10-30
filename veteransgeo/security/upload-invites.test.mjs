@@ -43,15 +43,17 @@ test("local PostgreSQL: distinct-work quotas, concurrent requests, retry identit
     const claim = n => access.authorize(grant.grantToken, "student", "S1", data(n), "claim");
     const result = await Promise.allSettled([claim(1), claim(2), claim(3)]);
     assert.equal(result.filter(r => r.status === "fulfilled").length, 2);
-    await claim(1); // Retry of same work consumes no extra capacity.
-    await assert.rejects(access.authorize(grant.grantToken, "student", "S1", { ...data(1), size: 11 }, "claim"), { code: "media/permission" });
+    // Hashing/transaction scheduling may admit any two requests; never assume work 1 wins.
+    const accepted = result.findIndex(r => r.status === "fulfilled") + 1;
+    await claim(accepted); // Retry of an accepted work consumes no extra capacity.
+    await assert.rejects(access.authorize(grant.grantToken, "student", "S1", { ...data(accepted), size: 11 }, "claim"), { code: "media/permission" });
     await assert.rejects(access.authorize(grant.grantToken, "student", "S1", { ...data(4), size: 101 }, "claim"), { code: "media/permission" });
     const other = await access.redeem(invite.inviteToken, "other");
     await assert.rejects(access.authorize(other.grantToken, "other", "S1", data(4), "claim"), { code: "media/quota-full" });
-    await f.ledger.reserve({ ...data(1), school_id: "S1", owner_uid: "student", content_type: "image/jpeg" });
+    await f.ledger.reserve({ ...data(accepted), school_id: "S1", owner_uid: "student", content_type: "image/jpeg" });
     await access.revoke(invite.id, "teacher");
-    await assert.rejects(access.authorize(grant.grantToken, "student", "S1", data(1), "commit"), { code: "media/permission" });
-    assert.equal((await f.ledger.find(data(1).asset_id)).state, "uploading");
+    await assert.rejects(access.authorize(grant.grantToken, "student", "S1", data(accepted), "commit"), { code: "media/permission" });
+    assert.equal((await f.ledger.find(data(accepted).asset_id)).state, "uploading");
     await assert.rejects(access.redeem(invite.inviteToken, "student"), { code: "media/permission" });
     const listing = JSON.stringify(await access.list("S1", "teacher"));
     assert.ok(!listing.includes("hash") && !listing.includes("student") && !listing.includes(invite.inviteToken));
