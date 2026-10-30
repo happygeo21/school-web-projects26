@@ -361,5 +361,58 @@
       "pagesDeployed": false,
       "studentDataMutated": false
     }
+  },
+  "goNoGoReview": {
+    "checkedAt": "2026-10-30T05:23:56.846Z",
+    "sourceBaseCommit": "a759e006b032f9e9c5fb458d3a996054731abb89",
+    "rules": {
+      "source": "last-live-confirmed-current-private-backup-vs-candidate-v2",
+      "diffEntries": 10,
+      "onlyVeteransgeo": true,
+      "wildcardRenameDeletesData": false,
+      "existingTwentyRecordsPreserved": true,
+      "previousAcceptanceReused": true
+    },
+    "secrets": {
+      "count": 8,
+      "requiredPresent": 8,
+      "validFormat": 8,
+      "correctProject": true,
+      "teacherUIDListUnchanged": true,
+      "schoolAuthHashesUnchanged": true,
+      "valuesPrinted": false,
+      "applied": false
+    },
+    "productionFunction": {
+      "verifiedSourceBundleUnchanged": true,
+      "existingJWT_CORS_schoolAuth_revocationEvidenceReused": true,
+      "deployed": false
+    },
+    "smoke": {
+      "planPrepared": true,
+      "readOnlyProbePrepared": true,
+      "syntheticFixtureFactoryReused": true,
+      "productionWorkflowExecuted": false,
+      "newOfflineTestsPassed": 6,
+      "newOfflineTestsFailed": 0,
+      "actualDeploymentTestPassed": false
+    },
+    "rollback": {
+      "frontendDisableAloneInsufficient": true,
+      "newReservationsServerStopPrepared": true,
+      "localSQLPermissionTestPassed": true,
+      "serviceRoleNotSuperuser": true,
+      "existingInFlightMustDrain": true,
+      "storageAndAuditRetained": true,
+      "previousReadOnlyRulesTestsReused": true,
+      "productionPauseApplied": false
+    },
+    "manual": {
+      "deviceChecklistMinutes": 5,
+      "remainingTeacherAccounts": 6,
+      "schoolPolicyConfirmationRequired": true
+    },
+    "decision": "CONDITIONAL",
+    "phase2Executed": false
   }
 }
