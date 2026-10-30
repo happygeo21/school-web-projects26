@@ -102,6 +102,7 @@
     "kosis-egis-tool/boundary-provenance.json",
     "kosis-egis-tool/statistics-catalog.json",
     "kosis-egis-tool/vendor/xlsx-0.20.3.full.min.js",
-    "kosis-egis-tool/vendor/SheetJS-LICENSE.txt"
+    "kosis-egis-tool/vendor/SheetJS-LICENSE.txt",
+    "kosis-egis-tool/student-flow.js"
   ]
 }

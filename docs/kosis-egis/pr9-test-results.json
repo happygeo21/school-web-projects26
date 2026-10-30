@@ -1,0 +1,27 @@
+{
+  "checked_kst": "2026-10-30T16:21:46.362971+09:00",
+  "base_main": "ae58cdfba767af43995dc75cf1ca104b8e1ddebc",
+  "start_pr9_head": "59759f612135b18ec0a3a26cbf787c00379b4973",
+  "core_and_boundary_files_unchanged": [
+    "kosis-egis-tool/core.js",
+    "kosis-egis-tool/spatial.js",
+    "kosis-egis-tool/conversion-worker.js",
+    "kosis-egis-tool/reference.json",
+    "kosis-egis-tool/sido-reference.json"
+  ],
+  "other_public_files_unchanged": 82,
+  "public_candidate_files": 103,
+  "existing_browser_scenarios": 18,
+  "new_student_flow_scenarios": 9,
+  "node_core": 28,
+  "node_spatial": 27,
+  "worker_security": 4,
+  "other_regression_files": 3,
+  "real_workbook_format_test": "XLSX generated from synthetic fixtures; not an official KOSIS original",
+  "user_provided_map_examples": "https://app.notion.com/p/3ce2f3db0c734467bc2b88cb4d7176e8",
+  "external_example_content": "user supplied link; content/access not independently verified",
+  "deployment": "not merged and not deployed; production unchanged",
+  "netlify": "no unlock or settings/write operations",
+  "notion": "no connector; no external writes",
+  "new_upload_required_after_switching_from_practice": true
+}

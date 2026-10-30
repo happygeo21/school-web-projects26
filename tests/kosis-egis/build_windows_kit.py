@@ -16,7 +16,7 @@ for f in ['core.js','reference.json']:shutil.copy2(root/'kosis-egis-tool'/f,kit/
 shutil.copy2(source/'fixtures/egis-sigungu-2025.geojson',kit/'egis-sigungu.geojson')
 shutil.copy2(root/'kosis-egis-tool/sido-2025.geojson',kit/'egis-sido-2025.geojson')
 shutil.copytree(source/'fixtures',kit/'fixtures')
-for folder,files in {'kosis-egis':['index.html'],'kosis-egis-tool':['app.js','core.js','reference.json','conversion-worker.js','studio.css','spatial.js','sido-reference.json','sido-2025.geojson','sigungu-2025.geojson','boundary-provenance.json','statistics-catalog.json']}.items():
+for folder,files in {'kosis-egis':['index.html'],'kosis-egis-tool':['student-flow.js','app.js','core.js','reference.json','conversion-worker.js','studio.css','spatial.js','sido-reference.json','sido-2025.geojson','sigungu-2025.geojson','boundary-provenance.json','statistics-catalog.json']}.items():
  dest=kit/'site'/folder;dest.mkdir(parents=True)
  for name in files:shutil.copy2(root/folder/name,dest/name)
 js=source/'node_modules/xlsx/dist/xlsx.full.min.js'

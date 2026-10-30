@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "test": "node core.test.cjs && node spatial.test.cjs && node worker.test.mjs",
-    "test:browser": "node browser.test.cjs"
+    "test:browser": "node browser.test.cjs && node student-flow.browser.cjs"
   },
   "devDependencies": {
     "playwright": "1.62.1",
