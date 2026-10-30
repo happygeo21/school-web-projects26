@@ -8,6 +8,10 @@ const required = (key: string) => {
   if (!v) throw Error("Missing server configuration: " + key);
   return v;
 };
+const privateJSON = (key: string, fallback?: string) => {
+  try { return JSON.parse(fallback === undefined ? required(key) : (Deno.env.get(key) || fallback)); }
+  catch { throw Error("Invalid private server configuration"); }
+};
 const projectId = required("FIREBASE_PROJECT_ID"),
   databaseURL = required("FIREBASE_DATABASE_URL");
 const deployment = rehearsalTargets({
@@ -15,15 +19,17 @@ const deployment = rehearsalTargets({
   databaseURL,
   supabaseURL: required("SUPABASE_URL"),
 });
+if (projectId !== "veteransgeo-test-2026" || deployment.supabaseHost !== "jfkjuhxkcctfmwojhpci.supabase.co")
+  throw Error("Exact existing rehearsal projects required");
 // This implementation is for a separate rehearsal project. Production needs a new reviewed change.
 if (
   projectId === "school-project-26-1edf4" ||
   databaseURL.toLowerCase().includes("school-project-26-1edf4")
 )
   throw Error("Production Firebase is forbidden in rehearsal");
-const teachers = JSON.parse(required("APPROVED_TEACHER_UIDS")),
-  schoolActivityHashes = JSON.parse(required("SCHOOL_ACTIVITY_HASHES")),
-  origins = JSON.parse(required("ALLOWED_ORIGINS"));
+const teachers = privateJSON("APPROVED_TEACHER_UIDS"),
+  schoolActivityHashes = privateJSON("SCHOOL_ACTIVITY_HASHES"),
+  origins = privateJSON("ALLOWED_ORIGINS");
 if (
   !Array.isArray(teachers) ||
   !teachers.length ||
@@ -42,10 +48,13 @@ const adapters = createAdapters({
   bucket: "veterans-private",
   databaseURL,
 });
+const inviteMode = Deno.env.get("UPLOAD_AUTH_MODE") === "teacher-invite-link";
 Deno.serve(
   createGateway({
     ...adapters,
-    uploadInvites: Deno.env.get("UPLOAD_AUTH_MODE") === "teacher-invite-link" ? adapters.inviteStore : null,
+    uploadInvites: inviteMode ? adapters.inviteStore : null,
+    inviteTeacherSchools: inviteMode ? privateJSON("INVITE_TEACHER_SCHOOLS") : {},
+    inviteAdminUids: inviteMode ? privateJSON("INVITE_ADMIN_UIDS", "[]") : [],
     teachers,
     schoolActivityHashes,
     schoolUploadHashes: schoolActivityHashes,

@@ -5,6 +5,7 @@ import {
   mediaError,
 } from "../media-policy.js";
 import { createUploadAccess } from "./upload-access.mjs";
+import { createInvitePolicy } from "./invite-policy.mjs";
 /** @returns {never} */
 const fail = (code, message) => {
   throw mediaError(code, message);
@@ -54,12 +55,15 @@ export function createGateway({
   schoolUploadHashes = null,
   allowLegacyActivityCodeUpload = false,
   uploadInvites = null, // Explicit opt-in only. Never enabled by an adapter spread.
+  inviteTeacherSchools = {}, // Private server configuration; an absent assignment denies management.
+  inviteAdminUids = [], // No implicit administrator, including approved teachers.
   origins,
   deployment = /** @type {Record<string, unknown> | null} */ (null),
   clock = () => Date.now(),
 }) {
   let inFlight = 0;
-  const access = uploadInvites && createUploadAccess(uploadInvites);
+  const access = uploadInvites && createUploadAccess(uploadInvites,
+    createInvitePolicy({ teachers, schools: inviteTeacherSchools, admins: inviteAdminUids }));
   const teacher = (p) =>
     teachers.includes(p.sub) && p.firebase?.sign_in_provider !== "anonymous";
   async function work(body, p, token) {

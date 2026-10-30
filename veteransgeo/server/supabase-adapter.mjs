@@ -30,6 +30,8 @@ export function createAdapters({
     });
     if (!r.ok) {
       const d = await r.json().catch(() => ({}));
+      if (/invite_scope_denied/i.test(d.message || ""))
+        throw mediaError("media/permission", "담당 학교의 본인 발급 링크만 관리할 수 있어요. 선생님 권한 설정을 확인해주세요.");
       if (/invite_denied/i.test(d.message || ""))
         throw mediaError("media/permission", "업로드 링크가 만료되었거나 학교·학생 연결이 달라요. 선생님께 새 링크를 받아 같은 화면에서 열어주세요. 글과 선택한 파일은 유지돼요.");
       if (/invite_quota/i.test(d.message || ""))
@@ -83,7 +85,7 @@ export function createAdapters({
     "/" +
     key.split("/").map(encodeURIComponent).join("/");
   return {
-    inviteStore: (action, data) => rpc("veterans_upload_access", { a: action, p: data }),
+    inviteStore: (action, data, actor) => rpc("veterans_upload_access", { a: action, p: data, actor }),
     db: {
       work: (p, t) => readDB(["works", p.schoolId, p.ownerUid, p.workId], t),
       published: (id) => readDB(["publishedWorks", id]),

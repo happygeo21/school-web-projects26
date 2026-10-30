@@ -42,6 +42,7 @@ export async function createMockServer({ uploadInvites = null, ledger = null } =
     ...env,
     ...(ledger ? { ledger } : {}),
     uploadInvites,
+    inviteTeacherSchools: { "mock-teacher": ["S1"], "mock-peer-teacher": ["S1"] },
     db: {
       work: async (p) => {
         if (env.state.failDB) throw Error("offline");
@@ -52,18 +53,18 @@ export async function createMockServer({ uploadInvites = null, ledger = null } =
       published: async (id) =>
         lookup("memoryTemperature2026/publishedWorks/" + id),
     },
-    teachers: ["mock-teacher"],
+    teachers: ["mock-teacher", "mock-peer-teacher"],
     schoolActivityHashes: Object.fromEntries(
       Array.from({ length: 7 }, (_, i) => ["S" + (i + 1), hash]),
     ),
     origins: [],
     verify: async (t) => {
-      if (!["mock-student", "mock-teacher", "mock-other"].includes(t))
+      if (!["mock-student", "mock-teacher", "mock-peer-teacher", "mock-other"].includes(t))
         throw Error("auth");
       return {
         sub: t,
         firebase: {
-          sign_in_provider: t === "mock-teacher" ? "password" : "anonymous",
+          sign_in_provider: ["mock-teacher", "mock-peer-teacher"].includes(t) ? "password" : "anonymous",
         },
       };
     },

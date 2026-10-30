@@ -1,5 +1,19 @@
 -- TEST PROJECT ONLY. Requires 202610290001_private_media.sql. Never run on production without review.
 -- Only SHA256 capabilities live here. No invite/grant is written to Firebase student records.
+-- First installation only. Stop on any existing/partial invitation schema; never drop/recreate.
+begin;
+do $$ begin
+ if to_regclass('public.veterans_media') is null
+  or to_regprocedure('public.veterans_reserve_media(jsonb)') is null then
+  raise exception 'invite_baseline_missing';
+ end if;
+ if to_regclass('public.veterans_upload_invites') is not null
+  or to_regclass('public.veterans_upload_grants') is not null
+  or to_regclass('public.veterans_upload_claims') is not null
+  or exists(select 1 from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname='veterans_upload_access') then
+  raise exception 'invite_schema_conflict';
+ end if;
+end $$;
 create table public.veterans_upload_invites (
  id uuid primary key default gen_random_uuid(), token_hash text unique not null check(token_hash ~ '^[a-f0-9]{64}$'),
  school_id text not null check(school_id ~ '^S[1-7]$'), teacher_uid text not null,
@@ -23,12 +37,30 @@ alter table public.veterans_upload_claims enable row level security;
 revoke all on public.veterans_upload_invites,public.veterans_upload_grants,public.veterans_upload_claims from public,anon,authenticated;
 grant all on public.veterans_upload_invites,public.veterans_upload_grants,public.veterans_upload_claims to service_role;
 
-create function public.veterans_upload_access(a text,p jsonb) returns jsonb
+-- actor is supplied ONLY by the gateway after Firebase JWT verification and private policy lookup.
+-- Firebase tokens are not Supabase JWTs: auth.uid() is not an identity source for this service RPC.
+create function public.veterans_upload_access(a text,p jsonb,actor jsonb) returns jsonb
 language plpgsql security definer set search_path='' as $$
 declare i public.veterans_upload_invites; g public.veterans_upload_grants;
  c public.veterans_upload_claims; m public.veterans_media;
- t timestamptz; n integer; result jsonb;
+ t timestamptz; n integer; result jsonb; admin boolean;
 begin
+ if jsonb_typeof(actor->'uid') is distinct from 'string'
+  or coalesce(actor->>'uid','') !~ '^[A-Za-z0-9_-]{1,128}$' then raise exception 'invite_scope_denied'; end if;
+ if a in ('issue','list','revoke') then
+  if actor->>'kind' is distinct from 'teacher' or p->>'teacher' is distinct from actor->>'uid'
+   or jsonb_typeof(actor->'schools') is distinct from 'array'
+   or jsonb_typeof(actor->'admin') is distinct from 'boolean'
+   or exists(select 1 from jsonb_array_elements_text(actor->'schools') s where s !~ '^S[1-7]$') then
+   raise exception 'invite_scope_denied';
+  end if;
+  admin:=(actor->>'admin')::boolean;
+  if a in ('issue','list') and (coalesce(p->>'school','') !~ '^S[1-7]$'
+   or (not admin and not ((actor->'schools') ? (p->>'school')))) then raise exception 'invite_scope_denied'; end if;
+ else
+  if a not in ('redeem','check','claim','commit') or actor->>'kind' is distinct from 'student'
+   or p->>'uid' is distinct from actor->>'uid' then raise exception 'invite_denied'; end if;
+ end if;
  if a='issue' then
   if (p->>'school') !~ '^S[1-7]$' or coalesce(p->>'teacher','') !~ '^[A-Za-z0-9_-]{1,128}$'
    or (p->>'hash') !~ '^[a-f0-9]{64}$' or not (p ?& array['school','teacher','hash','ttl','per_uid','total','max_bytes'])
@@ -41,12 +73,15 @@ begin
   select coalesce(jsonb_agg(jsonb_build_object('id',x.id,'schoolId',x.school_id,'expiresAt',x.expires_at,
    'revoked',x.revoked_at is not null,'perStudent',x.per_uid,'total',x.total,'maxBytes',x.max_bytes,
    'used',(select count(*) from public.veterans_upload_claims q where q.invite_id=x.id)) order by x.created_at desc),'[]'::jsonb)
-   into result from (select * from public.veterans_upload_invites where school_id=p->>'school' order by created_at desc limit 30) x;
+   into result from (select * from public.veterans_upload_invites where school_id=p->>'school'
+    and (admin or teacher_uid=actor->>'uid') order by created_at desc limit 30) x;
   return result;
  elsif a='revoke' then
-  -- All approved teachers can revoke; never deletes existing works or previously accepted files.
-  update public.veterans_upload_invites set revoked_at=clock_timestamp() where id=(p->>'id')::uuid returning * into i;
-  if not found then raise exception 'invite_denied'; end if;
+  -- Own invitations in assigned schools only; explicit private administrators are the sole exception.
+  select * into i from public.veterans_upload_invites where id=(p->>'id')::uuid for update;
+  if not found or (not admin and (i.teacher_uid is distinct from actor->>'uid'
+   or not ((actor->'schools') ? i.school_id))) then raise exception 'invite_scope_denied'; end if;
+  update public.veterans_upload_invites set revoked_at=clock_timestamp() where id=i.id;
   return jsonb_build_object('revoked',true,'id',i.id);
  elsif a='redeem' then
   select * into i from public.veterans_upload_invites where token_hash=p->>'hash' for update;
@@ -92,5 +127,6 @@ begin
  end if;
  return jsonb_build_object('authorized',true);
 end $$;
-revoke all on function public.veterans_upload_access(text,jsonb) from public,anon,authenticated;
-grant execute on function public.veterans_upload_access(text,jsonb) to service_role;
+revoke all on function public.veterans_upload_access(text,jsonb,jsonb) from public,anon,authenticated;
+grant execute on function public.veterans_upload_access(text,jsonb,jsonb) to service_role;
+commit;

@@ -1,13 +1,13 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { inviteDatabase } from "./invite-fixture.mjs";
+import { inviteDatabase, fixtureInvitePolicy } from "./invite-fixture.mjs";
 import { createUploadAccess } from "../server/upload-access.mjs";
 import { createGateway } from "../server/gateway.mjs";
 import { createMockMedia } from "./mock-media.mjs";
 import { digestBytes } from "../media-policy.js";
 
 test("local PostgreSQL: hashed tokens, school/UID/expiry checks, RLS and service-only RPC", async () => {
-  const f = await inviteDatabase(), access = createUploadAccess(f.store);
+  const f = await inviteDatabase(), access = createUploadAccess(f.store, fixtureInvitePolicy());
   try {
     await assert.rejects(access.issue({ schoolId: "S1", minutes: 61 }, "teacher"));
     for (let n = 1; n <= 7; n++) {
@@ -28,14 +28,14 @@ test("local PostgreSQL: hashed tokens, school/UID/expiry checks, RLS and service
       await f.db.exec("set role " + role);
       for (const table of ["invites", "grants", "claims"])
         await assert.rejects(f.query("select * from public.veterans_upload_" + table), /permission denied/);
-      await assert.rejects(f.query("select public.veterans_upload_access('list','{}')"), /permission denied/);
+      await assert.rejects(f.query("select public.veterans_upload_access('list','{}','{}')"), /permission denied/);
       await f.db.exec("reset role");
     }
   } finally { await f.close(); }
 });
 
 test("local PostgreSQL: distinct-work quotas, concurrent requests, retry identity and atomic revoked commit", async () => {
-  const f = await inviteDatabase(), access = createUploadAccess(f.store);
+  const f = await inviteDatabase(), access = createUploadAccess(f.store, fixtureInvitePolicy());
   try {
     const invite = await access.issue({ schoolId: "S1", perStudent: 2, total: 2, maxBytes: 100 }, "teacher");
     const grant = await access.redeem(invite.inviteToken, "student");
@@ -64,8 +64,9 @@ test("gateway + local PostgreSQL: teacher-only issue/revoke, no legacy-code fall
   const sql = await inviteDatabase(), env = createMockMedia();
   let revokeDuringPut = null;
   const gateway = createGateway({ ...env, ledger: sql.ledger, uploadInvites: sql.store,
-    blobs: { ...env.blobs, put: async (...a) => { await env.blobs.put(...a); if (revokeDuringPut) await sql.store("revoke", { id: revokeDuringPut }); } },
+    blobs: { ...env.blobs, put: async (...a) => { await env.blobs.put(...a); if (revokeDuringPut) await sql.store("revoke", { id: revokeDuringPut, teacher: "teacher" }, fixtureInvitePolicy().actor("teacher")); } },
     teachers: ["teacher"], origins: ["http://localhost:8000"], schoolUploadHashes: { S1: await digestBytes(new TextEncoder().encode("OLD")) },
+    inviteTeacherSchools: { teacher: ["S1"] },
     verify: async t => { if (!["teacher", "student", "other", "outsider"].includes(t)) throw Error(); return { sub: t, firebase: { sign_in_provider: ["teacher", "outsider"].includes(t) ? "password" : "anonymous" } }; },
   });
   const call = (data, uid = "student") => gateway(new Request("http://localhost:8000/media", { method: "POST", headers: { Authorization: "Bearer " + uid, "Content-Type": "application/json" }, body: JSON.stringify(data) }));
