@@ -4,13 +4,13 @@ const databaseHost=firebaseProject+'-default-rtdb.asia-southeast1.firebasedataba
 const rehearsalRef='jfkjuhxkcctfmwojhpci';
 const stop=()=>{throw Error('Production review configuration is incomplete or inconsistent');};
 function endpoint(value){let u;try{u=new URL(value);}catch{stop();}if(u.protocol!=='https:'||u.username||u.password||u.port||u.search||u.hash||u.pathname!=='/')stop();return u;}
-export function productionTargets({projectId,databaseURL,supabaseURL,productionSupabaseRef,teachers,schoolUploadHashes,origins,policyApproved,retentionDays}){
+export function productionTargets({projectId,databaseURL,supabaseURL,productionSupabaseRef,teachers,schoolUploadHashes,origins,policyApproved,retentionMode}){
  if(projectId!==firebaseProject)stop();const db=endpoint(databaseURL),sb=endpoint(supabaseURL);
  if(db.hostname!==databaseHost||!/^[a-z0-9]{20}$/.test(productionSupabaseRef||'')||productionSupabaseRef===rehearsalRef||sb.hostname!==productionSupabaseRef+'.supabase.co')stop();
  if(!Array.isArray(teachers)||teachers.length!==7||new Set(teachers).size!==7||!teachers.every(x=>typeof x==='string'&&/^[A-Za-z0-9_-]{1,128}$/.test(x)))stop();
  if(!schoolUploadHashes||Object.keys(schoolUploadHashes).length!==7||!Array.from({length:7},(_,i)=>'S'+(i+1)).every(k=>/^[a-f0-9]{64}$/.test(schoolUploadHashes[k]||'')))stop();
  if(!Array.isArray(origins)||origins.length!==1||origins[0]!=='https://happygeo21.github.io')stop();
- if(policyApproved!=='approved'||!Number.isSafeInteger(retentionDays)||retentionDays<1||retentionDays>3650)stop();
+ if(policyApproved!=='approved'||retentionMode!=='teacher-selected-delete')stop();
  return Object.freeze({kind:'veteransgeo-production',testOnly:false,apiVersion:1,firebaseProjectId:firebaseProject,databaseHost:db.hostname,supabaseHost:sb.hostname,storageBucket:'veterans-private'});
 }
 // An approved storage location does not authorize deleting accepted student files.

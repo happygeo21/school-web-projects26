@@ -1,6 +1,6 @@
 {
   "kind": "sanitized-production-transition-blockers",
-  "checkedAt": "2026-10-30T02:49:19.823Z",
+  "checkedAt": "2026-10-30T04:03:24.269Z",
   "sourceBaseCommit": "8e318c7b79eb3377f3200f5e553b25fe24726de2",
   "productionSnapshot": {
     "total": 20,
@@ -114,7 +114,14 @@
     "firstFourHeadersCorrect": true,
     "validCoordinates": 3,
     "privateColumnsAbsent": true,
-    "actualEGISServiceImport": false
+    "actualEGISServiceImport": true,
+    "route": "teacher CSV -> separate synthetic Google Sheet -> e-GIS coordinate layer",
+    "validImportedCoordinates": 3,
+    "invalidImportedCoordinates": 0,
+    "pointFeatures": 3,
+    "facilityNameAndCoordinateAttributesVerified": true,
+    "existingEGISProjectSaved": false,
+    "syntheticOnly": true
   },
   "previousSuccessfulSuitesNotRerun": [
     "personal Rules 6",
@@ -132,15 +139,26 @@
     "entryOutsideAutomaticDeployment": true,
     "dedicatedStorageRequired": true,
     "rehearsalProjectRejected": true,
-    "deletionDisabledPendingPolicy": true
+    "deletionDisabledPendingPolicy": true,
+    "dedicatedStoragePrepared": true,
+    "region": "ap-northeast-2",
+    "plan": "Free",
+    "objects": 0,
+    "ledgerRows": 0,
+    "privateBucket": true,
+    "RLS": true,
+    "productionFunctionDeployed": false,
+    "productionSecretsChanged": false,
+    "retentionMode": "teacher-selected-delete",
+    "automaticDeletion": false,
+    "storageConfigurationUserApproved": true
   },
   "productionReady": false,
   "remainingDecisions": [
     "Approve separate upload authorization codes",
-    "Approve school storage region, overseas residency if applicable, retention and publication process",
-    "Choose and approve a dedicated Free production project without reusing rehearsal storage",
-    "Physical phone/tablet and actual eGIS import acceptance",
-    "Final production Rules/server/Pages cutover approval"
+    "Final production Rules/server/Pages cutover approval",
+    "Production gateway configuration/deployment and actual-student transfer require a separate final approval",
+    "Physical phone/tablet and all seven actual production account sign-ins remain unverified"
   ],
   "productionDataMutations": false,
   "privateValuesOmitted": true
