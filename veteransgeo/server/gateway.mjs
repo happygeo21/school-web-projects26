@@ -54,7 +54,7 @@ export function createGateway({
   schoolActivityHashes = null,
   schoolUploadHashes = null,
   allowLegacyActivityCodeUpload = false,
-  uploadInvites = null, // Explicit opt-in only. Never enabled by an adapter spread.
+  uploadInvites = /** @type {((action: string, data: any, actor: any) => Promise<any>) | null} */ (null), // Explicit opt-in only. Never enabled by an adapter spread.
   inviteTeacherSchools = {}, // Private server configuration; an absent assignment denies management.
   inviteAdminUids = [], // No implicit administrator, including approved teachers.
   origins,

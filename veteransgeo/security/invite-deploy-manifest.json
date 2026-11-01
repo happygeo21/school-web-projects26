@@ -5,8 +5,8 @@
   "supabaseProject": "jfkjuhxkcctfmwojhpci",
   "function": "media",
   "files": {
-    "supabase/functions/media/index.ts": "1d4443fc8251fbc7173ccfa11b2f50db9f426ce68acf8ed1d5d09b2538c7267c",
-    "server/gateway.mjs": "807cd7aa845dbb772b6d7946f30a58dbff4ba4d5242d302dc0e22c3515e6a717",
+    "supabase/functions/media/index.ts": "c2d5892c5f3aff3db84b3a8aa6e5f31d4e9f2ef779a35de3d46e6b92f6e011c6",
+    "server/gateway.mjs": "a4db7f65f5161f90237765867feff90ab202ce81fd673052cffbaf28c78ee00d",
     "server/upload-access.mjs": "8917d4e186dfcdb439e25bb456713bab30f243e147de8386091186df1988603c",
     "server/invite-policy.mjs": "6575530af9a8d2e4b8025b9bc8a1c1bce16bee8be5a6c04634bd3c0533949e4f",
     "server/firebase-token.mjs": "5a23e5d507f1e0b21257f762e562d52a97a2bda15073ba52b09b6c4516689141",

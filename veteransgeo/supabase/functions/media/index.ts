@@ -23,7 +23,7 @@ if (projectId !== "veteransgeo-test-2026" || deployment.supabaseHost !== "jfkjuh
   throw Error("Exact existing rehearsal projects required");
 // This implementation is for a separate rehearsal project. Production needs a new reviewed change.
 if (
-  projectId === "school-project-26-1edf4" ||
+  String(projectId) === "school-project-26-1edf4" ||
   databaseURL.toLowerCase().includes("school-project-26-1edf4")
 )
   throw Error("Production Firebase is forbidden in rehearsal");
