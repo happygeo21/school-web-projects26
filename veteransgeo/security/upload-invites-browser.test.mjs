@@ -127,6 +127,8 @@ test("Chromium: scoped teachers, nine preserved media, expiry/revoke/UID/school/
     await student.waitForFunction(() => !location.hash);
     assert.equal(await student.evaluate(() => window.__sameDocument), true);
     // Teacher/publication paths still work with an invite-authorized real SQL ledger.
+    // The temporary quota row was removed; wait for the RTDB-driven render to catch up.
+    await teacher.waitForFunction(() => document.querySelectorAll('#workList article').length === 1);
     await teacher.locator("#workList article").waitFor();
     teacher.once("dialog", d => d.accept());
     await teacher.getByRole("button", { name: "검토 후 공개 승인", exact: true }).click();

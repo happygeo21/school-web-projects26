@@ -1,7 +1,6 @@
 {
   "kind": "real-test-invite-integration",
   "checkedAt": "2026-11-01T23:42:51.9610316Z",
-  "sourceHead": "c3b0417bcc99e886ff1d40c4d019aa29b7bf2b1f",
   "mocked": false,
   "physicalDevice": false,
   "passed": 27,
@@ -154,5 +153,7 @@
     "Final operating approval and post-deploy smoke"
   ],
   "operatingEvidence": "Reuse prior 20-record compatibility, seven-account map, Rules and Pages rollback backups; not fresh production recheck",
-  "draftPR": 7
+  "draftPR": 7,
+  "baseHead": "c3b0417bcc99e886ff1d40c4d019aa29b7bf2b1f",
+  "deployedSourceEvidence": "Exact deployed nine-file match against current invite-deploy-manifest.json; Deno-only typing fixes after baseHead"
 }
