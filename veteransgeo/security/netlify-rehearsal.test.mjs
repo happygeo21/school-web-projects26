@@ -26,3 +26,5 @@ test('OSM maps declare the policy-compliant tile host and per-tile origin referr
   // Invitation tokens remain protected at the document level; Leaflet tile images set an origin-only exception.
   assert.match(headers,/Referrer-Policy: no-referrer/);
 });
+
+test('fixed Pages rehearsal origin retains exact test targets and rejects every other Pages host',async()=>{const origin='https://veteransgeo-rehearsal-2026.pages.dev',r=runtime(origin,origin);await r.context.__veteransgeoGuardReady;assert.equal(r.calls.length,2);assert.throws(()=>previewRuntime(previewConfig(env),'https://unreviewed.pages.dev'));await assert.rejects(r.context.fetch('https://school-project-26-1edf4-default-rtdb.asia-southeast1.firebasedatabase.app/.json'));});

@@ -1,0 +1,58 @@
+{
+  "kind": "current-https-recovery",
+  "origin": "https://veteransgeo-rehearsal-2026.pages.dev",
+  "physicalDevice": false,
+  "checkedAt": "2026-11-02T09:39:09.613Z",
+  "pages": [
+    {
+      "name": "student",
+      "status": 200,
+      "title": "기억의 좌표 LIVE | 학생용",
+      "rendered": true,
+      "virtualOnlyBanner": true,
+      "width390": true
+    },
+    {
+      "name": "teacher",
+      "status": 200,
+      "title": "기억의 좌표 | 교사용 대시보드",
+      "rendered": true,
+      "virtualOnlyBanner": true,
+      "authStage": "idle",
+      "width390": true
+    },
+    {
+      "name": "public",
+      "status": 200,
+      "title": "기억의 좌표 | 7개 학교 공개지도",
+      "rendered": true,
+      "virtualOnlyBanner": true,
+      "width390": true
+    }
+  ],
+  "teacherPasswordAttempts": 0,
+  "productionRequests": 0,
+  "map403": 0,
+  "stablePages": "deployed fixed Pages; independent of PC/tunnel",
+  "prior27TestsReexecuted": false,
+  "firebaseAuthorizedDomain": true,
+  "cors": {
+    "status": 204,
+    "exactOrigin": true,
+    "previousOriginsPreserved": 4
+  },
+  "media": {
+    "sourceUnchangedFromV7": true,
+    "platformVersion": 8,
+    "sourceBundleSHA256": "9214e173ec4047b57fac8fdc1815839077a7978facda123a43ee3397571ec9b9"
+  },
+  "actualTeacherLogin": "미검증: user one-attempt sign-in requested; no password file read",
+  "authTooManyRequestsCleared": "미확인",
+  "operatingChanges": 0,
+  "draftPR": 7,
+  "canonicalPaths": [
+    "/",
+    "/teacher",
+    "/public"
+  ]
+}
