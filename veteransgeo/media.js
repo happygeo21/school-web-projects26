@@ -423,7 +423,7 @@ export function setupTeacherMedia({
     .map(([k, v]) => `<option value="${k}">${v}</option>`)
     .join(
       "",
-    )}</select></label><label>학교·시설·제목 검색<input id="workSearch" maxlength="100"></label><div class="media-toolbar"><button id="mediaUsage" class="gray">저장공간 사용량 확인</button><button id="reconcileMedia" class="gray">파일 상태 확인·오래된 파일 정리</button></div><p id="workStatus" role="status"></p><div id="workList"></div>`;
+    )}</select></label><label>학교·시설·제목 검색<input id="workSearch" maxlength="100"></label><div class="media-toolbar"><button id="mediaUsage" class="gray">저장공간 사용량 확인</button></div><details class="optional-fields"><summary>파일 보관 상태 관리 (필요할 때만)</summary><p class="media-hint">일부 파일을 실제 삭제할 수 있는 관리 기능입니다. 학교의 보존·삭제 기준을 확인한 담당 교사만 실행하세요.</p><button id="reconcileMedia" class="gray" type="button">파일 상태 확인 및 오래된 파일 정리 (삭제 가능)</button></details><p id="workStatus" role="status"></p><div id="workList"></div>`;
   $("dash").append(section);
   const disposeInvites = setupTeacherInvites({ section, provider, user });
   let records = {},
