@@ -56,6 +56,7 @@ test("Chromium: scoped teachers, nine preserved media, expiry/revoke/UID/school/
     assert.equal(await student.locator("[name=uploadCode]").count(), 0);
     assert.equal(await student.locator("#mediaForm [name=schoolId]").isHidden(), true);
     const form = student.locator("#mediaForm");
+    await form.locator("#workExtra").evaluate(el=>{el.open=true;});
     for (const [k, v] of Object.entries({ activityCode: "OLD-ACTIVITY", title: "가상 초안", introduction: "가상 소개 보존", facilityName: "가상 장소" }))
       await form.locator("[name=" + k + "]").fill(v);
     await form.locator("[name=consent]").check();
