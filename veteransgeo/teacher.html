@@ -166,7 +166,7 @@ PROJECT.schools.forEach(s=>$("schoolFilter").add(new Option(`${s.region} · ${s.
 PROJECT.categories.forEach(c=>$("catFilter").add(new Option(c,c)));
 
 const map=L.map("teacherMap").setView([36.15,127.7],7);
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,referrerPolicy:"strict-origin-when-cross-origin",attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
 const markers=L.layerGroup().addTo(map);
 
 let publicIds=new Map(),snapshotSeq=0;
