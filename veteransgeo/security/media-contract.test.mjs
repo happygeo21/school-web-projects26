@@ -315,3 +315,43 @@ test("HTTP provider requires a ready ACK, reports progress, cancels without losi
   );
   assert.equal(await waitForAck(Promise.resolve("server-ack")), "server-ack");
 });
+
+
+test("moderated-open student upload requires anonymous owner and keeps file private until teacher review", async () => {
+  const env = createMockMedia();
+  const gateway = createGateway({
+    ...env,
+    teachers: ["teacher"],
+    origins: [origin],
+    moderatedOpenUploads: true,
+    verify: async token => {
+      if (!["student", "other", "teacher"].includes(token)) throw Error("invalid token");
+      return { sub: token, firebase: { sign_in_provider: token === "teacher" ? "password" : "anonymous" } };
+    },
+  });
+  const file = new Uint8Array([255,216,255,0]);
+  const sha256 = await digestBytes(file);
+  const asset = "p_" + await digestBytes(new TextEncoder().encode("S1_student_open-one"));
+  env.state.works.set("S1/student/open-one", {
+    schoolId: "S1", activityCode: "자율제출", status: "pending",
+    submissionMode: "upload", mediaProvider: "gateway",
+    mediaAssetId: asset, size: file.byteLength, contentType: "image/jpeg",
+    sha256, title: "테스트 작품", facilityName: "장소 미연결",
+    type: "사진", introduction: "개인정보 없는 테스트 소개"
+  });
+  const request = (who, school = "S1", id = "open-one") => gateway(new Request(origin + "/media?action=upload", {
+    method: "POST",
+    headers: {Origin: origin, Authorization: "Bearer " + who,
+      "Content-Type": "image/jpeg", "X-School-Id": school, "X-Work-Id": id },
+    body: file,
+  }));
+  assert.equal((await request("other")).status, 403);
+  assert.equal((await request("teacher")).status, 403);
+  assert.equal((await request("student", "S2")).status, 403);
+  assert.equal((await request("student")).status, 200);
+  assert.equal((await (await request("student")).json()).duplicate, true);
+  assert.equal(env.state.objects.size, 1);
+  assert.equal(env.state.published.size, 0);
+  assert.throws(() => createGateway({...env, teachers:["teacher"], origins:[origin], moderatedOpenUploads:true,
+    allowLegacyActivityCodeUpload:true, verify:async()=>({})}), /cannot share/);
+});
