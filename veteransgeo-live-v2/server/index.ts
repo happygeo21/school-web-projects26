@@ -25,18 +25,18 @@ Deno.serve(async(request:Request)=>{const cors={'Access-Control-Allow-Origin':or
  if(request.method==='GET')return gateway(request);
  if(request.method!=='POST')throw{code:'media/permission'};
  const upload=url.searchParams.get('action')==='upload';
- let body:any={};if(!upload){if(Number(request.headers.get('content-length')||0)>65536)throw{code:'media/invalid-request'};const reader=request.clone().body?.getReader();let size=0;const chunks:Uint8Array[]=[];if(reader){while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>65536){await reader.cancel();throw{code:'media/invalid-request'};}chunks.push(value);}}const raw=new Uint8Array(size);let offset=0;for(const chunk of chunks){raw.set(chunk,offset);offset+=chunk.length;}body=JSON.parse(new TextDecoder().decode(raw));}
+ let body:any={};if(!upload){if(Number(request.headers.get('content-length')||0)>65536)throw{code:'media/invalid-request'};const reader=request.body?.getReader();let size=0;const chunks:Uint8Array[]=[];if(reader){while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>65536){await reader.cancel();throw{code:'media/invalid-request'};}chunks.push(value);}}const raw=new Uint8Array(size);let offset=0;for(const chunk of chunks){raw.set(chunk,offset);offset+=chunk.length;}body=JSON.parse(new TextDecoder().decode(raw));}
  const isDB=body.action==='v2-db';
- const writing=upload||(isDB&&body.method!=='get');
+ const writing=upload||(isDB&&body.method==='set');
  await rpc('veterans_v2_guard',{p_write:writing});
  const token=(request.headers.get('Authorization')||'').replace(/^Bearer /,'');
  let claims:any=null;let actor:any={};if(token){claims=await verify(token);actor=actorFor(claims);}
- if(!isDB){if(!claims)throw{code:'auth/invalid-token'};if(actor.teacher){const school=upload?request.headers.get('X-School-Id'):body.schoolId;if(!school||!actor.schools.includes(school))throw{code:'media/permission'};}if(body.action==='reconcile'||body.action==='usage')throw{code:'media/permission'};return gateway(request);}
+ if(!isDB){if(!claims)throw{code:'auth/invalid-token'};if(actor.teacher){const school=upload?request.headers.get('X-School-Id'):body.schoolId;if(!school||!actor.schools.includes(school))throw{code:'media/permission'};}if(body.action==='reconcile'||body.action==='usage')throw{code:'media/permission'};return gateway(upload?request:new Request(request.url,{method:request.method,headers:request.headers,body:JSON.stringify(body)}));}
  const parts=String(body.path||'').split('/').filter(Boolean);if(parts.shift()!==root)throw{code:'media/permission'};
  const [kind,school,owner,id]=parts;
  if(body.method==='get'){
  if(['published','publishedWorks'].includes(kind)){const rows=await access('public',{kind:kind==='published'?'submissions':'works'},{});return json(Object.fromEntries(rows.map((r:any)=>[r.public_id,r.data])));}
- if(!claims||!['submissions','works','audit','workAudit'].includes(kind))throw{code:'media/permission'};
+ if(!claims||!['submissions','works','audit','workAudit'].includes(kind)||claims.firebase?.sign_in_provider!=='anonymous'&&(!actor.teacher||!actor.schools.length))throw{code:'media/permission'};
  const auditKind=kind==='audit'||kind==='workAudit';let rows=await access('read',{kind:kind==='audit'?'submissions':kind==='workAudit'?'works':kind,...(auditKind?{}:{school,owner,id})},actor);if(auditKind&&school)rows=rows.filter((r:any)=>`${r.school}_${r.owner}_${r.id}`===school);
  if(kind==='audit'||kind==='workAudit')return json(Object.fromEntries(rows.flatMap((r:any)=>r.audit.map((a:any,i:number)=>[String(i),a]))));
  if(school&&owner&&id)return json(rows[0]?.data||null);if(school&&owner)return json(Object.fromEntries(rows.map((r:any)=>[r.id,r.data])));

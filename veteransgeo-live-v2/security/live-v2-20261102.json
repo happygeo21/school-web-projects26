@@ -1,0 +1,290 @@
+{
+  "checkedAt": "2026-11-02T11:53:04.785Z",
+  "basePR7Head": "4c2bcbac3c3c0c0fdf72e8cb9085bac5b8e37b65",
+  "branch": "codex/veteransgeo-live-v2",
+  "hosting": "https://veteransgeo-live-v2.pages.dev",
+  "deploymentScope": "separate rehearsal only; no production Firebase Rules/main/GitHub Pages/Seoul writes",
+  "authProject": "veteransgeo-test-2026",
+  "mediaEndpoint": "media-v2",
+  "functionPlatformVersion": 6,
+  "teacherBrowserLogin": "unverified",
+  "legacy": {
+    "baselinePrivateRecords": 20,
+    "freshPrivateReadVerified": false,
+    "publicRendered": 25,
+    "source": "existing approved published GET only",
+    "copiedPrivateRecords": 0,
+    "productionWrites": 0,
+    "privateReadBlocker": "production Auth domain approval and actual approved teacher login not applied"
+  },
+  "storage": {
+    "existingTestRows": 12,
+    "existingTestObjects": 12,
+    "newV2Rows": 2,
+    "newV2Objects": 2,
+    "newPublicWorksAfterWithdrawal": 0,
+    "deletions": 0
+  },
+  "databaseSecurity": {
+    "RLS": true,
+    "anonRPCDenied": true,
+    "serviceRoleOnly": true,
+    "schoolScopeDenied": true,
+    "originalChangeDenied": true,
+    "newUIDGlobalFileCapDenied": true,
+    "globalQuotaTest": "real SQL transaction rolled back"
+  },
+  "limits": {
+    "imageBytes": 3145728,
+    "videoBytes": 15728640,
+    "pdfBytes": 5242880,
+    "fileCountPerUIDPerDay": 3,
+    "fileCountProjectPerDay": 20,
+    "storageBytes": 67108864,
+    "transferBytesMonth": 500000000,
+    "requestsPerMinute": 240,
+    "requestsPerDay": 5000,
+    "emergencyPauseActualHTTP": 403
+  },
+  "localIsolationTests": {
+    "passed": 5,
+    "failed": 0,
+    "networkRequests": 0
+  },
+  "actual": {
+    "student-live-result": {
+      "kind": "actual-isolated-v2-student",
+      "passwordsRead": 0,
+      "checks": [
+        {
+          "test": "private-work-create-0",
+          "status": 200
+        },
+        {
+          "test": "direct-upload-0",
+          "status": 200
+        },
+        {
+          "test": "same-work-idempotent",
+          "status": 200,
+          "duplicate": true
+        },
+        {
+          "test": "private-work-create-1",
+          "status": 200
+        },
+        {
+          "test": "direct-upload-1",
+          "status": 200
+        },
+        {
+          "test": "other-UID-denied",
+          "status": 403
+        },
+        {
+          "test": "pending-private",
+          "status": 403
+        },
+        {
+          "test": "pending-private",
+          "status": 403
+        }
+      ],
+      "complete": true
+    },
+    "approved-media-result": {
+      "kind": "actual-V2-public-media",
+      "teacherApprovalEvidence": "real scoped SQL RPC via management; not a browser teacher login",
+      "checks": [
+        {
+          "test": "approved-GET",
+          "status": 200
+        },
+        {
+          "test": "approved-Range",
+          "status": 206
+        },
+        {
+          "test": "approved-GET",
+          "status": 200
+        },
+        {
+          "test": "approved-Range",
+          "status": 206
+        }
+      ]
+    },
+    "final-api-result": {
+      "kind": "actual-V2-API",
+      "checks": [
+        {
+          "test": "own-status-flat-list",
+          "status": 200,
+          "count": 2
+        },
+        {
+          "test": "simplified-exploration-create",
+          "status": 200
+        },
+        {
+          "test": "exploration-same-id-retry",
+          "status": 200
+        },
+        {
+          "test": "student-cannot-approve",
+          "status": 403
+        },
+        {
+          "test": "other-UID-private-list-empty",
+          "status": 200,
+          "count": 0
+        },
+        {
+          "test": "unapproved-Origin-denied",
+          "status": 403
+        }
+      ]
+    },
+    "request-limit-result": {
+      "checks": [
+        {
+          "test": "global-request-limit-different-UID",
+          "status": 429
+        },
+        {
+          "test": "global-request-limit-different-UID",
+          "status": 429
+        }
+      ]
+    },
+    "withdrawal-result": {
+      "kind": "actual-V2-withdrawal",
+      "checks": [
+        {
+          "test": "withdrawn-GET-denied",
+          "status": 403
+        },
+        {
+          "test": "withdrawn-Range-denied",
+          "status": 403
+        },
+        {
+          "test": "withdrawn-GET-denied",
+          "status": 403
+        },
+        {
+          "test": "withdrawn-Range-denied",
+          "status": 403
+        },
+        {
+          "test": "withdrawn-public-list-empty",
+          "http": 200,
+          "count": 0
+        }
+      ]
+    },
+    "final-server-result": {
+      "kind": "actual-final-V2-server",
+      "checks": [
+        {
+          "test": "gateway-inspect-private",
+          "status": 200,
+          "passed": true
+        },
+        {
+          "test": "bounded-JSON-denied",
+          "status": 400,
+          "passed": true
+        },
+        {
+          "test": "V2-file-size-denied",
+          "status": 400,
+          "passed": true
+        }
+      ]
+    },
+    "fixed-pages-browser-result": {
+      "kind": "actual-fixed-V2-Pages-browser",
+      "hostingMocked": false,
+      "viewport": 390,
+      "checks": [
+        {
+          "test": "student",
+          "http": 200,
+          "visibleHeading": true,
+          "overflow": false
+        },
+        {
+          "test": "optional-activity-continues",
+          "passed": true
+        },
+        {
+          "test": "teacher.html",
+          "http": 200,
+          "visibleHeading": true,
+          "overflow": false
+        },
+        {
+          "test": "public.html",
+          "http": 200,
+          "visibleHeading": true,
+          "overflow": false
+        },
+        {
+          "test": "legacy-public-cards",
+          "count": 25
+        },
+        {
+          "test": "real-WebM-play",
+          "passed": true
+        },
+        {
+          "test": "real-JPEG-decode",
+          "passed": true
+        }
+      ],
+      "tileStatuses": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "errors": [],
+      "productionWrites": 0
+    },
+    "paused-live-result": {
+      "kind": "actual-isolated-v2-student",
+      "passwordsRead": 0,
+      "checks": [
+        {
+          "test": "private-work-create-0",
+          "status": 403
+        }
+      ],
+      "complete": true
+    }
+  },
+  "studentUse": "NO-GO actual student data; virtual rehearsal only",
+  "remaining": [
+    "actual V2 virtual teacher browser approval",
+    "production teacher scoped setup and approved legacy login",
+    "school privacy/publication/retention decision",
+    "actual Android/tablet acceptance"
+  ],
+  "functionSourceSHA256": "a5aa32cd59e4c26eacfa931b2c1b41cbda6300d096b0062edb6fca71f42f4398",
+  "staticHosting": {
+    "project": "veteransgeo-live-v2",
+    "firebaseDomainVerified": true,
+    "corsStatus": 204,
+    "corsExactOrigin": true,
+    "publicFiles": 22,
+    "serverSQLPrivateFilesPublished": 0
+  }
+}
