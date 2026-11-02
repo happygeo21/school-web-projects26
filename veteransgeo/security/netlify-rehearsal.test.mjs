@@ -28,3 +28,13 @@ test('OSM maps declare the policy-compliant tile host and per-tile origin referr
 });
 
 test('fixed Pages rehearsal origin retains exact test targets and rejects every other Pages host',async()=>{const origin='https://veteransgeo-rehearsal-2026.pages.dev',r=runtime(origin,origin);await r.context.__veteransgeoGuardReady;assert.equal(r.calls.length,2);assert.throws(()=>previewRuntime(previewConfig(env),'https://unreviewed.pages.dev'));await assert.rejects(r.context.fetch('https://school-project-26-1edf4-default-rtdb.asia-southeast1.firebasedatabase.app/.json'));});
+test('synthetic preview supports code-free moderated uploads only by explicit flag',async()=>{
+  const cfgOpen=previewConfig({...env,VETERANSGEO_REHEARSAL_PUBLIC_CONFIG:JSON.stringify({...cfg,studentUploadMode:'moderated-open'})});
+  assert.equal(cfgOpen.studentUploadMode,'moderated-open');
+  const out=await mkdtemp(path.join(os.tmpdir(),'veteransgeo-moderated-open-'));
+  for(const file of ['index.html','teacher.html','public.html'])await writeFile(path.join(out,file),await readFile(new URL('../'+file,import.meta.url),'utf8'));
+  await configurePreview(out,cfgOpen);
+  const mode=await readFile(path.join(out,'media-config.js'),'utf8');
+  assert.match(mode,/uploadAuthorization:"moderated-open"/);
+  assert.throws(()=>previewConfig({...env,VETERANSGEO_REHEARSAL_PUBLIC_CONFIG:JSON.stringify({...cfg,studentUploadMode:'anonymous-no-limits'})}));
+});
