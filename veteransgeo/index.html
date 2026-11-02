@@ -69,8 +69,8 @@
 </div>
 
 <div class="grid two">
-<div><label>학교</label><select id="school"></select></div>
-<div><label>활동코드</label><input id="activityCode" maxlength="20" placeholder="예: 2조 / A03"></div>
+<div><label>학교 (필수)</label><select id="school"></select></div>
+<div><label>모둠·활동명 (선택)</label><input id="activityCode" maxlength="20" placeholder="비워두면 자율탐구로 기록"></div>
 <div><label>분야</label><select id="category"></select></div>
 <div><label>장소 선택 방식</label>
 <select id="placeOrigin">
@@ -79,9 +79,9 @@
 </select>
 <div class="choice-help">※ ‘내가 직접 제안한 장소’도 선택할 수 있습니다. 다만 보훈과 연결되는 인물·사건·공헌의 근거를 밝히세요. 탐구 대상으로 선택하는 것과 공식 지정 여부는 다릅니다.</div>
 </div>
-<div><label>장소 이름</label><input id="placeName" maxlength="100" placeholder="예: ○○ 충혼비 / ○○역 앞 추모공간"></div>
+<div><label>장소 이름 (필수)</label><input id="placeName" maxlength="100" placeholder="예: ○○ 충혼비 / ○○역 앞 추모공간"></div>
 <div><label>소재지·주소 <span class="muted small">(선택)</span></label><input id="address" maxlength="160" placeholder="예: 전남 화순군 ..."></div>
-<div style="grid-column:1/-1"><label>이 장소는 어떤 곳인가요? <span class="muted small">(10자 이상)</span></label>
+<div style="grid-column:1/-1"><label>이 장소에 대해 알아낸 사실 (필수 · 10자 이상)</label>
 <textarea id="placeDescription" maxlength="350" placeholder="누구의 어떤 희생·공헌을 기억하는 곳인가요? 자료에서 확인한 인물·사건과 이 장소의 관계를 적어주세요. 사건이 일어난 곳인지, 나중에 세운 기념시설인지도 살펴보세요."></textarea>
 </div>
 <div><label>국가보훈부 현충시설 지도 확인 결과</label><select id="officialStatus"></select>
@@ -137,23 +137,24 @@
 <div class="card"><h3>👀 발견 가능성</h3><p class="muted">1 = 가까이 가도 의미를 알기 어려움 · 3 = 어느 정도 발견 가능 · 5 = 관찰한 경로에서 쉽게 발견하고 의미도 이해 가능</p><p class="small muted">접근 경로·입구의 시인성·안내문을 함께 확인하세요. 현장·로드뷰·사진 중 무엇을 봤는지 적고, 확인하지 못한 조건은 추측하지 말고 추가 자료를 확인하세요.</p><div class="range-row"><input id="visibility" type="range" min="1" max="5" value="3"><div id="visibilityScore" class="score">3</div></div></div>
 </div>
 
-<h2 class="section">5. 점수에는 근거를 붙입니다</h2>
+<h2 class="section">5. 내 생각과 근거를 남깁니다</h2>
 <div class="card">
-<label>내가 이 점수를 준 근거는? <span class="muted small">(10자 이상)</span></label>
+<p class="small muted">평가 점수는 아래 슬라이더에서 직접 선택해요. 판단 근거를 별도로 쓰지 않으면 '기억할 이유'를 함께 기록합니다.</p>
+<label>점수 판단 근거 (선택)</label>
 <textarea id="scoreReason" maxlength="300" placeholder="중요도: 어떤 사실을 근거로 판단했나요? / 발견 가능성: 어느 길·입구에서 무엇을 확인했나요? 현장·로드뷰·사진과 관찰 시점, 확인하지 못한 점도 적어주세요."></textarea>
 
 <div class="grid two">
-<div><label>자료를 어디서 확인했나요?</label><select id="sourceType"></select></div>
+<div><label>자료 종류 (필수)</label><select id="sourceType"></select></div>
 <div><label>확인한 자료 이름·링크 <span class="muted small">(필수)</span></label><input id="sourceNote" maxlength="300" placeholder="예: ○○시청 홈페이지 주소 / 현장 안내판 제목과 관찰 날짜"></div>
 </div>
 
-<label>왜 이 장소를 다음 세대가 기억해야 할까요?</label>
+<label>왜 이 장소를 기억해야 할까요? (필수 · 10자 이상)</label>
 <textarea id="rememberSentence" class="sentence" maxlength="250" placeholder="이곳의 누구와 어떤 공헌을 기억하며, 그 기억이 오늘 우리 공동체에 어떤 의미가 있는지 한 문장으로 적어주세요."></textarea>
 
 <label>그 시대의 사람들에게 한마디 <span class="muted small">(선택)</span></label>
 <textarea id="message" maxlength="180" placeholder="감사·질문·성찰 중 자신의 생각을 자유롭게 적어주세요. 감정의 크기나 정해진 표현으로 평가하지 않습니다."></textarea>
 
-<label>핵심 단어 3개</label>
+<label>핵심 단어 (선택)</label>
 <input id="keywords" maxlength="120" placeholder="예: 독립, 기억, 공동체">
 
 <div class="callout">
@@ -193,7 +194,7 @@ heads.forEach(h=>h.remove());
 panels[0].append(blocks[0],blocks[1]);panels[1].append(blocks[2]);panels[2].append(blocks[3],blocks[4]);
 const firstGrid=blocks[0].querySelector('.grid');
 const moveField=(id,target)=>target.append($(id).parentElement);
-const identity=document.createElement('div');identity.className='grid two';blocks[0].prepend(identity);['school','activityCode'].forEach(id=>moveField(id,identity));
+const identity=document.createElement('div');identity.className='grid two';blocks[0].prepend(identity);['school'].forEach(id=>moveField(id,identity));const activityExtra=document.createElement('details');activityExtra.className='optional-fields';activityExtra.innerHTML='<summary>모둠·활동명 입력 (선택)</summary>';moveField('activityCode',activityExtra);identity.after(activityExtra);
 const aware=blocks[1];
 aware.querySelector('p').textContent='자료를 보기 전의 인지도를 기록해요. 이미 떠오르는 장소가 있다면 수준을 고르고 「탐색 시작」을 누르세요. 처음 듣는 장소를 찾는다면 위 「아직 아는 장소가 없어요」를 누르세요.';
 aware.querySelector('.callout').remove();const discovery=document.createElement('div');discovery.className='discovery-choice';discovery.innerHTML='<h3>🔎 아직 조사할 장소를 모르겠나요?</h3><p class="small muted">아는 곳이 없어도 탐구할 수 있어요. 먼저 자신의 상태를 기록하고 장소를 찾아봅니다.</p><div class="toolbar"><button id="dontKnowPlace" type="button" class="primary">아직 아는 장소가 없어요 · 찾아보기</button><button id="knowPlace" type="button" class="gray">떠오르는 장소가 있어요</button></div><p id="discoveryStatus" class="choice-help" role="status">어느 쪽이든 선택한 뒤 공식지도에서 확인할 수 있어요.</p>';identity.after(discovery);discovery.after(aware);
@@ -214,11 +215,12 @@ const oldMapToolbar=blocks[2].querySelector('.toolbar[style="margin-top:12px"]')
 $('placeDescription').placeholder='예: 이곳은 ○○의 희생을 기리는 곳이다. ○○ 자료에서 확인했다. (10자 이상)';
 $('scoreReason').placeholder='중요도: ○○ 자료를 보고 판단했다. / 발견 가능성: ○○ 사진에서 안내판이 보여 판단했다. (10자 이상)';
 $('rememberSentence').placeholder='이곳은 __________을 기억하는 곳이며, __________ 때문에 다음 세대도 기억해야 한다. (10자 이상)';
-const optional=document.createElement('details');optional.className='optional-fields';optional.innerHTML='<summary>한마디 더 남기기 (선택)</summary>';const ml=$('message').previousElementSibling;optional.append(ml,$('message'));$('keywords').previousElementSibling.before(optional);
+const optional=document.createElement('details');optional.className='optional-fields';optional.innerHTML='<summary>키워드·한마디 더 남기기 (선택)</summary>';const ml=$('message').previousElementSibling;optional.append(ml,$('message'));moveField('keywords',optional);blocks[4].append(optional);
 blocks[4].querySelector('.callout').remove();
 const scoreCards=blocks[3].querySelectorAll('.card');scoreCards[0].querySelector('h3').textContent='이 장소는 역사적으로 얼마나 중요할까요?';scoreCards[0].querySelector('p').textContent='1 근거가 부족함 · 3 지역 역사에 의미 있음 · 5 역사적 근거가 분명함';scoreCards[0].querySelector('.small').textContent='장소의 가치를 서열화하는 점수가 아니에요. 확인한 근거로 판단하세요.';scoreCards[1].querySelector('h3').textContent='지나가는 사람이 쉽게 알아볼까요?';scoreCards[1].querySelector('p').textContent='1 알아보기 어려움 · 3 어느 정도 보임 · 5 쉽게 보이고 의미도 알 수 있음';scoreCards[1].querySelector('.small').textContent='현장·사진·로드뷰에서 확인하세요. 못 봤다면 근거에 적어주세요.';
+const evaluationExtra=document.createElement('details');evaluationExtra.className='optional-fields';evaluationExtra.innerHTML='<summary>점수 판단 이유 자세히 쓰기 (선택)</summary><p class="small muted">자세히 쓰지 않으면 아래 기억할 이유를 판단 근거로 함께 사용합니다. 내용은 그대로 보존됩니다.</p>';moveField('scoreReason',evaluationExtra);blocks[4].prepend(evaluationExtra);
 let step=0;
-const rules=[[['activityCode','모둠·활동 식별값을 적어주세요.',1],['awarenessScore','자료를 보기 전의 인지도를 선택해주세요.',1],['awarenessLocked','먼저 사전 응답을 확정해주세요.',1]],[['placeName','찾은 장소 이름을 입력하거나 검색 결과에서 선택해주세요.',1],['locationConfirmed','장소를 고른 뒤 「이 위치가 맞아요」를 눌러주세요.',1],['placeDescription','장소 설명을 10자 이상 적어주세요.',10],['sourceType','자료 종류를 선택해주세요.',1],['sourceNote','자료 이름이나 출처를 적어주세요.',1]],[['scoreReason','점수의 근거를 10자 이상 적어주세요.',10],['rememberSentence','기억해야 할 이유를 10자 이상 적어주세요.',10],['keywords','핵심 단어를 적어주세요.',1]]];
+const rules=[[['awarenessScore','자료를 보기 전의 인지도를 선택해주세요.',1],['awarenessLocked','먼저 사전 응답을 확정해주세요.',1]],[['placeName','찾은 장소 이름을 선택하거나 직접 입력해주세요.',1],['locationConfirmed','장소를 고른 뒤 「이 위치가 맞아요」를 눌러주세요.',1],['placeDescription','장소에 대해 알아낸 사실을 10자 이상 적어주세요.',10],['sourceType','자료 종류를 선택해주세요.',1],['sourceNote','자료 이름이나 출처를 적어주세요.',1]],[['rememberSentence','기억해야 할 이유를 10자 이상 적어주세요.',10]]];
 function check(i){for(const [id,msg,min] of rules[i]){if($(id).value.trim().length<min){panels[i].querySelector('.step-error').textContent=msg;const d=$(id).closest('details');if(d)d.open=true;$(id).classList.add('invalid');if(id==='locationConfirmed'){$('locationStatus').scrollIntoView({block:'center'});$('confirmLocationBtn').focus();}else $(id).focus();return false;}}panels[i].querySelector('.step-error').textContent='';return true;}
 function show(i,focus=true){step=i;panels.forEach((p,j)=>p.hidden=i!==j);nav.querySelectorAll('button').forEach((b,j)=>j===i?b.setAttribute('aria-current','step'):b.removeAttribute('aria-current'));document.dispatchEvent(new Event('memory-step-change'));if(focus){nav.scrollIntoView({behavior:'smooth',block:'start'});panels[i].querySelector('h2').focus({preventScroll:true});}}
 panels.forEach((p,i)=>{const error=document.createElement('p');error.className='step-error';error.setAttribute('role','alert');p.append(error);const actions=document.createElement('div');actions.className='step-actions';if(i){const b=document.createElement('button');b.type='button';b.className='gray';b.textContent='← 이전';b.onclick=()=>show(i-1);actions.append(b);}if(i<2){const b=document.createElement('button');b.type='button';b.className='primary';b.textContent=i===0?'다음: 장소 찾기 →':'다음: 내 생각 쓰기 →';b.onclick=()=>{if(check(i))show(i+1);};actions.append(b);}p.append(actions);});
@@ -412,19 +414,19 @@ $("submitBtn").onclick=async()=>{
 
   if(!awarenessSnapshot){$("msg").textContent="탐색 시작 버튼으로 사전 인지도를 먼저 확정해주세요.";return;}
   const lat=v("lat"),lng=v("lng");
-  if(!v("awarenessScore")||!v("sourceType")||!v("sourceNote")){
-    $("msg").textContent="활동 전 인지도·근거 유형·출처(자료명 또는 현장 안내판과 날짜)를 확인해 주세요.";return;
+  if(!v("sourceType")||!v("sourceNote")){
+    $("msg").textContent="자료 종류와 출처(자료명 또는 현장 안내판과 날짜)를 확인해 주세요.";return;
   }
-  if(!v("activityCode")||!v("placeName")||!v("placeDescription")||v("placeDescription").length<10||!lat||!lng||!v("scoreReason")||v("scoreReason").length<10||!v("rememberSentence")||v("rememberSentence").length<10||!v("keywords")){
-    $("msg").textContent="활동코드·장소 이름·장소 설명(10자 이상)·지도 위치·판단 근거(10자 이상)·기억 문장·핵심어를 확인해 주세요.";return;
+  if(!v("placeName")||!v("placeDescription")||v("placeDescription").length<10||!lat||!lng||!v("rememberSentence")||v("rememberSentence").length<10){
+    $("msg").textContent="장소 이름·설명(10자 이상)·지도 위치·기억할 이유(10자 이상)를 확인해 주세요.";return;
   }
   const data={
-    schemaVersion:2,awarenessOriginal:awarenessSnapshot,createdAt:Date.now(),schoolId:v("school"),activityCode:v("activityCode"),category:v("category"),
+    schemaVersion:2,awarenessOriginal:awarenessSnapshot,createdAt:Date.now(),schoolId:v("school"),activityCode:v("activityCode")||"자율탐구",category:v("category"),
     placeOrigin:v("placeOrigin"),placeName:v("placeName"),placeDescription:v("placeDescription"),address:v("address"),latitude:Number(lat),longitude:Number(lng),
     officialStatus:v("officialStatus"),awarenessScore:awarenessSnapshot.score,
     importance:Number(v("importance")),visibility:Number(v("visibility")),
-    scoreReason:v("scoreReason"),sourceType:v("sourceType"),sourceNote:v("sourceNote"),
-    rememberSentence:v("rememberSentence"),message:v("message"),keywords:v("keywords")
+    scoreReason:v("scoreReason")||v("rememberSentence"),sourceType:v("sourceType"),sourceNote:v("sourceNote"),
+    rememberSentence:v("rememberSentence"),message:v("message"),keywords:v("keywords")||v("placeName")
   };
   try{validateRecord(data);if(v('locationConfirmed')!=='yes')throw Error('위치를 확정해주세요.');}catch(e){$('msg').textContent=e.message;return;}
   const identity=`${data.schoolId}/${uid}`;
