@@ -57,10 +57,12 @@ export function createGateway({
   uploadInvites = /** @type {((action: string, data: any, actor: any) => Promise<any>) | null} */ (null), // Explicit opt-in only. Never enabled by an adapter spread.
   inviteTeacherSchools = {}, // Private server configuration; an absent assignment denies management.
   inviteAdminUids = [], // No implicit administrator, including approved teachers.
+  moderatedOpenUploads = false, // Opt-in anonymous uploads; all submitted works remain pending.
   origins,
   deployment = /** @type {Record<string, unknown> | null} */ (null),
   clock = () => Date.now(),
 }) {
+  if (moderatedOpenUploads && (uploadInvites || allowLegacyActivityCodeUpload)) throw Error("Public moderation must not share invite/legacy authentication");
   let inFlight = 0;
   const access = uploadInvites && createUploadAccess(uploadInvites,
     createInvitePolicy({ teachers, schools: inviteTeacherSchools, admins: inviteAdminUids }));
@@ -198,9 +200,11 @@ export function createGateway({
         };
         const grant = request.headers.get("X-Upload-Grant");
         const permit = access && await access.authorize(grant, p.sub, body.schoolId);
-        const independentUploadAuth = !!access || (!!schoolUploadHashes && (!allowLegacyActivityCodeUpload || request.headers.has("X-Upload-Code")));
+        const independentUploadAuth = moderatedOpenUploads || !!access || (!!schoolUploadHashes && (!allowLegacyActivityCodeUpload || request.headers.has("X-Upload-Code")));
         let activity;
-        if (!access) {
+        // Moderated-open mode still checks Firebase anonymous UID, private work metadata,
+        // content hash, file signature and atomic SQL quotas before writing any bytes.
+        if (!access && !moderatedOpenUploads) {
           try {
             activity = decodeURIComponent(
               request.headers.get(independentUploadAuth ? "X-Upload-Code" : "X-Activity-Code") || "",
