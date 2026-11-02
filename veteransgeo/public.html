@@ -67,7 +67,7 @@ PROJECT.schools.forEach(s=>$("sf").add(new Option(`${s.region} · ${s.school}`,s
 PROJECT.categories.forEach(c=>$("cf").add(new Option(c,c)));
 
 const map=L.map("publicMap").setView([36.15,127.7],7);
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,referrerPolicy:"strict-origin-when-cross-origin",attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
 const layer=L.layerGroup().addTo(map);let rows=[];
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 const school=id=>PROJECT.schools.find(x=>x.id===id)||{school:id,region:""};
