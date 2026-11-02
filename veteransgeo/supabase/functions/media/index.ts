@@ -49,16 +49,21 @@ const adapters = createAdapters({
   databaseURL,
 });
 const inviteMode = Deno.env.get("UPLOAD_AUTH_MODE") === "teacher-invite-link";
+const moderatedOpenUploads = Deno.env.get("UPLOAD_AUTH_MODE") === "moderated-open";
+// Never silently enable public upload. An explicit school policy approval is required.
+if (moderatedOpenUploads && Deno.env.get("STUDENT_UPLOAD_POLICY_APPROVED") !== "true")
+  throw Error("Moderated-open uploads require explicit policy approval");
 Deno.serve(
   createGateway({
     ...adapters,
     uploadInvites: inviteMode ? adapters.inviteStore : null,
+    moderatedOpenUploads,
     inviteTeacherSchools: inviteMode ? privateJSON("INVITE_TEACHER_SCHOOLS") : {},
     inviteAdminUids: inviteMode ? privateJSON("INVITE_ADMIN_UIDS", "[]") : [],
     teachers,
     schoolActivityHashes,
     schoolUploadHashes: schoolActivityHashes,
-    allowLegacyActivityCodeUpload: true, // Rehearsal compatibility only; production never enables this.
+    allowLegacyActivityCodeUpload: !moderatedOpenUploads, // Moderated-open never permits legacy codes.
     origins,
     deployment,
     verify: (token: string) => verifyFirebaseToken(token, { projectId }),
