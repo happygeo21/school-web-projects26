@@ -85,6 +85,7 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
     await page.locator("#lockAwareness").waitFor();
     assert.equal(await page.locator("#school option").count(), 7);
     assert.equal(await page.locator(".step-panel").count(), 3);
+    await page.locator("#activityCode").evaluate(el => { el.closest("details").open=true; });
     await page.locator("#activityCode").fill("TEST");
     await page.locator("#awarenessScore").selectOption("2");
     await page.locator("#lockAwareness").click();
@@ -107,10 +108,12 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
     await page.locator("#sourceType").selectOption("나의 판단");
     await page.locator("#sourceNote").fill("가상 테스트");
     await page.locator('[data-step="2"]').click();
+    await page.locator("#scoreReason").evaluate(el=>{el.closest("details").open=true;});
     await page.locator("#scoreReason").fill("가상 테스트용 근거를 작성합니다.");
     await page
       .locator("#rememberSentence")
       .fill("가상 장소를 기억하는 테스트 문장입니다.");
+    await page.locator("#keywords").evaluate(el=>{el.closest("details").open=true;});
     await page.locator("#keywords").fill("가상,테스트");
     await page.locator("#submitBtn").click();
     await page.locator("#msg").filter({ hasText: "저장 권한" }).waitFor();
@@ -149,6 +152,7 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
     );
     await page.locator("#openWorkSubmission").click();
     const form = page.locator("#mediaForm");
+    await form.locator("#workExtra").evaluate(el=>{el.open=true;});
     await form.locator("[name=activityCode]").fill("TEST");
     await form.locator("[name=facilityName]").fill("가상 시설");
     await form.locator("[name=title]").fill("가상 작품");
@@ -181,6 +185,7 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
     await page.evaluate(() => (window.__fixture.deny = false));
     for (const mode of ["external", "text"]) {
       const f = page.locator("#mediaForm");
+      await f.locator("#workExtra").evaluate(el=>{el.open=true;});
       for (const [key, value] of Object.entries({
         activityCode: "TEST",
         facilityName: "가상 시설",
@@ -213,7 +218,8 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
       await page.locator("#mediaForm").waitFor({state:"attached"});
       await page.evaluate(() => (window.__fixture.deny = false));
       await page.locator("#school").selectOption("S" + school);
-      await page.locator("#activityCode").fill("TEST");
+      await page.locator("#activityCode").evaluate(el => { el.closest("details").open=true; });
+    await page.locator("#activityCode").fill("TEST");
       await page.locator("#awarenessScore").selectOption("1");
       await page.locator("#lockAwareness").click();
       await page.locator('[data-step="1"]').click();
@@ -229,13 +235,15 @@ test("student mobile/PC: steps, awareness lock, denied retry keeps same ID, offi
       await page.locator("#sourceType").selectOption("나의 판단");
       await page.locator("#sourceNote").fill("가상 출처");
       await page.locator('[data-step="2"]').click();
+      await page.locator("#scoreReason").evaluate(el=>{el.closest("details").open=true;});
       await page
         .locator("#scoreReason")
         .fill("가상 테스트의 판단 근거를 작성합니다.");
       await page
         .locator("#rememberSentence")
         .fill("가상 테스트의 기억 문장을 작성합니다.");
-      await page.locator("#keywords").fill("가상 테스트");
+      await page.locator("#keywords").evaluate(el=>{el.closest("details").open=true;});
+    await page.locator("#keywords").fill("가상 테스트");
       await page.evaluate(() => (window.__fixture.expire = true));
       await page.locator("#submitBtn").click();
       await page.locator("#msg").filter({ hasText: "학생 연결" }).waitFor();
