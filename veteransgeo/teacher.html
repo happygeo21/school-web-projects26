@@ -48,7 +48,7 @@ Google 계정이 없어도 Firebase에 교사용 계정을 미리 만들어두�
 </div>
 <div class="toolbar" style="margin-top:12px">
   <button id="passwordLoginBtn" class="green">이메일·비밀번호 로그인</button>
-  <span id="loginMsg" class="muted"></span>
+  <span id="loginMsg" class="muted" role="status" aria-live="polite"></span>
 </div>
 <p class="small muted">※ 이 비밀번호는 이메일 계정의 비밀번호가 아니라, 이 프로젝트용 Firebase 로그인 비밀번호입니다.</p>
 </div>
@@ -128,38 +128,19 @@ import {PROJECT,TEACHER_AUTH_MODE} from "./project-config.js";
 import {validateRecord,validateRecordEdit,coordinates,EDITABLE,errorMessage,diagnostic,publication} from "./upgrade-core.js";
 import {opaquePublicId} from "./draft-store.js";
 import {setupTeacherMedia} from "./media.js";
+import {setupTeacherLogin} from "./teacher-login.js";
 import {databaseTimestamp} from "./media-policy.js";
 const $=id=>document.getElementById(id);
 $("officialMapBtn").href=PROJECT.officialMapUrl;
 
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getDatabase(app),provider=new GoogleAuthProvider();
 provider.setCustomParameters({prompt:"select_account"});
-$("loginBtn").onclick=async()=>{
-  try{
-    if(auth.currentUser?.isAnonymous) await signOut(auth);
-    const r=await signInWithPopup(auth,provider);
-    $("loginMsg").textContent=`✓ Google 로그인: ${r.user.email||""}`;
-  }catch(e){
-    $("loginMsg").textContent=`Google 로그인 실패 · ${e.code||e.message}`;
-  }
-};
-
-$("passwordLoginBtn").onclick=async()=>{
-  const email=$("emailLogin").value.trim();
-  const password=$("passwordLogin").value;
-  if(!email || !password){
-    $("loginMsg").textContent="이메일과 비밀번호를 모두 입력해 주세요.";
-    return;
-  }
-  try{
-    if(auth.currentUser?.isAnonymous) await signOut(auth);
-    const r=await signInWithEmailAndPassword(auth,email,password);
-    $("loginMsg").textContent=`✓ 비밀번호 로그인: ${r.user.email||""}`;
-  }catch(e){
-    $("loginMsg").textContent=`비밀번호 로그인 실패 · ${e.code||e.message}`;
-  }
-};
-$("passwordLogin").addEventListener("keydown",e=>{if(e.key==="Enter")$("passwordLoginBtn").click();});
+const teacherLogin=setupTeacherLogin({projectId:firebaseConfig.projectId,
+ elements:{google:$("loginBtn"),passwordButton:$("passwordLoginBtn"),email:$("emailLogin"),password:$("passwordLogin"),message:$("loginMsg")},
+ prepare:async()=>{if(auth.currentUser?.isAnonymous)await signOut(auth);},
+ authenticateGoogle:()=>signInWithPopup(auth,provider),
+ authenticatePassword:(email,password)=>signInWithEmailAndPassword(auth,email,password)
+});
 $("logoutBtn").onclick=()=>signOut(auth);
 
 PROJECT.schools.forEach(s=>$("schoolFilter").add(new Option(`${s.region} · ${s.school}`,s.id)));
@@ -319,18 +300,18 @@ $("exportBtn").onclick=()=>{
 ["schoolFilter","catFilter","officialFilter","search","includeArchived"].forEach(id=>{$(id).addEventListener("change",render);$(id).addEventListener("input",render);});
 onAuthStateChanged(auth,async user=>{
  const epoch=++authEpoch;clearSession();$('login').classList.remove('hidden');
- if(!user||user.isAnonymous){$('loginMsg').textContent='교사 계정으로 로그인해주세요.';return;}
+ if(!user||user.isAnonymous){if(!teacherLogin.isBusy()&&!teacherLogin.isLimited())teacherLogin.status('idle');return;}
  try{if(TEACHER_AUTH_MODE==='claims-and-allowlist'){const token=await user.getIdTokenResult();const allowed=await get(ref(db,`${DB_ROOT}/teachers/${user.uid}`));if(epoch!==authEpoch)return;if(token.claims.teacher!==true||allowed.val()!==true)throw {code:'permission-denied'};}
- $('loginMsg').textContent='로그인 완료 · 기존 DB 교사 읽기 권한 확인 중…';
+ teacherLogin.status('database');
  unsubscribers.push(onValue(ref(db,`${DB_ROOT}/submissions`),async snap=>{
  if(epoch!==authEpoch)return;
  const nextRows=[],sequence=++snapshotSeq;const obj=snap.val()||{};
  Object.entries(obj).forEach(([schoolId,users])=>Object.entries(users||{}).forEach(([uid,items])=>Object.entries(items||{}).forEach(([entryId,v])=>nextRows.push({...v,schoolId,uid,entryId}))));
  const nextIds=new Map(await Promise.all(nextRows.map(async r=>[key(r),await opaquePublicId(key(r))])));if(epoch!==authEpoch||sequence!==snapshotSeq)return;rows=nextRows;publicIds=nextIds;
- $('loginMsg').textContent='DB 교사 읽기 권한 확인됨';$('login').classList.add('hidden');$('dash').classList.remove('hidden');setTimeout(()=>map.invalidateSize(),100);render();
- },e=>{if(epoch!==authEpoch)return;clearSession();$('login').classList.remove('hidden');$('loginMsg').textContent=errorMessage(e);}));
- unsubscribers.push(onValue(ref(db,`${DB_ROOT}/published`),snap=>{if(epoch!==authEpoch)return;published=snap.val()||{};render();},e=>{if(epoch===authEpoch)$('loginMsg').textContent=errorMessage(e);}));
+ teacherLogin.status('ready');$('login').classList.add('hidden');$('dash').classList.remove('hidden');setTimeout(()=>map.invalidateSize(),100);render();
+ },e=>{if(epoch!==authEpoch)return;clearSession();$('login').classList.remove('hidden');teacherLogin.status('database',e);}));
+ unsubscribers.push(onValue(ref(db,`${DB_ROOT}/published`),snap=>{if(epoch!==authEpoch)return;published=snap.val()||{};render();},e=>{if(epoch===authEpoch)teacherLogin.status('database',e);}));
  disposeMedia=setupTeacherMedia({app,db,user,subscribe:fn=>unsubscribers.push(fn)});
- }catch(e){if(epoch!==authEpoch)return;$('loginMsg').textContent=errorMessage(e);}
+ }catch(e){if(epoch!==authEpoch)return;teacherLogin.status('database',e);}
 });
 </script></body></html>
