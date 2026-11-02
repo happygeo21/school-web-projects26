@@ -206,7 +206,7 @@ blocks[2].querySelector('.callout').innerHTML='<strong>① 공식지도에서 �
 $('placeAutoSearchBtn').textContent='🔎 이 장소 찾기';
 const mapElement=$('map');
 const picked=document.createElement('div');picked.className='picked-box';picked.innerHTML='<div id="locationStatus" role="status" aria-live="polite">📍 아직 위치를 고르지 않았어요.</div><button id="confirmLocationBtn" type="button" class="green" disabled>✓ 이 위치가 맞아요</button><input id="locationConfirmed" type="hidden">';mapElement.after(picked);
-const mapTools=document.createElement('div');mapTools.className='toolbar map-tools';mapTools.innerHTML='<button id="manualLocationBtn" type="button" class="gray" aria-pressed="false">검색이 안 되나요? 지도에서 직접 찍기</button><button id="schoolMapBtn" type="button" class="gray">우리 지역으로 돌아가기</button>';mapElement.before(mapTools);
+const mapTools=document.createElement('div');mapTools.className='toolbar map-tools';mapTools.innerHTML='<button id="manualLocationBtn" type="button" class="gray" aria-pressed="false">검색이 안 되나요? 지도에서 직접 찍기</button><button id="schoolMapBtn" type="button" class="gray">우리 지역으로 돌아가기</button>';mapElement.before(mapTools);const mapBackup=document.createElement('p');mapBackup.className='map-tip';mapBackup.textContent='지도가 차단되거나 표시되지 않으면 아래 「Google 지도로 확인」을 열어 장소를 찾고 위도·경도를 붙여넣을 수 있어요.';mapElement.after(mapBackup);
 const googleHelp=document.createElement('details');googleHelp.className='google-help';googleHelp.innerHTML='<summary>Google 지도로 확인하고 싶다면</summary><p>① Google 지도를 열어 장소를 찾으세요.<br>② 이 화면으로 돌아와 검색하거나 지도에서 같은 곳을 찍으세요.</p><div id="googleButtonRow" class="toolbar"></div><p class="small muted">Google 지도에서 찾은 위치가 이 화면에 자동으로 옮겨지지는 않아요.</p><details><summary>지도에서 못 찾겠어요: 위치 숫자 붙여넣기</summary><p class="small">컴퓨터: Google 지도에서 정확한 지점을 마우스 오른쪽 버튼으로 누르고, 맨 위의 숫자를 눌러 복사하세요.<br>휴대폰: 장소를 길게 눌러 핀을 놓고, 표시된 위치 숫자를 복사하세요.</p><label for="coordinatePaste">복사한 위치 숫자</label><input id="coordinatePaste" placeholder="예: 35.0612, 126.9865" inputmode="text"><button id="applyCoordinatesBtn" type="button" class="gray">이 위치 가져오기</button><p id="coordinateHelp" role="status" class="small"></p></details>';picked.after(googleHelp);
 $('googleMapSearchBtn').textContent='Google 지도에서 장소 보기';$('googleButtonRow').append($('googleMapSearchBtn'));$('googleMapCoordBtn').textContent='선택한 핀을 Google 지도에서 보기';$('googleButtonRow').append($('googleMapCoordBtn'));
 const oldMapToolbar=blocks[2].querySelector('.toolbar[style="margin-top:12px"]');if(oldMapToolbar)oldMapToolbar.remove();
@@ -257,7 +257,7 @@ $("sourceType").insertBefore(new Option("근거 유형을 선택하세요",""),$
 $("sourceType").value="";
 
 const map=L.map("map",{scrollWheelZoom:false}).setView(PROJECT.schools[0].center,PROJECT.schools[0].zoom);
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,referrerPolicy:"strict-origin-when-cross-origin",attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
 let marker=null,manualMode=false,pickedLabel="",searchVersion=0,activeSearch=null,lastSearchAt=0;
 function currentSchool(){return PROJECT.schools.find(x=>x.id===$("school").value)||PROJECT.schools[0];}
 function escHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
@@ -339,7 +339,7 @@ async function autoFindPlace(){
   $("placeAutoSearchBtn").disabled=true;$("placeAutoSearchBtn").textContent="찾는 중…";$("searchResults").textContent="장소를 찾고 있어요. 잠시만 기다려주세요.";
   try{
     const url=`https://nominatim.openstreetmap.org/search?format=jsonv2&countrycodes=kr&limit=5&accept-language=ko&q=${encodeURIComponent(q)}`;
-    const res=await fetch(url,{headers:{Accept:"application/json"},signal:controller.signal});if(!res.ok)throw new Error(`HTTP ${res.status}`);
+    const res=await fetch(url,{headers:{Accept:"application/json"},referrerPolicy:"strict-origin-when-cross-origin",signal:controller.signal});if(!res.ok)throw new Error(`HTTP ${res.status}`);
     const data=await res.json();if(version!==searchVersion||schoolId!==$("school").value)return;
     if(!Array.isArray(data)||!data.length){searchFailure("이 이름으로는 장소를 찾지 못했어요.");return;}
     $("searchResults").innerHTML='<p class="map-tip">👇 주소가 맞는 결과를 눌러주세요. 핀이 나타나면 위치를 확인하세요.</p>'+data.map((r,i)=>`<button type="button" class="place-result" data-i="${i}"><span><strong>${escHtml(r.name||r.display_name.split(",")[0])}</strong><span class="result-address">${escHtml(r.display_name)}</span></span><span class="result-action">여기 선택 →</span></button>`).join("");
