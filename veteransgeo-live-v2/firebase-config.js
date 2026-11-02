@@ -1,0 +1,2 @@
+export const firebaseConfig=Object.freeze({"apiKey":"AIzaSyDe_Lyv11Wm1KsIhSh2lfOkc4FE1KNElec","authDomain":"veteransgeo-test-2026.firebaseapp.com","projectId":"veteransgeo-test-2026","databaseURL":"https://veteransgeo-test-2026-default-rtdb.asia-southeast1.firebasedatabase.app","appId":"1:389852710473:web:310e5848938fd552986198","messagingSenderId":"389852710473"});
+export const DB_ROOT='veteransgeoLiveV2';
