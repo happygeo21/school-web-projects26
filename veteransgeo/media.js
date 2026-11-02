@@ -423,7 +423,7 @@ export function setupTeacherMedia({
     .map(([k, v]) => `<option value="${k}">${v}</option>`)
     .join(
       "",
-    )}</select></label><label>학교·시설·제목 검색<input id="workSearch" maxlength="100"></label><div class="media-toolbar"><button id="mediaUsage" class="gray">무료 사용량 확인</button><button id="reconcileMedia" class="gray">미디어 상태 점검·고아 파일 정리</button></div><p id="workStatus" role="status"></p><div id="workList"></div>`;
+    )}</select></label><label>학교·시설·제목 검색<input id="workSearch" maxlength="100"></label><div class="media-toolbar"><button id="mediaUsage" class="gray">저장공간 사용량 확인</button><button id="reconcileMedia" class="gray">파일 상태 확인·오래된 파일 정리</button></div><p id="workStatus" role="status"></p><div id="workList"></div>`;
   $("dash").append(section);
   const disposeInvites = setupTeacherInvites({ section, provider, user });
   let records = {},
@@ -450,7 +450,7 @@ export function setupTeacherMedia({
           ((r.objectBytes + r.reservedBytes) / r.capacity) * 100,
         );
       $("workStatus").textContent =
-        `스토리지 메타데이터·예약 기준 ${percent}%${percent >= 70 ? " · 70% 이상 경고" : ""}${percent >= 90 ? " · 신규 영상 제한" : ""}. 전송량 ${Math.round(r.estimatedTransferBytes / 1024 ** 2)}MB는 앱 추정치예요. 실제 요금제 사용량은 Supabase Dashboard에서 확인하세요.`;
+        `현재 저장 파일과 업로드 대기 용량 기준 ${percent}%${percent >= 70 ? " · 70% 이상 경고" : ""}${percent >= 90 ? " · 신규 영상 제한" : ""}. 전송량 ${Math.round(r.estimatedTransferBytes / 1024 ** 2)}MB는 앱 추정치예요. 실제 요금제 사용량은 Supabase Dashboard에서 확인하세요.`;
     } catch (e) {
       fail(e);
     }
@@ -459,13 +459,13 @@ export function setupTeacherMedia({
     try {
       if (
         !confirm(
-          "파일 상태를 대조하고 보관 기간이 지난 파일을 정리할까요? 학생 원본·이력은 유지합니다.",
+          "파일 저장 상태를 확인하고, 제출 기록이 없거나 반려·보관된 지 오래된 일부 파일을 정리할까요? 이 기능은 첨부파일을 실제로 삭제할 수 있습니다. 학생의 글 원본과 수정 이력은 유지되지만, 삭제한 파일은 복원할 수 없을 수 있습니다. 학교의 파일 보존·삭제 기준을 먼저 확인해주세요.",
         )
       )
         return;
       const r = await provider.reconcile(await token());
       $("workStatus").textContent =
-        `점검 ${r.checked}개 · 정리 ${r.deleted}개 · 복구 ${r.repaired}개. 잔여 항목은 다시 점검하세요.`;
+        `상태 확인 ${r.checked}개 · 파일 삭제 처리 ${r.deleted}개 · 저장 상태 복구 ${r.repaired}개. 기록과 파일을 다시 확인해주세요.`;
     } catch (e) {
       fail(e);
     }
