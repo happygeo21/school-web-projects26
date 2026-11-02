@@ -36,6 +36,7 @@ test("real Chromium + local mock gateway: image compression/upload/retry, video,
     assert.equal(await form.locator("[name=schoolId]").inputValue(), "S2");
     await student.locator("#school").selectOption("S1");
     assert.equal(await form.locator("[name=schoolId]").inputValue(), "S1");
+    await form.locator("#workExtra").evaluate(el=>{el.open=true;});
     async function fill(title, type = "사진", mode = "upload") {
       await form.locator("[name=type]").selectOption(type);
       await form.locator("[name=submissionMode]").selectOption(mode);
