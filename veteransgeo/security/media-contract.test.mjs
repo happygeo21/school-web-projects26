@@ -353,5 +353,5 @@ test("moderated-open student upload requires anonymous owner and keeps file priv
   assert.equal(env.state.objects.size, 1);
   assert.equal(env.state.published.size, 0);
   assert.throws(() => createGateway({...env, teachers:["teacher"], origins:[origin], moderatedOpenUploads:true,
-    allowLegacyActivityCodeUpload:true, verify:async()=>({})}), /cannot share/);
+    allowLegacyActivityCodeUpload:true, verify:async()=>({})}), /must not share/);
 });
