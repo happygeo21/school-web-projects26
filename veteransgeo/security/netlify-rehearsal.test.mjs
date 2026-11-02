@@ -6,3 +6,23 @@ test('runtime verifies test readiness/Auth domain and blocks operating DB/media/
 test('runtime stops before all hosted calls on the wrong preview origin',async()=>{const r=runtime('https://wrong.netlify.app');await assert.rejects(r.context.__veteransgeoGuardReady);assert.equal(r.calls.length,0);});
 test('preview artifact gates module startup, disables real Google sign-in, adds synthetic banner and CSP without secrets/rules',async()=>{const out=await mkdtemp(path.join(os.tmpdir(),'veteransgeo-netlify-preview-'));for(const file of['index.html','teacher.html','public.html'])await writeFile(path.join(out,file),await readFile(new URL('../'+file,import.meta.url),'utf8'));await configurePreview(out,previewConfig(env));const teacher=await readFile(path.join(out,'teacher.html'),'utf8');assert.match(teacher,/id="loginBtn" disabled/);assert.match(teacher,/test-network-guard.js/);assert.match(teacher,/id="passwordLoginBtn" disabled/);assert.match(teacher,/getElementById\("passwordLoginBtn"\).disabled=false/);assert.match(teacher,/가상 자료 전용/);assert.match(await readFile(path.join(out,'firebase-config.js'),'utf8'),/await globalThis.__veteransgeoGuardReady/);assert.match(await readFile(path.join(out,'_headers'),'utf8'),/Content-Security-Policy/);assert(!teacher.includes('school-project-26-1edf4'));});
 test('temporary HTTPS fallback is origin-bound to the same exact test projects',async()=>{const origin='https://synthetic-mobile-check.trycloudflare.com',r=runtime(origin,origin);await r.context.__veteransgeoGuardReady;assert.equal(r.calls.length,2);assert.throws(()=>previewRuntime(previewConfig(env),'https://unapproved.example'));});
+
+
+test('OSM maps declare the policy-compliant tile host and per-tile origin referrer on all three pages',async()=>{
+  for(const page of ['index.html','teacher.html','public.html']){
+    const html=await readFile(new URL('../'+page,import.meta.url),'utf8');
+    assert.match(html,/https:\/\/tile\.openstreetmap\.org\/\{z\}\/\{x\}\/\{y\}\.png/);
+    assert.match(html,/referrerPolicy:"strict-origin-when-cross-origin"/);
+    assert.doesNotMatch(html,/https:\/\/\{s\}\.tile\.openstreetmap\.org/);
+  }
+  const student=await readFile(new URL('../index.html',import.meta.url),'utf8');
+  assert.match(student,/referrerPolicy:"strict-origin-when-cross-origin",signal:controller\.signal/);
+  const out=await mkdtemp(path.join(os.tmpdir(),'veteransgeo-osm-policy-'));
+  for(const file of ['index.html','teacher.html','public.html'])await writeFile(path.join(out,file),await readFile(new URL('../'+file,import.meta.url),'utf8'));
+  await configurePreview(out,previewConfig(env));
+  const headers=await readFile(path.join(out,'_headers'),'utf8');
+  assert.match(headers,/img-src[^;]*https:\/\/tile\.openstreetmap\.org/);
+  assert.match(headers,/connect-src[^;]*https:\/\/nominatim\.openstreetmap\.org/);
+  // Invitation tokens remain protected at the document level; Leaflet tile images set an origin-only exception.
+  assert.match(headers,/Referrer-Policy: no-referrer/);
+});
