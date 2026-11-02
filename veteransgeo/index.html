@@ -250,6 +250,9 @@ $("officialMapLink2").href=PROJECT.officialMapUrl;
 
 PROJECT.schools.forEach(s=>$("school").add(new Option(`${s.region} · ${s.school}`,s.id)));
 PROJECT.categories.forEach(c=>$("category").add(new Option(c,c)));
+// Hidden advanced classification must not silently claim an official site or a specific era.
+$("category").value="기타 보훈·공공기억";
+$("placeOrigin").value="student_suggested";
 PROJECT.sourceTypes.forEach(c=>$("sourceType").add(new Option(c,c)));
 PROJECT.officialStatuses.forEach(x=>$("officialStatus").add(new Option(x.label,x.value)));
 $("awarenessScore").add(new Option("선택하세요 · 자료를 보기 전의 나",""));
