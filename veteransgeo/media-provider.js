@@ -152,6 +152,8 @@ export function createMediaProvider(
             ? {"X-Upload-Grant": uploadGrant}
             : config.uploadAuthorization === "school-upload-code"
             ? {"X-Upload-Code": encodeURIComponent(uploadCode)}
+            : config.uploadAuthorization === "moderated-open"
+            ? {}
             : {"X-Activity-Code": encodeURIComponent(activityCode)}),
         }))
           x.setRequestHeader(k, v);
