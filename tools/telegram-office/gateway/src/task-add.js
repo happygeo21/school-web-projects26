@@ -13,7 +13,7 @@ export function parseAdd(input, now = new Date()) {
   if (title.length < 2 || title.length > 160 || /[\p{Cc}\p{Cf}]/u.test(title)) throw new Error("업무명은 줄바꿈 없이 2~160자로 입력하세요.\n" + FORMAT);
   // Conservative rejection; these checks cannot classify every possible name.
   if (/(?:학번|성적|출결|연락처|상담|주민번호|전화번호|학생\s*(?:이름|명단|개별)|[가-힣]{2,4}\s*학생|\d|@|https?:|ntn_|secret_|토큰|비밀키)/i.test(title)
-      || /(?:^|\s)[김이박최정강조윤장임한오서신권황안송류홍전고문양손배백허유남심노하곽성차주우구민진지엄채원천방공현함변염여추도소석선설마길연위표명기반왕금옥육인맹제모탁국어은편용][가-힣]{1,2}(?=\s|$)/u.test(title.replace(/(?:^|\s)(안내문|연구|교육|지도|자료|정리|개선|관리|설문|공유|공문|원고|조사|양식)(?=\s|$)/g, " "))) throw new Error("학생 이름·학번·성적·출결·연락처·상담 내용과 인증키는 입력할 수 없습니다. 개인정보 없는 일반 업무명만 사용하세요.");
+      || /(?:^|\s)[김이박최정강조윤장임한오서신권황안송류홍전고문양손배백허유남심노하곽성차주우구민진지엄채원천방공현함변염여추도소석선설마길연위표명기반왕금옥육인맹제모탁국어은편용][가-힣]{1,2}(?=\s|$)/u.test(title.replace(/(?:^|\s)(안내문|연구|교육|지도|자료|정리|개선|관리|설문|공유|공문|원고|조사|양식|연결)(?=\s|$)/g, " "))) throw new Error("학생 이름·학번·성적·출결·연락처·상담 내용과 인증키는 입력할 수 없습니다. 개인정보 없는 일반 업무명만 사용하세요.");
   const today = new Date(now.getTime() + 9 * 3600000).toISOString().slice(0, 10);
   let due;
   const offsets = { "오늘": 0, "내일": 1, "모레": 2 };
@@ -98,7 +98,6 @@ function stateReply(row) {
 // tombstones remain so old Telegram deliveries never recreate a submission.
 async function clean(db, now) {
   await db.prepare("UPDATE task_approvals SET state='expired', title=NULL, due=NULL, schema_json=NULL WHERE state='pending' AND expires_at<=?").bind(now).run();
-  await db.prepare("UPDATE task_approvals SET title=NULL, due=NULL, schema_json=NULL WHERE state IN ('verified','cancelled')").run();
 }
 export async function prepareAdd(input, updateId, owner, env, now = new Date()) {
   let parsed;

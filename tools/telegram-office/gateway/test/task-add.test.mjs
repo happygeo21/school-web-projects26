@@ -99,6 +99,7 @@ test("dates accept examples, exact dates and KST midnight; reject ambiguous/inva
   const now=new Date("2026-11-02T15:00:00Z");
   assert.deepEqual(parseAdd("/add 통합사회 활동지 준비 | 내일",now),{title:"통합사회 활동지 준비",due:"2026-11-04"});
   assert.equal(parseAdd("업무등록 eGIS 학생 안내문 점검 | 2026-11-06",now).due,"2026-11-06");
+  assert.equal(parseAdd("/add GeoTeacher 업무 등록 연결 점검 | 오늘",now).title,"GeoTeacher 업무 등록 연결 점검");
   assert.equal(parseAdd("/add@GeoTeacherBot 활동지 준비 | 오늘",now).due,"2026-11-03");
   for(const input of ["/add | 내일","/add 활동지 준비 | 2026-02-30","/add 활동지 준비 | 다음 주","/add 활동지 준비 | 2026-11-02","/add 활동지 준비","/add 활동지 준비 | 2026-13-01","/add 활동지 준비 | 내일 | 모레"]) assert.throws(()=>parseAdd(input,now));
 });
