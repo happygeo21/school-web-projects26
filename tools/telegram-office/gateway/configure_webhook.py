@@ -18,7 +18,24 @@ def request(method, payload=None):
         with urlopen(req, timeout=15) as response:
             data = json.load(response)
     except HTTPError as error:
-        raise RuntimeError(f"Telegram request returned HTTP {error.code}") from error
+        # Only fixed diagnostic labels are logged; never the remote body or secrets.
+        category = "unclassified"
+        try:
+            detail = json.loads(error.read(8192)).get("description", "").lower()
+            categories = (
+                ("resolve host", "worker_dns_resolution"),
+                ("ssl", "worker_tls_certificate"),
+                ("certificate", "worker_tls_certificate"),
+                ("secret", "webhook_secret_rejected"),
+                ("https", "webhook_https_required"),
+                ("url", "webhook_url_rejected"),
+                ("ip address", "webhook_ip_rejected"),
+                ("webhook", "webhook_rejected"),
+            )
+            category = next((label for needle, label in categories if needle in detail), category)
+        except (ValueError, AttributeError, TypeError):
+            pass
+        raise RuntimeError(f"Telegram {method} returned HTTP {error.code}; category={category}") from None
     if not data.get("ok"):
         raise RuntimeError(f"Telegram method {method} failed")
     return data["result"]
