@@ -1,8 +1,10 @@
+import{getApps}from'https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js';
 import{getAuth}from'https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js';
 import{MEDIA_CONFIG}from'./media-config.js';import{readLegacyPublic}from'./legacy-readonly.js';
+const v2Auth=()=>{const student=getApps().find(a=>a.name==='veteransgeo-v2-student');return student?getAuth(student):getAuth()};
 const endpoint=MEDIA_CONFIG.endpoint,root='veteransgeoLiveV2';const changed=()=>dispatchEvent(new Event('v2-data-change'));
 export const getDatabase=()=>({});export const ref=(_db,path='')=>({path});export const push=r=>{const key='v2-'+crypto.randomUUID().replaceAll('-','');return{key,path:r.path+'/'+key}};
-async function call(path,method='get',data){let token='';try{token=await getAuth().currentUser?.getIdToken()||'';}catch{}const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:JSON.stringify({action:'v2-db',path:path||root,method,...(data===undefined?{}:{data})}),cache:'no-store',signal:AbortSignal.timeout(18000)});const result=await response.json();if(!response.ok)throw{code:result.code||'media/network',message:result.message};return result;}
+async function call(path,method='get',data){let token='';try{token=await v2Auth().currentUser?.getIdToken()||'';}catch{}const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:JSON.stringify({action:'v2-db',path:path||root,method,...(data===undefined?{}:{data})}),cache:'no-store',signal:AbortSignal.timeout(18000)});const result=await response.json();if(!response.ok)throw{code:result.code||'media/network',message:result.message};return result;}
 export const get=async r=>{const v=await call(r.path);return{exists:()=>v!=null,val:()=>v}};
 export const set=async(r,data)=>{if(r.path.includes('/submissions/')&&data)data={...data,status:'pending'};const value=await call(r.path,'set',data);changed();return value;};
 export const update=async(r,data)=>{const value=await call(r.path,'update',data);changed();return value;};export const remove=()=>Promise.reject({code:'media/permission',message:'원본 기록 삭제는 이 화면에서 지원하지 않아요.'});

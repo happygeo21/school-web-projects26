@@ -56,7 +56,7 @@
 
 <div class="card"><div class="toolbar">
 <span id="conn" class="status">제출 연결 확인 중…</span>
-<span class="note">이름·학번·현재 GPS는 수집하지 않습니다. 활동코드만 사용합니다.</span>
+<span class="note">이름·학번·현재 GPS는 수집하지 않습니다. 모둠·활동명은 선택 입력입니다.</span>
 </div></div>
 
 <div class="callout"><strong>오늘의 탐구</strong><br>장소 한 곳에 담긴 희생·공헌을 확인하고, 왜 그 기억이 일상에서 잘 보이거나 보이지 않는지 위치·접근 경로·안내 방식으로 설명합니다.<br><span class="small">공식지도 확인 → LIVE 기록 → 다른 지역 비교 → e-GIS 분석·개선 제안</span></div>
@@ -382,7 +382,7 @@ const recovery=draftStore(tabStorage,"memory:v3:student"),savedDraft=recovery.re
 let persistDraft=()=>{},draftCleared=false;
 async function connectStudent(){
  try{
-  app=app||initializeApp(firebaseConfig);const auth=getAuth(app);db=getDatabase(app);await auth.authStateReady?.();
+  app=app||initializeApp(firebaseConfig,"veteransgeo-v2-student");const auth=getAuth(app);db=getDatabase(app);await auth.authStateReady?.();
   if(auth.currentUser&&!auth.currentUser.isAnonymous){$("conn").textContent="교사 계정이 연결되어 있어요. 교사용 화면에서 로그아웃한 뒤 학생 연결을 눌러주세요.";uid=null;$("submitBtn").disabled=true;return;}
   const cred=auth.currentUser?.isAnonymous?{user:auth.currentUser}:await signInAnonymously(auth);uid=cred.user.uid;document.dispatchEvent(new Event("memory-auth-change"));
   $("conn").textContent="● 학생 연결 완료 · 저장 권한은 제출 때 확인해요";$("conn").className="status ok";$("submitBtn").disabled=false;
