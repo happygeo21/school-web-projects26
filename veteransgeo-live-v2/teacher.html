@@ -1,6 +1,6 @@
 <!doctype html><html lang="ko"><head><script src="./v2-network-guard.js"></script>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>기억의 좌표 LIVE 2.0 | 가상 교사용</title>
+<title>기억의 좌표 LIVE 2.0 | 기존 교사용 · 테스트</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{--bg:#f5f6f8;--card:#fff;--text:#172033;--muted:#697386;--line:#dde3eb;--blue:#2e659e;--green:#15735a;--red:#b33f3f;--amber:#a36b00;--purple:#6a4aa3;--shadow:0 12px 28px rgba(28,42,72,.08)}
@@ -27,7 +27,7 @@
 
 <section class="card" id="legacyRecords"><h2>기존 기록 · 읽기 전용</h2></section>
 <div id="login" class="card" style="max-width:760px;margin:70px auto">
-<h1>🧭 LIVE 2.0 | 가상 교사 검증</h1><p><strong>아래 가상 교사 로그인은 테스트 계정 전용입니다. 기존 등록 교사는 ‘기존 기록 · 읽기 전용’ 영역에서 기존 이메일 또는 Google 계정으로 연결하세요. 신규 V2 승인권은 아직 활성화하지 않았습니다.</strong></p>
+<h1>🧭 LIVE 2.0 | 기존 교사 · 신규 작품 테스트</h1><p><strong>아래에서는 기존 이메일·비밀번호 또는 Google 계정으로 로그인하여 담당 학교의 V2 가상 작품을 검토합니다. 신규 자료는 테스트 서버에만 저장됩니다. 상단 원본 조회는 별도 읽기 전용 연결입니다. 실제 학생 자료는 입력하지 마세요.</strong></p>
 <p>교사용 대시보드는 <strong>Google 로그인</strong> 또는 <strong>Firebase 이메일·비밀번호 로그인</strong>을 사용할 수 있습니다.</p>
 
 <div class="callout">
@@ -137,7 +137,7 @@ const $=id=>document.getElementById(id);
 $("officialMapBtn").href=PROJECT.officialMapUrl;
 
 import {enableLegacyTeacher} from './legacy-readonly.js';
-enableLegacyTeacher({
+const existingTeacherConfig={
   apiKey: "AIzaSyBq4SwGFR0mgHiEuluOnEdy9a0oS5o50ow",
   authDomain: "school-project-26-1edf4.firebaseapp.com",
   databaseURL: "https://school-project-26-1edf4-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -146,10 +146,11 @@ enableLegacyTeacher({
   messagingSenderId: "1059484913673",
   appId: "1:1059484913673:web:9f7f655f5f9f43349328d8",
   measurementId: "G-CZHVQ25GS5"
-},document.getElementById('legacyRecords'));
-const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getDatabase(app),provider=new GoogleAuthProvider();
+};
+enableLegacyTeacher(existingTeacherConfig,document.getElementById('legacyRecords'));
+const app=initializeApp(existingTeacherConfig),auth=getAuth(app),db=getDatabase(app),provider=new GoogleAuthProvider();
 provider.setCustomParameters({prompt:"select_account"});
-const teacherLogin=setupTeacherLogin({projectId:firebaseConfig.projectId,
+const teacherLogin=setupTeacherLogin({projectId:existingTeacherConfig.projectId,
  elements:{google:$("loginBtn"),passwordButton:$("passwordLoginBtn"),email:$("emailLogin"),password:$("passwordLogin"),message:$("loginMsg")},
  prepare:async()=>{if(auth.currentUser?.isAnonymous)await signOut(auth);},
  authenticateGoogle:()=>signInWithPopup(auth,provider),
