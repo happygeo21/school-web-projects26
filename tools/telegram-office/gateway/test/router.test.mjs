@@ -65,3 +65,32 @@ test("authorized /ping sends an acknowledgement to the permitted chat", async ()
     globalThis.fetch = previous;
   }
 });
+
+test("status falls back to the public badge if GitHub API is rate limited", async () => {
+  const previous = globalThis.fetch;
+  let payload;
+  globalThis.fetch = async (url, options) => {
+    if (url.includes("api.github.com")) return new Response("", {status:403});
+    if (url.includes("/badge.svg")) return new Response("<svg><title>GeoTeacher Telegram Notifications - passing</title></svg>");
+    payload = JSON.parse(options.body);
+    return new Response("{}", {status:200});
+  };
+  try {
+    assert.equal((await gateway.fetch(hook(message("/status")), env)).status, 200);
+    assert.match(payload.text, /공개 실행 배지\(main\): 성공/);
+    assert.match(payload.text, /캐시/);
+  } finally { globalThis.fetch = previous; }
+});
+test("status remains unknown when the API and badge are unavailable", async () => {
+  const previous = globalThis.fetch;
+  let payload;
+  globalThis.fetch = async (url, options) => {
+    if (!url.includes("api.telegram.org")) return new Response("", {status:503});
+    payload = JSON.parse(options.body);
+    return new Response("{}", {status:200});
+  };
+  try {
+    assert.equal((await gateway.fetch(hook(message("/status")), env)).status, 200);
+    assert.match(payload.text, /확인하지 못했습니다/);
+  } finally { globalThis.fetch = previous; }
+});

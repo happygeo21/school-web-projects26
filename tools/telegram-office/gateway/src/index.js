@@ -17,6 +17,7 @@ function response(message, status = 200) {
 
 async function statusMessage() {
   let status = "최신 작업 상태를 확인하지 못했습니다.";
+  let checked = false;
   try {
     const url = "https://api.github.com/repos/" + REPOSITORY
       + "/actions/workflows/teacher-telegram-notifications.yml/runs?per_page=1";
@@ -28,6 +29,7 @@ async function statusMessage() {
     });
     if (result.ok) {
       const data = await result.json();
+      checked = true;
       const run = data.workflow_runs?.[0];
       if (run) {
         const values = { success: "성공", failure: "실패", cancelled: "취소", skipped: "건너뜀" };
@@ -41,6 +43,24 @@ async function statusMessage() {
     }
   } catch {
     // No claims of success if the GitHub API is unavailable.
+  }
+  if (!checked) {
+    try {
+      const badge = await fetch(GITHUB_ACTIONS + "/badge.svg?branch=main", {
+        headers: { "User-Agent": "GeoTeacher-Office-Gateway" },
+      });
+      if (badge.ok) {
+        const svg = await badge.text();
+        const state = svg.match(/<title>[^<]* - (passing|failing|pending|running|cancelled|no status)<\/title>/i)?.[1]?.toLowerCase();
+        const labels = { passing: "성공", failing: "실패", pending: "대기 중", running: "진행 중", cancelled: "취소", "no status": "기록 없음" };
+        if (state && labels[state]) {
+          status = "GitHub 공개 실행 배지(main): " + labels[state]
+            + "\n※ 배지 정보는 캐시되어 실제 실행보다 늦게 반영될 수 있습니다.";
+        }
+      }
+    } catch {
+      // Keep the honest unknown state when both public sources are unavailable.
+    }
   }
   return "🔎 GeoTeacher 시스템 상태\n\n"
     + "Telegram 명령 수신: 정상\n"
