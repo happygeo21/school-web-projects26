@@ -110,7 +110,21 @@ def main():
         report["serving_versions"].append(entry)
     settings, settings_access=attempt(lambda:get_json(script+"/script-settings",token))
     report["settings_access"]=settings_access
-    if settings: report["observability_enabled"]=(settings.get("observability") or {}).get("enabled")
+    if settings:
+        obs=settings.get("observability") or {}
+        report["observability"]={key:obs[key] for key in ["enabled","head_sampling_rate"] if isinstance(obs.get(key),(bool,int,float))}
+        logs=obs.get("logs") or {}
+        report["observability"]["logs"]={key:logs[key] for key in ["enabled","invocation_logs","head_sampling_rate"] if isinstance(logs.get(key),(bool,int,float))}
+    subdomain,subdomain_access=attempt(lambda:get_json(script+"/subdomain",token))
+    report["subdomain_access"]=subdomain_access
+    if subdomain: report["subdomain"]={key:subdomain[key] for key in ["enabled","previews_enabled"] if isinstance(subdomain.get(key),bool)}
+    subscriptions,subscription_access=attempt(lambda:get_json(base+"/subscriptions",token))
+    report["subscription_access"]=subscription_access
+    # Do not dump billing objects or unrelated products. Only exact known plan names.
+    if isinstance(subscriptions,list):
+        plan_names=[str((x.get("rate_plan") or {}).get("public_name", "")) for x in subscriptions if isinstance(x,dict)]
+        report["workers_paid_plan_detected"]=any(n in {"Workers Paid","Workers Paid Plan","Workers Standard"} for n in plan_names)
+        report["account_free_plan_verified"]=any(n in {"Workers Free","Workers Free Plan"} for n in plan_names) and not report["workers_paid_plan_detected"]
     db,db_access=attempt(lambda:get_json(base+"/d1/database/"+DB_ID,token))
     report["d1_metadata_access"]=db_access
     if db:
