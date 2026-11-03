@@ -1,0 +1,103 @@
+{
+  "dateKST": "2026-11-03",
+  "kind": "actual V2 browser acceptance; real servers; synthetic new submissions only",
+  "baseHEAD": "99f62e49a7bd6bf3c72f957996140fbca2700275",
+  "branch": "codex/veteransgeo-live-v2",
+  "origin": "https://veteransgeo-live-v2.pages.dev",
+  "teacherFlow": {
+    "login": "existing user-authenticated virtual teacher session reused",
+    "privateJPEGPreview": true,
+    "approvedInBrowser": [
+      "JPEG",
+      "WebM"
+    ],
+    "publicGalleryCount": 2,
+    "JPEGDecoded": true,
+    "WebMPlayed": true,
+    "approvedGET": [
+      200,
+      200
+    ],
+    "approvedRange": [
+      206,
+      206
+    ],
+    "withdrawnInBrowser": true,
+    "withdrawnGET": [
+      403,
+      403
+    ],
+    "withdrawnRange": [
+      403,
+      403
+    ],
+    "finalPublicV2Works": 0
+  },
+  "studentFlow": {
+    "phoneWidth": 390,
+    "tabletWidth": 820,
+    "noUploadCodeOrInvite": true,
+    "newSyntheticTextWork": "created, pending, teacher received, approved, public, withdrawn",
+    "newSyntheticExploration": "three steps, manual location confirmed, source and reason saved, teacher received, approved, public, withdrawn",
+    "newFilesUploaded": 0,
+    "existingSyntheticMediaReused": 2,
+    "sameBrowserStudentTeacherAndLegacySessionsIndependent": true,
+    "teacherSessionPreserved": true,
+    "horizontalOverflow": false,
+    "physicalDevice": "unverified"
+  },
+  "legacyRead": {
+    "baselineRecords": 20,
+    "currentReadOnlyRecords": 31,
+    "schoolCounts": {
+      "S1": 2,
+      "S2": 18,
+      "S3": 11
+    },
+    "authenticatedApprovedTeacherCountAtLeast": 1,
+    "remainingTeacherLoginChecks": 6,
+    "GoogleV2DomainAuthorized": false,
+    "existingEmailPasswordAccountReadVerified": true,
+    "privateSourceGETWithoutAuth": 401,
+    "publicApprovedRecords": 25,
+    "copiesToV2Server": 0,
+    "fullBaseline20CompatibilityAudit": "reused prior evidence; not rerun",
+    "privateDOMClearedAfterVerification": true
+  },
+  "isolation": {
+    "V1DatabaseWrites": 0,
+    "V1RulesPublishes": 0,
+    "V1AuthConfigurationChanges": 0,
+    "V1Deployments": 0,
+    "existingAccountOrPasswordChanges": 0,
+    "seoulServerChanges": 0,
+    "mainMerges": 0,
+    "PR7": "Draft unchanged",
+    "V2Function": "existing media-v2 platform6 reused; no server deployment this turn",
+    "existingMediaRows": 12,
+    "existingStorageObjects": 12,
+    "V2MediaRows": 2,
+    "V2StorageObjects": 2,
+    "missingV2Files": 0,
+    "deletions": 0
+  },
+  "localRelatedTests": {
+    "sessionTokenIsolation": {
+      "passed": 2,
+      "failed": 0,
+      "backend": "mock"
+    },
+    "legacyReadSafetyAndSessionCleanup": {
+      "passed": 4,
+      "failed": 0,
+      "backend": "mock"
+    }
+  },
+  "schoolPolicy": {
+    "noticeConsent": "pending",
+    "publicationScope": "pending",
+    "crossBorderProcessing": "pending",
+    "retentionEndAndDeletion": "pending"
+  },
+  "actualStudentOpening": "NO-GO; virtual rehearsal only"
+}

@@ -13,11 +13,11 @@ export async function enableLegacyTeacher(config,container){
   const passwordButton=document.createElement('button');passwordButton.type='button';passwordButton.textContent='기존 계정으로 원본 읽기 전용 연결';
   const google=document.createElement('button');google.type='button';google.textContent='기존 Google 교사 연결 · 현재 보류';google.disabled=true;
   const googleNote=document.createElement('p');googleNote.textContent='Google 전용 계정은 현재 V2 주소의 인증 도메인 조건 때문에 연결 보류입니다. V1 설정은 바꾸지 않았습니다. 비밀번호를 추정하거나 새로 설정하지 마세요. V2 신규 제출 관리 권한도 이 연결로 부여되지 않습니다.';
-  const disconnect=document.createElement('button');disconnect.type='button';disconnect.textContent='기존 원본 연결 종료 · 화면 비우기';disconnect.hidden=true;
+  const disconnect=document.createElement('button');disconnect.type='button';disconnect.textContent='기존 원본 연결 종료 · 화면 비우기';disconnect.hidden=true;disconnect.disabled=true;
   const message=document.createElement('p');message.setAttribute('role','status');message.id='legacyConnectionStatus';const summary=document.createElement('p');summary.id='legacyReadSummary';const list=document.createElement('div');list.id='legacyReadList';
   container.append(note,emailLabel,passwordLabel,passwordButton,google,googleNote,message,summary,disconnect,list);
   const getLegacyAuth=()=>{const app=getApps().find(a=>a.name==='legacy-read-only')||initializeApp(config,'legacy-read-only');return getAuth(app)};
-  let control;
+  let control,authReady=Promise.resolve();
   async function loadPrivate(user){
     control.status('database');
     try{const records=await legacyGET('submissions',await user.getIdToken());let count=0;const schools={};list.replaceChildren();
@@ -25,10 +25,11 @@ export async function enableLegacyTeacher(config,container){
       summary.textContent='기존 원본 '+count+'건 · 읽기 전용 · 학교별 '+Object.entries(schools).map(([s,n])=>s+':'+n).join(', ')+' · V2 신규 기록과 별도 표시';summary.dataset.count=String(count);disconnect.hidden=false;control.status('ready');
     }catch(e){list.replaceChildren();summary.textContent='기존 원본 읽기를 완료하지 못했습니다. 기록 복사·수정은 실행하지 않았습니다.';control.status('database',e);}
   }
-  control=setupTeacherLogin({projectId:config.projectId,allowGoogle:false,elements:{google,passwordButton,email,password,message},authenticateGoogle:async()=>{throw{code:'auth/unauthorized-domain'}},authenticatePassword:async(e,p)=>{const auth=getLegacyAuth();await setPersistence(auth,inMemoryPersistence);const credential=await signInWithEmailAndPassword(auth,e,p);await loadPrivate(credential.user)}});
+  control=setupTeacherLogin({projectId:config.projectId,allowGoogle:false,prepare:()=>authReady,elements:{google,passwordButton,email,password,message},authenticateGoogle:async()=>{throw{code:'auth/unauthorized-domain'}},authenticatePassword:async(e,p)=>{const auth=getLegacyAuth();await setPersistence(auth,inMemoryPersistence);const credential=await signInWithEmailAndPassword(auth,e,p);await loadPrivate(credential.user)}});
   // No Google request is made while the existing production domain remains unapproved.
   google.disabled=true;
-  disconnect.onclick=async()=>{if(control.isBusy())return;await signOut(getLegacyAuth());password.value='';list.replaceChildren();delete summary.dataset.count;summary.textContent='기존 연결을 종료하고 조회 화면을 비웠습니다. 원본은 변경하지 않았습니다.';disconnect.hidden=true;control.status('idle');};
+  disconnect.onclick=async()=>{await authReady;if(control.isBusy())return;await signOut(getLegacyAuth());password.value='';list.replaceChildren();delete summary.dataset.count;summary.textContent='기존 연결을 종료하고 조회 화면을 비웠습니다. 원본은 변경하지 않았습니다.';disconnect.hidden=true;control.status('idle');};
   // Migrate only this V2-origin legacy auth namespace out of persistent storage. No records are fetched automatically.
-  try{const auth=getLegacyAuth();await auth.authStateReady?.();await setPersistence(auth,inMemoryPersistence);if(auth.currentUser){disconnect.hidden=false;summary.textContent='이 탭에 기존 읽기 연결이 남아 있습니다. 자료는 자동 조회하지 않았습니다. 연결 종료로 비우세요.';}}catch{summary.textContent='읽기 연결 준비를 확인하지 못했습니다. 기존 원본은 변경하지 않았습니다.';}
+  authReady=(async()=>{try{const auth=getLegacyAuth();await auth.authStateReady?.();await setPersistence(auth,inMemoryPersistence);if(auth.currentUser){disconnect.hidden=false;summary.textContent='이 탭에 기존 읽기 연결이 남아 있습니다. 자료는 자동 조회하지 않았습니다. 연결 종료로 비우세요.';}}catch{summary.textContent='읽기 연결 준비를 확인하지 못했습니다. 기존 원본은 변경하지 않았습니다.';}finally{disconnect.disabled=false;}})();
+  await authReady;
 }
