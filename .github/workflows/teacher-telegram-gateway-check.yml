@@ -1,0 +1,24 @@
+name: GeoTeacher Telegram Gateway Tests
+
+on:
+  pull_request:
+    paths:
+      - "tools/telegram-office/gateway/**"
+      - ".github/workflows/teacher-telegram-gateway-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run gateway unit tests
+        working-directory: tools/telegram-office/gateway
+        run: npm test
