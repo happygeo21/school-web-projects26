@@ -1,0 +1,6 @@
+const checks=[...document.querySelectorAll('[data-check]')],device=document.querySelector('#device-type'),result=document.querySelector('#result');
+function report(){return {kind:'manual-device-acceptance',at:new Date().toISOString(),device:device.value||'unselected',checks:Object.fromEntries(checks.map(x=>[x.dataset.check,x.value])),physicalDeviceClaimed:['안드로이드 휴대폰','실물 태블릿'].includes(device.value),schoolPolicy:'unconfirmed',productionOpening:'held',automatedProof:false};}
+function render(){const pass=checks.filter(x=>x.value==='pass').length,fail=checks.filter(x=>x.value==='fail').length;result.textContent=fail?`실패 ${fail}개 · 검사 중단·담당자 확인 필요`:pass===5&&device.value?(device.value.startsWith('PC')?'PC 결과 5개 확인 · 실물 기기 미검증':'선택한 기기에서 5개 확인 · 학교 승인·운영 개방은 별도 보류'):`성공 ${pass}개 · 미검증 ${5-pass-fail}개 · 운영 개방 보류`;}
+for(const x of [...checks,device])x.addEventListener('change',render);
+document.querySelector('#download').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(report(),null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='v2-device-acceptance.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+document.querySelector('#reset').addEventListener('click',()=>{for(const x of checks)x.value='unverified';device.value='';render();});render();

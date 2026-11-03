@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {validatePilotSchool,pilotRecordsAccess} from '../server/pilot-school-policy.mjs';
+test('pilot must be one explicit school',()=>{for(const s of [undefined,'','S0','S8',['S1','S2'],'S1,S2'])assert.throws(()=>validatePilotSchool(s));assert.equal(validatePilotSchool('S1'),'S1');});
+test('other-school create is denied before database call',async()=>{let calls=0;const f=pilotRecordsAccess('S1',()=>{calls++;});await assert.rejects(f('create',{school:'S2'},{uid:'fixture',teacher:false}),e=>e.code==='media/permission');assert.equal(calls,0);});
+test('other-school read and review are denied',async()=>{const f=pilotRecordsAccess('S1',()=>assert.fail('database must not run'));for(const action of ['read','review'])await assert.rejects(f(action,{school:'S2'},{teacher:true,schools:['S2']}));});
+test('non-pilot teacher cannot list or approve pilot records',async()=>{const f=pilotRecordsAccess('S1',()=>assert.fail('database must not run'));await assert.rejects(f('read',{}, {teacher:true,schools:['S2']}));await assert.rejects(f('review',{school:'S1'}, {teacher:true,schools:['S2']}));});
+test('assigned teacher scope is narrowed without altering original mapping',async()=>{const actor={teacher:true,schools:['S1','S2']};const f=pilotRecordsAccess('S1',async(a,p,who)=>{assert.deepEqual(who.schools,['S1']);return[{school:'S1'},{school:'S2'}]});assert.deepEqual(await f('read',{},actor),[{school:'S1'}]);assert.deepEqual(actor.schools,['S1','S2']);});
+test('public list cannot leak another school',async()=>{const f=pilotRecordsAccess('S1',async()=>[{school:'S1',data:{}},{school:'S2',data:{}}]);assert.equal((await f('public',{},{})).length,1);});
+test('pilot student create preserves supplied anonymous owner for existing ownership checks',async()=>{const actor={uid:'fixture-anonymous',teacher:false};const f=pilotRecordsAccess('S1',async(a,p,who)=>{assert.equal(who,actor);assert.equal(p.owner,'fixture-anonymous');return{schoolId:'S1'};});assert.deepEqual(await f('create',{school:'S1',owner:actor.uid},actor),{schoolId:'S1'});});
+test('missing write school and unknown action fail closed',async()=>{const f=pilotRecordsAccess('S1',()=>assert.fail('must not call'));for(const a of ['create','review','delete-all'])await assert.rejects(f(a,{},{}));});

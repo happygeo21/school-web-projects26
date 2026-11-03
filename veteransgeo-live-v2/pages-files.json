@@ -20,5 +20,9 @@
   "upload-invites-ui.js",
   "v2-database.js",
   "v2-network-guard.js",
-  "_headers"
+  "_headers",
+  "pilot-check.css",
+  "pilot-check.html",
+  "pilot-check.js",
+  "school-privacy-review.html"
 ]
