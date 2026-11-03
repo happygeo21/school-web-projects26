@@ -1,0 +1,68 @@
+{
+  "checkedAtKST": "2026-11-04T08:57:00+09:00",
+  "environment": "Seoul production",
+  "function": "media-v2",
+  "functionVersion": 1,
+  "pagesDeployment": "adf59a6b",
+  "mainHTTPAssertionsPassed": 112,
+  "webmTargetedAssertionsPassed": 15,
+  "initialWebMFixtureFailure": "generated clip lacked decodable frames; corrected synthetic VP8 clip passed local and production playback",
+  "explorations": {
+    "schools": 7,
+    "submitted": 7,
+    "adminEdited": 7,
+    "approved": 7,
+    "withdrawn": 7,
+    "originalPreserved": 7
+  },
+  "textWorks": {
+    "schools": 7,
+    "submitted": 7,
+    "approved": 7,
+    "withdrawn": 7
+  },
+  "media": {
+    "storedObjects": 3,
+    "jpegDecode": true,
+    "webmPlayback": true,
+    "publicFeedShown": true,
+    "withdrawnGetAndRangeDenied": true
+  },
+  "ordinaryTeachers": {
+    "serverRPCAssertions": 84,
+    "passed": 84,
+    "realBrowserApprovalSessionsVerified": 0,
+    "realBrowserReadScopesPreviouslyVerified": 1,
+    "limitation": "SQL authority checks are not six real teacher browser approvals"
+  },
+  "limits": {
+    "serverRollbackAssertions": 6,
+    "passed": 6,
+    "deadlineExpiredDeniesWrites": true
+  },
+  "V1": {
+    "records": 31,
+    "unchanged": 31,
+    "changed": 0,
+    "missing": 0,
+    "added": 0,
+    "publishedEqual": true,
+    "entireExportEqual": true,
+    "writes": 0
+  },
+  "finalDatabase": {
+    "enabled": false,
+    "writeUntil": null,
+    "records": 17,
+    "files": 3,
+    "publicRecords": 0,
+    "bytes": 4601
+  },
+  "fixtures": {
+    "realPersonalData": false,
+    "distinguishedBy": "synthetic production- record IDs and titles",
+    "retainedPrivate": true,
+    "deleted": 0
+  },
+  "goNoGo": "conditional; keep locked until six ordinary teacher approval sessions verified"
+}
