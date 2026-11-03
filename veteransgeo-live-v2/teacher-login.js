@@ -14,13 +14,13 @@ export function teacherAuthFailure(error, { stage = 'authentication', testMode =
   if (testMode) message += ' 가상 교사 계정 전용 테스트입니다. 운영 교사 계정은 이 테스트에서 사용하지 마세요.';
   return { code, stage, message };
 }
-export function setupTeacherLogin({ elements: e, projectId, authenticateGoogle, authenticatePassword, prepare = async () => {}, storage = globalThis.sessionStorage, clock = Date.now }) {
+export function setupTeacherLogin({ elements: e, projectId, authenticateGoogle, authenticatePassword, prepare = async () => {}, allowGoogle = true, storage = globalThis.sessionStorage, clock = Date.now }) {
   const testMode = projectId === 'veteransgeo-test-2026', key = 'veteransgeo-auth-cooldown:' + projectId;
   let busy = false, stage = 'idle', until = 0;
   try { until = Number(storage?.getItem(key)) || 0; } catch {}
   const limited = () => until > clock();
   const pendingDatabase = () => stage === 'database' && !e.message.dataset.authCode;
-  const buttons = () => { e.google.disabled = busy || pendingDatabase() || limited() || testMode; e.passwordButton.disabled = busy || pendingDatabase() || limited(); };
+  const buttons = () => { e.google.disabled = busy || pendingDatabase() || limited() || testMode || !allowGoogle; e.passwordButton.disabled = busy || pendingDatabase() || limited(); };
   const status = (next, error) => {
     stage = next; e.message.dataset.authStage = next; e.message.dataset.authCode = '';
     if (error) { const info = teacherAuthFailure(error, { stage: next, testMode }); e.message.textContent = info.message + ' [' + info.stage + ' · ' + info.code + ']'; e.message.dataset.authCode = info.code; }
@@ -28,7 +28,7 @@ export function setupTeacherLogin({ elements: e, projectId, authenticateGoogle, 
     buttons();
   };
   async function run(kind) {
-    if (busy || pendingDatabase() || limited() || (kind === 'google' && testMode)) return;
+    if (busy || pendingDatabase() || limited() || (kind === 'google' && (testMode || !allowGoogle))) return;
     const email = e.email.value.trim(), password = kind === 'password' ? e.password.value : '';
     if (kind === 'password' && (!email || !password)) { e.message.textContent = '이메일과 비밀번호를 모두 입력해주세요.'; e.password.value = ''; return; }
     busy = true; buttons(); status('authentication');
