@@ -37,4 +37,9 @@ jobs:
           NOTION_API_TOKEN: ${{ secrets.NOTION_API_TOKEN }}
           NOTION_WATCH_PAGES: ${{ vars.NOTION_WATCH_PAGES }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python tools/telegram-office/main.py "$MODE"
+        run: |
+          if [ "$MODE" = "scan" ] && { [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; }; then
+            echo "Bot not yet configured; scheduled scan skipped."
+            exit 0
+          fi
+          python tools/telegram-office/main.py "$MODE"
