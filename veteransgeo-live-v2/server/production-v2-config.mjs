@@ -10,7 +10,11 @@ export function validateProductionV2(c){
  if(c.pilotSchool!==undefined&&!/^S[1-7]$/.test(c.pilotSchool))fail('one pilot school required');
  for(const uid of c.teachers){const schools=c.schools[uid];if(!Array.isArray(schools)||(!schools.length&&!c.pilotSchool)||new Set(schools).size!==schools.length||schools.some(s=>!/^S[1-7]$/.test(s)))fail('invalid or missing teacher school scope');}
  if(c.pilotSchool&&!c.teachers.some(uid=>c.schools[uid].includes(c.pilotSchool)))fail('assigned pilot teacher required');
- if(!Array.isArray(c.admins)||c.admins.length)fail('no global administrator grants allowed');
+ const allSchoolIds=['S1','S2','S3','S4','S5','S6','S7'];
+ if(!Array.isArray(c.admins)||c.admins.length!==1||!c.teachers.includes(c.admins[0]))fail('exactly one verified existing teacher super administrator required');
+ const adminUid=c.admins[0]; // Resolve from private Firebase UID/email mapping; never from user-supplied email.
+ if(c.schools[adminUid].length!==7||!allSchoolIds.every(s=>c.schools[adminUid].includes(s)))fail('super administrator must manage exactly S1-S7');
+ for(const uid of c.teachers)if(uid!==adminUid&&c.schools[uid].length!==1)fail('other teachers can manage only their one assigned school');
  if(!Array.isArray(c.origins)||c.origins.length!==1||c.origins[0]!=='https://veteransgeo-live-v2.pages.dev')fail('V2-only exact Origin required');
  if(c.uploadMode!=='moderated-open')fail('no activity code or invite authentication in V2');
  if(c.policyApproved!=='approved')fail('school privacy and publication approval missing');
