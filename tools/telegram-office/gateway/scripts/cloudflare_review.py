@@ -9,6 +9,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
@@ -53,6 +54,16 @@ def compare_modules(modules, roots):
         reports.append({"sha256": hashlib.sha256(raw).hexdigest(), "bytes": len(raw), "reference_matches": matches})
     return {"available": True, "module_count": len(reports), "modules": reports}
 
+def verified_references(roots, expected):
+    result = {}
+    for label, root in roots.items():
+        wanted = expected.get(label, "")
+        actual = subprocess.run(["git", "-C", str(root), "rev-parse", "HEAD"], check=True, capture_output=True, text=True).stdout.strip()
+        if not re.fullmatch(r"[a-f0-9]{40}", wanted) or actual != wanted:
+            raise ValueError("Reference commit mismatch")
+        result[label] = actual
+    return result
+
 def schema_summary(rows, expected_sql):
     if not isinstance(rows, list): raise ValueError("Invalid schema")
     table = next((r for r in rows if r.get("type")=="table" and r.get("name")=="task_approvals"), None)
@@ -79,13 +90,14 @@ def main():
     account=os.getenv("CLOUDFLARE_ACCOUNT_ID","").strip()
     if not token or not re.fullmatch(r"[a-fA-F0-9]{32}",account): raise RuntimeError("Missing configured Cloudflare credentials")
     roots={label:Path(os.environ[key]) for label,key in [("main","REVIEW_MAIN_ROOT"),("pr16","REVIEW_CANDIDATE_ROOT")]}
+    references=verified_references(roots,{"main":os.getenv("REVIEW_MAIN_REF", ""),"pr16":os.getenv("REVIEW_CANDIDATE_REF", "")})
     migration=roots["pr16"]/"migrations/0001_task_approvals.sql"
     expected=migration.read_text()
     base="/accounts/"+account
     script=base+"/workers/scripts/"+WORKER
     deployment=get_json(script+"/deployments?per_page=5",token)
     current=deployment.get("deployments",[])[0]
-    report={"mode":"READ_ONLY", "source_writes":False, "deployment_id":current["id"],"serving_versions":[],"account_free_plan_verified":False,"expected_d1_id":DB_ID,"migration_sha256":hashlib.sha256(migration.read_bytes()).hexdigest()}
+    report={"mode":"READ_ONLY", "source_writes":False, "deployment_id":current["id"],"serving_versions":[],"references":references,"account_plan_api_verified":False,"workers_free_confirmed_by_owner":True,"owner_confirmation_date":"2026-11-04","expected_d1_id":DB_ID,"migration_sha256":hashlib.sha256(migration.read_bytes()).hexdigest()}
     versions, version_access=attempt(lambda:get_json(script+"/versions?per_page=100",token))
     listed=(versions.get("items",[]) if isinstance(versions,dict) else versions) or []
     retained={x.get("id") for x in listed if isinstance(x,dict)}
@@ -118,13 +130,7 @@ def main():
     subdomain,subdomain_access=attempt(lambda:get_json(script+"/subdomain",token))
     report["subdomain_access"]=subdomain_access
     if subdomain: report["subdomain"]={key:subdomain[key] for key in ["enabled","previews_enabled"] if isinstance(subdomain.get(key),bool)}
-    subscriptions,subscription_access=attempt(lambda:get_json(base+"/subscriptions",token))
-    report["subscription_access"]=subscription_access
-    # Do not dump billing objects or unrelated products. Only exact known plan names.
-    if isinstance(subscriptions,list):
-        plan_names=[str((x.get("rate_plan") or {}).get("public_name", "")) for x in subscriptions if isinstance(x,dict)]
-        report["workers_paid_plan_detected"]=any(n in {"Workers Paid","Workers Paid Plan","Workers Standard"} for n in plan_names)
-        report["account_free_plan_verified"]=any(n in {"Workers Free","Workers Free Plan"} for n in plan_names) and not report["workers_paid_plan_detected"]
+    # Owner confirmed Workers Free on 2026-11-04. Do not retry denied billing API.
     db,db_access=attempt(lambda:get_json(base+"/d1/database/"+DB_ID,token))
     report["d1_metadata_access"]=db_access
     if db:

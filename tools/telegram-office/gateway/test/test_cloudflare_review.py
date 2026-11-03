@@ -55,6 +55,17 @@ class ReviewTests(unittest.TestCase):
         self.assertEqual(result['state'],'schema_mismatch')
         self.assertTrue(result['skip_creation'])
 
+    def test_reference_snapshot_mismatch_fails_closed_without_echoing_output(self):
+        from types import SimpleNamespace
+        expected = 'a' * 40
+        with patch.object(review.subprocess, 'run', return_value=SimpleNamespace(stdout=expected+'\n')):
+            self.assertEqual(review.verified_references({'pr16':Path('.')},{'pr16':expected}),{'pr16':expected})
+            with self.assertRaisesRegex(ValueError, '^Reference commit mismatch$'):
+                review.verified_references({'pr16':Path('.')},{'pr16':'b'*40})
+        with patch.object(review.subprocess, 'run', return_value=SimpleNamespace(stdout='PRIVATE_OUTPUT')):
+            with self.assertRaisesRegex(ValueError, '^Reference commit mismatch$'):
+                review.verified_references({'pr16':Path('.')},{'pr16':expected})
+
     def test_unknown_remote_table_names_stay_private(self):
         result=review.schema_summary([{'type':'table','name':'PRIVATE_SCHOOL_TABLE','sql':'PRIVATE_BODY'}],'CREATE TABLE task_approvals (id TEXT); CREATE INDEX task_approvals_expiry ON task_approvals(state, expires_at);')
         self.assertEqual(result['other_table_count'],1)

@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 jobs:
   preflight:
@@ -20,6 +21,33 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Resolve current main and PR 16 snapshots
+        if: inputs.review
+        id: refs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        shell: python
+        run: |
+          import json, os, re, urllib.request
+          def read(path):
+              request = urllib.request.Request(
+                  'https://api.github.com/repos/' + os.environ['REPOSITORY'] + path,
+                  headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'], 'Accept': 'application/vnd.github+json'})
+              with urllib.request.urlopen(request, timeout=15) as response:
+                  return json.load(response)
+          try:
+              main = read('/git/ref/heads/main')['object']['sha']
+              pr = read('/pulls/16')
+              assert (pr['state'] == 'open' or pr.get('merged') is True) and pr['head']['repo']['full_name'] == os.environ['REPOSITORY']
+              candidate = pr['head']['sha']
+              assert all(re.fullmatch('[a-f0-9]{40}', value) for value in [main, candidate])
+          except Exception:
+              raise SystemExit('Cannot resolve trusted comparison snapshots. No production changes.')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('main=' + main + '\n' + 'candidate=' + candidate + '\n')
+          print('Resolved main:', main)
+          print('Resolved PR 16:', candidate)
       - name: Validate read-only review and redaction
         run: python -m unittest discover -s tools/telegram-office/gateway/test -p test_cloudflare_review.py
       - name: Read Cloudflare Worker and D1 metadata only
@@ -30,13 +58,13 @@ jobs:
       - uses: actions/checkout@v4
         if: inputs.review
         with:
-          ref: e53f9288b02d794dd2b43197b1df621d0954e388
+          ref: ${{ steps.refs.outputs.main }}
           path: .review-main
           sparse-checkout: tools/telegram-office/gateway
       - uses: actions/checkout@v4
         if: inputs.review
         with:
-          ref: 0e6e9e52bf985b6547e30818148ffda2e2ac701e
+          ref: ${{ steps.refs.outputs.candidate }}
           path: .review-candidate
           sparse-checkout: tools/telegram-office/gateway
       - name: Compare active version and inspect schema only
@@ -44,6 +72,8 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          REVIEW_MAIN_REF: ${{ steps.refs.outputs.main }}
+          REVIEW_CANDIDATE_REF: ${{ steps.refs.outputs.candidate }}
           REVIEW_MAIN_ROOT: .review-main/tools/telegram-office/gateway
           REVIEW_CANDIDATE_ROOT: .review-candidate/tools/telegram-office/gateway
           REVIEW_REPORT_PATH: cloudflare-review.json
