@@ -1,1 +1,38 @@
-{"dateKST":"2026-11-03","scope":"single-school pilot preparation only","newSchoolGateUnitPassed":8,"newSchoolGateUnitFailed":0,"generatedEntryTypeCheck":"passed","newHandoffWidthsChecked":[390,820],"newHandoffLayoutPassed":4,"newHandoffInteractionPassed":4,"localSecuritySoftwareRequestsBlocked":12,"localSecuritySoftwareDiagnostic":"environmental injected requests; not application requests or student data","reviewPDFPages":1,"actualPhysicalDevicesTested":0,"teacherListMatched":7,"confirmedExistingReadAtLeast":1,"remainingTeacherLogins":6,"schoolScopeApproval":"pending","schoolPolicy":"unconfirmed","newProductionConfigurationApplied":false,"productionEndToEndExecuted":false,"newFilesInPublicArtifact":4,"privateOrServerFilesInPublicArtifact":0,"classExample":{"groups":5,"files":10,"storageMiB":20,"fullFeedThirtyViewsMiB":600,"monthlyEstimatedTransferCapBytes":500000000},"existingSuccessfulAppTestsRepeated":false,"realStudentTransfers":0,"v1Changes":0,"openingDecision":"NO-GO"}
+{
+  "dateKST": "2026-11-03",
+  "scope": "single-school pilot preparation only",
+  "newSchoolGateUnitPassed": 12,
+  "newSchoolGateUnitFailed": 0,
+  "generatedEntryTypeCheck": "passed",
+  "newHandoffWidthsChecked": [
+    390,
+    820
+  ],
+  "newHandoffLayoutPassed": 4,
+  "newHandoffInteractionPassed": 4,
+  "localSecuritySoftwareRequestsBlocked": 12,
+  "localSecuritySoftwareDiagnostic": "environmental injected requests; not application requests or student data",
+  "reviewPDFPages": 1,
+  "actualPhysicalDevicesTested": 0,
+  "teacherListMatched": 7,
+  "confirmedExistingReadAtLeast": 1,
+  "remainingTeacherLogins": 6,
+  "schoolScopeApproval": "pending",
+  "schoolPolicy": "unconfirmed",
+  "newProductionConfigurationApplied": false,
+  "productionEndToEndExecuted": false,
+  "newFilesInPublicArtifact": 4,
+  "privateOrServerFilesInPublicArtifact": 0,
+  "classExample": {
+    "groups": 5,
+    "files": 10,
+    "storageMiB": 20,
+    "fullFeedThirtyViewsMiB": 600,
+    "monthlyEstimatedTransferCapBytes": 500000000
+  },
+  "existingSuccessfulAppTestsRepeated": false,
+  "realStudentTransfers": 0,
+  "v1Changes": 0,
+  "openingDecision": "NO-GO",
+  "inactiveTeachersAllowedWithoutNewPrivileges": true
+}
