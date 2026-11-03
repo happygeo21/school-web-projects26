@@ -16,7 +16,7 @@
 | /start, /help, 도움말 | 메뉴 설명 |
 | /ping, 연결 | 개인 Telegram 채팅 명령 수신 확인 |
 | /status, 상태 | GitHub 알림 워크플로 최신 실행 결과 공개 API 조회 |
-| /today, 오늘, 업무 | 기존 Notion 업무운영실 링크(브리핑 본문 중복 전송 금지) |
+| /today, 오늘, 업무 | Notion 일반 업무 건수(선택 설정) 및 기존 업무운영실 링크 |
 | /projects, 프로젝트 | GitHub·기억의 좌표 공개 지도 등 링크 |
 | /aside, 어사이드 | Windows Aside 수동 작업 안내 |
 | 다른 자유 입력 | **실행하지 않고** 지원 명령 안내 |
@@ -85,7 +85,7 @@ Telegram의 \`getUpdates\`와 webhook은 동시에 작동하지 않습니다.
 
 ## 확장 순서 (아직 미구현)
 
-1. Notion에서 오늘 마감·열린 업무 **건수만** 읽어 /today에 추가 (읽기 전용, 중복 알림 금지).
+1. Notion 업무 건수는 아래 선택 설정 후 활성화됩니다. 실제 API 인증 전에는 미연결로 표시합니다.
 2. Google Calendar 일정 건수, Gmail 지정 라벨의 메일 건수 연동 (Google 인증/동의 필요).
 3. GitHub 배포 실패·PR 승인 대기 경보를 중요도별로 구분하고 중복 제거.
 4. \`/request\` — 교사가 입력한 **비민감 업무 요청**을 승인 대기함에 기록, Aside에서 수동 처리.
@@ -95,3 +95,23 @@ Telegram의 \`getUpdates\`와 webhook은 동시에 작동하지 않습니다.
 - [Cloudflare Workers Free 한도](https://developers.cloudflare.com/workers/platform/limits/)
 - [Cloudflare Worker 비밀값](https://developers.cloudflare.com/workers/configuration/secrets/)
 - [기존 운영 원칙](../UNIFIED_OPERATIONS.md)
+
+## 선택 설정: /today Notion 업무 건수
+
+대상은 기존 `03 · AI 업무함 | 교사 전용`의 data source
+`16c3caf5-6bc2-4758-aeae-7b9ba855b2a7` 하나로 고정합니다.
+
+1. Notion 내부 연결을 읽기 전용(Read content only)으로 준비합니다. 콘텐츠 추가·수정, 댓글·사용자 정보 권한은 필요하지 않습니다.
+2. 해당 업무함 원본 데이터베이스에서 **연결 추가**로 이 연결에 읽기 접근을 허용합니다. 학생 자료나 상위 작업공간 전체를 공유하지 않습니다.
+3. Worker Settings → 런타임 변수 및 시크릿에서 **비밀** 유형 `NOTION_API_TOKEN`에 내부 연결 토큰을 직접 저장합니다. 이 기능에는 GitHub에 Notion 토큰을 등록할 필요가 없습니다.
+4. 기능 배포 후 기존 봇에서 `/today`를 보내 실제 건수를 확인합니다. 이 문서와 코드만으로 실연동 완료를 의미하지 않습니다.
+
+표시: 미완료, 오늘 마감, 기한 경과, 내일부터 7일 이내 마감 건수.
+대상은 **정보 등급=일반 업무**이며 완료·제외 및 교사 완료 확인 항목은 제외합니다.
+업무함 자체의 수동 동기화 상태에 따라 원본 서비스의 최신 현황과 차이가 있을 수 있습니다.
+
+- API 조회는 요청 시에만 수행하며 정기 발송을 추가하지 않습니다.
+- `filter_properties`로 상태·마감일·완료확인·정보등급 4개 속성만 요청합니다. 업무명·원본 요약·본문은 조회하지 않습니다.
+- 최대 3페이지(300건)만 읽습니다. 남은 결과가 있으면 일부 집계임을 표시합니다.
+- 인증·권한·조회 오류는 0건으로 처리하지 않으며 응답 본문이나 토큰을 로그에 출력하지 않습니다.
+- 연결 해제는 Worker의 `NOTION_API_TOKEN`만 제거하면 됩니다. 기본 명령과 GitHub 알림은 유지됩니다.
