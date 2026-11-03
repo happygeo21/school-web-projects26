@@ -442,7 +442,7 @@ export function setupTeacherMedia({
   };
   const token = () => user.getIdToken();
   $("reconcileMedia").disabled = true;
-  $("mediaUsage").disabled = true; $("workStatus").textContent="V2 테스트에서는 파일 삭제·전체 저장량 관리 기능을 제공하지 않아요. 작품 비공개 전환은 가능합니다.";
+  $("mediaUsage").disabled = false; $("workStatus").textContent="전체 저장공간 조회는 최고 관리자만 가능합니다. 자동 파일 삭제는 비활성 상태이며 작품 비공개 전환은 가능합니다.";
   $("mediaUsage").onclick = async () => {
     try {
       const r = await provider.usage(await token()),
