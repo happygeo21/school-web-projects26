@@ -1,5 +1,8 @@
 # GeoTeacher 텔레그램 알림봇 — 1단계 설치
 
+> **업무운영실 3.0 단일 운영 기준:** [Telegram × Aside × Notion × GitHub 통합 운영 문서](./UNIFIED_OPERATIONS.md)  
+> 이미 생성한 GeoTeacher 봇을 계속 사용하며, Aside를 연결하더라도 새 봇을 만들지 않습니다. `pair` 명령은 Aside 연결 후 재실행하지 마세요.
+
 기존 Notion 브리핑 및 학교 웹사이트를 변경하지 않고 **별도 알림 모듈**을 추가합니다.
 현재 버전은 텔레그램 페어링/테스트, GitHub 최근 24시간 실패 실행·신규 PR,
 허용한 Notion 페이지의 수정 여부 확인 기능만 제공합니다.
