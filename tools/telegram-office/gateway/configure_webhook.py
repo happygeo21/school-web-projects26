@@ -3,6 +3,9 @@
 import json
 import os
 import sys
+import socket
+import ipaddress
+from urllib.parse import urlsplit
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
@@ -52,13 +55,26 @@ def main():
             raise RuntimeError("Webhook secret supports only A-Z, a-z, 0-9, _ and -")
         if len(secret) < 16 or len(secret) > 256:
             raise RuntimeError("Webhook secret must have between 16 and 256 characters")
-        request("setWebhook", {
+        payload = {
             "url": base + "/telegram-webhook",
             "secret_token": secret,
             "max_connections": 1,
             "allowed_updates": ["message"],
             "drop_pending_updates": True,
-        })
+        }
+        try:
+            request("setWebhook", payload)
+        except RuntimeError as error:
+            if "category=worker_dns_resolution" not in str(error):
+                raise
+            hostname = urlsplit(base).hostname
+            addresses = socket.getaddrinfo(hostname, 443, socket.AF_INET, socket.SOCK_STREAM)
+            address = addresses[0][4][0]
+            if not ipaddress.ip_address(address).is_global:
+                raise RuntimeError("Worker DNS did not resolve to a public IPv4 address") from None
+            payload["ip_address"] = address
+            print("Retrying with the Worker hostname's public IPv4 (Telegram ip_address option).")
+            request("setWebhook", payload)
         print("Webhook registered. Old pending messages were intentionally discarded.")
     elif action == "remove":
         request("deleteWebhook", {"drop_pending_updates": False})
