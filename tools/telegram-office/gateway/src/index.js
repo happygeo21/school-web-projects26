@@ -1,6 +1,8 @@
+import { prepareAdd, approveAdd } from "./task-add.js";
+
 /**
  * GeoTeacher Telegram free command gateway.
- * Private-chat-only. No student information, no AI API, no database writes.
+ * Private-chat-only. No student information or AI API. Explicit approval for writes.
  * GitHub Actions continues to send outbound alerts through the SAME bot.
  */
 const REPOSITORY = "happygeo21/school-web-projects26";
@@ -172,6 +174,7 @@ async function commandResponse(input, env) {
       + "/ping — 연결 확인\n"
       + "/status — GitHub 알림 실행 상태\n"
       + "/today — Notion 업무 건수·바로가기\n"
+      + "/add 업무명 | 내일 — 확인·승인 후 업무 등록 (업무등록)\n"
       + "/projects — 주요 프로젝트 링크\n"
       + "/aside — Aside 무료 사용 안내\n\n"
       + "현재는 기본 명령만 처리합니다. ChatGPT·Aside가 자동으로 대화 내용을 실행하지는 않습니다.";
@@ -225,21 +228,44 @@ export default {
     } catch {
       return response("Invalid JSON", 400);
     }
-    const message = update.message;
+    if (!update || typeof update !== "object" || Array.isArray(update)) return response("Invalid update", 400);
+    const callback = update.callback_query;
+    const message = callback?.message || update.message;
     if (!message || message.chat?.type !== "private") return response("ok");
     const owner = String(env.TELEGRAM_CHAT_ID);
-    if (String(message.chat.id) !== owner || String(message.from?.id) !== owner) {
+    if (String(message.chat.id) !== owner || String((callback?.from || message.from)?.id) !== String(env.TELEGRAM_SENDER_ID || owner)) {
       return response("ok"); // Silent response to unknown users.
     }
-    if (typeof message.text !== "string" || !message.text.trim()) return response("ok");
-    const reply = await commandResponse(message.text, env);
+    let payload;
+    try {
+      if (callback) {
+        if (typeof callback.id !== "string" || callback.id.length > 256) return response("ok");
+        // Acknowledge promptly; never put untrusted callback data into messages/logs.
+        await fetch("https://api.telegram.org/bot" + env.TELEGRAM_BOT_TOKEN + "/answerCallbackQuery", {
+          method: "POST", headers: { "content-type": "application/json" },
+          body: JSON.stringify({ callback_query_id: callback.id }), signal: AbortSignal.timeout(5000),
+        }).catch(() => null);
+        // An expired Telegram callback acknowledgement must not lose a durable result.
+        payload = await approveAdd(callback.data, owner, env);
+      } else {
+        if (typeof message.text !== "string" || !message.text.trim()) return response("ok");
+        const first = message.text.trim().split(/\s+/)[0].toLowerCase().split("@")[0];
+        payload = ["/add", "업무등록"].includes(first)
+          ? await prepareAdd(message.text.trim(), update.update_id, owner, env)
+          : { text: await commandResponse(message.text, env) };
+      }
+    } catch {
+      return response("Command temporarily unavailable", 503);
+    }
     const endpoint = "https://api.telegram.org/bot" + env.TELEGRAM_BOT_TOKEN + "/sendMessage";
     const result = await fetch(endpoint, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ chat_id: owner, text: reply.slice(0, 3900), disable_web_page_preview: true }),
-    });
-    if (!result.ok) return response("Telegram delivery failed", 502);
+      body: JSON.stringify({ ...payload, chat_id: owner, text: payload.text.slice(0, 3900), disable_web_page_preview: true }),
+      signal: AbortSignal.timeout(10000),
+    }).catch(() => null);
+    if (!result?.ok) return response("Telegram delivery failed", 502);
     return response("ok");
   },
 };
+

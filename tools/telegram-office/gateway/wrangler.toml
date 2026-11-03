@@ -2,3 +2,14 @@ name = "geoteacher-telegram-gateway"
 main = "src/index.js"
 compatibility_date = "2026-10-01"
 workers_dev = true
+
+
+# /add stays disabled until deployment review, scoped writer and private D1 are ready.
+# Do not create/enable paid services. See NOTION_ADD_RUNBOOK.md before deployment.
+# [vars]
+# ADD_ENABLED = "true"
+# [[d1_databases]]
+# binding = "TASK_DB"
+# database_name = "geoteacher-task-approvals"
+# database_id = "OWNER_PROVIDED_PRIVATE_D1_ID"
+# migrations_dir = "migrations"
