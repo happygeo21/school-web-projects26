@@ -1,0 +1,34 @@
+name: GeoTeacher Telegram Webhook Setup
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Install Cloudflare webhook, inspect status, or remove it"
+        type: choice
+        required: true
+        default: status
+        options:
+          - status
+          - install
+          - remove
+
+permissions:
+  contents: read
+
+jobs:
+  configure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Configure Telegram webhook
+        env:
+          MODE: ${{ inputs.mode }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_WEBHOOK_SECRET: ${{ secrets.TELEGRAM_WEBHOOK_SECRET }}
+          TELEGRAM_WORKER_URL: ${{ vars.TELEGRAM_WORKER_URL }}
+        run: python tools/telegram-office/gateway/configure_webhook.py "$MODE"
