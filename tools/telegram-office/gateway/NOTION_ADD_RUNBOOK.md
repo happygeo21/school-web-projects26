@@ -1,5 +1,7 @@
 # GeoTeacher 3.2 — 업무 등록 설정·검증·배포 기록
 
+후속 준비의 실행 명령·배포 전 승인 근거는 [배포 검토 기록](./DEPLOYMENT_REVIEW.md)을 함께 확인합니다.
+
 ## 현재 결과
 
 **개발·로컬 검증 단계. 운영 배포 및 실제 Telegram → Notion 저장은 미검증.**
@@ -62,7 +64,7 @@
 
 ## 배포 전 읽기 전용 비교 — 반드시 먼저
 
-1. Cloudflare에서 **현재 트래픽을 받는 버전/배포 ID**, 소스 전체 모듈, compatibility date, 라우트, D1 등 바인딩 이름, 시크릿 이름만 확인한다. 토큰 값은 열거나 출력하지 않는다.
+1. Cloudflare에서 **현재 트래픽을 받는 버전/배포 ID**를 확인한다. 최신 업로드 버전은 활성 버전과 다를 수 있고, 여러 버전이 트래픽을 나누면 각 활성 버전을 모두 확인한다. 이어서 소스 전체 모듈, compatibility date, 라우트, D1 등 바인딩 이름, 시크릿 이름만 확인한다. 토큰 값은 열거나 출력하지 않는다.
 2. 현재 버전 소스를 비공개 위치에 보관하고 최신 main의 `src/index.js`와 비교한다. 대시보드 직접 수정이 있는지 확인한다. 소스의 해시가 다르면 비밀값을 제거한 코드 차이를 검토하고 필요한 운영 수정을 브랜치에 반영한다. `/health=ok`만으로 소스가 같다고 판정하지 않는다.
 3. 기준 버전 ID와 코드 해시, 차이 검토 결과, 기존 바인딩 이름, 원복할 버전을 비공개 기록에 남긴다. 실제 데이터와 비밀값은 공개 PR에 올리지 않는다.
 4. **비교 완료 전 운영 Worker를 배포하지 않는다.** 비교 완료 후 테스트 결과·최종 PR 차이와 함께 사용자에게 배포 승인을 받는다. 이 문서에는 배포 자동 실행 기능이 없다.
@@ -72,9 +74,9 @@
 기존 봇 계정/토큰, 기존 읽기 연결 `NOTION_API_TOKEN`, GitHub Secrets와 알림 자동화는 그대로 유지한다.
 
 1. 별도 Notion 내부 연결을 만든다. **Read content + Insert content만**, Update content·댓글·사용자 정보는 허용하지 않는다. 기존 업무함 원본 데이터베이스 하나에만 연결한다. 하위 페이지 상속 범위도 확인한다. 상위 작업공간이나 학생 자료를 공유하지 않는다.
-2. Worker **Secret**에 `NOTION_WRITE_TOKEN`을 직접 저장한다. 읽기 토큰과 같으면 등록 기능을 차단한다. 이 값은 채팅·GitHub·로그에 붙이지 않는다.
+2. 배포 승인 전에는 `wrangler versions secret put NOTION_WRITE_TOKEN --name geoteacher-telegram-gateway`의 비표시 입력창으로 **미배포 버전**에만 저장한다. `wrangler secret put`은 즉시 배포하므로 이 단계에서 실행하지 않는다. 대시보드의 Deploy/Save and deploy도 누르지 않는다. Secret 추가 후 활성 배포 ID와 트래픽 버전이 그대로인지 확인한다. 읽기 토큰과 같으면 등록 기능을 차단한다. 값은 채팅·GitHub·로그·명령행 인자에 붙이지 않는다. [Secret 공식 문서](https://developers.cloudflare.com/workers/configuration/secrets/) 참고.
 3. 기존 `TELEGRAM_CHAT_ID`와 sender ID를 모두 검사한다. 별도 `TELEGRAM_SENDER_ID`가 없으면 개인 채팅 ID와 같은 사용자만 허용한다. 웹훅 Secret 인증도 유지한다.
-4. 비공개 D1을 Free 한도 안에서 준비하고 `TASK_DB`로 연결한다. 마이그레이션은 이 새 DB에만 적용한다. Firebase/학생 데이터/기존 Notion 업무를 이 DB로 복사하지 않는다.
+4. 비공개 D1을 Free 한도 안에서 준비하고 `TASK_DB`를 **배포 후보 설정에** 추가한다. 운영 Worker의 바인딩 활성화는 배포 승인 뒤에만 한다. 마이그레이션은 이 새 DB에만 적용한다. Firebase/학생 데이터/기존 Notion 업무를 이 DB로 복사하지 않는다.
 
 ## 승인 후 배포 순서
 
@@ -86,7 +88,7 @@
 4. 최초에는 `ADD_ENABLED="false"`로 두 모듈(`src/index.js`, `src/task-add.js`)을 함께 배포한다. Wrangler 번들 또는 두 모듈을 지원하는 대시보드 편집기를 사용한다. Worker의 이름·라우트·기존 설정을 재확인한다.
 5. `/health`, 기존 `/ping`, `/today`, `/status`, `/projects`, `/aside`가 유지되는지 확인한다. **이 시점에 Notion 신규 저장은 차단되어야 한다.**
 6. 준비된 Secret·D1·스키마를 확인한 뒤 `ADD_ENABLED="true"`로 활성화한다.
-7. 기존 GitHub `GeoTeacher Telegram Webhook Setup`의 `install`을 승인 범위 안에서 재실행하여 `allowed_updates=["message","callback_query"]`로 바꾼다. URL·토큰·secret·단일 수신기는 유지한다. 새 도우미는 대기 메시지를 버리지 않는다(`drop_pending_updates=false`). `getUpdates`/pair는 실행하지 않는다.
+7. 기존 GitHub `GeoTeacher Telegram Webhook Setup`의 `install`을 승인 범위 안에서 재실행하여 `allowed_updates=["message","callback_query"]`로 바꾼다. URL·토큰·secret·단일 수신기는 유지한다. 새 도우미는 대기 메시지를 버리지 않는다(`drop_pending_updates=false`). `getUpdates`/pair는 실행하지 않는다. PR 미병합 상태라면 main의 이전 도우미는 callback을 구독하지 않고 대기 메시지를 버린다. 반드시 검토한 PR 브랜치를 선택하거나 해당 변경을 병합한 뒤 실행한다.
 8. 아래 1건 실저장 테스트를 완료하고, 실패하면 즉시 비활성화/원복한다. 이 확인 전에는 기능을 운영 완료로 보고하지 않는다.
 
 ## 사용자 승인 후 실제 저장 테스트 — 비민감 업무 1건만
