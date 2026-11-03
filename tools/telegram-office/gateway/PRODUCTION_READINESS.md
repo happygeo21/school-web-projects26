@@ -34,6 +34,7 @@ GitHub Actions [운영 비교 실행](https://github.com/happygeo21/school-web-p
 - 신규 `TASK_DB`는 기존 D1 `59dbd391-34fa-48c6-aa28-6b4240c2ff77`에 연결하는 후보만 작성했다. 운영에는 연결하지 않았다.
 - `ADD_ENABLED="false"`가 초기값이다. 정상 명령 회귀와 쓰기 연결 준비 후 승인 범위 안에서 활성화한다.
 - 배포 직전 활성 버전이 이번 점검 이후 바뀌었으면 차이를 다시 검토한다. 검토하지 않은 새 버전 위에 덮어쓰지 않는다.
+- 커스텀 도메인·존 route 전체는 이번 조회 범위에 포함되지 않았다. 후속 배포는 route/trigger 변경 없이 버전 업로드·트래픽 전환 방식으로 계획하고, 별도 route 변경은 포함하지 않는다.
 
 ## D1 현재 상태와 실행 계획
 
@@ -75,6 +76,8 @@ GitHub Actions 준비 파일은 `.github/workflows/teacher-geoteacher-d1-migrate
 현재 토큰의 계정 구독 조회는 HTTP 403이므로 계정의 Workers Free 여부와 현재 전체 사용량은 미확인이다. 읽기 토큰을 Billing 권한으로 넓히지 않았다. 소유자가 대시보드에서 확인해야 하며 Paid 요금제를 무료라고 보고하지 않는다. 한도를 넘기기 위해 유료 전환하지 않는다.
 
 공식 근거: [Workers 요금](https://developers.cloudflare.com/workers/platform/pricing/) · [D1 요금](https://developers.cloudflare.com/d1/platform/pricing/).
+
+기존 Telegram 수신 경로는 [읽기 전용 상태 실행 41736526176](https://github.com/happygeo21/school-web-projects26/actions/runs/41736526176)에서 확인했습니다. 기존 Cloudflare 웹훅 URL과 일치하고 대기 업데이트는 0건, 마지막 오류 기록은 없습니다. 웹훅 재등록·getUpdates·메시지 발송은 하지 않았습니다.
 
 ## 원복 경로
 
