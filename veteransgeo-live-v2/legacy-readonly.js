@@ -7,12 +7,12 @@ export async function readLegacyPublic(){const data=await legacyGET('published')
 export async function enableLegacyTeacher(config,container){
   if(config.projectId!=='school-project-26-1edf4')throw Error('Existing read target mismatch');
   const {setupTeacherLogin}=await import('./teacher-login.js');
-  const note=document.createElement('p');note.textContent='기존 운영 교사 전용 · 원본 읽기 전용 연결입니다. V2 가상 교사 로그인과 별개이며, 기존 계정·비밀번호·Rules를 변경하지 않습니다. 이 읽기 연결은 새로고침하면 끝나며, 조회 후 연결 종료를 눌러 화면을 비우세요. 기존에 사용하던 이메일·비밀번호 또는 Google 계정으로 연결하세요. 신규 V2 승인 관리 권한은 학교 범위 확정 전까지 부여되지 않습니다.';
+  const note=document.createElement('p');note.textContent='기존 운영 교사 전용 · 원본 읽기 전용 연결입니다. 아래 신규 작품 테스트 로그인과 별개이며, 기존 계정·비밀번호·Rules를 변경하지 않습니다. 이 읽기 연결은 새로고침하면 끝나며, 조회 후 연결 종료를 눌러 화면을 비우세요. 기존에 사용하던 이메일·비밀번호 또는 Google 계정으로 연결하세요. 담당 학교의 신규 가상 작품 승인은 아래 별도 로그인 영역에서 확인하세요.';
   const emailLabel=document.createElement('label');emailLabel.textContent='기존 운영 교사 이메일';const email=document.createElement('input');email.type='email';email.autocomplete='off';emailLabel.append(email);
   const passwordLabel=document.createElement('label');passwordLabel.textContent='기존 운영 Firebase 비밀번호';const password=document.createElement('input');password.type='password';password.autocomplete='off';passwordLabel.append(password);
   const passwordButton=document.createElement('button');passwordButton.type='button';passwordButton.textContent='기존 계정으로 원본 읽기 전용 연결';
   const google=document.createElement('button');google.type='button';google.textContent='기존 Google 계정으로 원본 읽기 전용 연결';
-  const googleNote=document.createElement('p');googleNote.textContent='기존 등록 Google 계정만 선택하세요. V2 호스트의 Google 승인 도메인 등록을 확인했습니다. 비밀번호를 복사·재설정하지 않습니다. 이 연결은 기존 원본 조회 전용이며 신규 V2 승인 권한을 부여하지 않습니다.';
+  const googleNote=document.createElement('p');googleNote.textContent='기존 등록 Google 계정만 선택하세요. V2 호스트의 Google 승인 도메인 등록을 확인했습니다. 비밀번호를 복사·재설정하지 않습니다. 이 연결은 기존 원본 조회 전용입니다. 신규 작품 테스트는 아래 별도 로그인 영역을 이용하세요.';
   const disconnect=document.createElement('button');disconnect.type='button';disconnect.textContent='기존 원본 연결 종료 · 화면 비우기';disconnect.hidden=true;disconnect.disabled=true;
   const message=document.createElement('p');message.setAttribute('role','status');message.id='legacyConnectionStatus';const summary=document.createElement('p');summary.id='legacyReadSummary';const list=document.createElement('div');list.id='legacyReadList';
   container.append(note,emailLabel,passwordLabel,passwordButton,google,googleNote,message,summary,disconnect,list);
