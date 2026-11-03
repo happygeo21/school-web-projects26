@@ -1,0 +1,102 @@
+# PREPARATION TEMPLATE ONLY: .example files are not executable Actions workflows.
+# Activate only after explicit approval, a protected environment with a required
+# reviewer, and a NEW D1-only write token. Do not expand the existing read token.
+name: GeoTeacher Approved D1 Migration
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Type APPLY 59dbd391-34fa-48c6-aa28-6b4240c2ff77 after approval'
+        required: true
+        type: string
+permissions:
+  contents: read
+  actions: read
+  deployments: read
+jobs:
+  verify-gate:
+    if: inputs.confirmation == 'APPLY 59dbd391-34fa-48c6-aa28-6b4240c2ff77'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require a pre-existing reviewer-protected environment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        shell: python
+        run: |
+          import json, os, urllib.request
+          request = urllib.request.Request(
+            'https://api.github.com/repos/' + os.environ['REPOSITORY'] + '/environments/geoteacher-d1-production',
+            headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'], 'Accept': 'application/vnd.github+json'})
+          try:
+              with urllib.request.urlopen(request, timeout=15) as response:
+                  data = json.load(response)
+              assert any(rule.get('type') == 'required_reviewers' and rule.get('reviewers') for rule in data.get('protection_rules', []))
+          except Exception:
+              raise SystemExit('Protected approval environment unavailable. No database changes.')
+  migrate:
+    needs: verify-gate
+    environment: geoteacher-d1-production
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: bbeb24d1c2fd0a77f87c335f2d6133b0fa764b1b
+          path: .review-tool
+          sparse-checkout: tools/telegram-office/gateway/scripts
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check target, migration bytes and existing schema without changes
+        id: schema
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        shell: python
+        run: |
+          import hashlib, json, os, pathlib, re, sys
+          sys.path.insert(0, '.review-tool/tools/telegram-office/gateway/scripts')
+          from cloudflare_review import DB_ID, D1_NAME, get_json, read_schema, schema_summary
+          migration = pathlib.Path('tools/telegram-office/gateway/migrations/0001_task_approvals.sql')
+          assert hashlib.sha256(migration.read_bytes()).hexdigest() == 'd773b4d7b17410669c9d10e724bb46aab804cdbc3592139d6b62892c9c27ebf5'
+          account = os.environ['CLOUDFLARE_ACCOUNT_ID']
+          assert re.fullmatch('[a-fA-F0-9]{32}', account)
+          base, token = '/accounts/' + account, os.environ['CLOUDFLARE_API_TOKEN']
+          try:
+              db = get_json(base + '/d1/database/' + DB_ID, token)
+              assert db.get('name') == D1_NAME and (db.get('uuid') or db.get('id')) == DB_ID
+              state = schema_summary(read_schema(base, token), migration.read_text())
+              assert state['state'] == 'already_matches' or (state['state'] == 'not_applied' and state['migration_safe_to_consider'])
+          except Exception:
+              raise SystemExit('D1 identity/schema check failed. No database changes.')
+          print(json.dumps(state))
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
+              out.write('apply=' + str(state['state'] == 'not_applied').lower() + '\n')
+      - name: Apply approved migration to the existing dedicated D1 only
+        if: steps.schema.outputs.apply == 'true'
+        working-directory: tools/telegram-office/gateway
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_D1_MIGRATION_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CI: 'true'
+        run: npx --yes wrangler@4 d1 migrations apply geoteacher-task-approvals --remote --config wrangler.production-candidate.toml
+      - name: Verify schema after applying or skipping
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        shell: python
+        run: |
+          import os, pathlib, sys
+          sys.path.insert(0, '.review-tool/tools/telegram-office/gateway/scripts')
+          from cloudflare_review import read_schema, schema_summary
+          try:
+              state = schema_summary(read_schema('/accounts/' + os.environ['CLOUDFLARE_ACCOUNT_ID'], os.environ['CLOUDFLARE_API_TOKEN']), pathlib.Path('tools/telegram-office/gateway/migrations/0001_task_approvals.sql').read_text())
+              assert state['state'] == 'already_matches'
+          except Exception:
+              raise SystemExit('D1 structure verification failed. Stop; do not reset or retry writes.')
+          print('D1 schema verified. Worker and Notion unchanged.')
