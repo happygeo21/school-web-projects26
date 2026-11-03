@@ -1,0 +1,50 @@
+{
+  "dateKST": "2026-11-03",
+  "reviewedSourceHead": "86915b6e2e88311c539e7a0732eb4ff4050d4dff",
+  "kind": "V2 opening preparation, not production end-to-end success",
+  "legacyReadOnlyComparison": {
+    "baseline": 20, "current": 31, "unchanged": 20,
+    "changed": 0, "missing": 0, "added": 11,
+    "schoolCounts": {"S1": 2, "S2": 18, "S3": 11},
+    "addedSchool": "S3", "exactDuplicateRows": 0,
+    "timestampOnlyCandidateGroups": [
+      {"school": "S2", "rows": 2, "newRows": 0},
+      {"school": "S3", "rows": 3, "newRows": 3}
+    ],
+    "candidateDisposition": "preserved; not classified as erroneous and not merged",
+    "rawDataLocation": "outside repository, private",
+    "databaseWrites": 0, "copiedToV2": 0
+  },
+  "teacherAcceptance": {
+    "existingUIDListMatches": 7, "expectedTeachers": 7,
+    "actualLegacyReadConfirmedAtLeast": 1, "remaining": 6,
+    "productionV2SchoolScopeApproval": "pending",
+    "newGlobalAdministratorGrants": 0,
+    "googleOnlyLegacyConnection": "held; no original Auth domain changes"
+  },
+  "newProductionReviewChecks": {
+    "configUnitPassed": 12, "configUnitFailed": 0,
+    "generatedEntryTypeCheck": "passed",
+    "generatedCandidateSyntheticPassed": 5,
+    "generatedCandidateSyntheticFailed": 0,
+    "unsafeOldEntryConfigurationsRejected": 4,
+    "externalNetworkRequestsInOfflineChecks": 0,
+    "productionEndToEndExecuted": false,
+    "realApprovalsUsedInTests": false
+  },
+  "seoulReadOnlyInspection": {
+    "edgeFunctions": 0, "v2Tables": 0, "storedObjects": 0,
+    "configurationApplied": false,
+    "candidate": "review only; not a complete activated frontend/server release"
+  },
+  "physicalPhone": "unverified",
+  "physicalTablet": "unverified",
+  "priorMobileBrowserEvidence": "reuse mobile-acceptance-20261103.json; not physical devices",
+  "schoolPolicy": "pending",
+  "retentionIntent": "until teacher-selected deletion; school approval still pending",
+  "productionAuthReuse": "pending approval, including new anonymous Auth identities",
+  "conservativeClassCapacityApproval": "pending",
+  "existingSuccessfulTestsRepeated": false,
+  "v1Mutations": 0, "productionDeployments": 0,
+  "realStudentTransfers": 0, "openingDecision": "NO-GO"
+}
