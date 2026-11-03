@@ -67,13 +67,15 @@ GitHub Actions 준비 파일은 `.github/workflows/teacher-geoteacher-d1-migrate
 
 대상 data source는 `16c3caf5-6bc2-4758-aeae-7b9ba855b2a7`이다. 신규 값은 업무명(title), 마감일시(date), 정보 등급=일반 업무(select), 진행 상태=수집됨(status), 교사 완료 확인=false(checkbox), 원본 식별키(rich_text)다. 선택지 이름을 새로 만들거나 기존 업무를 수정하지 않는다.
 
-토큰은 사용자만 Cloudflare의 비공개 Secret 화면에서 `NOTION_WRITE_TOKEN`으로 입력한다. 채팅·공개 코드·로그에 보내지 않는다. 해당 화면이 Save and deploy를 요구하면 즉시 운영 변경이므로 **배포 승인 전에는 저장하지 않는다**. 미배포 버전으로 저장할 수 있는지 확인하고, 불가능하면 승인된 배포 절차와 함께 입력한다. 준비 상태와 Secret 이름만 확인한다.
+Notion 연결 생성은 [공식 내부 통합 설정](https://www.notion.so/profile/integrations)에서 진행한다. 연결 이름은 예를 들어 `GeoTeacher 업무등록 전용`으로 정하고, 기존 읽기 연결과 구분한다. 업무함 원본에서 연결을 추가하되 상위 업무운영실 전체를 공유하지 않는다.
+
+토큰은 사용자만 Cloudflare의 비공개 Secret 화면에서 `NOTION_WRITE_TOKEN`으로 입력한다. 채팅·공개 코드·로그에 보내지 않는다. 해당 화면이 Save and deploy를 요구하면 즉시 운영 변경이므로 **배포 승인 전에는 저장하지 않는다**. 공식 Worker 편집기의 버전 저장 화면에서 실제로 미배포 버전만 저장할 수 있는지 먼저 확인한다. Save and deploy만 제공된다면 입력·저장을 중단하고 후보 Secret 준비를 미완료로 남긴다. 공식 CLI의 versions secret put은 미배포 버전 등록을 지원하지만, 사용자에게 채팅·문서·터미널로 인증값을 전달하도록 요구하지 않는다. 운영에 즉시 적용되는 Secret 저장을 미배포 준비로 간주하지 않는다. 준비 상태와 Secret 이름만 확인한다.
 
 ## 무료 운영 조건
 
 별도 AI API 호출이나 추가 구독은 없다. 공식 Free 한도는 Workers 하루 100,000 요청, D1 하루 읽기 500만 행·쓰기 100,000행·전체 저장 5GB·DB 10개다. 사용량은 같은 계정의 다른 서비스와 공유될 수 있다. 인덱스 갱신도 쓰기량에 포함된다.
 
-현재 토큰의 계정 구독 조회는 HTTP 403이므로 계정의 Workers Free 여부와 현재 전체 사용량은 미확인이다. 읽기 토큰을 Billing 권한으로 넓히지 않았다. 소유자가 대시보드에서 확인해야 하며 Paid 요금제를 무료라고 보고하지 않는다. 한도를 넘기기 위해 유료 전환하지 않는다.
+사용자가 2026-11-04에 Workers Free임을 직접 확인했다. Free 요금제 조건은 소유자 확인으로 충족하며, API 구독 조회 성공과는 구분한다. 이전 구독 조회는 HTTP 403이었으므로 Billing 권한을 넓히거나 같은 실패 조회를 반복하지 않는다. 현재 계정 전체 사용량은 별도 확인 대상이며, 한도를 넘기기 위해 유료 전환하지 않는다.
 
 공식 근거: [Workers 요금](https://developers.cloudflare.com/workers/platform/pricing/) · [D1 요금](https://developers.cloudflare.com/d1/platform/pricing/).
 
@@ -101,4 +103,4 @@ D1과 원본 식별키 기록, 기존 봇·읽기 토큰, 생성된 Notion 항�
 
 ## 최종 판정
 
-**코드·운영 비교·후보 설정·마이그레이션 계획은 준비했으나, 지금 즉시 배포할 수는 없다.** 새 Notion 연결과 Secret, D1 쓰기 인증·승인 환경, 실제 Free 요금제 확인이 남아 있다. 이 조건을 갖춘 뒤 PR #16 병합·D1 적용·Worker 배포·웹훅 변경·테스트 1건의 범위를 구체적으로 승인받는다. 현재 PR #16/점검 PR은 미병합이며 Worker·D1 테이블·Notion 업무를 변경하지 않았다.
+**코드·운영 비교·후보 설정·마이그레이션 계획은 준비했으나, 지금 즉시 배포할 수는 없다.** 새 Notion 연결과 Secret, D1 쓰기 인증·승인 환경 확인이 남아 있다. Workers Free는 소유자가 확인했다. 이 조건을 갖춘 뒤 PR #16 병합·D1 적용·Worker 배포·웹훅 변경·테스트 1건의 범위를 구체적으로 승인받는다. 현재 PR #16/점검 PR은 미병합이며 Worker·D1 테이블·Notion 업무를 변경하지 않았다.
