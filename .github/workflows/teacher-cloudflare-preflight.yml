@@ -2,6 +2,11 @@ name: GeoTeacher Cloudflare Read-only Preflight
 
 on:
   workflow_dispatch:
+    inputs:
+      review:
+        description: "Compare active source and inspect D1 schema without writes"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -15,8 +20,37 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Validate read-only review and redaction
+        run: python -m unittest discover -s tools/telegram-office/gateway/test -p test_cloudflare_review.py
       - name: Read Cloudflare Worker and D1 metadata only
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: python tools/telegram-office/gateway/scripts/cloudflare_preflight.py
+      - uses: actions/checkout@v4
+        if: inputs.review
+        with:
+          ref: e53f9288b02d794dd2b43197b1df621d0954e388
+          path: .review-main
+          sparse-checkout: tools/telegram-office/gateway
+      - uses: actions/checkout@v4
+        if: inputs.review
+        with:
+          ref: 0e6e9e52bf985b6547e30818148ffda2e2ac701e
+          path: .review-candidate
+          sparse-checkout: tools/telegram-office/gateway
+      - name: Compare active version and inspect schema only
+        if: inputs.review
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          REVIEW_MAIN_ROOT: .review-main/tools/telegram-office/gateway
+          REVIEW_CANDIDATE_ROOT: .review-candidate/tools/telegram-office/gateway
+          REVIEW_REPORT_PATH: cloudflare-review.json
+        run: python tools/telegram-office/gateway/scripts/cloudflare_review.py
+      - uses: actions/upload-artifact@v4
+        if: inputs.review
+        with:
+          name: cloudflare-review-sanitized
+          path: cloudflare-review.json
+          retention-days: 7
