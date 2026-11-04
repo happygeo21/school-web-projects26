@@ -81,31 +81,46 @@ class ZeroDeploymentSafetyTests(unittest.TestCase):
              self.assertRaises(zero.Stop):
             zero.main_sha()
 
-    def test_environment_requires_owner_review_and_prevents_admin_bypass(self):
+    def test_environment_requires_owner_review_and_main_only_policy(self):
         approved = {
             "can_admins_bypass": False,
-            "prevent_self_review": False,
+            "deployment_branch_policy": {
+                "custom_branch_policies": True,
+                "protected_branches": False,
+            },
             "protection_rules": [{
                 "type": "required_reviewers",
-                "reviewers": [{"type": "User", "reviewer": {"login": "happygeo21"}}]
-            }]
+                "prevent_self_review": False,
+                "reviewers": [{"type": "User", "reviewer": {"login": "happygeo21"}}],
+            }],
         }
-        with patch.dict(os.environ, {"GH_TOKEN": "test-gh-token"}), \
-             patch.object(zero, "read_api", return_value=approved):
-            self.assertTrue(zero.protected_environment())
-        for mutator in [
-            lambda x: x.update({"can_admins_bypass": True}),
-            lambda x: x.update({"prevent_self_review": True}),
-            lambda x: x.update({"protection_rules": []}),
-            lambda x: x["protection_rules"][0].update(
-                {"reviewers": [{"reviewer": {"login": "someone-else"}}]})
-        ]:
-            candidate = json.loads(json.dumps(approved))
-            mutator(candidate)
+        allowed = {"branch_policies": [{"name": "main", "type": "branch"}]}
+        def check(env_data, branch_data):
+            def get(url, *args, **kwargs):
+                return branch_data if url.endswith("/deployment-branch-policies") else env_data
             with patch.dict(os.environ, {"GH_TOKEN": "test-gh-token"}), \
-                 patch.object(zero, "read_api", return_value=candidate), \
-                 self.assertRaises(zero.Stop):
-                zero.protected_environment()
+                 patch.object(zero, "read_api", side_effect=get):
+                return zero.protected_environment()
+        self.assertTrue(check(approved, allowed))
+        cases = []
+        for change in ["can_admins_bypass", "prevent_self_review",
+                       "protection_rules", "deployment_branch_policy"]:
+            modified = json.loads(json.dumps(approved))
+            if change == "can_admins_bypass":
+                modified[change] = True
+            elif change == "prevent_self_review":
+                modified["protection_rules"][0][change] = True
+            elif change == "protection_rules":
+                modified[change] = []
+            else:
+                modified[change]["custom_branch_policies"] = False
+            cases.append((modified, allowed))
+        cases.append((approved, {"branch_policies": [{"name": "audit", "type": "branch"}]}))
+        cases.append((approved, {"branch_policies": [
+            {"name": "main", "type": "branch"}, {"name": "audit", "type": "branch"}]}))
+        for env_data, branch_data in cases:
+            with self.assertRaises(zero.Stop):
+                check(env_data, branch_data)
 
     def test_wrong_candidate_binding_or_replaced_old_active_fails_closed(self):
         raw = {"id": self.new, "resources": {
