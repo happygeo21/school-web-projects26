@@ -2,6 +2,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node test/router.test.mjs && node test/task-add.test.mjs && python3 -m unittest discover -s test -p 'test_*.py'"
+    "test": "node test/router.test.mjs && node test/task-add.test.mjs && node test/production-regression.test.mjs && python3 -m unittest discover -s test -p 'test_*.py'"
   }
 }

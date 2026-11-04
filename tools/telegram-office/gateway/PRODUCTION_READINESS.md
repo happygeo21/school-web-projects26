@@ -25,7 +25,7 @@ GitHub Actions [운영 비교 실행](https://github.com/happygeo21/school-web-p
 
 ## 후보 설정과 보존 조치
 
-`wrangler.toml`의 날짜가 운영보다 오래된 `2026-10-01`이어서 `2026-11-03`으로 보정했다. 운영의 관측 설정과 preview 비활성도 명시했다. 기능 JS와 기존 28개 검사는 변경하지 않았다.
+`wrangler.toml`의 날짜가 운영보다 오래된 `2026-10-01`이어서 `2026-11-03`으로 보정했다. 운영의 관측 설정과 preview 비활성도 명시했다. 기능 JS와 기존 28개 검사는 유지했다. ADD_ENABLED=false에서 기존 /ping·/projects·/status·/today가 Notion 생성 없이 동작하는 회귀 검사와 승인 보호의 실패/성공 검사를 추가했다. 후보는 Secret 없이 CI의 Wrangler dry-run으로 빌드만 검사하며 업로드·배포하지 않는다.
 
 실제 검토 대상 설정 파일은 `wrangler.production-candidate.toml`이다. 아직 이 파일로 배포하지 않았다.
 
@@ -46,13 +46,13 @@ GitHub Actions [운영 비교 실행](https://github.com/happygeo21/school-web-p
 - owner·expires_at·state NOT NULL, 상태는 pending/creating/verified/cancelled/expired로 제한한다.
 - `(state, expires_at)` 인덱스가 있다. 10분 유효기간은 Worker의 조건부 승인과 만료 정리가 적용하며 D1 자동 TTL은 아니다.
 
-GitHub Actions 준비 파일은 `.github/workflows/teacher-geoteacher-d1-migrate.yml.example`이다. **확장자가 .example이므로 실행되는 workflow가 아니다.** 활성화·실행하지 않았다.
+GitHub Actions 실행 파일은 `.github/workflows/teacher-geoteacher-d1-migrate.yml`이다. 기존 .example 양식을 수동 실행 전용 workflow로 완성했으며 아직 실행하지 않았다. push/예약 이벤트로 동작하지 않는다. PR 병합·workflow 수동 실행·D1 변경은 여전히 승인 대상이다.
 
 승인받은 뒤에는 다음 순서를 따른다.
 
 1. `geoteacher-d1-production` 환경에 실제 필수 승인자가 설정되어 있는지 확인한다. 조회가 실패하거나 보호 규칙이 없으면 적용하지 않는다. 현재 이 환경의 조회는 404여서 보호 설정을 확인하지 못했다.
 2. 기존 읽기 토큰은 유지한다. 승인받은 별도 계정 제한 D1 Write 토큰을 비공개 GitHub Environment Secret `CLOUDFLARE_D1_MIGRATION_TOKEN`으로 등록한다. Cloudflare 토큰의 범위가 DB 단위로 제한되지 않는 경우 고정 대상 ID와 검토한 workflow로 호출 범위를 제한하며, 이 잔여 권한 범위를 사용자에게 알린다. 등록·권한 확대는 아직 하지 않았다.
-3. `.example`을 실행 가능한 workflow로 활성화하는 변경을 검토한다. Wrangler 버전도 실행 전에 확정한다. 확인 문구와 환경 승인 후에만 apply 단계가 열리게 한다.
+3. 실행할 workflow와 커밋을 검토한다. Wrangler는 공개 npm에서 확인한 `4.157.0`으로 고정했다. 확인 문구와 보호된 환경 승인 후에만 apply 단계가 열리며, 별도 D1 쓰기 Secret이 없으면 실제 적용 명령 전에 중단한다.
 4. 적용 직전 DB 이름/ID·SQL 해시·테이블 상태를 다시 읽는다. 같은 테이블과 인덱스가 정확히 있으면 생성을 건너뛴다. 다른 구조나 다른 사용자 테이블이 있으면 중단한다.
 5. 승인된 새 DB 구조만 적용한다. Worker 배포·바인딩 변경·Notion 쓰기는 이 workflow의 역할이 아니다.
 6. 적용 후 구조와 인덱스를 다시 읽어 검증한다. 부분 실패나 불일치가 있으면 자동 초기화·삭제·재적용하지 않는다.
@@ -61,13 +61,13 @@ GitHub Actions 준비 파일은 `.github/workflows/teacher-geoteacher-d1-migrate
 
 ## Notion 쓰기 연결 준비 상태
 
-기존 업무함 스키마는 읽기 재확인했지만 새 쓰기 연결의 권한·접근 범위와 실제 Insert 성공은 아직 검증하지 않았다. 운영 Worker에도 `NOTION_WRITE_TOKEN`이 없다. 이 채팅의 Notion 연결 권한은 새 Worker용 연결의 권한을 증명하지 않는다.
+기존 업무함 스키마는 읽기 재확인했지만 사용자가 `GeoTeacher 업무등록` 내부 통합 생성과 기존 업무함 연결을 완료했다. 이를 다시 생성하지 않는다. 다만 이 통합의 실제 Read/Insert 권한·API 인증과 Insert 성공은 아직 검증하지 않았다. 운영 Worker에도 `NOTION_WRITE_TOKEN`이 없다. 이 채팅의 Notion 연결 권한은 새 Worker용 연결의 권한을 증명하지 않는다.
 
-소유자가 별도 연결에서 Read content + Insert content만 켜고 Update content·댓글·사용자 정보 권한은 끈다. 기존 읽기 연결의 권한은 바꾸지 않는다. 기존 교사 AI 업무함의 원본 DB 하나에만 연결하고 상위 페이지·다른 data source·하위 페이지 상속 범위를 확인한다.
+소유자가 이미 생성한 `GeoTeacher 업무등록` 연결에서 Read content + Insert content만 켜졌는지 확인하고 Update content·댓글·사용자 정보 권한은 끈다. 기존 읽기 연결의 권한은 바꾸지 않는다. 기존 교사 AI 업무함의 원본 DB 하나에만 연결하고 상위 페이지·다른 data source·하위 페이지 상속 범위를 확인한다.
 
 대상 data source는 `16c3caf5-6bc2-4758-aeae-7b9ba855b2a7`이다. 신규 값은 업무명(title), 마감일시(date), 정보 등급=일반 업무(select), 진행 상태=수집됨(status), 교사 완료 확인=false(checkbox), 원본 식별키(rich_text)다. 선택지 이름을 새로 만들거나 기존 업무를 수정하지 않는다.
 
-Notion 연결 생성은 [공식 내부 통합 설정](https://www.notion.so/profile/integrations)에서 진행한다. 연결 이름은 예를 들어 `GeoTeacher 업무등록 전용`으로 정하고, 기존 읽기 연결과 구분한다. 업무함 원본에서 연결을 추가하되 상위 업무운영실 전체를 공유하지 않는다.
+기존 통합의 권한 확인은 [공식 내부 통합 설정](https://www.notion.so/profile/integrations)에서 `GeoTeacher 업무등록`을 열어 진행한다. 새 통합이나 새 업무함을 만들지 않는다. 기존 읽기 연결과 구분하고 상위 업무운영실 전체를 공유하지 않는다.
 
 토큰은 사용자만 Cloudflare의 비공개 Secret 화면에서 `NOTION_WRITE_TOKEN`으로 입력한다. 채팅·공개 코드·로그에 보내지 않는다. 해당 화면이 Save and deploy를 요구하면 즉시 운영 변경이므로 **배포 승인 전에는 저장하지 않는다**. 공식 Worker 편집기의 버전 저장 화면에서 실제로 미배포 버전만 저장할 수 있는지 먼저 확인한다. Save and deploy만 제공된다면 입력·저장을 중단하고 후보 Secret 준비를 미완료로 남긴다. 공식 CLI의 versions secret put은 미배포 버전 등록을 지원하지만, 사용자에게 채팅·문서·터미널로 인증값을 전달하도록 요구하지 않는다. 운영에 즉시 적용되는 Secret 저장을 미배포 준비로 간주하지 않는다. 준비 상태와 Secret 이름만 확인한다.
 
@@ -103,4 +103,4 @@ D1과 원본 식별키 기록, 기존 봇·읽기 토큰, 생성된 Notion 항�
 
 ## 최종 판정
 
-**코드·운영 비교·후보 설정·마이그레이션 계획은 준비했으나, 지금 즉시 배포할 수는 없다.** 새 Notion 연결과 Secret, D1 쓰기 인증·승인 환경 확인이 남아 있다. Workers Free는 소유자가 확인했다. 이 조건을 갖춘 뒤 PR #16 병합·D1 적용·Worker 배포·웹훅 변경·테스트 1건의 범위를 구체적으로 승인받는다. 현재 PR #16/점검 PR은 미병합이며 Worker·D1 테이블·Notion 업무를 변경하지 않았다.
+**코드·운영 비교·후보 설정·마이그레이션 계획은 준비했으나, 지금 즉시 배포할 수는 없다.** 새 Notion 연결과 Secret, D1 쓰기 인증·승인 환경 확인이 남아 있다. Workers Free는 소유자가 확인했다. 이 조건을 갖춘 뒤 PR #16 병합·D1 적용·Worker 배포·웹훅 변경·테스트 1건의 범위를 구체적으로 승인받는다. 현재 PR #16/점검 PR은 미병합이며 Worker·D1 테이블·Notion 업무를 변경하지 않았다. 최종 구축 성공 후에만 기존 Notion 관리대장·변경 로그를 갱신하고 재조회한다.

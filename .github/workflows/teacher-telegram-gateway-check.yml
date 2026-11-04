@@ -26,3 +26,9 @@ jobs:
         working-directory: tools/telegram-office/gateway
         run: npm test
 
+      - name: Build the disabled production candidate without uploading
+        working-directory: tools/telegram-office/gateway
+        env:
+          WRANGLER_SEND_METRICS: 'false'
+          CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV: 'false'
+        run: npx --yes wrangler@4.157.0 deploy --dry-run --config wrangler.production-candidate.toml --outdir "${{ runner.temp }}/geoteacher-candidate"
