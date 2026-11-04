@@ -58,17 +58,36 @@ def protected_environment():
         {"Accept": "application/vnd.github+json"},
     )
     rules = data.get("protection_rules") or []
-    reviewers = [
-        r.get("reviewer", {}).get("login")
-        for rule in rules if rule.get("type") == "required_reviewers"
-        for r in rule.get("reviewers", []) if isinstance(r, dict)
+    owner_rules = [
+        rule for rule in rules
+        if rule.get("type") == "required_reviewers"
+        and any(
+            isinstance(r, dict) and r.get("type") == "User"
+            and (r.get("reviewer") or {}).get("login") == OWNER
+            for r in rule.get("reviewers", [])
+        )
     ]
-    require(OWNER in reviewers, "Environment lacks its required owner reviewer.")
+    require(len(owner_rules) == 1, "Environment lacks exactly one owner review rule.")
+    # GitHub GET /environments places prevent_self_review on the rule itself.
+    require(owner_rules[0].get("prevent_self_review") is False,
+            "Single-owner review must be allowed.")
     require(data.get("can_admins_bypass") is False,
             "Admin bypass must be disabled for staging.")
-    require(data.get("prevent_self_review") is False,
-            "Single-owner review must be allowed.")
-    # GitHub separately enforces environment branch restrictions on the stage job.
+    policy = data.get("deployment_branch_policy") or {}
+    require(policy.get("custom_branch_policies") is True
+            and policy.get("protected_branches") is False,
+            "Staging must restrict deployment to selected branches.")
+    branches = read_api(
+        "https://api.github.com/repos/" + OWNER
+        + "/school-web-projects26/environments/" + ENVIRONMENT
+        + "/deployment-branch-policies",
+        os.environ["GH_TOKEN"],
+        {"Accept": "application/vnd.github+json"},
+    )
+    configured = branches.get("branch_policies") or []
+    require(len(configured) == 1 and configured[0].get("name") == "main"
+            and configured[0].get("type") == "branch",
+            "Staging must allow exactly the main branch.")
     return True
 
 
