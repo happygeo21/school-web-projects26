@@ -219,6 +219,19 @@ def candidate_bindings(version):
     return {"secret_names": sorted(BASE_SECRETS | {"NOTION_WRITE_TOKEN"}), "task_db_id": DB_ID, "add_enabled": False}
 
 
+def verified_checkout(candidate, mode):
+    actual = subprocess.run(["git", "-C", str(candidate), "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
+    if mode == "inspect":
+        # The review checks out the current main SHA, not the older fixed candidate SHA.
+        expected = os.environ.get("REVIEW_MAIN_REF", "")
+        require(bool(re.fullmatch(r"[a-f0-9]{40}", expected)) and actual == expected,
+                "Read-only inspection checkout does not match the reviewed main SHA.")
+    else:
+        # The version upload still requires the exact immutable, previously reviewed candidate.
+        require(actual == CANDIDATE_SHA, "Candidate commit differs from the reviewed merged PR.")
+    return actual
+
+
 def main():
     mode = sys.argv[1]
     if mode == "gate":
@@ -226,8 +239,7 @@ def main():
         return
     require(mode in {"inspect", "stage"}, "Unsupported candidate operation.")
     candidate = Path(os.environ["CANDIDATE_ROOT"]).resolve()
-    actual = subprocess.run(["git", "-C", str(candidate), "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
-    require(actual == CANDIDATE_SHA, "Candidate commit differs from the reviewed merged PR.")
+    actual = verified_checkout(candidate, mode)
     base, token = context()
     report = baseline(base, token, candidate)
     report.update({"candidate_commit": actual, "mode": mode, "production_deployed": False, "d1_writes": False})
