@@ -33,6 +33,24 @@ class WorkerCandidateSafetyTests(unittest.TestCase):
                 with self.assertRaises(candidate.Stop):
                     candidate.candidate_bindings(version)
 
+    def test_inspect_uses_current_main_sha_but_stage_remains_pinned(self):
+        latest_main = "9365cc0ba77287eebf9a9d185491dc05a23539c8"
+        checkout = subprocess.CompletedProcess([], 0, latest_main + "\n", "")
+        with patch.object(candidate.subprocess, "run", return_value=checkout):
+            with patch.dict(os.environ, {"REVIEW_MAIN_REF": latest_main}):
+                self.assertEqual(candidate.verified_checkout(Path("/tmp"), "inspect"), latest_main)
+                with self.assertRaises(candidate.Stop):
+                    candidate.verified_checkout(Path("/tmp"), "stage")
+            with patch.dict(os.environ, {"REVIEW_MAIN_REF": candidate.CANDIDATE_SHA}):
+                with self.assertRaises(candidate.Stop):
+                    candidate.verified_checkout(Path("/tmp"), "inspect")
+            with patch.dict(os.environ, {"REVIEW_MAIN_REF": ""}):
+                with self.assertRaises(candidate.Stop):
+                    candidate.verified_checkout(Path("/tmp"), "inspect")
+        pinned = subprocess.CompletedProcess([], 0, candidate.CANDIDATE_SHA + "\n", "")
+        with patch.object(candidate.subprocess, "run", return_value=pinned):
+            self.assertEqual(candidate.verified_checkout(Path("/tmp"), "stage"), candidate.CANDIDATE_SHA)
+
     def test_changed_active_deployment_stops_before_upload(self):
         with patch.object(candidate, "get_json", return_value={"deployments": [{"id": "changed", "versions": []}]}):
             with self.assertRaises(candidate.Stop):
