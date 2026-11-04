@@ -55,6 +55,16 @@ class ReviewTests(unittest.TestCase):
         self.assertEqual(result['state'],'schema_mismatch')
         self.assertTrue(result['skip_creation'])
 
+    def test_check_values_with_different_case_or_spaces_are_not_same_schema(self):
+        table = "CREATE TABLE task_approvals (state TEXT CHECK(state IN ('pending','verified')))"
+        index = 'CREATE INDEX task_approvals_expiry ON task_approvals(state, expires_at)'
+        expected = table + ';\n' + index + ';'
+        for changed in [table.replace("'pending'", "'PENDING'"), table.replace("'pending'", "'pen ding'")]:
+            rows = [{'type':'table','name':'task_approvals','sql':changed}, {'type':'index','name':'task_approvals_expiry','sql':index}]
+            result = review.schema_summary(rows, expected)
+            self.assertEqual(result['state'], 'schema_mismatch')
+            self.assertTrue(result['skip_creation'])
+
     def test_reference_snapshot_mismatch_fails_closed_without_echoing_output(self):
         from types import SimpleNamespace
         expected = 'a' * 40

@@ -70,7 +70,11 @@ def schema_summary(rows, expected_sql):
     other = sum(r.get("type")=="table" and r.get("name") not in {"task_approvals","d1_migrations","_cf_KV"} for r in rows)
     if table is None: return {"state":"not_applied", "other_table_count":other, "migration_safe_to_consider":other==0}
     actual = table.get("sql") or ""
-    normalize = lambda s: re.sub(r"\s+", "", s).rstrip(";").lower()
+    def normalize(sql):
+        # Ignore only unquoted SQL formatting/case. CHECK string literals are
+        # case/space sensitive and must never be normalized into another value.
+        parts = re.split(r"('(?:''|[^'])*'|\"(?:\"\"|[^\"])*\"|`(?:``|[^`])*`|\[[^\]]*\])", sql)
+        return "".join(part if index % 2 else re.sub(r"\s+", "", part).lower() for index, part in enumerate(parts)).rstrip(";")
     expected_table = expected_sql[expected_sql.index("CREATE TABLE"):expected_sql.index("CREATE INDEX")].strip()
     expiry_index = any(r.get("type")=="index" and r.get("name")=="task_approvals_expiry" and normalize(r.get("sql") or "")==normalize("CREATE INDEX task_approvals_expiry ON task_approvals(state, expires_at)") for r in rows)
     exact = normalize(actual)==normalize(expected_table)
