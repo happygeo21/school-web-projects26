@@ -1,4 +1,4 @@
-name: GeoTeacher Cloudflare Read-only Preflight
+name: GeoTeacher Worker Review and Inactive Candidate
 
 on:
   workflow_dispatch:
@@ -7,10 +7,28 @@ on:
         description: "Compare active source and inspect D1 schema without writes"
         type: boolean
         default: false
+      stage_candidate:
+        description: "Create an inactive version only; requires the protected Worker environment"
+        type: boolean
+        default: false
+      confirmation:
+        description: "For staging only: STAGE ONLY geoteacher-telegram-gateway"
+        type: string
+        default: ""
+      notion_scope_confirmed:
+        description: "Owner confirmed existing GeoTeacher 업무등록 has Read+Insert only and access to the existing inbox only"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
   pull-requests: read
+  actions: read
+  deployments: read
+
+concurrency:
+  group: geoteacher-worker-candidate
+  cancel-in-progress: false
 
 jobs:
   preflight:
@@ -78,9 +96,64 @@ jobs:
           REVIEW_CANDIDATE_ROOT: .review-candidate/tools/telegram-office/gateway
           REVIEW_REPORT_PATH: cloudflare-review.json
         run: python tools/telegram-office/gateway/scripts/cloudflare_review.py
+      - name: Inspect current baseline and Telegram callback delivery without changes
+        if: inputs.review
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CANDIDATE_ROOT: .review-main/tools/telegram-office/gateway
+        run: python tools/telegram-office/gateway/scripts/worker_candidate.py inspect
       - uses: actions/upload-artifact@v4
         if: inputs.review
         with:
           name: cloudflare-review-sanitized
           path: cloudflare-review.json
           retention-days: 7
+
+  verify-stage-gate:
+    if: inputs.stage_candidate && inputs.review && inputs.notion_scope_confirmed && inputs.confirmation == 'STAGE ONLY geoteacher-telegram-gateway'
+    needs: preflight
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Require the separate pre-existing Worker staging approval environment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python tools/telegram-office/gateway/scripts/worker_candidate.py gate
+
+  stage-inactive-version:
+    needs: verify-stage-gate
+    environment: geoteacher-worker-staging
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: 4d1746fdd82409a7d8a30287e94856f087e84cdc
+          path: .candidate
+          sparse-checkout: tools/telegram-office/gateway
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Warm the fixed CLI without application credentials
+        env:
+          WRANGLER_SEND_METRICS: 'false'
+          CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV: 'false'
+        run: npx --yes wrangler@4.157.0 --version
+      - name: Verify writer using GET and upload only an inactive disabled version
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_WORKER_STAGING_TOKEN: ${{ secrets.CLOUDFLARE_WORKER_STAGING_TOKEN }}
+          NOTION_WRITE_TOKEN: ${{ secrets.NOTION_WRITE_TOKEN }}
+          NOTION_SCOPE_CONFIRMED: ${{ inputs.notion_scope_confirmed }}
+          CANDIDATE_ROOT: .candidate/tools/telegram-office/gateway
+        run: python tools/telegram-office/gateway/scripts/worker_candidate.py stage

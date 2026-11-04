@@ -2,6 +2,8 @@
 
 기준일: 2026-11-04 KST. **운영 소스·설정과 D1 읽기 조회는 완료했으며, 실제 배포는 인증 준비와 별도 승인까지 보류한다.** 이 문서의 신규 결과가 이전 인계 문서의 'Cloudflare 접근 미확인' 상태를 갱신한다. 새 봇·유료 플랜·AI API는 추가하지 않았다.
 
+> 후속 상태: PR #16은 main `4d1746fdd82409a7d8a30287e94856f087e84cdc`에 2026-11-04 11:55:23 KST 병합되었다. [D1 실행 41769237145](https://github.com/happygeo21/school-web-projects26/actions/runs/41769237145)에서 승인 보호 통과, 원격 SQL 적용과 13:09:56 KST 구조 검증 성공을 확인했다. **D1을 재생성하거나 마이그레이션을 반복하지 않는다.** 아래의 D1 미적용·PR 미병합·승인 환경 404 기록은 초기 점검 당시 상태다. 현재 남은 후보 준비 절차는 [SECRET_STAGING_PLAN.md](SECRET_STAGING_PLAN.md)를 따른다.
+
 ## 실제 조회 결과
 
 GitHub Actions [운영 비교 실행](https://github.com/happygeo21/school-web-projects26/actions/runs/41736045856)에서 기존 읽기 토큰을 사용했다. 소스·설정 원문, Secret 값, 학생/업무 행을 로그나 artifact에 저장하지 않았다. artifact에는 해시·일치 여부·알려진 바인딩 이름과 유형·DB 구조 판정만 포함한다.
