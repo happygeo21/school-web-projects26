@@ -1,0 +1,25 @@
+# Candidate only. No Worker has been deployed using this configuration.
+# Existing four encrypted secrets must be retained by the deployment tool.
+name = "geoteacher-telegram-gateway"
+main = "src/index.js"
+compatibility_date = "2026-11-03"
+workers_dev = true
+preview_urls = false
+
+[observability]
+enabled = true
+head_sampling_rate = 1.0
+
+[observability.logs]
+enabled = true
+invocation_logs = true
+head_sampling_rate = 1.0
+
+[vars]
+ADD_ENABLED = "false"
+
+[[d1_databases]]
+binding = "TASK_DB"
+database_name = "geoteacher-task-approvals"
+database_id = "59dbd391-34fa-48c6-aa28-6b4240c2ff77"
+migrations_dir = "migrations"

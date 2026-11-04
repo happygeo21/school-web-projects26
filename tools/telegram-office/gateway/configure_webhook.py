@@ -59,8 +59,8 @@ def main():
             "url": base + "/telegram-webhook",
             "secret_token": secret,
             "max_connections": 1,
-            "allowed_updates": ["message"],
-            "drop_pending_updates": True,
+            "allowed_updates": ["message", "callback_query"],
+            "drop_pending_updates": False,
         }
         try:
             request("setWebhook", payload)
@@ -75,7 +75,7 @@ def main():
             payload["ip_address"] = address
             print("Retrying with the Worker hostname's public IPv4 (Telegram ip_address option).")
             request("setWebhook", payload)
-        print("Webhook registered. Old pending messages were intentionally discarded.")
+        print("Webhook registered. Pending messages preserved; approval callbacks enabled.")
     elif action == "remove":
         request("deleteWebhook", {"drop_pending_updates": False})
         print("Webhook removed. Cloud command reception is now disabled.")
@@ -95,3 +95,4 @@ if __name__ == "__main__":
     except RuntimeError as exc:
         print(f"Configuration error: {exc}", file=sys.stderr)
         sys.exit(1)
+
