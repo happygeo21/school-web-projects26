@@ -28,7 +28,7 @@ class ZeroDeploymentSafetyTests(unittest.TestCase):
         self.assertEqual(args[:5], ["npx", "--yes", "wrangler@4.157.0", "versions", "deploy"])
         self.assertIn(self.old + "@100%", args)
         self.assertIn(self.new + "@0%", args)
-        self.assertEqual(args.count("--yes"), 1)
+        self.assertEqual(args.count("--yes"), 2)  # npx + Wrangler confirmations
         self.assertIn("--name", args)
         self.assertEqual(args[args.index("--name") + 1], "geoteacher-telegram-gateway")
         self.assertNotIn("upload", args)
