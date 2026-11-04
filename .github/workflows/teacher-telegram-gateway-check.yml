@@ -19,6 +19,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Run gateway unit tests
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run gateway and webhook safety tests
         working-directory: tools/telegram-office/gateway
         run: npm test
+
+      - name: Build the disabled production candidate without uploading
+        working-directory: tools/telegram-office/gateway
+        env:
+          WRANGLER_SEND_METRICS: 'false'
+          CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV: 'false'
+        run: npx --yes wrangler@4.157.0 deploy --dry-run --config wrangler.production-candidate.toml --outdir "${{ runner.temp }}/geoteacher-candidate"
