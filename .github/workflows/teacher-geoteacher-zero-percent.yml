@@ -1,0 +1,87 @@
+name: GeoTeacher Approved Zero-Percent Worker Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      stage_zero:
+        description: "Create a 100% existing / 0% candidate deployment; separate approval required"
+        type: boolean
+        default: false
+      confirmation:
+        description: "For staging only: ZERO ONLY geoteacher-telegram-gateway"
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+  actions: read
+  deployments: read
+
+# Also blocks concurrent writes from the existing candidate-upload workflow.
+concurrency:
+  group: geoteacher-worker-candidate
+  cancel-in-progress: false
+
+jobs:
+  read-only-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify exact versions, settings, D1 schema, current main and webhook (GET only)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CANDIDATE_ROOT: tools/telegram-office/gateway
+        run: python tools/telegram-office/gateway/scripts/worker_zero_deploy.py review
+
+  verify-protected-approval:
+    if: inputs.stage_zero && inputs.confirmation == 'ZERO ONLY geoteacher-telegram-gateway'
+    needs: read-only-preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Require owner, latest main, and owner-reviewed protected environment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ZERO_CONFIRMATION: ${{ inputs.confirmation }}
+        run: python tools/telegram-office/gateway/scripts/worker_zero_deploy.py gate
+
+  stage-zero-only:
+    if: inputs.stage_zero && inputs.confirmation == 'ZERO ONLY geoteacher-telegram-gateway'
+    needs: verify-protected-approval
+    environment: geoteacher-worker-staging
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Warm pinned Wrangler CLI without credentials
+        env:
+          WRANGLER_SEND_METRICS: "false"
+          CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV: "false"
+        run: npx --yes wrangler@4.157.0 --version
+      - name: Deploy only old 100% and candidate 0% after final drift check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ZERO_CONFIRMATION: ${{ inputs.confirmation }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_WORKER_STAGING_TOKEN: ${{ secrets.CLOUDFLARE_WORKER_STAGING_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CANDIDATE_ROOT: tools/telegram-office/gateway
+        run: python tools/telegram-office/gateway/scripts/worker_zero_deploy.py stage
