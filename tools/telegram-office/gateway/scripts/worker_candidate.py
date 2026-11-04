@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import re
+import signal
 import subprocess
 import sys
 import tempfile
@@ -166,6 +167,20 @@ def child_environment():
     return {key: value for key, value in os.environ.items() if key in allowed}
 
 
+def run_upload(arguments, **kwargs):
+    # npm can spawn a Node child. On timeout stop the whole group before deleting
+    # the memory-only secret/log directory; no detached upload may keep using it.
+    process = subprocess.Popen(arguments, start_new_session=True, stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE, text=True, **kwargs)
+    try:
+        stdout, stderr = process.communicate(timeout=180)
+    except subprocess.TimeoutExpired:
+        os.killpg(process.pid, signal.SIGKILL)
+        process.communicate()
+        raise Stop("Upload timed out; candidate creation is uncertain. Inspect versions; do not retry automatically.") from None
+    return subprocess.CompletedProcess(arguments, process.returncode, stdout, stderr)
+
+
 def upload(candidate, writer, worker_token):
     # The CLI requires a file. Use runner tmpfs (not the checkout/disk/artifacts)
     # with restrictive permissions, capture CLI output, and delete in all exits.
@@ -179,13 +194,10 @@ def upload(candidate, writer, worker_token):
                     "CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV": "false", "WRANGLER_LOG_PATH": temporary + "/wrangler.log",
                     "npm_config_logs_dir": temporary + "/npm-logs",
                     "NO_COLOR": "1"})
-        try:
-            result = subprocess.run(["npx", "--yes", "wrangler@4.157.0", "versions", "upload", "--config",
+        result = run_upload(["npx", "--yes", "wrangler@4.157.0", "versions", "upload", "--config",
                          "wrangler.production-candidate.toml", "--secrets-file", str(private),
                          "--no-x-provision", "--no-x-auto-create", "--message", "GeoTeacher reviewed inactive candidate " + CANDIDATE_SHA],
-                         cwd=candidate, env=env, capture_output=True, text=True, timeout=180)
-        except subprocess.TimeoutExpired:
-            raise Stop("Upload timed out; candidate creation is uncertain. Inspect versions; do not retry automatically.") from None
+                         cwd=candidate, env=env)
         require(result.returncode == 0, "Inactive upload failed; inspect version metadata before any retry. CLI output withheld.")
         matches = re.findall(r"Worker Version ID:\s*(" + UUID + ")", result.stdout)
         require(len(matches) == 1, "Upload response uncertain. Inspect versions; do not retry automatically.")
@@ -234,6 +246,7 @@ def main():
         version_id = upload(candidate, writer, worker_token)
         print(json.dumps({"uploaded_inactive_version_id": version_id, "verification_pending": True}))
         version = get_json(base + "/workers/scripts/" + WORKER + "/versions/" + version_id, token)
+        require(version.get("id") == version_id, "Uploaded candidate identity differs.")
         report["candidate_version_id"] = version_id
         report["candidate_bindings"] = candidate_bindings(version)
     active(base, token)

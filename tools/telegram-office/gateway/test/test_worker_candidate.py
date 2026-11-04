@@ -71,7 +71,7 @@ class WorkerCandidateSafetyTests(unittest.TestCase):
             self.assertNotIn("private-notion-test", " ".join(arguments))
             self.assertNotIn("NOTION_WRITE_TOKEN", kwargs["env"])
             return subprocess.CompletedProcess(arguments, 0, "Worker Version ID: " + candidate.BASE_VERSION, "")
-        with patch.object(candidate.subprocess, "run", side_effect=run):
+        with patch.object(candidate, "run_upload", side_effect=run):
             self.assertEqual(candidate.upload(Path("/tmp"), "private-notion-test", "private-worker-test"), candidate.BASE_VERSION)
         self.assertTrue(private_paths)
         self.assertFalse(private_paths[0].exists())
@@ -81,13 +81,25 @@ class WorkerCandidateSafetyTests(unittest.TestCase):
         paths = []
         def timeout(arguments, **kwargs):
             paths.append(Path(arguments[arguments.index("--secrets-file") + 1]))
-            raise subprocess.TimeoutExpired(arguments, 180, output="private-notion-test")
-        with patch.object(candidate.subprocess, "run", side_effect=timeout) as process:
+            raise candidate.Stop("Upload timed out; do not retry automatically.")
+        with patch.object(candidate, "run_upload", side_effect=timeout) as process:
             with self.assertRaises(candidate.Stop) as error:
                 candidate.upload(Path("/tmp"), "private-notion-test", "private-worker-test")
             self.assertNotIn("private-notion-test", str(error.exception))
             self.assertEqual(process.call_count, 1)
         self.assertFalse(paths[0].exists())
+
+    def test_timeout_stops_all_cli_children_before_cleanup_without_echoing_output(self):
+        with patch.object(candidate.subprocess, "Popen") as create, patch.object(candidate.os, "killpg") as kill:
+            process = create.return_value
+            process.pid = 12345
+            process.communicate.side_effect = [subprocess.TimeoutExpired(["npx"], 180, output="private-notion-test"), ("private-notion-test", "")]
+            with self.assertRaises(candidate.Stop) as error:
+                candidate.run_upload(["npx"])
+            self.assertNotIn("private-notion-test", str(error.exception))
+            self.assertTrue(create.call_args.kwargs["start_new_session"])
+            kill.assert_called_once_with(12345, candidate.signal.SIGKILL)
+            self.assertEqual(process.communicate.call_count, 2)
 
     def test_writer_authentication_only_gets_target_schema_and_reuses_worker_validator(self):
         with patch.object(candidate, "read_api", return_value={"schema": "fixture"}) as request, \
