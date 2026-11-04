@@ -1,5 +1,62 @@
 # GeoTeacher 3.2 운영 적용 준비 결과
 
+## 최신 판정: 운영 전환 전 점검 및 원복 계획 (2026-11-04 KST)
+
+**최신 상태가 아래 과거 점검 기록보다 우선합니다.** 사용자 승인 범위는 현재 *계획 수립과 읽기 전용/모의 회귀검사*뿐입니다. 아래 절차 자체는 아직 실행하지 않습니다. 새로운 유료 서비스나 API는 필요하지 않습니다.
+
+| 구분 | 확인된 기준 |
+|---|---|
+| GitHub `main` | `03dceec700133c50117c67ec8d4a139bc1055bc5` (PR #19 병합) |
+| 기존 정상 Worker 버전 | `682b662b-2da1-4c0f-af5e-86c9bfd5e78a` |
+| 기존 배포 ID | `d6e643fc-dedb-4f07-95da-c343d1dd9518` |
+| 기존 트래픽 | **100% 유지**, GitHub [준비 실행 #7](https://github.com/happygeo21/school-web-projects26/actions/runs/41801492791)에서 검증 |
+| 미배포 후보 버전 | `9d91cea3-c8d3-4322-902c-520fd7d4687b` — 현재 운영 배포에 속하지 않음 |
+| 후보 원본 SHA | `4d1746fdd82409a7d8a30287e94856f087e84cdc` (PR #16) |
+| 후보 설정 | `ADD_ENABLED=false`, 기존 Secret 4개와 새 `NOTION_WRITE_TOKEN` Secret, `TASK_DB`는 D1 `59dbd391-34fa-48c6-aa28-6b4240c2ff77` |
+| Notion 쓰기 API | 대상 스키마 GET/인증 성공. 실제 Insert **미시험** / 업무 생성 0건 |
+| Telegram webhook | 기존 주소 유지, `message` 허용, `callback_query` 미허용. 재등록 안 함 |
+| 운영 반영 | **미실행** — 아래 각 실변경은 반드시 별도 승인 |
+
+### 1. 이미 완료한 회귀·무변경 검증
+
+- [PR #19의 자동 검증](https://github.com/happygeo21/school-web-projects26/actions/runs/41800007933): Node 명령 라우터·업무 등록·기존 명령 호환성과 Python 배포 안전 검사 성공. Secret 값을 출력하지 않는 모의 요청이며, 운영에 Telegram 명령을 발송한 것은 아닙니다.
+- [미배포 후보 생성 #7](https://github.com/happygeo21/school-web-projects26/actions/runs/41801492791): `preflight`, `verify-stage-gate`, `stage-inactive-version` 모두 success. 후보 버전 ID, 바인딩, `ADD_ENABLED=false`, 기존 배포 ID/버전/100% 불변, D1 변경 없음, Notion 생성 0건 확인.
+- 기존 `/ping`, `/status`, `/today`, `/projects`, `/help`, `/aside` 및 비활성 `/add`에 대한 추가 모의 회귀검사는 이 문서 업데이트 PR의 CI를 통해 확인한다. **실제 Telegram/Notion 명령 왕복 성공은 운영 전환 이후에만 확정**.
+- 새 버전의 `GET /health`를 외부에서 실제 호출하여 검증하지 못했다. 기존/신규 응답 본문이 모두 `ok`이므로, 아래 0% 버전 지정 점검 시 실제 선택된 Worker 버전을 Cloudflare 관측 로그로 별도 판별해야 한다.
+
+### 2. 운영 전환 전 최종 차단 조건 (전부 충족해야 시작)
+
+1. 직전 Cloudflare 조회에서 기존 버전 `682b...` 100%, 후보 `9d91...` 미배포, 기존 웹훅 URL/설정 그대로인지 확인한다. 예상과 다르면 **중단**.
+2. 후보의 `ADD_ENABLED=false`, Secret 5개 이름/유형, `TASK_DB` 정확한 D1 ID, 호환성·관측 설정, 버전 상세 읽기 가능, 이전 버전 원복 가능 여부를 검증한다. Secret 값은 출력하지 않는다.
+3. Notion의 대상 `03 · AI 업무함` 원본·권한과 읽기 토큰이 유지되었는지 확인한다. **Notion 업무 생성·수정·삭제 없음**.
+4. 비용 추가 없이 현재 Cloudflare Workers Free를 유지한다. 새 API 서비스/토큰 확대/D1 migrate/GitHub 알림 변경 없음.
+5. *운영 배포의 별도 명시적 승인*과 정확한 배포 대상·트래픽 비율·원복 버전을 확인한다. 승인 전 `wrangler deploy`, `wrangler versions deploy`, Cloudflare 대시보드 Promote/Rollback, setWebhook 호출을 실행하지 않는다.
+
+### 3. 승인 후 권장 단계 (단계별로 다시 승인)
+
+**1단계 — 신규 후보 0% / 기존 정상 버전 100% 배포 구성.** Cloudflare 공식 버전별 점진 배포를 사용하여 새로운 Deployment를 만들되 평상시 Telegram 트래픽은 100% 기존 버전으로 보낸다. 이 단계도 **Cloudflare 운영 배포 객체를 변경하므로 승인 전 실행 금지**. 이 변경으로 기존 배포 ID는 새 ID로 바뀔 수 있으므로, 버전별 트래픽 비율이 목표와 동일한지 검사해야 한다.
+
+**2단계 — 후보에 한정한 읽기 전용 스모크 테스트.** 공식 Version Overrides 기능으로 `9d91...` 버전을 지정한 `GET /health`(200, 응답 `ok`)와 무인증 `POST /telegram-webhook`(403)을 확인한다. 403이 아닌 경우 중단한다. 두 요청 모두 Telegram 메시지를 발송하거나 Notion 업무를 생성해서는 안 된다. 버전 지정이 실제로 적용되었는지는 Cloudflare 관측 로그에서 확인한다. 버전 로그 증거가 없으면 후보 개별 시험을 **미검증**으로 기록하고 다음 단계로 이동하지 않는다. 새 버전을 0%에 올리기 전에는 Version Override를 사용한 검증을 할 수 없다.
+
+**3단계 — 별도 운영 전환 승인 후 후보 버전 트래픽 승격.** 기본 명령은 모두 기존과 동일하게 동작해야 하므로, 운영 전환 시점에는 `ADD_ENABLED=false`를 그대로 유지한다. `/ping`, `/help`, `/status`, `/today`, `/projects`, `/aside`와 `/add`의 '설정 대기' 응답을 확인한다. Notion 업무 생성 0건, D1 테이블/웹훅 무변경, GitHub 기존 Telegram 알림 정상 여부를 확인한다. 서비스 중 오류가 있으면 **기존 버전으로 즉시 원복**한다. 임의로 트래픽을 점진 상승하거나 자동으로 100% 변경하지 않는다.
+
+**4단계 — 기능 활성화는 별도 작업.** 실제 `/add`를 사용하려면 `ADD_ENABLED=true`인 **새로운 버전**을 만들어야 하고, `callback_query`를 Telegram webhook의 `allowed_updates`에 포함해야 한다. URL·Secret 보존, `drop_pending_updates=false`, 실제 업무 1건에 대한 별도 승인 및 중복 방지 확인을 모두 선행한다. 3단계 승인에 4단계 작업은 포함되지 않는다.
+
+### 4. 즉시 원복 계획
+
+- **원복 대상 버전:** `682b662b-2da1-4c0f-af5e-86c9bfd5e78a` (기존 원본을 절대로 삭제/재업로드하지 않음).
+- **실행 경로:** Cloudflare Dashboard → Workers & Pages → `geoteacher-telegram-gateway` → Deployments → 이전 정상 버전 선택 → `Rollback`. Cloudflare 공식 문서상 해당 버전 100%로 새 배포를 만드는 작업이며 기존 배포 ID를 재활용하는 것이 아니다.
+- **원복 트리거:** `/health` 또는 기본 Telegram 명령 실패, Telegram 전달 오류 증가, Notion 읽기 실패, 버전/Secret 바인딩 불일치, 예상치 못한 쓰기·보안 경고.
+- **원복 후 검증:** 정상 버전 100% 재조회, `/ping`·`/today`·`/status` 및 기존 알림 수신 확인. 기존 webhook URL, 기존 GitHub Actions 설정, 원본 Notion 업무·D1 기록은 그대로 보존한다. D1 DB를 삭제/초기화/복구하지 않는다. **원복도 실제 운영 변경이므로 승인된 장애복구 범위에서만 실행**한다.
+- Cloudflare [공식 Rollbacks 문서](https://developers.cloudflare.com/workers/versions-and-deployments/rollbacks/)와 [Version overrides 문서](https://developers.cloudflare.com/workers/versions-and-deployments/version-overrides/)를 근거로 한다.
+
+### 5. 현재 판정
+
+**Go: 계획·모의 회귀검사 / No-go: 운영 트래픽 전환·웹훅 수정·실제 Notion 업무 생성.** 추가 테스트 CI 성공 및 별도 운영 배포 승인 전에는 다음 단계로 넘어가지 않는다. 아래 나머지 내용은 2026-11-04 이전 시점의 참고 점검 기록이므로 실제 최신 완료 상태를 뜻하지 않는다.
+
+---
+
+
 기준일: 2026-11-04 KST. **운영 소스·설정과 D1 읽기 조회는 완료했으며, 실제 배포는 인증 준비와 별도 승인까지 보류한다.** 이 문서의 신규 결과가 이전 인계 문서의 'Cloudflare 접근 미확인' 상태를 갱신한다. 새 봇·유료 플랜·AI API는 추가하지 않았다.
 
 > 후속 상태: PR #16은 main `4d1746fdd82409a7d8a30287e94856f087e84cdc`에 2026-11-04 11:55:23 KST 병합되었다. [D1 실행 41769237145](https://github.com/happygeo21/school-web-projects26/actions/runs/41769237145)에서 승인 보호 통과, 원격 SQL 적용과 13:09:56 KST 구조 검증 성공을 확인했다. **D1을 재생성하거나 마이그레이션을 반복하지 않는다.** 아래의 D1 미적용·PR 미병합·승인 환경 404 기록은 초기 점검 당시 상태다. 현재 남은 후보 준비 절차는 [SECRET_STAGING_PLAN.md](SECRET_STAGING_PLAN.md)를 따른다.

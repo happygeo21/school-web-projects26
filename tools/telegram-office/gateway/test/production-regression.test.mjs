@@ -18,7 +18,7 @@ test("legacy commands stay available with add disabled and never create Notion p
     return Response.json({ok:true});
   };
   try {
-    for (const [index, command] of ["/ping","/projects","/status","/today"].entries()) {
+    for (const [index, command] of ["/ping","/projects","/status","/today","/help","/aside","/add 통합사회 활동지 준비 | 내일"].entries()) {
       const request = new Request("https://test.workers.dev/telegram-webhook", {
         method:"POST", headers:{"x-telegram-bot-api-secret-token":env.TELEGRAM_WEBHOOK_SECRET},
         body:JSON.stringify({update_id:index+1,message:{chat:{id:12345678,type:"private"},from:{id:12345678},text:command}}),
@@ -29,5 +29,9 @@ test("legacy commands stay available with add disabled and never create Notion p
     assert.match(replies[1],/https:\/\/github.com\/happygeo21\/school-web-projects26/);
     assert.match(replies[2],/최근 알림 워크플로 결과: 성공/);
     assert.match(replies[3],/읽기 전용 연결 설정 대기/);
+    assert.match(replies[4],/\/ping.*연결 확인/);
+    assert.match(replies[5],/Aside Channels 원격 제어/);
+    assert.match(replies[6],/업무 등록은 설정 대기 중/);
+    assert.equal(replies.length, 7);
   } finally { globalThis.fetch = originalFetch; }
 });
