@@ -125,7 +125,7 @@ export const WORK_STATUS = Object.freeze({
   changes_requested: "수정 요청",
   rejected: "반려",
   private: "비공개",
-  archived: "보관",
+  archived: "삭제됨 (복구 가능)",
 });
 export function publicWork(w, publicId, approvedAt) {
   return {

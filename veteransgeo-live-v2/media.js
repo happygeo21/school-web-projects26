@@ -417,7 +417,7 @@ export function setupTeacherMedia({
   const section = document.createElement("section");
   section.className = "card";
   section.id = "teacherWorks";
-  section.innerHTML = `<h2>홍보 작품 관리</h2><p>얼굴·개인정보·저작권·사실관계를 확인한 뒤 승인해주세요. 파일은 승인 전 비공개이며, 승인 해제 후 새 미디어 요청도 차단됩니다. 이미 받은 사본은 회수할 수 없어요.</p><label>상태<select id="workFilter"><option value="ALL">전체</option>${Object.entries(
+  section.innerHTML = `<h2>홍보 작품 관리</h2><p>얼굴·개인정보·저작권·사실관계를 확인한 뒤 승인해주세요. 파일은 승인 전 비공개이며, 승인 해제 후 새 미디어 요청도 차단됩니다. 이미 받은 사본은 회수할 수 없어요.</p><label>상태<select id="workFilter"><option value="ALL">전체 (삭제 제외)</option>${Object.entries(
     WORK_STATUS,
   )
     .map(([k, v]) => `<option value="${k}">${v}</option>`)
@@ -478,6 +478,7 @@ export function setupTeacherMedia({
     for (const [school, users] of Object.entries(records))
       for (const [uid, items] of Object.entries(users || {}))
         for (const [id, w] of Object.entries(items || {})) {
+          if (w.status === "archived" && $("workFilter").value !== "archived") continue;
           if (
             $("workFilter").value !== "ALL" &&
             $("workFilter").value !== w.status
@@ -610,10 +611,25 @@ export function setupTeacherMedia({
             ["수정 요청", "changes_requested"],
             ["반려", "rejected"],
             ["비공개 전환", "private"],
-            ["보관", "archived"],
           ])
             button(label, () => review(status));
-          if (w.status === "archived") button("복원", () => review("pending"));
+          const deletion = document.createElement("details");
+          const deletionTitle = document.createElement("summary");
+          deletionTitle.textContent = "고급 관리 · 삭제·복원";
+          deletion.append(deletionTitle);
+          const deletionButton = document.createElement("button");
+          deletionButton.type = "button";
+          deletionButton.textContent = w.status === "archived" ? "삭제 복원" : "삭제 (복구 가능)";
+          deletionButton.onclick = async () => {
+            const restoring = w.status === "archived";
+            if (!confirm(restoring ? "승인 대기로 복원할까요? 자동으로 공개되지는 않습니다." : "이 V2 작품을 삭제 목록으로 이동할까요? 공개 화면과 기본 목록에서 제외됩니다. 원본·첨부파일·이력은 보존되어 복구할 수 있습니다.")) return;
+            deletionButton.disabled = true;
+            try { await review(restoring ? "pending" : "archived"); }
+            catch (error) { $("workStatus").textContent = error.message || "권한 또는 연결 상태를 확인해주세요."; }
+            finally { deletionButton.disabled = false; }
+          };
+          deletion.append(deletionButton);
+          entry.append(deletion);
           button("제목·소개 수정", async () => {
             const title = prompt("작품 제목", w.title);
             if (title === null) return;
