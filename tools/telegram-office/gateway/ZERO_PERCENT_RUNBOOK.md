@@ -1,0 +1,73 @@
+# GeoTeacher 3.2 — 승인형 0% 후보 배포 실행 지침
+
+2026-11-04 KST 기준. **이 문서와 PR은 실제 Cloudflare 배포를 실행하지 않습니다.** 워크플로는 PR 별도 승인 및 병합 후에만 main에서 수동 실행할 수 있습니다.
+
+## 정확한 배포 목표
+
+| 구분 | 버전 또는 값 |
+|---|---|
+| Worker | geoteacher-telegram-gateway |
+| 현재 정상 버전 | 682b662b-2da1-4c0f-af5e-86c9bfd5e78a |
+| 기존 Deployment ID | d6e643fc-dedb-4f07-95da-c343d1dd9518 |
+| 업로드 완료된 신규 후보 | 9d91cea3-c8d3-4322-902c-520fd7d4687b |
+| 목표 | 기존 정상 버전 100% + 신규 후보 0% |
+| 신규 기능 플래그 | ADD_ENABLED=false |
+| 보호 환경 | geoteacher-worker-staging |
+| 실행 승인자 | happygeo21 |
+
+**주의:** 0% 설정도 새 Cloudflare Deployment를 생성합니다. 사용자 승인 없이 실행하지 않습니다. 신규 후보에 0.01%라도 일반 트래픽을 배정하는 대체 방안은 허용하지 않습니다.
+
+## 보호된 수동 실행 흐름
+
+- 워크플로: .github/workflows/teacher-geoteacher-zero-percent.yml
+- 안전 스크립트: tools/telegram-office/gateway/scripts/worker_zero_deploy.py
+- 입력의 stage_zero 기본값은 false입니다. 기본 수동 실행은 읽기 전용 점검만 수행합니다.
+- 실제 0% 배포 단계에는 stage_zero=true, 정확한 확인 문구 ZERO ONLY geoteacher-telegram-gateway, happygeo21 직접 실행, 최신 main 검증, 승인자/관리자 우회 금지 검증, 기존 보호 환경의 별도 승인이 모두 필요합니다.
+- 승인 전 preflight는 Cloudflare 버전·배포 메타데이터, 기존 Secret 이름/유형, 기존 D1 스키마, Telegram webhook의 getWebhookInfo만 검사합니다. D1 스키마 조회에 사용되는 POST는 읽기 SQL SELECT로만 제한됩니다.
+- GitHub 기본 Secret CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID / TELEGRAM_BOT_TOKEN을 읽기 전용으로 사용합니다. 보호 환경 Secret CLOUDFLARE_WORKER_STAGING_TOKEN은 사용자 승인 후 CLI 실행용으로만 사용합니다. **NOTION_WRITE_TOKEN은 이 워크플로에 전달하지 않습니다.**
+- Cloudflare CLI는 Wrangler 4.157.0으로 고정하며, 기존 버전 100%와 정확한 신규 후보 0%만 한 번 지정합니다. 비율·버전·환경이 하나라도 다르면 배포를 중단합니다.
+- CLI stderr/stdout이나 Secret 값 원문은 출력하지 않습니다. 임시 로그는 Runner의 메모리 폴더에만 기록하고 정리합니다. 결과가 불분명하면 재실행하지 않고 Cloudflare Deployment 메타데이터를 재조회합니다.
+- Cloudflare Wrangler CLI 문서는 신규 0%를 공식 지원하지만, API 모델에는 최소 0.01이라는 표기가 있어 차이가 있습니다. 서버가 0%를 거부하면 그대로 실패 종료하며 0.01% 대체, 자동 재시도, 운영 승격을 금지합니다.
+
+### PR 별도 병합 승인 후, 0% 배포 자체가 별도로 승인되었을 때만
+
+1. [GitHub Actions](https://github.com/happygeo21/school-web-projects26/actions/workflows/teacher-geoteacher-zero-percent.yml)에서 브랜치 main을 선택합니다.
+2. stage_zero 체크 후 confirmation에 ZERO ONLY geoteacher-telegram-gateway 를 정확히 입력합니다.
+3. Run workflow를 누릅니다. 먼저 read-only-preflight 및 verify-protected-approval 완료를 확인합니다.
+4. Review deployments 메뉴에서 geoteacher-worker-staging을 선택하여 보호 환경 승인자가 승인합니다.
+5. stage-zero-only가 성공하면 결과에서 새 Cloudflare Deployment ID와 두 버전 비율을 읽기 재조회합니다. 목표는 기존 100%, 후보 0%의 정확한 두 버전입니다.
+6. 신규 후보 트래픽을 100%로 올리지 않고, 다음 단계인 후보 지정 무쓰기 smoke test를 별도로 검토합니다.
+
+### 검증할 고정 CLI 명령 (참고용, 이 문서 작성 시 실행 안 함)
+
+    npx --yes wrangler@4.157.0 versions deploy 682b662b-2da1-4c0f-af5e-86c9bfd5e78a@100% 9d91cea3-c8d3-4322-902c-520fd7d4687b@0% --name geoteacher-telegram-gateway --yes --message "GeoTeacher approved old 100 percent candidate zero percent"
+
+## 다음 단계: 0% 후보의 읽기 전용 확인
+
+Cloudflare 공식 Version Overrides 헤더를 사용합니다. **0% 배포가 완료된 뒤에만** 신규 버전을 지정할 수 있습니다.
+
+    curl.exe -i "https://geoteacher-telegram-gateway.ksoundmin.workers.dev/health" -H 'Cloudflare-Workers-Version-Overrides: geoteacher-telegram-gateway="9d91cea3-c8d3-4322-902c-520fd7d4687b"'
+
+예상 결과는 200 및 ok입니다. 인증 없는 POST /telegram-webhook 요청은 403이어야 합니다. 두 테스트 모두 Telegram 메시지·Notion 업무·D1 행을 생성해서는 안 됩니다.
+
+**응답만으로 신규 버전 지정 성공이라고 주장하지 않습니다.** 정상 버전도 같은 값을 반환하므로 Cloudflare Observability의 실제 실행 version_id와 일치하는지를 확인해야 합니다. 버전 확인 증거가 없으면 신규 후보 smoke test는 미검증으로 기록합니다.
+
+## 실패와 원복
+
+- 0% 배포가 실패하거나 API 결과가 불분명할 때 워크플로를 다시 실행하지 않습니다. Cloudflare의 현재 Deployment ID와 비율을 우선 조회합니다.
+- 원복 대상은 기존 정상 버전 **682b662b-2da1-4c0f-af5e-86c9bfd5e78a**의 100%입니다.
+- Cloudflare Dashboard → Workers & Pages → geoteacher-telegram-gateway → Deployments → 기존 정상 버전 → Rollback.
+- Rollback은 새로운 Deployment를 생성하므로 이전 Deployment ID가 그대로 복구된다고 가정하지 않습니다.
+- 원복은 별도 운영 변경 승인 대상입니다. D1·Notion·Telegram webhook·GitHub 기존 알림과 기록을 삭제·수정하지 않습니다.
+- 이 워크플로에는 일반 운영 배포, rollback, setWebhook, Notion POST pages, D1 migrate, Secret 추가·수정 명령이 없습니다.
+
+## 이번 PR의 검증 한계
+
+CI는 모의 API/CLI·분기·승인·비율 검사만 실행합니다. 실제 0% Deployment 생성이나 텔레그램 명령 왕복의 성공 증거가 아닙니다. 별도 승인과 보호 환경 승인 전에는 새 배포가 존재하지 않습니다.
+
+공식 문서:
+- https://developers.cloudflare.com/workers/versions-and-deployments/version-overrides/
+- https://developers.cloudflare.com/workers/wrangler/commands/workers/#versions-deploy
+- https://developers.cloudflare.com/workers/versions-and-deployments/gradual-deployments/
+- https://developers.cloudflare.com/workers/versions-and-deployments/rollbacks/
+- https://developers.cloudflare.com/api/resources/workers/subresources/scripts/subresources/deployments/methods/create/
