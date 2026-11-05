@@ -1,0 +1,83 @@
+name: GeoTeacher Verified Candidate Tail Smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      verify_tail:
+        description: "Run two anonymous 0% candidate probes while viewing only filtered live tail"
+        type: boolean
+        default: false
+      confirmation:
+        description: "Exact phrase: VERIFY TAIL ONLY geoteacher-telegram-gateway"
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+  actions: read
+  deployments: read
+
+concurrency:
+  group: geoteacher-worker-candidate
+  cancel-in-progress: false
+
+jobs:
+  read-only-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Read exact 100/0 deployment and disabled candidate without writes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: python tools/telegram-office/gateway/scripts/worker_tail_verify.py review
+
+  verify-protected-approval:
+    if: inputs.verify_tail && inputs.confirmation == 'VERIFY TAIL ONLY geoteacher-telegram-gateway'
+    needs: read-only-preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify owner, latest main and required-reviewer environment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAIL_CONFIRMATION: ${{ inputs.confirmation }}
+        run: python tools/telegram-office/gateway/scripts/worker_tail_verify.py gate
+
+  read-only-tail-smoke:
+    if: inputs.verify_tail && inputs.confirmation == 'VERIFY TAIL ONLY geoteacher-telegram-gateway'
+    needs: verify-protected-approval
+    environment: geoteacher-worker-staging
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Warm pinned Wrangler CLI without credentials
+        env:
+          WRANGLER_SEND_METRICS: "false"
+          CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV: "false"
+        run: npx --yes wrangler@4.157.0 --version
+      - name: Observe only candidate version and send two anonymous HTTP probes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAIL_CONFIRMATION: ${{ inputs.confirmation }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_WORKER_STAGING_TOKEN: ${{ secrets.CLOUDFLARE_WORKER_STAGING_TOKEN }}
+          GATEWAY_ROOT: tools/telegram-office/gateway
+        run: python tools/telegram-office/gateway/scripts/worker_tail_verify.py verify
