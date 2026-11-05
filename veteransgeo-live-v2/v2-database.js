@@ -9,4 +9,39 @@ export const get=async r=>{const v=await call(r.path);return{exists:()=>v!=null,
 export const set=async(r,data)=>{if(r.path.includes('/submissions/')&&data)data={...data,status:'pending'};const value=await call(r.path,'set',data);changed();return value;};
 export const update=async(r,data)=>{const value=await call(r.path,'update',data);changed();return value;};export const remove=()=>Promise.reject({code:'media/permission',message:'원본 기록 삭제는 이 화면에서 지원하지 않아요.'});
 export async function reviewRecord(kind,school,owner,id,status){const path=`${root}/${kind}/${school}/${owner}/${id}`,before=(await get(ref(null,path))).val();if(!before)throw{code:'media/permission'};return update(ref(null,root),{[path+'/status']:status,[path+'/revision']:(before.revision||0)+1,[path+'/deletedAt']:status==='archived'?Date.now():null});}
-export function onValue(r,fn,fail){let live=true,previous='';const poll=async()=>{try{let data=await call(r.path);if(r.path===root+'/published'){try{const old=await readLegacyPublic();data={...Object.fromEntries(Object.entries(old).map(([k,v])=>['legacy:'+k,{...v,sourceVersion:'legacy'}])),...Object.fromEntries(Object.entries(data||{}).map(([k,v])=>[k,{...v,sourceVersion:'v2'}]))};}catch{document.dispatchEvent(new CustomEvent('legacy-read-error'));}}const encoded=JSON.stringify(data);if(live&&encoded!==previous){previous=encoded;fn({exists:()=>data!=null,val:()=>data})}}catch(e){if(live)fail?.(e)}};void poll();const timer=setInterval(poll,30000);addEventListener('v2-data-change',poll);return()=>{live=false;clearInterval(timer);removeEventListener('v2-data-change',poll)}};
+// Realtime-like reads are HTTP POSTs. Keep them bounded on free hosting and do not poll hidden tabs.
+export function onValue(r,fn,fail){
+ let live=true,previous='',timer=null,inFlight=false,queued=false,failures=0;
+ const hidden=()=>document.visibilityState==='hidden';
+ const schedule=(wait)=>{clearTimeout(timer);if(live&&!hidden())timer=setTimeout(poll,wait);};
+ async function poll(){
+   if(!live||hidden())return;
+   if(inFlight){queued=true;return;}
+   inFlight=true;
+   try{
+     let data=await call(r.path);
+     if(r.path===root+'/published'){
+       try{
+         const old=await readLegacyPublic();
+         data={...Object.fromEntries(Object.entries(old).map(([k,v])=>['legacy:'+k,{...v,sourceVersion:'legacy'}])),...Object.fromEntries(Object.entries(data||{}).map(([k,v])=>[k,{...v,sourceVersion:'v2'}]))};
+       }catch{document.dispatchEvent(new CustomEvent('legacy-read-error'));}
+     }
+     failures=0;
+     const encoded=JSON.stringify(data);
+     if(live&&encoded!==previous){previous=encoded;fn({exists:()=>data!=null,val:()=>data});}
+   }catch(error){failures++;if(live)fail?.(error);}
+   finally{
+     inFlight=false;
+     if(!live)return;
+     if(queued){queued=false;schedule(250);return;}
+     // Normal refresh every two minutes. Errors back off to 4, 8, then 15 minutes.
+     schedule(failures?Math.min(15*60*1000,120000*2**Math.min(failures,3)):120000);
+   }
+ }
+ const refresh=()=>{if(!live||hidden())return;if(inFlight)queued=true;else schedule(120);};
+ const visibility=()=>{if(hidden())clearTimeout(timer);else refresh();};
+ void poll();
+ addEventListener('v2-data-change',refresh);
+ document.addEventListener('visibilitychange',visibility);
+ return()=>{live=false;clearTimeout(timer);removeEventListener('v2-data-change',refresh);document.removeEventListener('visibilitychange',visibility);};
+}
