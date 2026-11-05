@@ -152,7 +152,7 @@ const app=initializeApp(existingTeacherConfig),auth=getAuth(app),db=getDatabase(
 provider.setCustomParameters({prompt:"select_account"});
 const teacherLogin=setupTeacherLogin({projectId:existingTeacherConfig.projectId,
  elements:{google:$("loginBtn"),passwordButton:$("passwordLoginBtn"),email:$("emailLogin"),password:$("passwordLogin"),message:$("loginMsg")},
- prepare:async()=>{if(auth.currentUser?.isAnonymous)await signOut(auth);},
+ prepare:()=>auth.currentUser?.isAnonymous?signOut(auth):undefined,
  authenticateGoogle:()=>signInWithPopup(auth,provider),
  authenticatePassword:(email,password)=>signInWithEmailAndPassword(auth,email,password)
 });
