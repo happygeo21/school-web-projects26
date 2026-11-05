@@ -66,35 +66,47 @@ def inspect_current():
 
 def tail_command():
     """Only ephemeral, version-filtered logs; absolutely no deploy/write commands."""
+    # Pretty mode emits a human-readable connection banner and one request per
+    # line. JSON mode can omit that banner and emit multi-line objects.
+    # Parse events only in memory; never print a raw Tail line.
     return ["npx", "--yes", "wrangler@4.157.0", "tail", WORKER,
-            "--format", "json", "--version-id", CANDIDATE_VERSION]
+            "--format", "pretty", "--version-id", CANDIDATE_VERSION]
+
+
+_ANSI = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
 
 
 def parse_tail_match(raw_line, marker):
-    """Process in memory; return allowlisted metadata for the two owned probes."""
+    """Parse pretty Tail request lines (or JSON) without exposing log contents."""
+    line = _ANSI.sub("", raw_line).strip()
+    explicit = None
     try:
-        event = json.loads(raw_line)
+        event = json.loads(line)
     except (ValueError, TypeError):
-        return None
-    if not isinstance(event, dict):
-        return None
-    request = (event.get("event") or {}).get("request") or {}
-    if not isinstance(request, dict):
-        return None
-    url = request.get("url", "")
-    if not isinstance(url, str) or marker not in url:
+        event = None
+    if isinstance(event, dict):
+        request = (event.get("event") or {}).get("request") or {}
+        if not isinstance(request, dict):
+            return None
+        url, method = request.get("url"), request.get("method")
+        meta = event.get("scriptVersion") or (event.get("$workers") or {}).get("scriptVersion") or {}
+        if isinstance(meta, dict):
+            explicit = meta.get("id")
+    else:
+        # Wrangler --format pretty:
+        # GET https://worker.example.workers.dev/health?smoke=<id> - Ok @ ...
+        # POST https://worker.example.workers.dev/telegram-webhook?smoke=<id> - Ok @ ...
+        match = re.search(r"(?:^|\s)(GET|POST)\s+(https://\S+)\s+-\s+[^\s]+", line, re.I)
+        if not match:
+            return None
+        method, url = match.group(1).upper(), match.group(2)
+    if not isinstance(url, str) or not isinstance(method, str):
         return None
     parts = urlsplit(url)
-    if parts.scheme != "https" or parts.hostname != HOST or ("smoke=" + marker) not in parts.query:
+    if (parts.scheme != "https" or parts.hostname != HOST
+            or ("smoke=" + marker) not in parts.query
+            or (method, parts.path) not in EXPECTED):
         return None
-    method = request.get("method")
-    pair = (method, parts.path)
-    if pair not in EXPECTED:
-        return None
-    metadata = event.get("scriptVersion") or event.get("$workers", {}).get("scriptVersion") or {}
-    if not isinstance(metadata, dict):
-        metadata = {}
-    explicit = metadata.get("id")
     if explicit is not None and explicit != CANDIDATE_VERSION:
         raise Stop("Tail event version conflicts with the requested candidate.")
     return {"method": method, "path": parts.path,
@@ -143,6 +155,27 @@ def stop_tail(process):
         process.wait(timeout=2)
 
 
+def tail_diagnostic(flags):
+    """Safe, fixed-category diagnostics only. Never reveal Wrangler log lines."""
+    if flags["auth_rejected"]:
+        reason = "tail_auth_or_scope_rejected"
+    elif flags["cli_option_error"]:
+        reason = "tail_cli_option_rejected"
+    elif flags["network_error"]:
+        reason = "tail_socket_or_network_error"
+    elif flags["progress"]:
+        reason = "tail_progress_seen_but_connection_unconfirmed"
+    elif flags["created"]:
+        reason = "tail_session_created_but_connection_unconfirmed"
+    elif flags["out_lines"] or flags["err_lines"]:
+        reason = "tail_output_seen_but_no_connection_banner"
+    else:
+        reason = "tail_no_startup_output"
+    return ("Tail not ready [" + reason + "]"
+            + " stdout_lines=" + str(flags["out_lines"])
+            + " stderr_lines=" + str(flags["err_lines"]))
+
+
 def run_tail_probe(marker, root):
     """Subscribe first, send two probes exactly once, collect only matching events."""
     require(Path("/dev/shm").is_dir(), "Memory-backed temporary logs unavailable.")
@@ -165,21 +198,33 @@ def run_tail_probe(marker, root):
             threading.Thread(target=stream_pipe, args=(pipe, channel, messages), daemon=True).start()
         try:
             ready = False
-            deadline = time.monotonic() + 35
+            flags = {"created": False, "progress": False,
+                     "auth_rejected": False, "cli_option_error": False,
+                     "network_error": False, "out_lines": 0, "err_lines": 0}
+            deadline = time.monotonic() + 50
             while time.monotonic() < deadline and not ready:
                 if process.poll() is not None:
-                    raise Stop("Cloudflare tail session stopped before the smoke requests.")
+                    raise Stop("Tail process ended before ready; "
+                               + tail_diagnostic(flags) + "; no HTTP probes sent.")
                 try:
                     channel, line = messages.get(timeout=0.5)
                 except queue.Empty:
                     continue
-                # This is a Wrangler progress indication only, never request data.
-                low = line.lower()
-                ready = ("successfully created tail" in low
-                         or "connected to" in low
-                         or "tail session started" in low
-                         or "listening for logs" in low)
-            require(ready, "Could not confirm tail connection; no HTTP probes sent.")
+                flags["out_lines" if channel == "out" else "err_lines"] += 1
+                # Only exact allowlisted signals are retained. Never log a line.
+                low = _ANSI.sub("", line).lower()
+                flags["created"] |= "successfully created tail" in low
+                flags["progress"] |= ("connected to" in low or "waiting for logs" in low)
+                flags["auth_rejected"] |= any(word in low for word in (
+                    "unauthorized", "forbidden", "permission denied",
+                    "not authorized", "http 401", "http 403"))
+                flags["cli_option_error"] |= any(word in low for word in (
+                    "unknown argument", "unknown option", "unexpected argument"))
+                flags["network_error"] |= any(word in low for word in (
+                    "websocket error", "connection refused", "socket hang up"))
+                ready = ("connected to " + WORKER.lower() in low
+                         and "waiting for logs" in low)
+            require(ready, tail_diagnostic(flags) + "; no HTTP probes sent.")
             results = {pair: one_probe(*pair, marker) for pair in EXPECTED}
             matches = {}
             observe_until = time.monotonic() + 30
