@@ -201,8 +201,15 @@ def run_tail_probe(marker, root):
 
 
 def main():
-    require(len(sys.argv) == 2 and sys.argv[1] in {"review", "verify"},
-            "Use review or verify.")
+    require(len(sys.argv) == 2 and sys.argv[1] in {"review", "gate", "verify"},
+            "Use review, gate or verify.")
+    if sys.argv[1] == "gate":
+        require(os.environ.get("TAIL_CONFIRMATION") == CONFIRMATION,
+                "Exact tail-only consent phrase required.")
+        main_sha()
+        protected_environment()
+        print("Owner-protected read-only tail gate verified. No Worker request sent.")
+        return
     state = inspect_current()
     if sys.argv[1] == "review":
         print(json.dumps({**state, "mode": "read-only-check", "tail_started": False,
