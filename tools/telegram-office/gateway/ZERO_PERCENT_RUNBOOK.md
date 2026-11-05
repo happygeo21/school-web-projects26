@@ -1,5 +1,19 @@
 # GeoTeacher 3.2 — 승인형 0% 후보 배포 실행 지침
 
+## 최신 후속 단계: 후보 버전만 필터링한 Live Tail 검사 (2026-11-05)
+
+2026-11-04 [무쓰기 HTTP 실행 41823439479](https://github.com/happygeo21/school-web-projects26/actions/runs/41823439479)은 GET 200/ok, 무인증 POST 403/Forbidden에 성공했으나 **실제 후보 버전의 실행 ID를 별도로 입증하지 못했습니다**. Cloudflare Observability 과거 로그 API는 Workers Observability Write를 요구하므로 토큰 권한을 확대하지 않고, 기존 보호 환경의 Worker 편집 토큰으로 가능한 `wrangler tail --version-id`를 사용합니다.
+
+- [PR #23](https://github.com/happygeo21/school-web-projects26/pull/23)의 `teacher-geoteacher-tail-smoke.yml`은 **수동 실행 전용**이며 `verify_tail=false`가 기본값입니다. PR 병합 자체는 네트워크 검증이나 Worker 배포를 실행하지 않습니다.
+- PR 병합을 먼저 별도 승인받고, 그 뒤 [Tail 검사 GitHub Actions](https://github.com/happygeo21/school-web-projects26/actions/workflows/teacher-geoteacher-tail-smoke.yml)에서 `main` 선택, `verify_tail` 체크, 확인 문구 `VERIFY TAIL ONLY geoteacher-telegram-gateway` 입력, 보호 환경 `geoteacher-worker-staging` 검토자 승인 순서로 실행합니다.
+- 실제 Tail 검사를 시작하기 전 Cloudflare Deployment `99157fb4-d5bd-4d3d-b2f7-e01171158ff7`가 여전히 기존 버전 `682b662b-2da1-4c0f-af5e-86c9bfd5e78a` **100%** / 신규 후보 `9d91cea3-c8d3-4322-902c-520fd7d4687b` **0%**인지 메타데이터 GET만으로 확인합니다. 다르면 **중단**합니다.
+- Wrangler Live Tail 세션은 신규 후보 버전으로 필터링하고 익명 `GET /health`·무인증 `POST /telegram-webhook` 요청을 **각 1회** 수행합니다. 고유 마커가 붙은 두 이벤트가 후보 버전 필터에서 모두 관측돼야 성공이며, Tail 원문(사용자 정보·인증정보 포함 가능)은 절대로 출력하거나 저장하지 않습니다.
+- CLI가 필터를 지원하지 않거나 Tail 연결에 실패하면 **무검증/중단**으로 처리하고, 트래픽 비율이나 권한을 확대하지 않습니다. GitHub Actions의 성능·모의 테스트 성공은 실제 Tail 관측 성공과 구분합니다.
+- 최종 출력은 HTTP 검사 2개·후보 Tail 이벤트 2개 관측 여부·배포 ID와 100/0 비율 불변 여부로 제한합니다. Notion/D1 읽기·쓰기, Telegram 메시지 발송/웹훅 수정, Cloudflare 운영 트래픽 변경은 포함하지 않습니다.
+- [Cloudflare Wrangler Tail](https://developers.cloudflare.com/workers/wrangler/commands/workers/#tail) · [Workers 최소 권한](https://developers.cloudflare.com/workers/authorization/workers/) 참조.
+
+---
+
 2026-11-04 KST 기준. **이 문서와 PR은 실제 Cloudflare 배포를 실행하지 않습니다.** 워크플로는 PR 별도 승인 및 병합 후에만 main에서 수동 실행할 수 있습니다.
 
 ## 정확한 배포 목표
