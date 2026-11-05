@@ -19,7 +19,7 @@ class TailProofSafetyTests(unittest.TestCase):
         command = smoke.tail_command()
         self.assertEqual(command, [
             "npx", "--yes", "wrangler@4.157.0", "tail", "geoteacher-telegram-gateway",
-            "--format", "json", "--version-id", "9d91cea3-c8d3-4322-902c-520fd7d4687b",
+            "--format", "pretty", "--version-id", "9d91cea3-c8d3-4322-902c-520fd7d4687b",
         ])
         self.assertNotIn("deploy", command)
         self.assertNotIn("upload", command)
@@ -53,6 +53,45 @@ class TailProofSafetyTests(unittest.TestCase):
                         "https://" + smoke.HOST + "/health?smoke=other"]:
             event["event"]["request"]["url"] = altered
             self.assertIsNone(smoke.parse_tail_match(json.dumps(event), marker))
+
+    def test_pretty_tail_lines_match_fixed_url_without_echoing_raw_logs(self):
+        marker = "geoteacher-tail-verify-41823439479"
+        text_cases = [
+            ("GET", "/health", "Ok"),
+            ("POST", "/telegram-webhook", "Ok"),
+        ]
+        for method, path, outcome in text_cases:
+            url = "https://" + smoke.HOST + path + "?smoke=" + marker
+            sample = "\\x1b[36m" + method + " " + url + " - " + outcome + " @ 11/5/2026" + "\\x1b[0m"
+            match = smoke.parse_tail_match(sample, marker)
+            self.assertEqual(match["method"], method)
+            self.assertEqual(match["path"], path)
+            self.assertIsNone(match["explicit_version_id"])
+            self.assertNotIn(url, str(match))
+        self.assertIsNone(smoke.parse_tail_match(
+            "GET https://example.com/health?smoke=" + marker + " - Ok @ test", marker))
+        self.assertIsNone(smoke.parse_tail_match(
+            "POST https://" + smoke.HOST + "/other?smoke=" + marker + " - Ok @ test", marker))
+
+    def test_tail_startup_diagnostics_only_report_fixed_safe_categories(self):
+        default = {"created": False, "progress": False,
+                   "auth_rejected": False, "cli_option_error": False,
+                   "network_error": False, "out_lines": 0, "err_lines": 0}
+        self.assertIn("tail_no_startup_output", smoke.tail_diagnostic(default))
+        for name, category in [
+            ("created", "tail_session_created_but_connection_unconfirmed"),
+            ("auth_rejected", "tail_auth_or_scope_rejected"),
+            ("cli_option_error", "tail_cli_option_rejected"),
+            ("network_error", "tail_socket_or_network_error"),
+        ]:
+            with self.subTest(name=name):
+                flags = dict(default, **{name: True, "out_lines": 2, "err_lines": 3})
+                result = smoke.tail_diagnostic(flags)
+                self.assertIn(category, result)
+                self.assertIn("stdout_lines=2", result)
+                self.assertNotIn("REDACTED", result)
+        self.assertIn("tail_output_seen_but_no_connection_banner",
+                      smoke.tail_diagnostic(dict(default, err_lines=1)))
 
     def test_parser_can_use_tail_filter_when_json_version_omitted(self):
         marker = "geoteacher-tail-verify-41823439479"
