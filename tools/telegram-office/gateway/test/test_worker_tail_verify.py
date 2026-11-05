@@ -62,7 +62,7 @@ class TailProofSafetyTests(unittest.TestCase):
         ]
         for method, path, outcome in text_cases:
             url = "https://" + smoke.HOST + path + "?smoke=" + marker
-            sample = "\\x1b[36m" + method + " " + url + " - " + outcome + " @ 11/5/2026" + "\\x1b[0m"
+            sample = "\x1b[36m" + method + " " + url + " - " + outcome + " @ 11/5/2026" + "\x1b[0m"
             match = smoke.parse_tail_match(sample, marker)
             self.assertEqual(match["method"], method)
             self.assertEqual(match["path"], path)
