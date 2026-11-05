@@ -1,5 +1,15 @@
 # GeoTeacher 3.2 — 승인형 0% 후보 배포 실행 지침
 
+## 2026-11-05 Live Tail 최초 실행 실패 및 개선안 (배포 없음)
+
+- [Tail 실증 실행 #41957672115](https://github.com/happygeo21/school-web-projects26/actions/runs/41957672115): `read-only-preflight`, `verify-protected-approval` 성공. 기존 100%·신규 0%·`ADD_ENABLED=false`를 원격 조회 확인함.
+- 실패 작업 `read-only-tail-smoke`의 메시지: `Could not confirm tail connection; no HTTP probes sent.` Tail 연결 완료 문구를 **35초 안에 감지하지 못해** 실패. **추가 GET/POST 요청 0건**; Cloudflare 배포·트래픽·웹훅·D1·Notion 쓰기 변경 없음. 실제 실행 버전 증거도 미확보.
+- 이전 `--format json` 방식은 Wrangler의 연결 상태 출력과 다중 행 JSON 처리에 의존해 감지하지 못할 수 있어, `--format pretty`로 연결 배너와 단일 요청 행만 인메모리 분석하도록 변경. 이는 **가능한 출력 형식 원인에 대한 보완**이지, 실제 실패 원인이 확정됐다는 뜻은 아님.
+- 연결 대기 35초 → 50초, 단순한 Tail 연결 출력 기준을 명시적으로 검사. 실패 시 Secret·로그 원문을 출력하지 않고 `tail_auth_or_scope_rejected`, `tail_cli_option_rejected`, `tail_socket_or_network_error`, `tail_output_seen_but_no_connection_banner` 등 허용된 진단 코드만 보고.
+- **연결이 확인되기 전에는 HTTP 요청을 절대 보내지 않는다.** 실제 예외가 다시 발생하면 동일 워크플로 자동/수동 재실행·권한 확대·운영 전환을 진행하지 않고 진단 코드로 원인을 확인.
+- 이 개선은 별도 PR 초안 및 CI 회귀검사로만 준비함. **별도 병합 승인 및 실제 Tail 재실행 승인 전에는 운영에 적용/실행하지 않음.**
+
+
 ## 최신 후속 단계: 후보 버전만 필터링한 Live Tail 검사 (2026-11-05)
 
 2026-11-04 [무쓰기 HTTP 실행 41823439479](https://github.com/happygeo21/school-web-projects26/actions/runs/41823439479)은 GET 200/ok, 무인증 POST 403/Forbidden에 성공했으나 **실제 후보 버전의 실행 ID를 별도로 입증하지 못했습니다**. Cloudflare Observability 과거 로그 API는 Workers Observability Write를 요구하므로 토큰 권한을 확대하지 않고, 기존 보호 환경의 Worker 편집 토큰으로 가능한 `wrangler tail --version-id`를 사용합니다.
