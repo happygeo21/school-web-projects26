@@ -3,7 +3,8 @@ export function teacherAuthFailure(error, { stage = 'authentication', testMode =
   const raw = String(error?.code || 'unknown');
   const code = /^[A-Za-z0-9_/-]{1,80}$/.test(raw) ? raw : 'unknown';
   let message;
-  if (stage === 'database' && /permission[-_]denied/i.test(code)) message = 'Firebase 인증은 성공했지만 DB 읽기 권한이 거부됐어요. 승인 교사 등록과 현재 프로젝트 권한을 관리자에게 확인해주세요. 비밀번호 오류가 아닙니다.';
+  if(stage==='database'&&code==='media/quota-full')message='Firebase 교사 로그인은 성공했습니다. 운영 DB의 일일 조회 요청 제한에 도달해 승인 대기함을 불러오지 못했어요. 비밀번호 문제는 아닙니다. Google 로그인을 반복하지 말고, 관리자가 자동 조회 간격과 요청 제한을 확인하도록 해주세요.';
+  else if (stage === 'database' && /permission[-_]denied/i.test(code)) message = 'Firebase 인증은 성공했지만 DB 읽기 권한이 거부됐어요. 승인 교사 등록과 현재 프로젝트 권한을 관리자에게 확인해주세요. 비밀번호 오류가 아닙니다.';
   else if (code === 'auth/too-many-requests') message = 'Firebase에서 로그인을 일시 제한했어요. 반복해서 누르지 말고 기다린 뒤 관리자에게 제한 상태를 확인해주세요. 이 화면은 15분 동안 새 로그인 요청을 막습니다. 이후 새로고침해 확인할 수 있지만 Firebase 제한 해제 시점을 보장하지 않습니다.';
   else if (['auth/invalid-credential','auth/invalid-login-credentials','auth/wrong-password','auth/user-not-found','auth/invalid-email'].includes(code)) message = '로그인 정보를 확인해주세요. 이 프로젝트에 등록된 교사 이메일과 Firebase 비밀번호를 사용하세요.';
   else if (code === 'auth/network-request-failed' || code === 'unavailable' || code === 'NETWORK_ERROR') message = '네트워크 연결을 확인해주세요. 입력한 이메일은 유지되며 자동으로 재시도하지 않습니다.';
@@ -32,7 +33,14 @@ export function setupTeacherLogin({ elements: e, projectId, authenticateGoogle, 
     const email = e.email.value.trim(), password = kind === 'password' ? e.password.value : '';
     if (kind === 'password' && (!email || !password)) { e.message.textContent = '이메일과 비밀번호를 모두 입력해주세요.'; e.password.value = ''; return; }
     busy = true; buttons(); status('authentication');
-    try { await prepare(); await (kind === 'google' ? authenticateGoogle() : authenticatePassword(email, password)); if (stage === 'authentication') status('database'); }
+    try {
+      // Invoke Google popup in the original click gesture. Do not await a no-op preparation.
+      const preparation=prepare();
+      if(preparation&&typeof preparation.then==='function')await preparation;
+      const authRequest=kind==='google'?authenticateGoogle():authenticatePassword(email,password);
+      await authRequest;
+      if(stage==='authentication')status('database');
+    }
     catch (error) {
       if (error?.code === 'auth/too-many-requests') { until = clock() + 15 * 60 * 1000; try { storage?.setItem(key, String(until)); } catch {} }
       status('authentication', error);
