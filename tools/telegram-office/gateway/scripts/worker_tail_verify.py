@@ -73,7 +73,7 @@ def tail_command():
             "--format", "pretty", "--version-id", CANDIDATE_VERSION]
 
 
-_ANSI = re.compile(r"\\x1b\\[[0-9;]*[A-Za-z]")
+_ANSI = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
 
 
 def parse_tail_match(raw_line, marker):
@@ -96,7 +96,7 @@ def parse_tail_match(raw_line, marker):
         # Wrangler --format pretty:
         # GET https://worker.example.workers.dev/health?smoke=<id> - Ok @ ...
         # POST https://worker.example.workers.dev/telegram-webhook?smoke=<id> - Ok @ ...
-        match = re.search(r"(?:^|\\s)(GET|POST)\\s+(https://\\S+)\\s+-\\s+[^\\s]+", line, re.I)
+        match = re.search(r"(?:^|\s)(GET|POST)\s+(https://\S+)\s+-\s+[^\s]+", line, re.I)
         if not match:
             return None
         method, url = match.group(1).upper(), match.group(2)
