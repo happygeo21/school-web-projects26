@@ -59,6 +59,7 @@ export function validateRecordEdit(d, original) {
 }
 export function errorMessage(e) {
   const code = String(e?.code || "");
+  if(code === 'media/quota-full')return '오늘 서버 조회 요청 한도에 도달했어요. 작성한 내용과 파일은 그대로 보관해 주세요. 로그인이나 제출을 연속으로 다시 누르지 말고 선생님에게 알려주세요.';
   if (/permission|unauthorized|unauthenticated/i.test(code))
     return "로그인과 저장 권한은 달라요. 작성한 내용은 그대로 있어요. 선생님께 저장 권한 확인을 부탁하고 다시 시도하세요.";
   if (/auth\//.test(code))
