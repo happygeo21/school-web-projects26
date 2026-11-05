@@ -9,11 +9,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: "pages"
+  group: ${{ github.ref == 'refs/heads/main' && 'pages' || format('pages-skipped-{0}', github.run_id) }}
   cancel-in-progress: true
 
 jobs:
   build:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -31,6 +32,7 @@ jobs:
           path: "_site"
 
   deploy:
+    if: github.ref == 'refs/heads/main' && needs.build.result == 'success'
     needs: build
     permissions:
       pages: write

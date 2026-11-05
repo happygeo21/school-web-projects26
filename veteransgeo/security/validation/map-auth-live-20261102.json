@@ -1,0 +1,72 @@
+{
+  "kind": "map-auth-targeted-acceptance",
+  "checkedAt": "2026-11-02T02:13:35.2895741Z",
+  "baseHead": "6066316c4172f9fb911d6317239a33bc13d3a0ce",
+  "overallClassroomReady": false,
+  "mocked": false,
+  "physicalDevice": false,
+  "origin": "https://examines-visiting-richards-meanwhile.trycloudflare.com",
+  "rootCauseMap": "Live temporary artifact was older than the map policy fix; refreshed latest PR artifact",
+  "map": {
+    "teacherVisual": "not verified: actual sign-in pending",
+    "originReferer": true,
+    "publicVisual": "roads/terrain confirmed",
+    "width390": true,
+    "cacheBypass": false,
+    "tileHTTP200": 14,
+    "teacherRawTileLoaded": true,
+    "tileHTTP403": 0,
+    "studentVisual": "roads/terrain confirmed"
+  },
+  "fallback": {
+    "officialFacilityStatus": "not inferred from search",
+    "syntheticTestSubmissionSaved": true,
+    "googleMapsURL": true,
+    "markerWithoutTiles": true,
+    "coordinateConfirmed": true,
+    "tileOutage": "synthetic request abort; no OSM tile requests transmitted",
+    "searchHTTP": 200,
+    "savedEvidence": "Firebase SDK server write acknowledgement and submitted UI; no REST HTTP status claimed"
+  },
+  "authentication": {
+    "freshPublishedRulesRechecked": false,
+    "authDomain": "veteransgeo-test-2026.firebaseapp.com",
+    "anonymousProviderEnabled": true,
+    "passwordsRead": 0,
+    "projectId": "veteransgeo-test-2026",
+    "operatingAccountMixedIntoTest": "not determined",
+    "passwordLoginRequestsByAgent": 0,
+    "apiMetadataMatch": true,
+    "virtualApprovedAccountActive": true,
+    "rateLimit": "reported auth/too-many-requests; Firebase throttling, clearance unknown",
+    "actualTeacherLoginHTTP": null,
+    "databaseHost": "veteransgeo-test-2026-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "preservedRulesContainApprovedUID": true,
+    "authorizedHost": true,
+    "virtualApprovedAccountExists": true,
+    "passwordProviderEnabled": true,
+    "newVirtualTeacherLogin": "not verified: manual one-attempt confirmation pending",
+    "UX": [
+      "separate credential/rate/network/DB failures",
+      "one request across both buttons and DB pending",
+      "email retained and password input cleared",
+      "project-scoped 15-minute local backoff; no automatic request",
+      "test virtual-account notice; Google disabled only for test"
+    ]
+  },
+  "localMockTests": {
+    "failed": 0,
+    "existingBrowserRegression": 1,
+    "loginController": 3,
+    "passed": 10,
+    "previewPolicy": 6
+  },
+  "freshWholeFlow": "not rerun: actual teacher sign-in pending; preserved actual invite test 27/0 remains prior evidence",
+  "productionRequests": 0,
+  "operatingChanges": 0,
+  "mediaFunctionRedeployed": false,
+  "priorMediaVersion": 7,
+  "privacyApproval": "pending",
+  "actualSixTeacherLogins": "pending",
+  "draftPR": 7
+}
