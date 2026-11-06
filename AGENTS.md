@@ -35,3 +35,7 @@ Updated: 2026-10-19 (Asia/Seoul).
 - For exploratory image generation requests, consult [image-style-library/README.md](image-style-library/README.md) and suggest 3–4 appropriate, distinct visual styles with one recommended option, unless the user specifies a style or asks for immediate generation.
 - The 100 slash-keywords are style labels, not native ChatGPT commands. Prompt details, not the labels alone, produce images. The original full prompts and illustrations are on the [JJ Creative reference site](https://www.jjcreative.co.kr/lounge/imgcode).
 - The standalone [image-style-library/](image-style-library/) contains the searchable catalog, scoped AGENTS.md, and Notion reference. For geography lessons, verify substantive spatial/statistical facts.
+
+## Happy GEO common production standard (2026-11-06)
+- Follow [docs/HAPPY_GEO_COMMON_GUIDELINES.md](docs/HAPPY_GEO_COMMON_GUIDELINES.md) for all new HTML and substantive revisions, as well as project status, quality checks, and reporting.
+- Preserve the more restrictive repository and project-specific safety rules above. This is documentation only; no deployment or automatic integration is implied.
