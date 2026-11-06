@@ -26,6 +26,11 @@ jobs:
         working-directory: tools/telegram-office/gateway
         run: npm test
 
+      - name: One-time owner-approved 0% candidate smoke (GET + anonymous POST only)
+        if: github.event_name == 'pull_request' && github.head_ref == 'audit/geoteacher-zero-smoke-20261104' && github.event.pull_request.head.repo.full_name == 'happygeo21/school-web-projects26'
+        working-directory: tools/telegram-office/gateway
+        run: python scripts/zero_smoke_once.py
+
       - name: Build the disabled production candidate without uploading
         working-directory: tools/telegram-office/gateway
         env:
