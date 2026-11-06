@@ -227,6 +227,12 @@ def run_tail_probe(marker, root):
             require(ready, tail_diagnostic(flags) + "; no HTTP probes sent.")
             results = {pair: one_probe(*pair, marker) for pair in EXPECTED}
             matches = {}
+            # Counts only: never retain or emit raw request or Wrangler log lines.
+            observation_counts = {
+                "stdout_lines": 0,
+                "stderr_lines": 0,
+                "unmatched_stdout_lines": 0,
+            }
             observe_until = time.monotonic() + 30
             while time.monotonic() < observe_until and len(matches) < len(EXPECTED):
                 try:
@@ -236,11 +242,15 @@ def run_tail_probe(marker, root):
                         break
                     continue
                 if channel != "out":
+                    observation_counts["stderr_lines"] += 1
                     continue
+                observation_counts["stdout_lines"] += 1
                 match = parse_tail_match(line, marker)
                 if match:
                     matches[(match["method"], match["path"])] = match
-            return results, matches
+                else:
+                    observation_counts["unmatched_stdout_lines"] += 1
+            return results, matches, observation_counts
         finally:
             stop_tail(process)
 
@@ -264,7 +274,7 @@ def main():
             "Exact tail-only consent phrase required.")
     protected_environment()
     marker = safe_marker()
-    results, matches = run_tail_probe(marker, os.environ["GATEWAY_ROOT"])
+    results, matches, observation_counts = run_tail_probe(marker, os.environ["GATEWAY_ROOT"])
     after = inspect_current()
     require(after["deployment_id"] == state["deployment_id"],
             "Worker deployment changed during the smoke test.")
@@ -276,6 +286,11 @@ def main():
         "http_get_health_ok": results[("GET", "/health")],
         "http_anonymous_post_forbidden": results[("POST", "/telegram-webhook")],
         "candidate_tail_filtered_event_count": len(matches),
+        "candidate_tail_observed_endpoints":
+            sorted(method + " " + path for method, path in matches),
+        "candidate_tail_missing_endpoints":
+            sorted(method + " " + path for method, path in EXPECTED if (method, path) not in matches),
+        "tail_observation_line_counts": observation_counts,
         "candidate_version_filter": CANDIDATE_VERSION,
         "candidate_executed_via_tail_filter": all_tailed,
         "explicit_version_ids_reported":

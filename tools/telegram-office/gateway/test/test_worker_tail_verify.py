@@ -154,7 +154,8 @@ class TailProofSafetyTests(unittest.TestCase):
              patch.object(smoke, "protected_environment"), \
              patch.object(smoke, "run_tail_probe", return_value=(
                  {("GET", "/health"): True, ("POST", "/telegram-webhook"): True},
-                 {("GET", "/health"): {"explicit_version_id": None}})), \
+                 {("GET", "/health"): {"explicit_version_id": None}},
+                 {"stdout_lines": 1, "stderr_lines": 0, "unmatched_stdout_lines": 0})), \
              patch.object(smoke, "safe_marker", return_value="marker"), \
              patch.dict(os.environ, {
                  "TAIL_CONFIRMATION": smoke.CONFIRMATION,
@@ -162,6 +163,32 @@ class TailProofSafetyTests(unittest.TestCase):
              }), patch.object(sys, "argv", ["worker_tail_verify.py", "verify"]):
             with self.assertRaises(Stop):
                 smoke.main()
+
+    def test_failed_tail_report_names_only_allowlisted_endpoints_and_safe_counts(self):
+        state = {"deployment_id": smoke.DEPLOYMENT_ID}
+        counts = {"stdout_lines": 3, "stderr_lines": 1, "unmatched_stdout_lines": 2}
+        stdout = io.StringIO()
+        with patch.object(smoke, "inspect_current", return_value=state), \
+             patch.object(smoke, "protected_environment"), \
+             patch.object(smoke, "run_tail_probe", return_value=(
+                 {("GET", "/health"): True, ("POST", "/telegram-webhook"): True},
+                 {("GET", "/health"): {"explicit_version_id": None}},
+                 counts)), \
+             patch.object(smoke, "safe_marker", return_value="private-probe-marker"), \
+             patch.dict(os.environ, {
+                 "TAIL_CONFIRMATION": smoke.CONFIRMATION,
+                 "GATEWAY_ROOT": str(ROOT),
+             }), patch.object(sys, "argv", ["worker_tail_verify.py", "verify"]), \
+             patch("sys.stdout", stdout):
+            with self.assertRaises(Stop):
+                smoke.main()
+        report = json.loads(stdout.getvalue())
+        self.assertEqual(report["candidate_tail_observed_endpoints"], ["GET /health"])
+        self.assertEqual(report["candidate_tail_missing_endpoints"], ["POST /telegram-webhook"])
+        self.assertEqual(report["tail_observation_line_counts"], counts)
+        self.assertFalse(report["all_checks_passed"])
+        self.assertNotIn("private-probe-marker", stdout.getvalue())
+        self.assertNotIn("smoke=", stdout.getvalue())
 
     def test_workflow_requires_manual_protected_environment_and_no_writes(self):
         root = ROOT.parents[2]

@@ -1,5 +1,16 @@
 # GeoTeacher 3.2 — 승인형 0% 후보 배포 실행 지침
 
+
+## 2026-11-05 두 번째 Live Tail 검사: HTTP 정상, Tail 1/2 (재실행 금지)
+
+- [실행 #41988508339](https://github.com/happygeo21/school-web-projects26/actions/runs/41988508339)에서 사전 확인과 보호 환경 승인 성공. `GET /health` 200/ok, 무인증 `POST /telegram-webhook` 403/Forbidden도 정상.
+- **후보 버전 필터에서 일치하는 Tail 이벤트는 1/2건만 관측**했고 명시적 version ID는 보고되지 않았으므로 전체 검증 실패. 어느 요청의 이벤트가 누락됐는지 기존 로그로 알 수 없으며, 두 요청 모두 후보 버전에서 실행됐다고 주장할 수 없음.
+- 검사 전후 기존 Deployment ID 유지, 기존 버전 100%·후보 0%·`ADD_ENABLED=false` 확인. Cloudflare 배포·비율 조정, Telegram 메시지, 웹훅·D1·Notion 쓰기 0건.
+- 원인은 **미확정**: 실시간 Tail 전송·샘플링, Wrangler pretty 출력 형식과 파서 불일치, version override 미적용 가능성을 구별해야 함. 단순 HTTP 상태만으로 후보 버전 증명을 대체할 수 없음.
+- 후속 별도 초안 PR은 **고정된 GET/POST 경로 중 어느 Tail 이벤트가 관측/누락됐는지**와 stdout/stderr의 **라인 수만** 출력하는 모의 테스트용 진단 강화임. raw Tail 라인, URL 쿼리, 마커, 헤더, 토큰, 학생 정보는 저장하거나 출력하지 않음.
+- 이 개선도 실시간 Tail 검증에 **성공한 것으로 보고하지 말 것**. PR 병합, Tail 재실행, 권한 변경, 운영 전환은 각각 별도 사용자 승인이 필요하며 실패한 작업은 재실행하지 않음.
+
+
 ## 2026-11-05 Live Tail 최초 실행 실패 및 개선안 (배포 없음)
 
 - [Tail 실증 실행 #41957672115](https://github.com/happygeo21/school-web-projects26/actions/runs/41957672115): `read-only-preflight`, `verify-protected-approval` 성공. 기존 100%·신규 0%·`ADD_ENABLED=false`를 원격 조회 확인함.
