@@ -1,0 +1,14 @@
+# Gitleaks 오탐(비밀값 아님) 목록 — push/pull_request/workflow_dispatch 전체 이력 스캔 시 CI 실패 방지
+# 1) 테스트용 더미 값(TEST_SECRET_ABC123456789) 2) 파일 무결성 sha256 다이제스트 3) 커밋 해시(netlify_production_commit) 4) 공개용 Firebase 웹 API 키
+4d1746fdd82409a7d8a30287e94856f087e84cdc:tools/telegram-office/gateway/test/test_webhook.py:generic-api-key:19
+688797b587cfcfac749262771df20a7271daa3c0:tools/telegram-office/gateway/test/test_webhook.py:generic-api-key:19
+4fdd5c2bec958be412f22b16850706d1fd1a5024:veteransgeo-live-v2/firebase-config.js:gcp-api-key:1
+4fdd5c2bec958be412f22b16850706d1fd1a5024:veteransgeo-live-v2/teacher.html:gcp-api-key:139
+c3b0417bcc99e886ff1d40c4d019aa29b7bf2b1f:veteransgeo/security/invite-deploy-manifest.json:generic-api-key:10
+c3b0417bcc99e886ff1d40c4d019aa29b7bf2b1f:veteransgeo/security/invite-deploy-manifest.json:generic-api-key:12
+c3b0417bcc99e886ff1d40c4d019aa29b7bf2b1f:veteransgeo/security/invite-deploy-manifest.json:generic-api-key:14
+990a95d838d26da7669e7c090b6704e95b4c8e75:docs/kosis-egis/release-evidence.json:netlify-access-token:26
+ac58af8a4edaaea6db370b45cbe6282c8d014e9f:wedding-planner/cloud-config.js:gcp-api-key:3
+3ff93100b933f7895a7f5fa42221e9b709c30b9c:veteransgeo/firebase-config.js:gcp-api-key:2
+8c8b33902054d626b1ea1c461ba60d5aeceda1c0:happygeo/firebase-config.js:gcp-api-key:2
+ae83a4013222b5d8246bb7c647f49fe41a0097de:happygeo/에너지_결정사_FINAL_v10_3_이름수정_간편규칙/firebase-config.js:gcp-api-key:2
