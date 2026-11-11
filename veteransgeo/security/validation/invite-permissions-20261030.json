@@ -1,0 +1,76 @@
+{
+  "kind": "local-permission-regression-and-readonly-http",
+  "baseCommit": "d06b5e9f1c97d5624de681f6a2ce91fe3377a3dc",
+  "recordedAtUTC": "2026-10-30T11:15:44.184441+00:00",
+  "existing63ResultsReused": true,
+  "remoteDatabaseRead": false,
+  "remoteDatabaseApplied": false,
+  "edgeDeployed": false,
+  "actualTeacherIdentifiersPublished": false,
+  "localSyntheticPreservedMedia": 9,
+  "physicalDeviceTest": false,
+  "http": {
+    "checkedAt": "2026-10-30T11:07:29.465564+00:00",
+    "results": [
+      {
+        "name": "student",
+        "url": "https://deploy-preview-7--veteransgeo.netlify.app/index.html",
+        "status": "401",
+        "transportExit": 0,
+        "netlifyLoginGate": true,
+        "jsCarriesFragmentToQuery": true,
+        "httpRedirect": false
+      },
+      {
+        "name": "teacher",
+        "url": "https://deploy-preview-7--veteransgeo.netlify.app/teacher.html",
+        "status": "401",
+        "transportExit": 0,
+        "netlifyLoginGate": true,
+        "jsCarriesFragmentToQuery": true,
+        "httpRedirect": false
+      },
+      {
+        "name": "public",
+        "url": "https://deploy-preview-7--veteransgeo.netlify.app/public.html",
+        "status": "401",
+        "transportExit": 0,
+        "netlifyLoginGate": true,
+        "jsCarriesFragmentToQuery": true,
+        "httpRedirect": false
+      },
+      {
+        "name": "readiness",
+        "url": "https://jfkjuhxkcctfmwojhpci.supabase.co/functions/v1/media?action=readiness",
+        "status": "200",
+        "transportExit": 0,
+        "netlifyLoginGate": false,
+        "jsCarriesFragmentToQuery": false,
+        "httpRedirect": false,
+        "readiness": {
+          "kind": "veteransgeo-rehearsal",
+          "testOnly": true,
+          "apiVersion": 1,
+          "firebaseProjectId": "veteransgeo-test-2026",
+          "databaseHost": "veteransgeo-test-2026-default-rtdb.asia-southeast1.firebasedatabase.app",
+          "supabaseHost": "jfkjuhxkcctfmwojhpci.supabase.co",
+          "storageBucket": "veterans-private"
+        }
+      },
+      {
+        "name": "old-tunnel",
+        "url": "https://principles-maximum-appeals-issue.trycloudflare.com/",
+        "status": "403",
+        "transportExit": 0,
+        "netlifyLoginGate": false,
+        "jsCarriesFragmentToQuery": false,
+        "httpRedirect": false,
+        "unavailable": true,
+        "tunnelProcessStopped": "unverified",
+        "blockSource": "undetermined"
+      }
+    ]
+  },
+  "productionChanges": false,
+  "draftPR": 7
+}

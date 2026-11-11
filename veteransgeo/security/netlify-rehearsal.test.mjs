@@ -1,0 +1,40 @@
+import{test}from'node:test';import assert from'node:assert/strict';import vm from'node:vm';import{mkdtemp,writeFile,readFile}from'node:fs/promises';import os from'node:os';import path from'node:path';import{previewConfig,previewRuntime,configurePreview,MOBILE_ORIGIN}from'./netlify-rehearsal.mjs';
+const cfg={purpose:'veteransgeo-test-only',firebase:{apiKey:'SYNTHETIC-PUBLIC-API-KEY-123456789',authDomain:'veteransgeo-test-2026.firebaseapp.com',projectId:'veteransgeo-test-2026',databaseURL:'https://veteransgeo-test-2026-default-rtdb.asia-southeast1.firebasedatabase.app',appId:'1:123456789:web:fake',messagingSenderId:'123456789'},projectNumber:'123456789',mediaEndpoint:'https://jfkjuhxkcctfmwojhpci.supabase.co/functions/v1/media',supabaseURL:'https://jfkjuhxkcctfmwojhpci.supabase.co'};const env={CONTEXT:'deploy-preview',REVIEW_ID:'7',DEPLOY_PRIME_URL:MOBILE_ORIGIN,VETERANSGEO_REHEARSAL_PUBLIC_CONFIG:JSON.stringify(cfg)};
+test('PR7 build fails closed without exact public test configuration and never changes production/other PR context',()=>{assert.equal(previewConfig({...env,CONTEXT:'production'}),null);assert.equal(previewConfig({...env,REVIEW_ID:'8'}),null);assert.throws(()=>previewConfig({...env,VETERANSGEO_REHEARSAL_PUBLIC_CONFIG:''}));assert.throws(()=>previewConfig({...env,DEPLOY_PRIME_URL:'https://other.netlify.app'}));for(const patch of[{firebase:{...cfg.firebase,projectId:'school-project-26-1edf4'}},{supabaseURL:'https://pwedcxqkjolntwylgoyr.supabase.co'},{teachers:{password:'NEVER-PUBLISH'}}])assert.throws(()=>previewConfig({...env,VETERANSGEO_REHEARSAL_PUBLIC_CONFIG:JSON.stringify({...cfg,...patch})}));});
+function runtime(origin=MOBILE_ORIGIN,expectedOrigin=MOBILE_ORIGIN){const c=previewConfig(env),calls=[];class XHR{open(method,url){calls.push(url);}}class WS{constructor(url){calls.push(url);}}const context=vm.createContext({URL,location:{origin,href:origin+'/'},fetch:async url=>{calls.push(url);return Response.json(url.includes('identitytoolkit')?{projectId:cfg.projectNumber,authorizedDomains:[new URL(origin).hostname]}:c.targets);},XMLHttpRequest:XHR,WebSocket:WS,document:{readyState:'complete',createElement:()=>({setAttribute(){}}),body:{prepend(){}},querySelectorAll:()=>[]}});vm.runInContext(previewRuntime(c,expectedOrigin),context);return{context,calls};}
+test('runtime verifies test readiness/Auth domain and blocks operating DB/media/Auth before requests',async()=>{const{context,calls}=runtime();await context.__veteransgeoGuardReady;const before=calls.length;for(const url of['https://school-project-26-1edf4-default-rtdb.asia-southeast1.firebasedatabase.app/x.json','https://s-shared.asia-southeast1.firebasedatabase.app/.ws?ns=school-project-26-1edf4-default-rtdb','https://pwedcxqkjolntwylgoyr.supabase.co/functions/v1/media','https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=wrong'])await assert.rejects(context.fetch(url));assert.equal(calls.length,before);assert.throws(()=>new context.WebSocket('wss://s-shared.asia-southeast1.firebasedatabase.app/.ws?ns=school-project-26-1edf4-default-rtdb'));assert.throws(()=>new context.XMLHttpRequest().open('GET','https://school-project-26-1edf4-default-rtdb.asia-southeast1.firebasedatabase.app/x.json'));await context.fetch(cfg.firebase.databaseURL+'/x.json');assert.equal(calls.length,before+1);});
+test('runtime stops before all hosted calls on the wrong preview origin',async()=>{const r=runtime('https://wrong.netlify.app');await assert.rejects(r.context.__veteransgeoGuardReady);assert.equal(r.calls.length,0);});
+test('preview artifact gates module startup, disables real Google sign-in, adds synthetic banner and CSP without secrets/rules',async()=>{const out=await mkdtemp(path.join(os.tmpdir(),'veteransgeo-netlify-preview-'));for(const file of['index.html','teacher.html','public.html'])await writeFile(path.join(out,file),await readFile(new URL('../'+file,import.meta.url),'utf8'));await configurePreview(out,previewConfig(env));const teacher=await readFile(path.join(out,'teacher.html'),'utf8');assert.match(teacher,/id="loginBtn" disabled/);assert.match(teacher,/test-network-guard.js/);assert.match(teacher,/id="passwordLoginBtn" disabled/);assert.match(teacher,/setupTeacherLogin/);assert.doesNotMatch(teacher,/getElementById\("passwordLoginBtn"\).disabled=false/);assert.match(teacher,/가상 자료 전용/);assert.match(await readFile(path.join(out,'firebase-config.js'),'utf8'),/await globalThis.__veteransgeoGuardReady/);assert.match(await readFile(path.join(out,'_headers'),'utf8'),/Content-Security-Policy/);assert(!teacher.includes('school-project-26-1edf4'));});
+test('temporary HTTPS fallback is origin-bound to the same exact test projects',async()=>{const origin='https://synthetic-mobile-check.trycloudflare.com',r=runtime(origin,origin);await r.context.__veteransgeoGuardReady;assert.equal(r.calls.length,2);assert.throws(()=>previewRuntime(previewConfig(env),'https://unapproved.example'));});
+
+
+test('OSM maps declare the policy-compliant tile host and per-tile origin referrer on all three pages',async()=>{
+  for(const page of ['index.html','teacher.html','public.html']){
+    const html=await readFile(new URL('../'+page,import.meta.url),'utf8');
+    assert.match(html,/https:\/\/tile\.openstreetmap\.org\/\{z\}\/\{x\}\/\{y\}\.png/);
+    assert.match(html,/referrerPolicy:"strict-origin-when-cross-origin"/);
+    assert.doesNotMatch(html,/https:\/\/\{s\}\.tile\.openstreetmap\.org/);
+  }
+  const student=await readFile(new URL('../index.html',import.meta.url),'utf8');
+  assert.match(student,/referrerPolicy:"strict-origin-when-cross-origin",signal:controller\.signal/);
+  const out=await mkdtemp(path.join(os.tmpdir(),'veteransgeo-osm-policy-'));
+  for(const file of ['index.html','teacher.html','public.html'])await writeFile(path.join(out,file),await readFile(new URL('../'+file,import.meta.url),'utf8'));
+  await configurePreview(out,previewConfig(env));
+  const headers=await readFile(path.join(out,'_headers'),'utf8');
+  assert.match(headers,/img-src[^;]*https:\/\/tile\.openstreetmap\.org/);
+  assert.match(headers,/connect-src[^;]*https:\/\/nominatim\.openstreetmap\.org/);
+  // Invitation tokens remain protected at the document level; Leaflet tile images set an origin-only exception.
+  assert.match(headers,/Referrer-Policy: no-referrer/);
+});
+
+test('fixed Pages rehearsal origin retains exact test targets and rejects every other Pages host',async()=>{const origin='https://veteransgeo-rehearsal-2026.pages.dev',r=runtime(origin,origin);await r.context.__veteransgeoGuardReady;assert.equal(r.calls.length,2);assert.throws(()=>previewRuntime(previewConfig(env),'https://unreviewed.pages.dev'));await assert.rejects(r.context.fetch('https://school-project-26-1edf4-default-rtdb.asia-southeast1.firebasedatabase.app/.json'));});
+test('synthetic preview supports code-free moderated uploads only by explicit flag',async()=>{
+  const cfgOpen=previewConfig({...env,VETERANSGEO_REHEARSAL_PUBLIC_CONFIG:JSON.stringify({...cfg,studentUploadMode:'moderated-open'})});
+  assert.equal(cfgOpen.studentUploadMode,'moderated-open');
+  const out=await mkdtemp(path.join(os.tmpdir(),'veteransgeo-moderated-open-'));
+  for(const file of ['index.html','teacher.html','public.html'])await writeFile(path.join(out,file),await readFile(new URL('../'+file,import.meta.url),'utf8'));
+  await configurePreview(out,cfgOpen);
+  const mode=await readFile(path.join(out,'media-config.js'),'utf8');
+  assert.match(mode,/uploadAuthorization:"moderated-open"/);
+  assert.throws(()=>previewConfig({...env,VETERANSGEO_REHEARSAL_PUBLIC_CONFIG:JSON.stringify({...cfg,studentUploadMode:'anonymous-no-limits'})}));
+});

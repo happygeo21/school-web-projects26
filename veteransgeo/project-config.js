@@ -42,3 +42,10 @@ export const PROJECT = {
     { value: 4, label: "4 · 역사적 의미까지 알고 있었다" }
   ]
 };
+
+// Enable only after human review of billing, bucket, Rules, CORS and download-token policy.
+export const MEDIA_UPLOAD_ENABLED = false;
+// Preserve current email-based teacher authorization in deployed RTDB Rules.
+// Switch to 'claims-and-allowlist' only after the reviewed rule migration.
+export const TEACHER_AUTH_MODE = 'existing-rules';
+export const MEDIA_LINK_HOSTS = ['drive.google.com','docs.google.com','www.youtube.com','youtu.be'];

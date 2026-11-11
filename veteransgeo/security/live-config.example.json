@@ -1,0 +1,38 @@
+{
+  "purpose": "veteransgeo-test-only",
+  "syntheticDataOnly": true,
+  "firebasePlan": "Spark",
+  "supabasePlan": "Free",
+  "projectNumber": "<테스트 Firebase 프로젝트 번호>",
+  "firebase": {
+    "projectId": "<테스트 Firebase projectId>",
+    "apiKey": "<테스트 Web 설정의 API key: 비공개 복사본에만 입력>",
+    "authDomain": "<테스트 projectId>.firebaseapp.com",
+    "databaseURL": "https://<테스트 projectId>-default-rtdb.<리전>.firebasedatabase.app",
+    "appId": "<테스트 Web appId>"
+  },
+  "supabaseURL": "https://<테스트 project-ref>.supabase.co",
+  "mediaEndpoint": "https://<테스트 project-ref>.supabase.co/functions/v1/media",
+  "webOrigin": "http://localhost:8765",
+  "teachers": {
+    "approved": {
+      "uid": "<승인 가상 교사 UID>",
+      "email": "<가상 교사 이메일>",
+      "password": "<비공개 복사본의 가상 교사 비밀번호>"
+    },
+    "unapproved": {
+      "uid": "<미승인 가상 교사 UID>",
+      "email": "<다른 가상 교사 이메일>",
+      "password": "<비공개 복사본의 가상 교사 비밀번호>"
+    }
+  },
+  "activityCodes": {
+    "S1": "<테스트 코드>",
+    "S2": "<테스트 코드>",
+    "S3": "<테스트 코드>",
+    "S4": "<테스트 코드>",
+    "S5": "<테스트 코드>",
+    "S6": "<테스트 코드>",
+    "S7": "<테스트 코드>"
+  }
+}
