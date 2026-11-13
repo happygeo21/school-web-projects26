@@ -355,7 +355,7 @@ def run_tail_probe(marker, root):
                     channel, line = messages.get(timeout=0.5)
                 except queue.Empty:
                     if process.poll() is not None:
-                        break
+                        raise Stop("tail_process_ended_during_observation")
                     continue
                 if channel != "out":
                     observation_counts["stderr_lines"] += 1

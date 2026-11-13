@@ -71,10 +71,12 @@ class TailProofSafetyTests(unittest.TestCase):
         self.assertIsNone(smoke.parse_tail_match(
             "console.log GET " + base + "?smoke=synthetic - Ok", "synthetic"))
 
-    def run_synthetic_stream(self, lines, connected=True, error=None):
+    def run_synthetic_stream(self, lines, connected=True, error=None, ended=False):
         # No CLI, sockets or real logs. A fake clock covers event delay/timeout.
         process = Mock()
         process.poll.return_value = None
+        if ended:
+            process.poll.side_effect = [None, 1]
         messages = smoke.queue.Queue()
         original_get = smoke.queue.Queue.get.__get__(messages)
         def delayed_get(*args, **kwargs):
@@ -214,6 +216,8 @@ class TailProofSafetyTests(unittest.TestCase):
         self.run_synthetic_stream([get, post, old], error="version conflicts")
         self.run_synthetic_stream(['{"secret":invalid}'], error="tail_json_invalid")
         self.run_synthetic_stream(['{"secret":'], error="tail_json_incomplete")
+        self.run_synthetic_stream([get, post], ended=True,
+                                  error="tail_process_ended_during_observation")
 
     def test_probe_refuses_unapproved_inputs_redirects_and_http_failures(self):
         marker = "geoteacher-tail-verify-41823439479"
