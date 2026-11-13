@@ -1,0 +1,147 @@
+{
+  "checkedAt": "2026-11-13T10:48:19.142Z",
+  "method": "Actual e-GIS UI reopen and resave, then saved-file comparison against verified CSV",
+  "result": [
+    {
+      "scope": "A",
+      "count": 22,
+      "matched": 22,
+      "unmatched": 0,
+      "joinedLayers": [
+        {
+          "name": "전라남도",
+          "count": 22
+        },
+        {
+          "name": "전라남도_단계구분_aging_pct",
+          "count": 22
+        }
+      ],
+      "layerOrderPreserved": true,
+      "geometryAndPropertiesPreservedByCode": true,
+      "featureOrderChanged": [
+        "대한민국 시군구",
+        "강원특별자치도",
+        "경기도",
+        "경상남도",
+        "경상북도",
+        "부산광역시",
+        "서울특별시",
+        "인천광역시",
+        "전라남도",
+        "전북특별자치도",
+        "충청남도",
+        "충청북도",
+        "전라남도_단계구분_aging_pct"
+      ],
+      "layerDifferences": [],
+      "viewPreserved": true,
+      "samples": [
+        {
+          "code": "46230",
+          "name": "광양시",
+          "sido": "46",
+          "sido_name": "전라남도",
+          "base_year": "2025",
+          "aging_pct": "16.2",
+          "kosis_source_code": "1236060",
+          "year": "2024",
+          "unit": "%",
+          "source": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20631"
+        },
+        {
+          "code": "46770",
+          "name": "고흥군",
+          "sido": "46",
+          "sido_name": "전라남도",
+          "base_year": "2025",
+          "aging_pct": "45.7",
+          "kosis_source_code": "1236350",
+          "year": "2024",
+          "unit": "%",
+          "source": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20631"
+        },
+        {
+          "code": "46790",
+          "name": "화순군",
+          "sido": "46",
+          "sido_name": "전라남도",
+          "base_year": "2025",
+          "aging_pct": "30.9",
+          "kosis_source_code": "1236370",
+          "year": "2024",
+          "unit": "%",
+          "source": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20631"
+        }
+      ],
+      "files": [
+        {
+          "name": "HappyGEO_2024_전남22_최종검증_20261113.egis",
+          "sha256": "7c80b9de80afc65f549589c0f0b88837adfc1e6279c0b9d0925c8208ff2c1868"
+        },
+        {
+          "name": "HappyGEO_2024_전남22_재열기.egis",
+          "sha256": "ed0f5a01eb5ee9f4bfe7f79b844e6b85b94496c04eaadb943647a3a0474cdd42"
+        }
+      ]
+    },
+    {
+      "scope": "B",
+      "count": 17,
+      "matched": 17,
+      "unmatched": 0,
+      "joinedLayers": [
+        {
+          "name": "대한민국 시도(~2026.06.30.)",
+          "count": 17
+        },
+        {
+          "name": "대한민국 시도(~2026.06.30.)_단계구분_aging_pct",
+          "count": 17
+        }
+      ],
+      "layerOrderPreserved": true,
+      "geometryAndPropertiesPreservedByCode": true,
+      "featureOrderChanged": [
+        "대한민국 시도(2026.07.01.~)",
+        "대한민국 시도(~2026.06.30.)",
+        "대한민국 시도(~2026.06.30.)_단계구분_aging_pct"
+      ],
+      "layerDifferences": [
+        {
+          "layer": "대한민국 시도(2026.07.01.~)",
+          "key": "visible"
+        },
+        {
+          "layer": "대한민국 시도(~2026.06.30.)_단계구분_aging_pct",
+          "key": "choroplethConfig"
+        }
+      ],
+      "viewPreserved": false,
+      "samples": [
+        {
+          "code": "46",
+          "name": "전라남도",
+          "sido": "46",
+          "sido_name": "전라남도",
+          "base_year": "2025",
+          "aging_pct": "27.2",
+          "kosis_source_code": "1236",
+          "year": "2024",
+          "unit": "%",
+          "source": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20631"
+        }
+      ],
+      "files": [
+        {
+          "name": "HappyGEO_2024_시도17_검증_20261113.egis",
+          "sha256": "146ac9196a98f4c3a0a93e1e8624286d6a2df98b50aec21cd75b3d4a6bb5f4d5"
+        },
+        {
+          "name": "HappyGEO_2024_시도17_재열기_수업용.egis",
+          "sha256": "004096827ca998b11368d849a851221cd39bcb4864fd55cc083224b02fecb2f1"
+        }
+      ]
+    }
+  ]
+}
