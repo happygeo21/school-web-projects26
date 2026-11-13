@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 import sys
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 from urllib.error import HTTPError
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,6 +15,128 @@ from worker_candidate import Stop
 
 
 class TailProofSafetyTests(unittest.TestCase):
+    def event(self, pair, version=True, url=None):
+        method, path = pair
+        event = {"event": {"request": {"method": method, "url": url or
+                 smoke.ROOT + path + "?smoke=synthetic"}}}
+        if version:
+            event["scriptVersion"] = {"id": smoke.CANDIDATE_VERSION}
+        return json.dumps(event)
+
+    def test_proof_matrix_requires_each_endpoint_and_each_version(self):
+        pairs = list(smoke.EXPECTED)
+        for observed in [[], pairs[:1], pairs[1:], pairs]:
+            for explicit in [False, True]:
+                with self.subTest(observed=observed, explicit=explicit):
+                    matches = {pair: smoke.parse_tail_match(self.event(pair, explicit), "synthetic")
+                               for pair in observed}
+                    stdout = io.StringIO()
+                    with patch.object(smoke, "inspect_current", return_value={"deployment_id": smoke.DEPLOYMENT_ID}), \
+                         patch.object(smoke, "protected_environment"), \
+                         patch.object(smoke, "safe_marker", return_value="synthetic"), \
+                         patch.object(smoke, "run_tail_probe", return_value=(dict.fromkeys(pairs, True), matches, {})), \
+                         patch.dict(os.environ, {"TAIL_CONFIRMATION": smoke.CONFIRMATION, "GATEWAY_ROOT": str(ROOT)}), \
+                         patch.object(sys, "argv", ["worker_tail_verify.py", "verify"]), \
+                         patch("sys.stdout", stdout):
+                        success = len(observed) == 2 and explicit
+                        if success:
+                            smoke.main()
+                        else:
+                            with self.assertRaises(Stop):
+                                smoke.main()
+                    report = json.loads(stdout.getvalue())
+                    self.assertEqual(report["all_checks_passed"], success)
+                    self.assertEqual(report["candidate_executed_via_tail_filter"], success)
+                    self.assertEqual(len(report["candidate_tail_missing_endpoints"]), 2 - len(observed))
+                    self.assertNotIn("synthetic", stdout.getvalue())
+
+    def test_parser_rejects_ambiguous_urls_and_untrusted_shapes(self):
+        base = smoke.ROOT + "/health"
+        for url in [base + "?smoke=synthetic-extra", base + "?xsmoke=synthetic",
+                    base + "?smoke=synthetic&smoke=other", base + "?smoke=synthetic#secret",
+                    smoke.ROOT + ":444/health?smoke=synthetic",
+                    "https://user:password@" + smoke.HOST + "/health?smoke=synthetic",
+                    "https://outside.example/health?smoke=synthetic", "https://[invalid"]:
+            with self.subTest(url=url):
+                self.assertIsNone(smoke.parse_tail_match(self.event(("GET", "/health"), url=url), "synthetic"))
+        for value in [{"event": "secret"}, {"event": {"request": []}}, []]:
+            self.assertIsNone(smoke.parse_tail_match(json.dumps(value), "synthetic"))
+        self.assertIsNone(smoke.parse_tail_match(
+            "console.log GET " + base + "?smoke=synthetic - Ok", "synthetic"))
+
+    def run_synthetic_stream(self, lines, connected=True):
+        # No CLI, sockets or real logs. A fake clock covers event delay/timeout.
+        process = Mock()
+        process.poll.return_value = None
+        messages = smoke.queue.Queue()
+        original_get = smoke.queue.Queue.get.__get__(messages)
+        def delayed_get(*args, **kwargs):
+            item = original_get(block=False)
+            if item[1] is None:
+                raise smoke.queue.Empty
+            return item
+        messages.get = delayed_get
+        if connected:
+            messages.put(("out", "Connected to " + smoke.WORKER + ", waiting for logs..."))
+        for line in lines:
+            messages.put(("out", line))
+        ticks = iter(range(200))
+        with patch.object(smoke.Path, "is_dir", return_value=True), \
+             patch.object(smoke.tempfile, "TemporaryDirectory") as temporary, \
+             patch.dict(os.environ, {"CLOUDFLARE_WORKER_STAGING_TOKEN": "SYNTHETIC_SECRET"}), \
+             patch.object(smoke, "child_environment", return_value={}), \
+             patch.object(smoke.subprocess, "Popen", return_value=process), \
+             patch.object(smoke.threading, "Thread"), \
+             patch.object(smoke.queue, "Queue", return_value=messages), \
+             patch.object(smoke.time, "monotonic", side_effect=lambda: next(ticks)), \
+             patch.object(smoke, "one_probe", return_value=True) as probe, \
+             patch.object(smoke, "stop_tail") as stop, \
+             patch("sys.stdout", new_callable=io.StringIO) as stdout, \
+             patch("sys.stderr", new_callable=io.StringIO) as stderr:
+            temporary.return_value.__enter__.return_value = "synthetic-memory"
+            if connected:
+                result = smoke.run_tail_probe("synthetic", str(ROOT))
+                self.assertEqual(probe.call_count, 2)
+            else:
+                with self.assertRaises(Stop) as caught:
+                    smoke.run_tail_probe("synthetic", str(ROOT))
+                self.assertNotIn("SYNTHETIC_SECRET", str(caught.exception))
+                probe.assert_not_called()
+                result = None
+            stop.assert_called_once_with(process)
+            self.assertEqual(stdout.getvalue() + stderr.getvalue(), "")
+            return result
+
+    def test_duplicate_and_delayed_events_do_not_replace_missing_endpoint(self):
+        get = self.event(("GET", "/health"))
+        post = self.event(("POST", "/telegram-webhook"))
+        _, matches, counts = self.run_synthetic_stream([get, get, None, None, "SYNTHETIC_SECRET", post])
+        self.assertEqual(set(matches), set(smoke.EXPECTED))
+        self.assertEqual(counts["stdout_lines"], 4)
+        self.assertEqual(counts["unmatched_stdout_lines"], 1)
+        _, matches, _ = self.run_synthetic_stream([get, get])
+        self.assertEqual(set(matches), {("GET", "/health")})
+        _, matches, _ = self.run_synthetic_stream([get] + [None] * 40 + [post])
+        self.assertEqual(set(matches), {("GET", "/health")})
+
+    def test_connection_failure_sends_no_probes_and_cleans_up(self):
+        self.run_synthetic_stream(["Unauthorized SYNTHETIC_SECRET"], connected=False)
+
+    def test_probe_refuses_unapproved_inputs_redirects_and_http_failures(self):
+        marker = "geoteacher-tail-verify-41823439479"
+        with patch.object(smoke, "urlopen") as request:
+            for method, path, value in [("GET", "https://outside.example", marker),
+                                        ("GET", "/health", marker + "&secret=value")]:
+                with self.assertRaises(Stop):
+                    smoke.one_probe(method, path, value)
+            request.assert_not_called()
+        self.assertIsNone(smoke.NoProbeRedirect().redirect_request(
+            None, None, 302, "redirect", {}, "https://outside.example"))
+        for status in [302, 401, 500]:
+            with patch.object(smoke, "urlopen", side_effect=HTTPError(
+                    "https://outside.example?secret=value", status, "SYNTHETIC_SECRET", {}, io.BytesIO(b"secret"))):
+                self.assertFalse(smoke.one_probe("GET", "/health", marker))
+
     def test_command_is_read_only_version_filtered_and_exact_worker(self):
         command = smoke.tail_command()
         self.assertEqual(command, [

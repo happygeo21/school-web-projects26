@@ -19,7 +19,7 @@ import threading
 import time
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlsplit
-from urllib.request import Request, urlopen
+from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 from cloudflare_preflight import WORKER, get_json
 from worker_candidate import Stop, child_environment, context, candidate_bindings, require
@@ -33,6 +33,15 @@ HOST = "geoteacher-telegram-gateway.ksoundmin.workers.dev"
 ROOT = "https://" + HOST
 EXPECTED = {("GET", "/health"): (200, "ok"),
             ("POST", "/telegram-webhook"): (403, "Forbidden")}
+
+
+class NoProbeRedirect(HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+# Never forward the override header or marker to a redirected destination.
+urlopen = build_opener(NoProbeRedirect()).open
 
 
 def safe_marker():
@@ -85,26 +94,33 @@ def parse_tail_match(raw_line, marker):
     except (ValueError, TypeError):
         event = None
     if isinstance(event, dict):
-        request = (event.get("event") or {}).get("request") or {}
+        envelope = event.get("event")
+        if not isinstance(envelope, dict):
+            return None
+        request = envelope.get("request")
         if not isinstance(request, dict):
             return None
         url, method = request.get("url"), request.get("method")
-        meta = event.get("scriptVersion") or (event.get("$workers") or {}).get("scriptVersion") or {}
+        workers = event.get("$workers")
+        meta = event.get("scriptVersion") or (workers.get("scriptVersion") if isinstance(workers, dict) else None)
         if isinstance(meta, dict):
             explicit = meta.get("id")
     else:
         # Wrangler --format pretty:
         # GET https://worker.example.workers.dev/health?smoke=<id> - Ok @ ...
         # POST https://worker.example.workers.dev/telegram-webhook?smoke=<id> - Ok @ ...
-        match = re.search(r"(?:^|\s)(GET|POST)\s+(https://\S+)\s+-\s+[^\s]+", line, re.I)
+        match = re.match(r"^(GET|POST)\s+(https://\S+)\s+-\s+[^\s]+", line, re.I)
         if not match:
             return None
         method, url = match.group(1).upper(), match.group(2)
     if not isinstance(url, str) or not isinstance(method, str):
         return None
-    parts = urlsplit(url)
-    if (parts.scheme != "https" or parts.hostname != HOST
-            or ("smoke=" + marker) not in parts.query
+    try:
+        parts = urlsplit(url)
+    except ValueError:
+        return None
+    if (parts.scheme != "https" or parts.netloc != HOST
+            or parts.query != "smoke=" + marker or parts.fragment
             or (method, parts.path) not in EXPECTED):
         return None
     if explicit is not None and explicit != CANDIDATE_VERSION:
@@ -114,6 +130,9 @@ def parse_tail_match(raw_line, marker):
 
 
 def one_probe(method, path, marker):
+    require((method, path) in EXPECTED, "Probe endpoint not allowed.")
+    require(bool(re.fullmatch(r"geoteacher-tail-verify-[0-9]{4,18}", marker)),
+            "Probe marker not allowed.")
     status_expected, body_expected = EXPECTED[(method, path)]
     request = Request(ROOT + path + "?smoke=" + marker,
                       method=method,
@@ -280,6 +299,8 @@ def main():
             "Worker deployment changed during the smoke test.")
     all_http = all(results.values())
     all_tailed = all(pair in matches for pair in EXPECTED)
+    all_versions = all(matches.get(pair, {}).get("explicit_version_id") == CANDIDATE_VERSION
+                       for pair in EXPECTED)
     report = {
         **state,
         "mode": "candidate-version-tail-smoke",
@@ -292,7 +313,11 @@ def main():
             sorted(method + " " + path for method, path in EXPECTED if (method, path) not in matches),
         "tail_observation_line_counts": observation_counts,
         "candidate_version_filter": CANDIDATE_VERSION,
-        "candidate_executed_via_tail_filter": all_tailed,
+        "candidate_executed_via_tail_filter": all_tailed and all_versions,
+        "candidate_version_confirmed_for_both_requests": all_versions,
+        "candidate_version_missing_endpoints":
+            sorted(method + " " + path for method, path in EXPECTED
+                   if matches.get((method, path), {}).get("explicit_version_id") != CANDIDATE_VERSION),
         "explicit_version_ids_reported":
             sorted({m["explicit_version_id"] for m in matches.values()
                     if m["explicit_version_id"] is not None}),
@@ -302,11 +327,11 @@ def main():
         "d1_writes": 0,
         "worker_deployments_modified": 0,
         "webhook_settings_modified": False,
-        "all_checks_passed": all_http and all_tailed,
+        "all_checks_passed": all_http and all_tailed and all_versions,
     }
     print(json.dumps(report, ensure_ascii=False))
-    require(all_http and all_tailed,
-            "Version-filtered live tail did not confirm both anonymous requests.")
+    require(all_http and all_tailed and all_versions,
+            "Tail did not confirm both anonymous requests with explicit candidate version IDs.")
 
 
 if __name__ == "__main__":

@@ -1,5 +1,24 @@
 # GeoTeacher 3.2 — 승인형 0% 후보 배포 실행 지침
 
+## 2026-11-13 진단 보강: 실증 미완료, 재실행 보류
+
+- 기존 PR #25 HEAD `4fbdfc33a3f56d1909ef1ee873ae26174eeaf1b3`와 main `e99163fa954d2e1ba90b25a298f87f840f5a372d`를 대조했다. main의 추가 변경은 이 진단과 별개인 보안 검사 워크플로이며 gateway 운영 소스 차이는 없다. e-GIS PR #28 변경은 포함하지 않는다.
+- 과거 첫 실행은 연결 확인 실패로 요청 전 중단했고, 두 번째는 HTTP 검사 2개 성공·Tail 매칭 1개·명시적 버전 ID 없음으로 실패했다. 원문 로그를 저장하지 않고 허용된 결과 필드만 대조했다. 누락된 요청 종류, 전송 지연, 파서 불일치, override 적용 여부는 과거 기록만으로 확정할 수 없다.
+- 성공은 기존 HTTP 검사와 `all_tailed`를 모두 유지하고, **GET과 POST 각각 명시적 후보 버전 ID가 일치**해야 한다. ID가 없는 2/2 이벤트도 실패/미검증이다. 부분 일치 마커, 추가 쿼리, 자격정보/포트/fragment가 섞인 URL은 관측 증거로 인정하지 않으며 HTTP redirect는 따라가지 않는다.
+- **현행 `--format pretty` 요청 행에는 명시적 버전 ID가 없다.** 이 보강은 거짓 성공 방지와 진단 준비이며 실제 후보 실행 증명 경로의 완성이 아니다. 현재 명령을 그대로 재실행해도 pretty 행만으로는 성공할 수 없다. JSON 다중 행·연결 신호·버전 메타데이터를 함께 다루는 경로 또는 기존 권한의 Observability 증거 경로를 별도 검토하고 합성 검증하기 전에는 Tail 재실행을 요청하지 않는다. 새 Worker 배포나 metadata binding 추가로 우회하지 않는다.
+- 로컬 Windows에 실행 가능한 Python이 없으면 설치/정책 변경 없이 기존 GitHub Actions의 Python 3.12 검사를 사용한다. 테스트는 합성 이벤트만 사용하고 운영 로그/Secret/마커를 출력하거나 artifact로 저장하지 않는다. CI 통과는 운영 성공 증거가 아니다.
+
+### 별도 승인 후 가능한 최소 실증 절차
+
+1. 요청별 후보 ID를 확보하는 출력 경로의 코드·합성 테스트를 먼저 검토한다. PR은 Draft로 유지하며 병합은 별도 승인 대상이다. 현 워크플로의 최신 main·보호 환경 승인 조건을 우회하지 않는다.
+2. 실행 직전 비민감 메타데이터 GET으로 기존 Deployment, 기존 100%/후보 0%, 후보 `ADD_ENABLED=false`를 확인한다. 과거 값과 다르면 중단하고 새 승인을 받는다.
+3. 교사가 **후보 버전 필터 Tail 세션 1회 + Version Overrides를 지정한 익명 GET /health 1회 + 무인증 POST /telegram-webhook 1회 + 전후 배포 메타데이터 조회**를 승인한다. 연결 50초, 관측 30초의 제한을 유지하며 재시도하지 않는다. 보호 환경 승인과 확인 문구 `VERIFY TAIL ONLY geoteacher-telegram-gateway`가 필요하다.
+4. 요청별 HTTP 결과, 관측/누락된 고정 요청 종류, 요청별 후보 ID 확인 여부, 허용된 라인 수와 실패 코드만 보고한다. 연결 실패 시 요청을 보내지 않고, 종료 시 Tail 세션과 메모리 임시 로그를 정리한다.
+5. **성공:** 후보 무쓰기 실증만 확인한다. 기존 100%/후보 0%를 유지하고 운영 전환·기능 활성화·웹훅 변경은 각각 별도 승인을 기다린다.
+6. **실패/ID 부재:** 미검증으로 종료하고 자동/수동 재시도를 하지 않는다. 고정 진단 필드로 연결/관측/버전 증거 부족을 구분해 보고한다. 배포 상태가 달라졌다면 교사에게 알리고 중단하며 임의 rollback도 하지 않는다.
+
+이번 진단 작업에서는 Cloudflare 실시간 Tail/HTTP 프로브/배포 조회 워크플로를 실행하지 않는다. 따라서 현재 운영 100% 보존을 직접 재조회한 것으로 보고하지 않는다. Telegram·D1·Notion 쓰기, 토큰·Secret·권한 변경, main 병합은 포함하지 않는다.
+
 
 ## 2026-11-05 두 번째 Live Tail 검사: HTTP 정상, Tail 1/2 (재실행 금지)
 
@@ -28,7 +47,7 @@
 - [PR #23](https://github.com/happygeo21/school-web-projects26/pull/23)의 `teacher-geoteacher-tail-smoke.yml`은 **수동 실행 전용**이며 `verify_tail=false`가 기본값입니다. PR 병합 자체는 네트워크 검증이나 Worker 배포를 실행하지 않습니다.
 - PR 병합을 먼저 별도 승인받고, 그 뒤 [Tail 검사 GitHub Actions](https://github.com/happygeo21/school-web-projects26/actions/workflows/teacher-geoteacher-tail-smoke.yml)에서 `main` 선택, `verify_tail` 체크, 확인 문구 `VERIFY TAIL ONLY geoteacher-telegram-gateway` 입력, 보호 환경 `geoteacher-worker-staging` 검토자 승인 순서로 실행합니다.
 - 실제 Tail 검사를 시작하기 전 Cloudflare Deployment `99157fb4-d5bd-4d3d-b2f7-e01171158ff7`가 여전히 기존 버전 `682b662b-2da1-4c0f-af5e-86c9bfd5e78a` **100%** / 신규 후보 `9d91cea3-c8d3-4322-902c-520fd7d4687b` **0%**인지 메타데이터 GET만으로 확인합니다. 다르면 **중단**합니다.
-- Wrangler Live Tail 세션은 신규 후보 버전으로 필터링하고 익명 `GET /health`·무인증 `POST /telegram-webhook` 요청을 **각 1회** 수행합니다. 고유 마커가 붙은 두 이벤트가 후보 버전 필터에서 모두 관측돼야 성공이며, Tail 원문(사용자 정보·인증정보 포함 가능)은 절대로 출력하거나 저장하지 않습니다.
+- Wrangler Live Tail 세션은 신규 후보 버전으로 필터링하고 익명 `GET /health`·무인증 `POST /telegram-webhook` 요청을 **각 1회** 수행합니다. 고유 마커가 붙은 두 이벤트가 모두 관측되고 각각 명시적 후보 version ID가 일치해야 성공이며, Tail 원문(사용자 정보·인증정보 포함 가능)은 절대로 출력하거나 저장하지 않습니다. 위 2026-11-13 보류 조건을 먼저 충족해야 합니다.
 - CLI가 필터를 지원하지 않거나 Tail 연결에 실패하면 **무검증/중단**으로 처리하고, 트래픽 비율이나 권한을 확대하지 않습니다. GitHub Actions의 성능·모의 테스트 성공은 실제 Tail 관측 성공과 구분합니다.
 - 최종 출력은 HTTP 검사 2개·후보 Tail 이벤트 2개 관측 여부·배포 ID와 100/0 비율 불변 여부로 제한합니다. Notion/D1 읽기·쓰기, Telegram 메시지 발송/웹훅 수정, Cloudflare 운영 트래픽 변경은 포함하지 않습니다.
 - [Cloudflare Wrangler Tail](https://developers.cloudflare.com/workers/wrangler/commands/workers/#tail) · [Workers 최소 권한](https://developers.cloudflare.com/workers/authorization/workers/) 참조.
