@@ -15,9 +15,15 @@ from worker_candidate import Stop
 
 
 class TailProofSafetyTests(unittest.TestCase):
+    def setUp(self):
+        # Only synthetic tests bypass the source-level live transport hold.
+        self.transport_gate = patch.object(smoke, "require_live_transport")
+        self.transport_gate.start()
+        self.addCleanup(self.transport_gate.stop)
+
     def event(self, pair, version=True, url=None):
         method, path = pair
-        event = {"event": {"request": {"method": method, "url": url or
+        event = {"scriptName": smoke.WORKER, "event": {"request": {"method": method, "url": url or
                  smoke.ROOT + path + "?smoke=synthetic"}}}
         if version:
             event["scriptVersion"] = {"id": smoke.CANDIDATE_VERSION}
@@ -26,9 +32,10 @@ class TailProofSafetyTests(unittest.TestCase):
     def test_proof_matrix_requires_each_endpoint_and_each_version(self):
         pairs = list(smoke.EXPECTED)
         for observed in [[], pairs[:1], pairs[1:], pairs]:
-            for explicit in [False, True]:
+            for explicit in [False, True, "get_only"]:
                 with self.subTest(observed=observed, explicit=explicit):
-                    matches = {pair: smoke.parse_tail_match(self.event(pair, explicit), "synthetic")
+                    matches = {pair: smoke.parse_tail_match(self.event(
+                               pair, explicit is True or (explicit == "get_only" and pair == pairs[0])), "synthetic")
                                for pair in observed}
                     stdout = io.StringIO()
                     with patch.object(smoke, "inspect_current", return_value={"deployment_id": smoke.DEPLOYMENT_ID}), \
@@ -38,7 +45,7 @@ class TailProofSafetyTests(unittest.TestCase):
                          patch.dict(os.environ, {"TAIL_CONFIRMATION": smoke.CONFIRMATION, "GATEWAY_ROOT": str(ROOT)}), \
                          patch.object(sys, "argv", ["worker_tail_verify.py", "verify"]), \
                          patch("sys.stdout", stdout):
-                        success = len(observed) == 2 and explicit
+                        success = len(observed) == 2 and explicit is True
                         if success:
                             smoke.main()
                         else:
@@ -64,7 +71,7 @@ class TailProofSafetyTests(unittest.TestCase):
         self.assertIsNone(smoke.parse_tail_match(
             "console.log GET " + base + "?smoke=synthetic - Ok", "synthetic"))
 
-    def run_synthetic_stream(self, lines, connected=True):
+    def run_synthetic_stream(self, lines, connected=True, error=None):
         # No CLI, sockets or real logs. A fake clock covers event delay/timeout.
         process = Mock()
         process.poll.return_value = None
@@ -94,7 +101,11 @@ class TailProofSafetyTests(unittest.TestCase):
              patch("sys.stdout", new_callable=io.StringIO) as stdout, \
              patch("sys.stderr", new_callable=io.StringIO) as stderr:
             temporary.return_value.__enter__.return_value = "synthetic-memory"
-            if connected:
+            if error:
+                with self.assertRaisesRegex(Stop, error):
+                    smoke.run_tail_probe("synthetic", str(ROOT))
+                result = None
+            elif connected:
                 result = smoke.run_tail_probe("synthetic", str(ROOT))
                 self.assertEqual(probe.call_count, 2)
             else:
@@ -104,13 +115,14 @@ class TailProofSafetyTests(unittest.TestCase):
                 probe.assert_not_called()
                 result = None
             stop.assert_called_once_with(process)
+            temporary.return_value.__exit__.assert_called_once()
             self.assertEqual(stdout.getvalue() + stderr.getvalue(), "")
             return result
 
     def test_duplicate_and_delayed_events_do_not_replace_missing_endpoint(self):
         get = self.event(("GET", "/health"))
         post = self.event(("POST", "/telegram-webhook"))
-        _, matches, counts = self.run_synthetic_stream([get, get, None, None, "SYNTHETIC_SECRET", post])
+        _, matches, counts = self.run_synthetic_stream([get, get, None, None, '{"logs":["SYNTHETIC_SECRET"]}', post])
         self.assertEqual(set(matches), set(smoke.EXPECTED))
         self.assertEqual(counts["stdout_lines"], 4)
         self.assertEqual(counts["unmatched_stdout_lines"], 1)
@@ -121,6 +133,87 @@ class TailProofSafetyTests(unittest.TestCase):
 
     def test_connection_failure_sends_no_probes_and_cleans_up(self):
         self.run_synthetic_stream(["Unauthorized SYNTHETIC_SECRET"], connected=False)
+
+    def test_live_hold_blocks_gate_verify_and_direct_transport_before_io(self):
+        self.transport_gate.stop()
+        with patch.object(smoke, "inspect_current") as inspect, \
+             patch.object(smoke, "main_sha") as sha, \
+             patch.object(smoke, "protected_environment") as approval, \
+             patch.object(smoke.subprocess, "Popen") as process, \
+             patch.object(smoke, "urlopen") as request:
+            for action in ["gate", "verify"]:
+                with patch.object(sys, "argv", ["worker_tail_verify.py", action]):
+                    with self.assertRaisesRegex(Stop, "^tail_transport_unverified$"):
+                        smoke.main()
+            with self.assertRaisesRegex(Stop, "^tail_transport_unverified$"):
+                smoke.run_tail_probe("synthetic", str(ROOT))
+            for mocked in [inspect, sha, approval, process, request]:
+                mocked.assert_not_called()
+
+    def test_json_single_multiline_chunked_reverse_and_sensitive_fields(self):
+        events = [json.loads(self.event(pair)) for pair in reversed(list(smoke.EXPECTED))]
+        for event in events:
+            event["logs"] = [{"message": ["SYNTHETIC_SECRET { \\\" }", "Telegram data"]}]
+            event["event"]["request"]["headers"] = {"cookie": "SYNTHETIC_COOKIE"}
+        for indent in [None, 2]:
+            text = "\n".join(json.dumps(event, indent=indent) for event in events)
+            for width in [1, 17, len(text)]:
+                decoder = smoke.TailJSONStream()
+                matches = []
+                for start in range(0, len(text), width):
+                    matches.extend(decoder.feed(text[start:start + width], "synthetic"))
+                decoder.finish()
+                self.assertEqual([(m["method"], m["path"]) for m in matches], list(reversed(smoke.EXPECTED)))
+                self.assertTrue(all(m["explicit_version_id"] == smoke.CANDIDATE_VERSION for m in matches))
+                self.assertNotIn("SYNTHETIC", str(matches))
+                self.assertEqual(decoder.buffer, [])
+
+    def test_wrong_worker_and_nested_log_cannot_supply_identity(self):
+        for worker in [None, "other-worker"]:
+            event = json.loads(self.event(("GET", "/health")))
+            event["scriptName"] = worker
+            self.assertIsNone(smoke.parse_tail_match(json.dumps(event), "synthetic"))
+        event = json.loads(self.event(("GET", "/health"), version=False))
+        event["logs"] = [{"scriptVersion": {"id": smoke.CANDIDATE_VERSION}}]
+        self.assertIsNone(smoke.parse_tail_match(json.dumps(event), "synthetic")["explicit_version_id"])
+
+    def test_json_rejects_invalid_duplicate_deep_large_and_incomplete_data(self):
+        cases = [('{"secret": invalid}', "tail_json_invalid"),
+                 ('{"a":1,"a":2}', "tail_json_duplicate_key"),
+                 ('{"a":NaN}', "tail_json_invalid"),
+                 ('{"a":' + '[' * 40, "tail_json_too_deep"),
+                 ('{"a":"' + 'x' * smoke.MAX_EVENT_BYTES, "tail_event_too_large"),
+                 ('{"a":]', "tail_json_invalid")]
+        for data, code in cases:
+            decoder = smoke.TailJSONStream()
+            with self.assertRaisesRegex(Stop, "^" + code + "$"):
+                decoder.feed(data, "synthetic")
+            self.assertEqual(decoder.buffer, [])
+        decoder = smoke.TailJSONStream()
+        decoder.feed('{"secret":', "synthetic")
+        with self.assertRaisesRegex(Stop, "^tail_json_incomplete$"):
+            decoder.finish()
+        self.assertEqual(decoder.buffer, [])
+
+    def test_pipe_limits_memory_and_closes_without_echo(self):
+        for text, capacity in [("x" * (smoke.MAX_LINE_CHARS + 1), 2), ("one\ntwo\n", 1)]:
+            pipe = io.StringIO(text)
+            messages = smoke.queue.Queue(maxsize=capacity)
+            stopped, failed = smoke.threading.Event(), smoke.threading.Event()
+            with patch("sys.stdout", new_callable=io.StringIO) as output:
+                smoke.stream_pipe(pipe, "out", messages, stopped, failed)
+            self.assertTrue(failed.is_set())
+            self.assertTrue(pipe.closed)
+            self.assertLessEqual(messages.qsize(), capacity)
+            self.assertEqual(output.getvalue(), "")
+
+    def test_transport_errors_cleanup_and_late_conflict_cannot_pass(self):
+        get = self.event(("GET", "/health"))
+        post = self.event(("POST", "/telegram-webhook"))
+        old = get.replace(smoke.CANDIDATE_VERSION, smoke.BASE_VERSION)
+        self.run_synthetic_stream([get, post, old], error="version conflicts")
+        self.run_synthetic_stream(['{"secret":invalid}'], error="tail_json_invalid")
+        self.run_synthetic_stream(['{"secret":'], error="tail_json_incomplete")
 
     def test_probe_refuses_unapproved_inputs_redirects_and_http_failures(self):
         marker = "geoteacher-tail-verify-41823439479"
@@ -141,7 +234,7 @@ class TailProofSafetyTests(unittest.TestCase):
         command = smoke.tail_command()
         self.assertEqual(command, [
             "npx", "--yes", "wrangler@4.157.0", "tail", "geoteacher-telegram-gateway",
-            "--format", "pretty", "--version-id", "9d91cea3-c8d3-4322-902c-520fd7d4687b",
+            "--format", "json", "--version-id", "9d91cea3-c8d3-4322-902c-520fd7d4687b",
         ])
         self.assertNotIn("deploy", command)
         self.assertNotIn("upload", command)
@@ -160,7 +253,7 @@ class TailProofSafetyTests(unittest.TestCase):
         marker = "geoteacher-tail-verify-41823439479"
         request = {"url": "https://" + smoke.HOST + "/health?smoke=" + marker,
                    "method": "GET"}
-        event = {"event": {"request": request}, "scriptVersion": {"id": smoke.CANDIDATE_VERSION}}
+        event = {"scriptName": smoke.WORKER, "event": {"request": request}, "scriptVersion": {"id": smoke.CANDIDATE_VERSION}}
         match = smoke.parse_tail_match(json.dumps(event), marker)
         self.assertEqual(match["path"], "/health")
         self.assertEqual(match["explicit_version_id"], smoke.CANDIDATE_VERSION)
@@ -176,7 +269,7 @@ class TailProofSafetyTests(unittest.TestCase):
             event["event"]["request"]["url"] = altered
             self.assertIsNone(smoke.parse_tail_match(json.dumps(event), marker))
 
-    def test_pretty_tail_lines_match_fixed_url_without_echoing_raw_logs(self):
+    def test_pretty_tail_lines_are_not_structured_version_evidence(self):
         marker = "geoteacher-tail-verify-41823439479"
         text_cases = [
             ("GET", "/health", "Ok"),
@@ -186,9 +279,7 @@ class TailProofSafetyTests(unittest.TestCase):
             url = "https://" + smoke.HOST + path + "?smoke=" + marker
             sample = "\x1b[36m" + method + " " + url + " - " + outcome + " @ 11/5/2026" + "\x1b[0m"
             match = smoke.parse_tail_match(sample, marker)
-            self.assertEqual(match["method"], method)
-            self.assertEqual(match["path"], path)
-            self.assertIsNone(match["explicit_version_id"])
+            self.assertIsNone(match)
             self.assertNotIn(url, str(match))
         self.assertIsNone(smoke.parse_tail_match(
             "GET https://example.com/health?smoke=" + marker + " - Ok @ test", marker))
@@ -215,7 +306,7 @@ class TailProofSafetyTests(unittest.TestCase):
         self.assertIn("tail_output_seen_but_no_connection_banner",
                       smoke.tail_diagnostic(dict(default, err_lines=1)))
 
-    def test_parser_can_use_tail_filter_when_json_version_omitted(self):
+    def test_parser_records_observation_without_claiming_missing_version(self):
         marker = "geoteacher-tail-verify-41823439479"
         event = {"outcome": "ok", "scriptName": smoke.WORKER,
                  "event": {"request": {

@@ -33,6 +33,17 @@ HOST = "geoteacher-telegram-gateway.ksoundmin.workers.dev"
 ROOT = "https://" + HOST
 EXPECTED = {("GET", "/health"): (200, "ok"),
             ("POST", "/telegram-webhook"): (403, "Forbidden")}
+MAX_EVENT_BYTES = 65536
+MAX_LINE_CHARS = 16384
+MAX_PENDING_LINES = 64
+MAX_JSON_DEPTH = 32
+
+
+def require_live_transport():
+    # Deliberate source-level hold, not an environment-variable bypass.
+    # Pinned Wrangler JSON has no connection banner or guaranteed version ID;
+    # it also reconnects internally. See the runbook before changing this gate.
+    raise Stop("tail_transport_unverified")
 
 
 class NoProbeRedirect(HTTPRedirectHandler):
@@ -75,25 +86,96 @@ def inspect_current():
 
 def tail_command():
     """Only ephemeral, version-filtered logs; absolutely no deploy/write commands."""
-    # Pretty mode emits a human-readable connection banner and one request per
-    # line. JSON mode can omit that banner and emit multi-line objects.
-    # Parse events only in memory; never print a raw Tail line.
+    # Proposed JSON transport, blocked by require_live_transport until its
+    # readiness, version metadata and no-reconnect contract are verified.
     return ["npx", "--yes", "wrangler@4.157.0", "tail", WORKER,
-            "--format", "pretty", "--version-id", CANDIDATE_VERSION]
+            "--format", "json", "--version-id", CANDIDATE_VERSION]
 
 
 _ANSI = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
 
 
-def parse_tail_match(raw_line, marker):
-    """Parse pretty Tail request lines (or JSON) without exposing log contents."""
-    line = _ANSI.sub("", raw_line).strip()
+class TailJSONStream:
+    """Bounded object framing; raw content exists only in memory until parsed."""
+    def __init__(self):
+        self.clear()
+
+    def clear(self):
+        self.buffer = []
+        self.stack = []
+        self.in_string = False
+        self.escape = False
+        self.size = 0
+
+    def feed(self, chunk, marker):
+        matches = []
+        try:
+            for char in chunk:
+                if not self.stack:
+                    if char.isspace():
+                        continue
+                    require(char == "{", "tail_json_invalid")
+                self.buffer.append(char)
+                self.size += len(char.encode("utf-8"))
+                require(self.size <= MAX_EVENT_BYTES, "tail_event_too_large")
+                if self.in_string:
+                    if self.escape:
+                        self.escape = False
+                    elif char == "\\":
+                        self.escape = True
+                    elif char == '"':
+                        self.in_string = False
+                elif char == '"':
+                    self.in_string = True
+                elif char in "{[":
+                    self.stack.append(char)
+                    require(len(self.stack) <= MAX_JSON_DEPTH, "tail_json_too_deep")
+                elif char in "}]":
+                    require(bool(self.stack) and self.stack.pop() == ("{" if char == "}" else "["),
+                            "tail_json_invalid")
+                    if not self.stack:
+                        raw = "".join(self.buffer)
+                        self.clear()
+                        match = parse_tail_match(raw, marker, strict=True)
+                        if match:
+                            matches.append(match)
+            return matches
+        except Exception:
+            self.clear()
+            raise
+
+    def finish(self):
+        incomplete = bool(self.buffer)
+        self.clear()
+        require(not incomplete, "tail_json_incomplete")
+
+
+def unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        require(key not in result, "tail_json_duplicate_key")
+        result[key] = value
+    return result
+
+
+def reject_json_constant(value):
+    raise Stop("tail_json_invalid")
+
+
+def parse_tail_match(raw_line, marker, strict=False):
+    """Conditional JSON contract, not evidence that the backend emits an ID."""
+    require(len(raw_line.encode("utf-8")) <= MAX_EVENT_BYTES, "tail_event_too_large")
+    line = raw_line.strip()
     explicit = None
     try:
-        event = json.loads(line)
+        event = json.loads(line, object_pairs_hook=unique_object,
+                           parse_constant=reject_json_constant)
     except (ValueError, TypeError):
-        event = None
+        require(not strict, "tail_json_invalid")
+        return None
     if isinstance(event, dict):
+        if event.get("scriptName") != WORKER:
+            return None
         envelope = event.get("event")
         if not isinstance(envelope, dict):
             return None
@@ -101,18 +183,11 @@ def parse_tail_match(raw_line, marker):
         if not isinstance(request, dict):
             return None
         url, method = request.get("url"), request.get("method")
-        workers = event.get("$workers")
-        meta = event.get("scriptVersion") or (workers.get("scriptVersion") if isinstance(workers, dict) else None)
+        meta = event.get("scriptVersion")
         if isinstance(meta, dict):
             explicit = meta.get("id")
     else:
-        # Wrangler --format pretty:
-        # GET https://worker.example.workers.dev/health?smoke=<id> - Ok @ ...
-        # POST https://worker.example.workers.dev/telegram-webhook?smoke=<id> - Ok @ ...
-        match = re.match(r"^(GET|POST)\s+(https://\S+)\s+-\s+[^\s]+", line, re.I)
-        if not match:
-            return None
-        method, url = match.group(1).upper(), match.group(2)
+        return None
     if not isinstance(url, str) or not isinstance(method, str):
         return None
     try:
@@ -152,11 +227,22 @@ def one_probe(method, path, marker):
     return status == status_expected and body.decode("utf-8", errors="replace").strip() == body_expected
 
 
-def stream_pipe(pipe, channel, messages):
+def stream_pipe(pipe, channel, messages, stopped, failed):
     try:
-        for line in pipe:
-            # No stdout/stderr raw text is printed or persisted.
-            messages.put((channel, line))
+        while not stopped.is_set():
+            line = pipe.readline(MAX_LINE_CHARS + 1)
+            if not line:
+                break
+            if len(line) > MAX_LINE_CHARS:
+                failed.set()
+                break
+            try:
+                messages.put_nowait((channel, line))
+            except queue.Full:
+                failed.set()
+                break
+    except (OSError, ValueError):
+        failed.set()
     finally:
         pipe.close()
 
@@ -197,6 +283,7 @@ def tail_diagnostic(flags):
 
 def run_tail_probe(marker, root):
     """Subscribe first, send two probes exactly once, collect only matching events."""
+    require_live_transport()
     require(Path("/dev/shm").is_dir(), "Memory-backed temporary logs unavailable.")
     worker_token = os.environ.get("CLOUDFLARE_WORKER_STAGING_TOKEN", "").strip()
     require(bool(worker_token), "Protected Worker tail credential unavailable.")
@@ -205,6 +292,7 @@ def run_tail_probe(marker, root):
         env.update({"CLOUDFLARE_API_TOKEN": worker_token,
                     "CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV": "false",
                     "WRANGLER_SEND_METRICS": "false",
+                    "WRANGLER_WRITE_LOGS": "false",
                     "WRANGLER_LOG_PATH": private + "/wrangler.log",
                     "npm_config_logs_dir": private + "/npm",
                     "CI": "true",
@@ -212,16 +300,23 @@ def run_tail_probe(marker, root):
         process = subprocess.Popen(tail_command(), cwd=root, env=env,
                                    start_new_session=True, text=True, bufsize=1,
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        messages = queue.Queue()
-        for channel, pipe in [("out", process.stdout), ("err", process.stderr)]:
-            threading.Thread(target=stream_pipe, args=(pipe, channel, messages), daemon=True).start()
+        messages = queue.Queue(maxsize=MAX_PENDING_LINES)
+        stopped, failed = threading.Event(), threading.Event()
+        readers = []
+        decoder = TailJSONStream()
         try:
+            for channel, pipe in [("out", process.stdout), ("err", process.stderr)]:
+                reader = threading.Thread(target=stream_pipe,
+                                          args=(pipe, channel, messages, stopped, failed), daemon=True)
+                readers.append(reader)
+                reader.start()
             ready = False
             flags = {"created": False, "progress": False,
                      "auth_rejected": False, "cli_option_error": False,
                      "network_error": False, "out_lines": 0, "err_lines": 0}
             deadline = time.monotonic() + 50
             while time.monotonic() < deadline and not ready:
+                require(not failed.is_set(), "tail_stream_limit_or_read_error")
                 if process.poll() is not None:
                     raise Stop("Tail process ended before ready; "
                                + tail_diagnostic(flags) + "; no HTTP probes sent.")
@@ -244,6 +339,7 @@ def run_tail_probe(marker, root):
                 ready = ("connected to " + WORKER.lower() in low
                          and "waiting for logs" in low)
             require(ready, tail_diagnostic(flags) + "; no HTTP probes sent.")
+            require(not failed.is_set(), "tail_stream_limit_or_read_error")
             results = {pair: one_probe(*pair, marker) for pair in EXPECTED}
             matches = {}
             # Counts only: never retain or emit raw request or Wrangler log lines.
@@ -253,7 +349,8 @@ def run_tail_probe(marker, root):
                 "unmatched_stdout_lines": 0,
             }
             observe_until = time.monotonic() + 30
-            while time.monotonic() < observe_until and len(matches) < len(EXPECTED):
+            while time.monotonic() < observe_until:
+                require(not failed.is_set(), "tail_stream_limit_or_read_error")
                 try:
                     channel, line = messages.get(timeout=0.5)
                 except queue.Empty:
@@ -264,19 +361,34 @@ def run_tail_probe(marker, root):
                     observation_counts["stderr_lines"] += 1
                     continue
                 observation_counts["stdout_lines"] += 1
-                match = parse_tail_match(line, marker)
-                if match:
+                parsed = decoder.feed(line, marker)
+                for match in parsed:
                     matches[(match["method"], match["path"])] = match
-                else:
+                if not parsed:
                     observation_counts["unmatched_stdout_lines"] += 1
+            decoder.finish()
+            require(not failed.is_set(), "tail_stream_limit_or_read_error")
             return results, matches, observation_counts
         finally:
-            stop_tail(process)
+            stopped.set()
+            try:
+                stop_tail(process)
+            finally:
+                for reader in readers:
+                    reader.join(timeout=1)
+                decoder.clear()
+                while True:
+                    try:
+                        messages.get_nowait()
+                    except queue.Empty:
+                        break
 
 
 def main():
     require(len(sys.argv) == 2 and sys.argv[1] in {"review", "gate", "verify"},
             "Use review, gate or verify.")
+    if sys.argv[1] in {"gate", "verify"}:
+        require_live_transport()
     if sys.argv[1] == "gate":
         require(os.environ.get("TAIL_CONFIRMATION") == CONFIRMATION,
                 "Exact tail-only consent phrase required.")
@@ -286,7 +398,7 @@ def main():
         return
     state = inspect_current()
     if sys.argv[1] == "review":
-        print(json.dumps({**state, "mode": "read-only-check", "tail_started": False,
+        print(json.dumps({"deployment_split_verified": True, "mode": "read-only-check", "tail_started": False,
                           "probes_sent": 0}, ensure_ascii=False))
         return
     require(os.environ.get("TAIL_CONFIRMATION") == CONFIRMATION,
@@ -297,13 +409,14 @@ def main():
     after = inspect_current()
     require(after["deployment_id"] == state["deployment_id"],
             "Worker deployment changed during the smoke test.")
-    all_http = all(results.values())
+    all_http = all(results.get(pair) is True for pair in EXPECTED)
     all_tailed = all(pair in matches for pair in EXPECTED)
     all_versions = all(matches.get(pair, {}).get("explicit_version_id") == CANDIDATE_VERSION
                        for pair in EXPECTED)
     report = {
-        **state,
         "mode": "candidate-version-tail-smoke",
+        "tail_connected": True,
+        "deployment_split_verified": True,
         "http_get_health_ok": results[("GET", "/health")],
         "http_anonymous_post_forbidden": results[("POST", "/telegram-webhook")],
         "candidate_tail_filtered_event_count": len(matches),
@@ -312,15 +425,13 @@ def main():
         "candidate_tail_missing_endpoints":
             sorted(method + " " + path for method, path in EXPECTED if (method, path) not in matches),
         "tail_observation_line_counts": observation_counts,
-        "candidate_version_filter": CANDIDATE_VERSION,
         "candidate_executed_via_tail_filter": all_tailed and all_versions,
         "candidate_version_confirmed_for_both_requests": all_versions,
+        "candidate_get_version_matches": matches.get(("GET", "/health"), {}).get("explicit_version_id") == CANDIDATE_VERSION,
+        "candidate_post_version_matches": matches.get(("POST", "/telegram-webhook"), {}).get("explicit_version_id") == CANDIDATE_VERSION,
         "candidate_version_missing_endpoints":
             sorted(method + " " + path for method, path in EXPECTED
                    if matches.get((method, path), {}).get("explicit_version_id") != CANDIDATE_VERSION),
-        "explicit_version_ids_reported":
-            sorted({m["explicit_version_id"] for m in matches.values()
-                    if m["explicit_version_id"] is not None}),
         "deployment_unchanged": True,
         "telegram_messages_sent": 0,
         "notion_writes": 0,
@@ -328,6 +439,9 @@ def main():
         "worker_deployments_modified": 0,
         "webhook_settings_modified": False,
         "all_checks_passed": all_http and all_tailed and all_versions,
+        "failure_code": ("http_probe_failed" if not all_http else
+                         "tail_request_missing" if not all_tailed else
+                         "tail_version_unconfirmed" if not all_versions else None),
     }
     print(json.dumps(report, ensure_ascii=False))
     require(all_http and all_tailed and all_versions,
