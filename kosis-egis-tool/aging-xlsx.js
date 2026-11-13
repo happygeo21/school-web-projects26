@@ -1,0 +1,46 @@
+/* Restricted adapter for the two verified DT_1YL20631/T10/2024 exports.
+   Never infer a foreign code from its length or from a name alone. */
+(function(root){
+'use strict';
+const clean=v=>String(v??'').trim();
+const headers=['code','name','sido','sido_name','base_year','aging_pct','kosis_source_code','year','unit','source'];
+const source='https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20631';
+const records=[{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236010 목포시"],"source_code":"1236010","name":"목포시","code":"46110","value":21.2},{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236020 여수시"],"source_code":"1236020","name":"여수시","code":"46130","value":23.8},{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236030 순천시"],"source_code":"1236030","name":"순천시","code":"46150","value":19.3},{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236040 나주시"],"source_code":"1236040","name":"나주시","code":"46170","value":25},{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236060 광양시"],"source_code":"1236060","name":"광양시","code":"46230","value":16.2},{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236310 담양군"],"source_code":"1236310","name":"담양군","code":"46710","value":35.6},{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236320 곡성군"],"source_code":"1236320","name":"곡성군","code":"46720","value":40.5},{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236330 구례군"],"source_code":"1236330","name":"구례군","code":"46730","value":39.4},{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236350 고흥군"],"source_code":"1236350","name":"고흥군","code":"46770","value":45.7},{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236360 보성군"],"source_code":"1236360","name":"보성군","code":"46780","value":43.9},{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236370 화순군"],"source_code":"1236370","name":"화순군","code":"46790","value":30.9},{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236380 장흥군"],"source_code":"1236380","name":"장흥군","code":"46800","value":39.1},{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236390 강진군"],"source_code":"1236390","name":"강진군","code":"46810","value":39.4},{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236400 해남군"],"source_code":"1236400","name":"해남군","code":"46820","value":37.7},{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236410 영암군"],"source_code":"1236410","name":"영암군","code":"46830","value":30.4},{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236420 무안군"],"source_code":"1236420","name":"무안군","code":"46840","value":21.1},{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236430 함평군"],"source_code":"1236430","name":"함평군","code":"46860","value":41.4},{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236440 영광군"],"source_code":"1236440","name":"영광군","code":"46870","value":32},{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236450 장성군"],"source_code":"1236450","name":"장성군","code":"46880","value":34.4},{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236460 완도군"],"source_code":"1236460","name":"완도군","code":"46890","value":37.4},{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236470 진도군"],"source_code":"1236470","name":"진도군","code":"46900","value":37.7},{"unit":"sgg","hierarchy":["12 전남광주통합특별시","1236 전라남도","1236480 신안군"],"source_code":"1236480","name":"신안군","code":"46910","value":40.1},{"unit":"sido","hierarchy":["11 서울특별시","소계"],"source_code":"11","name":"서울특별시","code":"11","value":19.4},{"unit":"sido","hierarchy":["12 전남광주통합특별시","1224 광주광역시"],"source_code":"1224","name":"광주광역시","code":"29","value":17.5},{"unit":"sido","hierarchy":["12 전남광주통합특별시","1236 전라남도"],"source_code":"1236","name":"전라남도","code":"46","value":27.2},{"unit":"sido","hierarchy":["21 부산광역시","소계"],"source_code":"21","name":"부산광역시","code":"26","value":23.9},{"unit":"sido","hierarchy":["22 대구광역시","소계"],"source_code":"22","name":"대구광역시","code":"27","value":20.9},{"unit":"sido","hierarchy":["23 인천광역시","소계"],"source_code":"23","name":"인천광역시","code":"28","value":17.7},{"unit":"sido","hierarchy":["25 대전광역시","소계"],"source_code":"25","name":"대전광역시","code":"30","value":18},{"unit":"sido","hierarchy":["26 울산광역시","소계"],"source_code":"26","name":"울산광역시","code":"31","value":17.2},{"unit":"sido","hierarchy":["29 세종특별자치시","소계"],"source_code":"29","name":"세종특별자치시","code":"36","value":11.6},{"unit":"sido","hierarchy":["31 경기도","소계"],"source_code":"31","name":"경기도","code":"41","value":16.6},{"unit":"sido","hierarchy":["32 강원특별자치도","소계"],"source_code":"32","name":"강원특별자치도","code":"51","value":25.4},{"unit":"sido","hierarchy":["33 충청북도","소계"],"source_code":"33","name":"충청북도","code":"43","value":21.9},{"unit":"sido","hierarchy":["34 충청남도","소계"],"source_code":"34","name":"충청남도","code":"44","value":22.3},{"unit":"sido","hierarchy":["35 전북특별자치도","소계"],"source_code":"35","name":"전북특별자치도","code":"52","value":25.3},{"unit":"sido","hierarchy":["37 경상북도","소계"],"source_code":"37","name":"경상북도","code":"47","value":26},{"unit":"sido","hierarchy":["38 경상남도","소계"],"source_code":"38","name":"경상남도","code":"48","value":21.8},{"unit":"sido","hierarchy":["39 제주특별자치도","소계"],"source_code":"39","name":"제주특별자치도","code":"50","value":18.9}];
+function read(book,X,refs){
+ const sheet=book.Sheets['데이터'],metaSheet=book.Sheets['메타정보'];
+ const rows=sheet?X.utils.sheet_to_json(sheet,{header:1,defval:'',raw:true,blankrows:true}):[];
+ const meta=metaSheet?X.utils.sheet_to_json(metaSheet,{header:1,defval:''}):[];
+ const get=k=>{const found=meta.filter(r=>clean(r[0])===k);return found.length===1?clean(found[0][1]):'';};
+ if(get('○ 통계표ID')!=='DT_1YL20631'&&!rows.slice(0,2).some(r=>r.some(v=>/^T10 고령인구비율/.test(clean(v)))))return null;
+ const fail=m=>{throw Error('2024 고령인구비율 원본 확인: '+m+' CSV를 저장할 수 없습니다.');};
+ if(!sheet||!metaSheet)fail('데이터·메타정보 시트가 필요합니다.');
+ if(get('○ 통계표ID')!=='DT_1YL20631'||get('○ 통계표명')!=='고령인구비율(시도/시/군/구)'||get('○ 조회기간')!=='[년] 2024~2024'||get('○ 단위')!=='%')fail('통계표·연도·단위가 검증 범위와 다릅니다.');
+ let url;try{url=new URL(get('○ 통계표URL'));}catch{fail('공식 출처 URL이 없습니다.');}
+ if(url.protocol!=='https:'||url.hostname!=='kosis.kr'||url.pathname!=='/statHtml/statHtml.do'||url.searchParams.get('orgId')!=='101'||url.searchParams.get('tblId')!=='DT_1YL20631')fail('공식 통계표 URL을 확인하세요.');
+ if((sheet['!merges']||[]).length)fail('검증된 원본은 셀 병합 해제 형식입니다.');
+ if(Object.entries(sheet).some(([k,c])=>!k.startsWith('!')&&c.f))fail('원본 데이터에 수식이 있습니다.');
+ const width=rows[0]?.length,unit=width===4?'sgg':width===3?'sido':'';
+ if(!unit||rows.some(r=>r.length!==width))fail('행정구역 열과 통계 열의 수가 다릅니다.');
+ const metric='T10 고령인구비율<br>(A÷B×100) (14210.MT0001 %)';
+ if(rows[0][width-1]!=='Y2024 2024'||rows[1]?.[width-1]!==metric||rows.slice(0,2).some(r=>r.slice(0,-1).some((v,i)=>v!==`SGG 행정구역별(${i+1})`)))fail('머리글의 2024년·T10·% 또는 행정구역 단계가 다릅니다.');
+ const expected=records.filter(r=>r.unit===unit),seen=new Set(),output=[],audit=[];
+ if(rows.length!==expected.length+2)fail(`필요한 ${expected.length}개 지역의 누락 또는 추가 행이 있습니다.`);
+ for(let i=2;i<rows.length;i++){
+  const row=rows[i],hierarchy=row.slice(0,-1),record=expected.find(r=>r.hierarchy.every((v,j)=>v===clean(hierarchy[j])));
+  if(!record)fail(`${i+1}행 원본 코드·지역명·상위 지역이 검증 대응표와 다릅니다.`);
+  if(seen.has(record.code))fail(`${i+1}행 지역이 중복됩니다.`);seen.add(record.code);
+  const raw=row.at(-1);if(typeof raw!=='number'||!Number.isFinite(raw)||raw<0||raw>100||raw!==record.value)fail(`${i+1}행 수치가 공식 2024 값과 다르거나 결측입니다.`);
+  const matches=refs[unit].filter(r=>r.code===record.code&&r.name===record.name&&(unit==='sido'||r.sido==='46'&&r.sido_name==='전라남도'));
+  if(matches.length!==1)fail(`${i+1}행 지도 기준표가 검증된 지역과 다릅니다.`);
+  const r=matches[0];output.push({code:r.code,name:r.name,sido:unit==='sido'?r.code:r.sido,sido_name:unit==='sido'?r.name:r.sido_name,base_year:r.base_year,aging_pct:raw,kosis_source_code:record.source_code,year:'2024',unit:'%',source});
+  audit.push({source_row:i+1,source_code:record.source_code,gis_code:r.code,name:r.name,metric:'aging_pct',original_value:raw,normalized_value:raw,output_value:raw,value_kind:'number',comparison:'일치'});
+ }
+ if(seen.size!==expected.length)fail('필수 지역이 누락됐습니다.');
+ return {unit,output,audit,headers,rows:[headers,...output.map(r=>headers.map(h=>r[h]))],originalRows:rows,downloadedAt:get('○ 자료다운일자')};
+}
+function convert(input,settings){
+ if(!settings.unitConfirmed||settings.confirmedUnit!==input.unit||settings.targetUnit!==input.unit||settings.scope!==(input.unit==='sgg'?'46':'all')||settings.period!=='2024'||settings.customReference||settings.aggregation!=='none'||JSON.stringify(settings.metrics)!=='[5]'||settings.name!==1||settings.code!==0||settings.sido!==3||settings.year!==7||Object.keys(settings.fixes||{}).length)throw Error('2024 전용 검증: 원본과 같은 지역 단위·범위·연도·고령인구비율 열을 선택하세요.');
+ return {output:input.output,headers,audit:input.audit,issues:[],spatial:{sourceUnit:input.unit,targetUnit:input.unit,reason:'DT_1YL20631/T10/2024 원본 39지역 한정 검증. 현재 e-GIS 경계는 별도로 확인하세요.'},summary:{status:'확인 필요',input:input.output.length,matched:input.output.length,duplicates:0,aggregate:0,unmatched:0,missing:[],empty:0,outside:0,scope:settings.scope,expected:input.output.length,period:'2024',boundaryWarning:true}};
+}
+const api={read,convert};if(typeof module!=='undefined')module.exports=api;else root.KosisAgingXlsx=api;
+})(globalThis);

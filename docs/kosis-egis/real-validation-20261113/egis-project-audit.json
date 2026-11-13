@@ -1,0 +1,40 @@
+[
+  {
+    "layer": "대한민국 시도(~2026.06.30.)",
+    "matched": 17,
+    "unmatched": 0,
+    "valuesEqual": 17,
+    "fields": {
+      "code": "44",
+      "name": "충청남도",
+      "name_eng": "Chungcheongnam-do",
+      "base_year": 2025,
+      "sido": 44,
+      "sido_name": "충청남도",
+      "aging_pct": 22.3,
+      "kosis_source_code": 34,
+      "year": 2024,
+      "unit": "%",
+      "source": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20631"
+    }
+  },
+  {
+    "layer": "대한민국 시도(~2026.06.30.)_단계구분_aging_pct",
+    "matched": 17,
+    "unmatched": 0,
+    "valuesEqual": 17,
+    "fields": {
+      "code": "44",
+      "name": "충청남도",
+      "name_eng": "Chungcheongnam-do",
+      "base_year": 2025,
+      "sido": 44,
+      "sido_name": "충청남도",
+      "aging_pct": 22.3,
+      "kosis_source_code": 34,
+      "year": 2024,
+      "unit": "%",
+      "source": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20631"
+    }
+  }
+]
