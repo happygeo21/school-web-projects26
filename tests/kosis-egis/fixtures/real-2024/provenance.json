@@ -1,0 +1,19 @@
+{
+  "source": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20631",
+  "retrieved_from": "https://app.notion.com/p/3ce2f3db0c734467bc2b88cb4d7176e8",
+  "verified_on": "2026-11-13",
+  "books": {
+    "sgg": {
+      "file": "A_전남22_2024_KOSIS원본.xlsx",
+      "sha256": "f4b2d3dfc5e1ca156f7b17c842d2b28ad3be93897baf33339a9bb020278779dd",
+      "range": "A1:D24",
+      "compared": 22
+    },
+    "sido": {
+      "file": "B_시도17_2024_KOSIS원본.xlsx",
+      "sha256": "21a543f086eeab65eb55333c996357820ee6a49a7c3c8c0ef14140c2e5144d78",
+      "range": "A1:C19",
+      "compared": 17
+    }
+  }
+}
