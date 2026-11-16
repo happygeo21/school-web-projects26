@@ -36,6 +36,14 @@
 
 검증 방법 주의: CI/테스트 환경에서 `file://` 및 `localhost` 내비게이션이 관리자 정책으로 차단되어 Playwright `set_content`로 **실제 Chromium DOM 동작**을 검증했다. 따라서 Windows 직접 열기·실제 iPad/아이폰 사용·실제 수업 적용은 **미검증**이며, 이 시험을 AI Office의 자연어 자동 실행 성공으로 해석할 수 없다.
 
+## 2026-11-16 · 결측값 오류 수정과 자동 회귀검사
+
+- CSV 복원에서 기온·강수량의 **빈 칸을 0으로 잘못 해석하지 않도록** 수정했습니다. 정확한 1~12월 12행, 중복·추가 월, 필수 칸, 숫자 형식, 기온 -80~60℃와 강수량 0~3000mm를 검사합니다.
+- JSON 복원의 빈 문자열·null·불리언도 0으로 변환하지 않고 거부합니다. 실제 수치 0은 유효하게 보존합니다.
+- 외부 패키지 없이 실행하는 정적/파서 회귀검사 6개: `node --test experiments/happygeo-climograph-pilot/smoke.test.cjs`.
+- GitHub Actions `climograph-pilot-smoke.yml`은 PR 변경 시 소스 구조, 가상 관측값 12개월, JavaScript 문법, 로컬 파일 기능 및 잘못된 입력 차단을 자동 확인합니다. [최종 CI](https://github.com/happygeo21/school-web-projects26/actions/runs/43796532669)와 [보안 검사](https://github.com/happygeo21/school-web-projects26/actions/runs/43796532667) 성공.
+- **한계:** 이 6개는 코드·입력 파서 검사입니다. HTML 파일 실제 Windows 재열기·iPad Safari 조작·인쇄·접근성 및 실제 수업 적용은 여전히 미검증입니다. 코드/CI 통과를 실기기 성공으로 표시하지 않습니다. Draft·main 미병합·운영 미배포 유지.
+
 ## 완료·미완료 경계
 
 - **완료:** 시범 HTML 파일과 로컬 브라우저·PDF 기능 시험; 코드의 별도 브랜치/PR 준비; Notion 기록 예정.
