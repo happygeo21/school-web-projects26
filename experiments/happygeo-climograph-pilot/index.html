@@ -103,7 +103,28 @@ function safeName(s){return s.replace(/[\\/:*?"<>|]/g,'_').replace(/\s+/g,'_').s
 function saveHTML(){const doc='<!doctype html>\n'+document.documentElement.outerHTML;const json=JSON.stringify(state).replace(/</g,'\\u003c').replace(/>/g,'\\u003e').replace(/&/g,'\\u0026');const output=doc.replace(/(<script id="embedded-state" type="application\/json">)[\s\S]*?(<\/script>)/,(_,p1,p2)=>p1+json+p2);download('HappyGEO_기후그래프_편집형.html','text/html;charset=utf-8',output);mark('HTML 파일을 내려받았습니다.');}
 function backupJSON(){download('HappyGEO_기후그래프_백업.json','application/json;charset=utf-8',JSON.stringify(state,null,2));mark('JSON 백업을 내려받았습니다.');}
 function exportCSV(){const st=currentStation();let csv='월,기온,강수량\r\n'+MONTHS.map((m,i)=>[m,st.temps[i],st.rain[i]].join(',')).join('\r\n');download(safeName(st.name)+'.csv','text/csv;charset=utf-8','\ufeff'+csv);mark('CSV를 내려받았습니다.');}
-function parseCSV(t){const clean=t.replace(/^\ufeff/,'').replace(/\r/g,'').trim();let lines=clean.split('\n').filter(Boolean);if(lines.length<13)throw Error('제목 행과 1~12월, 총 13행이 필요합니다.');const sep=lines[0].includes('\t')?'\t':',';const parts=line=>{let fields=[],buf='',q=false;for(let i=0;i<line.length;i++){let ch=line[i];if(ch==='"'){if(q&&line[i+1]==='"'){buf+='"';i++;}else q=!q;}else if(ch===sep&&!q){fields.push(buf.trim());buf='';}else buf+=ch;}fields.push(buf.trim());return fields;};let rows=lines.slice(1).map(parts),temps=Array(12).fill(null),rain=Array(12).fill(null);for(const row of rows){let m=Number(String(row[0]).replace('월','')),temp=Number(row[1]),precip=Number(row[2]);if(m>=1&&m<=12&&temps[m-1]===null){temps[m-1]=temp;rain[m-1]=precip;}}if(temps.some(v=>v===null)||rain.some(v=>v===null))throw Error('1~12월을 중복 없이 모두 입력하세요.');return {temps,rain};}
+function parseCSV(t){
+ const clean=t.replace(/^\ufeff/,'').replace(/\r/g,'').trim();
+ const lines=clean.split('\n').filter(line=>line.trim()!=='');
+ if(lines.length!==13)throw Error('제목 행과 1~12월 데이터, 총 13행이 필요합니다.');
+ const sep=lines[0].includes('\t')?'\t':',';
+ const parts=line=>{let fields=[],buf='',q=false;for(let i=0;i<line.length;i++){let ch=line[i];if(ch==='"'){if(q&&line[i+1]==='"'){buf+='"';i++;}else q=!q;}else if(ch===sep&&!q){fields.push(buf.trim());buf='';}else buf+=ch;}if(q)throw Error('닫히지 않은 따옴표를 확인하세요.');fields.push(buf.trim());return fields;};
+ const rows=lines.slice(1).map(parts),temps=Array(12).fill(null),rain=Array(12).fill(null);
+ const validNumber=/^[+-]?(?:\d+(?:\.\d+)?|\.\d+)$/;
+ for(const row of rows){
+   if(row.length!==3)throw Error('각 행은 월, 기온, 강수량 세 칸이어야 합니다.');
+   const monthText=String(row[0]).replace(/월$/,'').trim();
+   if(!/^(?:0?[1-9]|1[0-2])$/.test(monthText))throw Error('월은 1~12 사이여야 합니다.');
+   const m=Number(monthText);
+   if(temps[m-1]!==null)throw Error('중복된 월이 있습니다.');
+   if(!validNumber.test(row[1])||!validNumber.test(row[2]))throw Error('기온과 강수량에 빈칸 또는 잘못된 숫자가 있습니다.');
+   const temp=Number(row[1]),precip=Number(row[2]);
+   if(!Number.isFinite(temp)||!Number.isFinite(precip)||temp<-80||temp>60||precip<0||precip>3000)throw Error('기온 범위 −80~60℃, 강수량 0~3000mm를 확인하세요.');
+   temps[m-1]=temp;rain[m-1]=precip;
+ }
+ if(temps.some(v=>v===null)||rain.some(v=>v===null))throw Error('1~12월을 빠짐없이 입력하세요.');
+ return {temps,rain};
+}
 function handleFileInput(e){const f=e.target.files?.[0],mode=fileMode;fileMode=null;e.target.value='';if(!f)return;if(f.size>1_000_000){mark('1MB 이하 파일만 가져올 수 있습니다.',true);return;}const reader=new FileReader();reader.onload=()=>{try{if(mode==='json'){const o=normalize(JSON.parse(reader.result));state=o;commit('JSON 복원 완료');}else if(mode==='csv'){const p=parseCSV(String(reader.result));const st=currentStation();st.temps=p.temps;st.rain=p.rain;commit('CSV 적용 완료');}}catch(err){mark('불러오기 실패: '+err.message,true);}};reader.readAsText(f);}
 function openFile(mode){fileMode=mode;$('fileInput').accept=mode==='json'?'.json,application/json':'.csv,text/csv';$('fileInput').click();}
 function changeField(selector,key){$(selector).addEventListener('change',e=>{state[key]=e.target.value;commit(key+' 수정');});}
