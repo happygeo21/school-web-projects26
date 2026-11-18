@@ -2,6 +2,7 @@
   "version": 1,
   "files": [
     ".nojekyll",
+    "budapest-phrasebook/index.html",
     "egis-student-guide/index.html",
     "happygeo/FIREBASE_SECURITY_GUIDE.md",
     "happygeo/assets/intro_concept.png",

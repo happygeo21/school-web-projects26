@@ -1,0 +1,1217 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,viewport-fit=cover">
+<meta name="theme-color" content="#0d2138">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="부다페스트 회화">
+<meta name="robots" content="noindex,nofollow">
+<title>눌러서 듣는 부다페스트 회화 카드</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+    background:#e9eef5;color:#12283f;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:480px;margin:0 auto;min-height:100vh;background:#f7f9fc;padding:14px 14px 34px}
+
+  /* ── 상단 배너 ── */
+  .hero{
+    position:relative;overflow:hidden;border-radius:22px;padding:22px 20px 18px;color:#fff;
+    background:radial-gradient(140% 130% at 88% 8%,#2c689e 0%,#1a4469 42%,#0c2036 100%);
+    box-shadow:0 14px 30px rgba(12,32,54,.26);
+  }
+  .hero::after{
+    content:"";position:absolute;right:-58px;top:-58px;width:210px;height:210px;border-radius:50%;
+    background:radial-gradient(circle at 38% 38%,rgba(255,255,255,.20),rgba(255,255,255,0) 68%);
+  }
+  .hero::before{
+    content:"";position:absolute;right:-24px;bottom:-70px;width:170px;height:170px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.13);
+  }
+  .hero>*{position:relative;z-index:1}
+  .badge{
+    display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;letter-spacing:.2px;
+    padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.13);
+    border:1px solid rgba(255,255,255,.2);color:#dcebf9;
+  }
+  .dot{width:5px;height:5px;border-radius:50%;background:#8fd0ff;display:inline-block}
+  .hero h1{font-size:25px;line-height:1.3;margin:13px 0 8px;font-weight:800;letter-spacing:-.6px}
+  .hero p{font-size:12.5px;line-height:1.62;color:rgba(255,255,255,.82);margin:0;font-weight:400}
+  .hero p b{color:#fff;font-weight:800}
+  .heroTag{
+    margin-top:15px;display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;
+    padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.11);
+    border:1px solid rgba(255,255,255,.17);color:#e9f3fc;
+  }
+
+  /* ── 필터 (탭·개수·검색) ── */
+  .filters{
+    position:sticky;top:0;z-index:30;margin:0 -14px;padding:12px 14px 9px;
+    background:linear-gradient(#f7f9fc 0%,#f7f9fc 78%,rgba(247,249,252,.88) 100%);
+    backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+  }
+  .tabs{display:flex;gap:7px;overflow-x:auto;padding:2px 2px 9px;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{
+    flex:0 0 auto;border:1px solid #dae4ef;background:#fff;color:#3d5a78;font-family:inherit;
+    font-size:13px;font-weight:700;padding:9px 14px;border-radius:999px;cursor:pointer;
+    transition:background .15s,color .15s,box-shadow .15s,border-color .15s;
+  }
+  .tab[aria-selected="true"]{background:#12314f;border-color:#12314f;color:#fff;box-shadow:0 5px 14px rgba(18,49,79,.24)}
+  .meta{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 2px 9px}
+  .count{font-size:12.5px;color:#6b8199;font-weight:700}
+  .starToggle{
+    display:inline-flex;align-items:center;gap:5px;font-family:inherit;font-size:12px;font-weight:700;
+    color:#4a6a89;background:#fff;border:1px solid #dae4ef;border-radius:999px;padding:7px 12px;cursor:pointer;
+    transition:.15s;
+  }
+  .starToggle[aria-pressed="true"]{background:#fff7e6;border-color:#f0c775;color:#9a6b09}
+  .search{position:relative}
+  .search .icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:14px;opacity:.45;pointer-events:none}
+  .search input{
+    width:100%;font-family:inherit;font-size:14px;font-weight:500;padding:12px 14px 12px 38px;
+    border-radius:14px;border:1px solid #dae4ef;background:#fff;color:#12283f;outline:none;
+    -webkit-appearance:none;
+  }
+  .search input::placeholder{color:#9cafc2}
+  .search input:focus{border-color:#7aa6cf;box-shadow:0 0 0 3px rgba(122,166,207,.16)}
+
+  /* ── 카드 ── */
+  main{padding-top:4px}
+  .card{
+    background:#fff;border:1px solid #e4ebf3;border-radius:18px;padding:15px 15px 13px;margin-bottom:11px;
+    box-shadow:0 3px 11px rgba(18,40,63,.05);
+  }
+  .cardTop{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}
+  .catBadge{
+    font-size:11px;font-weight:800;color:#2d5f8b;background:#eaf2fa;border-radius:7px;padding:4px 8px;
+    letter-spacing:-.1px;
+  }
+  .starBtn{
+    background:none;border:0;font-size:21px;line-height:1;cursor:pointer;color:#c4d1e0;
+    padding:2px 4px;font-family:inherit;transition:transform .12s,color .12s;
+  }
+  .starBtn:active{transform:scale(.86)}
+  .starBtn.on{color:#f2a71b}
+  .ko{font-size:15.5px;font-weight:800;color:#12283f;margin:0 0 9px;line-height:1.42;letter-spacing:-.2px}
+  .hu{font-size:21px;font-weight:800;color:#0d2a47;line-height:1.32;margin:0 0 4px;letter-spacing:-.3px;overflow-wrap:break-word}
+  .huPron{font-size:12.5px;color:#74899f;font-weight:600;margin:0 0 10px;line-height:1.4}
+  .enBox{border-top:1px dashed #e6edf5;padding-top:9px;margin-bottom:11px}
+  .en{font-size:12.5px;color:#4c6784;font-weight:700;margin:0 0 2px;line-height:1.4;overflow-wrap:break-word}
+  .enPron{font-size:11.5px;color:#97aabc;margin:0;font-weight:500;line-height:1.4}
+  .btns{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .btn{
+    font-family:inherit;font-size:13.5px;font-weight:800;border-radius:12px;padding:12px 8px;cursor:pointer;
+    border:1px solid transparent;transition:transform .1s,filter .15s;letter-spacing:-.2px;
+  }
+  .btn:active{transform:scale(.98)}
+  .btn.primary{background:linear-gradient(160deg,#1d5083,#12314f);color:#fff;box-shadow:0 3px 10px rgba(18,49,79,.18)}
+  .btn.ghost{background:#fff;border-color:#cfdcea;color:#274b6d}
+  .btn.wide{grid-column:1/-1;padding:11px 8px}
+  .btn.playing{filter:brightness(1.15);animation:pulse .8s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.72}}
+
+  .empty{text-align:center;color:#7c93a9;font-size:14px;font-weight:600;padding:46px 10px;line-height:1.8}
+  .empty span{font-size:12.5px;font-weight:500;color:#9cafc2}
+
+  /* ── 여행 팁 ── */
+  .tips{margin-top:16px;background:#fff;border:1px solid #e4ebf3;border-radius:16px;padding:0 15px;box-shadow:0 3px 10px rgba(18,40,63,.04)}
+  .tips summary{list-style:none;cursor:pointer;font-size:13px;font-weight:800;color:#2d5f8b;padding:14px 0;display:flex;justify-content:space-between;align-items:center}
+  .tips summary::-webkit-details-marker{display:none}
+  .tips summary::after{content:"＋";font-size:14px;color:#9cb1c6;font-weight:700}
+  .tips[open] summary::after{content:"－"}
+  .tips ul{margin:0;padding:0 0 14px;list-style:none}
+  .tips li{font-size:12.5px;line-height:1.65;color:#4e6a85;padding:7px 0;border-top:1px solid #f1f5f9}
+  .tips li b{color:#17395c}
+
+  /* ── 크게 보기 모달 ── */
+  .modal{
+    position:fixed;inset:0;z-index:100;background:#fff;display:none;flex-direction:column;
+    padding:calc(14px + env(safe-area-inset-top)) 18px calc(16px + env(safe-area-inset-bottom));
+  }
+  .modal.open{display:flex}
+  .modalHead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex:0 0 auto}
+  .modalHead .catBadge{font-size:12px;padding:5px 10px}
+  .closeBtn{
+    font-family:inherit;font-size:13px;font-weight:800;color:#476a8a;background:#f1f5f9;border:0;border-radius:999px;
+    padding:9px 14px;cursor:pointer;
+  }
+  .modalBody{flex:1 1 auto;display:flex;flex-direction:column;padding:10px 0;overflow-y:auto;overscroll-behavior:contain}
+  .modalBody::before,.modalBody::after{content:"";margin:auto}
+  .mHu{font-size:40px;font-weight:800;line-height:1.26;color:#0b2742;margin:0 0 10px;letter-spacing:-.8px;overflow-wrap:break-word;white-space:pre-line}
+  .mPron{font-size:16px;font-weight:600;color:#6f859c;margin:0 0 24px;line-height:1.5}
+  .mEn{font-size:17px;font-weight:700;color:#33506e;margin:0 0 4px;line-height:1.45;overflow-wrap:break-word}
+  .mEnPron{font-size:14px;color:#97aabc;margin:0 0 22px;line-height:1.5}
+  .mKo{font-size:15px;font-weight:700;color:#12283f;margin:0;padding-top:16px;border-top:1px solid #eef3f8;line-height:1.5}
+  .modalHint{font-size:11.5px;color:#a4b6c7;text-align:center;margin:14px 0 0;font-weight:600}
+  .modalFoot{flex:0 0 auto;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-top:6px}
+  .modalFoot .btn{padding:15px 8px;font-size:14.5px}
+
+  /* ── 화면 전환 (회화 / 공연·여행 팁) ── */
+  .modeSwitch{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:0 0 10px;background:#e3eaf3;border-radius:15px;padding:4px}
+  .modeBtn{
+    font-family:inherit;font-size:14px;font-weight:800;color:#3d5a78;background:transparent;border:0;
+    padding:12px 4px;border-radius:12px;cursor:pointer;letter-spacing:-.4px;
+    transition:background .15s,color .15s,box-shadow .15s;white-space:nowrap;
+  }
+  .modeBtn[aria-pressed="true"]{background:#fff;color:#0d2a47;box-shadow:0 2px 8px rgba(18,49,79,.15)}
+
+  /* ── 공연·여행 팁 화면 ── */
+  .infoTitle{font-size:20px;font-weight:800;color:#0d2a47;margin:14px 2px 10px;letter-spacing:-.5px;line-height:1.35}
+  .infoNav{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+  .chip{
+    font-family:inherit;font-size:12.5px;font-weight:700;color:#2d5f8b;background:#fff;border:1px solid #dae4ef;
+    border-radius:999px;padding:8px 12px;cursor:pointer;line-height:1.2;
+  }
+  .chip:active{background:#eef5fc}
+  .infoCard{
+    background:#fff;border:1px solid #e4ebf3;border-radius:18px;padding:17px 16px 15px 16px;margin-bottom:12px;
+    box-shadow:0 3px 11px rgba(18,40,63,.05);scroll-margin-top:104px;
+  }
+  .infoCard h3{
+    font-size:18px;font-weight:800;color:#0d2a47;margin:0 0 12px;letter-spacing:-.4px;line-height:1.4;
+  }
+  .notice{
+    background:#fff8e6;border:1px solid #f2dca8;border-radius:12px;padding:11px 12px;
+    font-size:14px;line-height:1.65;color:#7a5a08;font-weight:700;margin:0 0 12px;
+  }
+  .notice b{color:#6b4d04}
+  .kv{display:flex;gap:10px;padding:10px 0;border-top:1px solid #f1f5f9;font-size:14.5px;line-height:1.55}
+  .kv:nth-of-type(1){border-top:0}
+  .kv>span{flex:0 0 58px;color:#6b8199;font-weight:800;font-size:12.5px;padding-top:2px;letter-spacing:-.2px}
+  .kv>b{flex:1 1 auto;color:#12283f;font-weight:800;overflow-wrap:break-word;letter-spacing:-.2px}
+  .infoCard ul{margin:0;padding:0;list-style:none}
+  .infoCard li{
+    font-size:15px;line-height:1.7;color:#3c5670;padding:10px 0 10px 16px;position:relative;
+    border-top:1px solid #f1f5f9;font-weight:500;overflow-wrap:break-word;
+  }
+  .infoCard li:first-child{border-top:0;padding-top:2px}
+  .infoCard li::before{content:"";position:absolute;left:3px;top:20px;width:5px;height:5px;border-radius:50%;background:#9dc0dd}
+  .infoCard li:first-child::before{top:11px}
+  .infoCard li b{color:#12314f;font-weight:800}
+  .infoCard p{font-size:13.5px;line-height:1.7;color:#4c6784;font-weight:600;margin:0 0 10px}
+  .hint{font-size:13px;line-height:1.7;color:#5d7a94;font-weight:600;margin:0 0 11px}
+  .addrGrid{display:grid;gap:9px}
+  .addrCard{border:1px solid #e4ebf3;border-radius:14px;padding:12px 13px 13px;background:#fbfdff}
+  .addrTag{display:inline-block;font-size:11px;font-weight:800;color:#2d5f8b;background:#eaf2fa;border-radius:6px;padding:3px 8px;margin-bottom:9px}
+  .addrHu{font-size:18px;font-weight:800;color:#0b2742;line-height:1.38;margin:0 0 6px;overflow-wrap:break-word;letter-spacing:-.2px;white-space:pre-line}
+  .addrKo{font-size:12.5px;font-weight:600;color:#74899f;margin:0 0 11px;line-height:1.45}
+  .addrBtns{display:grid;grid-template-columns:1.3fr 1fr;gap:7px}
+  .addrBtns .btn{padding:11px 4px;font-size:13px}
+  .rowBtns{display:grid;grid-template-columns:1.4fr 1fr;gap:7px;margin-top:12px}
+  .rowBtns .btn{padding:12px 4px;font-size:13.5px}
+
+  /* ── 토스트 ── */
+  .toast{
+    position:fixed;left:50%;bottom:28px;transform:translate(-50%,18px);
+    background:rgba(13,32,54,.95);color:#fff;font-size:13px;line-height:1.5;font-weight:600;
+    padding:13px 17px;border-radius:14px;max-width:min(420px,calc(100vw - 30px));text-align:center;
+    opacity:0;pointer-events:none;transition:opacity .24s,transform .24s;z-index:200;
+    box-shadow:0 10px 26px rgba(0,0,0,.28);
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <span class="badge"><span class="dot"></span>헝가리 · 부다페스트</span>
+    <h1>눌러서 듣는<br>부다페스트 회화 카드</h1>
+    <p>위에서 <b>🗣 회화 카드</b>와 <b>🎵 공연·여행 팁</b>을 골라 보세요.<br>🔊로 발음을 듣고 👀로 크게 띄워 보여주면 통합니다.</p>
+    <span class="heroTag">🎵 2027. 6. 18. 공연 · 회화 59문장 · 주소 보여주기</span>
+  </header>
+
+  <div class="filters">
+    <div class="modeSwitch" id="modeSwitch" aria-label="화면 고르기">
+      <button type="button" class="modeBtn" data-mode="phrases" aria-pressed="true">🗣 회화 카드</button>
+      <button type="button" class="modeBtn" data-mode="info" aria-pressed="false">🎵 공연·여행 팁</button>
+    </div>
+    <div id="phraseTools">
+      <div class="tabs" role="tablist" id="tabs" aria-label="상황별 분류"></div>
+      <div class="meta">
+        <span class="count" id="count" aria-live="polite">문장 0개</span>
+        <button class="starToggle" id="starToggle" aria-pressed="false">☆ 자주 쓰는 문장만</button>
+      </div>
+      <div class="search">
+        <span class="icon">🔍</span>
+        <input id="searchInput" type="search" placeholder="뜻으로 찾기 (예: 화장실, 계산)" autocomplete="off" enterkeyhint="search">
+      </div>
+    </div>
+  </div>
+
+  <main id="list"></main>
+
+  <section id="info" hidden aria-labelledby="infoTitle">
+    <h2 class="infoTitle" id="infoTitle">🎵 공연·여행 팁</h2>
+    <div class="infoNav" id="infoNav">
+      <button type="button" class="chip" data-jump="sec-show">🎵 공연</button>
+      <button type="button" class="chip" data-jump="sec-rule">🎒 반입 규정</button>
+      <button type="button" class="chip" data-jump="sec-night">🌙 밤에 돌아오기</button>
+      <button type="button" class="chip" data-jump="sec-place">🚕 주소 보여주기</button>
+      <button type="button" class="chip" data-jump="sec-money">💳 돈</button>
+      <button type="button" class="chip" data-jump="sec-food">💧 물·식당</button>
+      <button type="button" class="chip" data-jump="sec-move">🚇 교통·안전</button>
+      <button type="button" class="chip" data-jump="sec-weather">☀️ 6월 날씨</button>
+      <button type="button" class="chip" data-jump="sec-bath">♨️ 온천</button>
+      <button type="button" class="chip" data-jump="sec-shop">🛍 기념품</button>
+      <button type="button" class="chip" data-jump="sec-app">📱 앱 쓰기</button>
+      <button type="button" class="chip" data-jump="sec-help">📞 긴급</button>
+    </div>
+
+    <article class="infoCard" id="sec-show">
+      <h3>🎵 로드 스튜어트 공연 안내</h3>
+      <p class="notice">아직 <b>계획 단계</b>예요. 항공·숙소·티켓은 아직 예약 전입니다. 날짜가 정해지면 이 화면도 고쳐 드릴게요.</p>
+      <div class="kv"><span>날짜</span><b>2027년 6월 18일 (금)<br>저녁 7시 (19:00)</b></div>
+      <div class="kv"><span>공연</span><b>로드 스튜어트 &lt;The Final Encore&gt;<br>은퇴 기념 마지막 유럽 투어</b></div>
+      <div class="kv"><span>공연장</span><b>파프 라슬로 부다페스트 스포츠아레나</b></div>
+      <div class="kv"><span>헝가리어</span><b>Papp László Budapest Sportaréna</b></div>
+      <div class="kv"><span>주소</span><b>1143 Budapest, Stefánia út 2.</b></div>
+      <div class="kv"><span>지하철</span><b>2호선(빨간색) Puskás Ferenc Stadion 역</b></div>
+      <div class="kv"><span>숙소</span><b>다누비우스 호텔 아레나<br>공연장까지 걸어서 2분 (180m)</b></div>
+      <div class="rowBtns">
+        <button type="button" class="btn primary" data-act="big" data-id="x1">👀 공연장 주소 보여주기</button>
+        <button type="button" class="btn ghost" data-act="hu" data-id="x1">🔊 주소 듣기</button>
+      </div>
+    </article>
+
+    <article class="infoCard" id="sec-rule">
+      <h3>🎒 공연장에 가져갈 것, 두고 갈 것</h3>
+      <ul>
+        <li><b>A4 크기보다 큰 가방은 못 들어가요.</b> 매표소 쪽 물품보관소에 맡겨야 하고, 보관료는 <b>현금</b>으로 받아요. 큰 가방은 아예 두고 오시는 게 편해요.</li>
+        <li><b>음식·음료·물병은 가지고 들어갈 수 없어요.</b> 목마르면 안에서 사 드세요.</li>
+        <li>물품보관소는 공연이 끝나고 <b>30분</b>만 열어요. 끝나면 사람이 많으니 서둘러 찾으세요.</li>
+        <li>입구에서 <b>가방 검사</b>를 해요. 겉옷은 벗기 편하게 입고 가세요.</li>
+        <li>안에서 음료를 사면 <b>다회용 컵</b>에 담아 줘요. 다 드시면 돌려주는 곳에 두면 돼요.</li>
+        <li>규정은 공연마다 조금씩 달라요. <b>티켓 안내문</b>을 한 번 더 확인해 주세요.</li>
+      </ul>
+    </article>
+
+    <article class="infoCard" id="sec-night">
+      <h3>🌙 공연 끝나고 숙소로</h3>
+      <ul>
+        <li>공연은 보통 <b>밤 10시 전후</b>에 끝나요. 앙코르까지 하면 조금 더 늦어져요.</li>
+        <li>숙소가 <b>걸어서 2분</b>이라 사람들 따라 천천히 나오면 금방이에요. 길 건널 때만 조심하세요.</li>
+        <li>지하철 2호선 <b>막차</b>는 보통 밤 11시에서 12시 사이예요. 그날 호텔에서 막차 시간을 확인해 두세요.</li>
+        <li>택시는 길에서 부르지 말고 <b>Bolt 앱</b>이나 공식 <b>Főtaxi</b>(+36 1 222 2222)를 부르세요.</li>
+        <li>사람 많은 곳에서는 <b>가방을 몸 앞으로</b> 매고, 핸드폰은 겉주머니에 두지 마세요.</li>
+      </ul>
+    </article>
+
+    <article class="infoCard" id="sec-place">
+      <h3>🚕 보여주기만 하면 되는 주소</h3>
+      <p class="hint"><b>👀 크게</b>를 누르면 큰 글씨로 바뀌어요. 그대로 보여 주시면 돼요. <b>🔊</b>는 소리로 들려드려요.</p>
+      <div class="addrGrid">
+        <div class="addrCard">
+          <span class="addrTag">🎵 공연장</span>
+          <p class="addrHu">Papp László Budapest Sportaréna
+1143 Budapest, Stefánia út 2.</p>
+          <p class="addrKo">파프 라슬로 부다페스트 스포츠아레나</p>
+          <div class="addrBtns">
+            <button type="button" class="btn primary" data-act="big" data-id="x1">👀 크게</button>
+            <button type="button" class="btn ghost" data-act="hu" data-id="x1">🔊 듣기</button>
+          </div>
+        </div>
+        <div class="addrCard">
+          <span class="addrTag">🏨 숙소</span>
+          <p class="addrHu">Danubius Hotel Arena
+1148 Budapest, Ifjúság útja 1-3.</p>
+          <p class="addrKo">다누비우스 호텔 아레나 (공연장 도보 2분)</p>
+          <div class="addrBtns">
+            <button type="button" class="btn primary" data-act="big" data-id="x2">👀 크게</button>
+            <button type="button" class="btn ghost" data-act="hu" data-id="x2">🔊 듣기</button>
+          </div>
+        </div>
+        <div class="addrCard">
+          <span class="addrTag">♨️ 온천</span>
+          <p class="addrHu">Széchenyi Gyógyfürdő és Uszoda
+1146 Budapest, Állatkerti körút 9-11.</p>
+          <p class="addrKo">세체니 온천 (영웅광장 옆)</p>
+          <div class="addrBtns">
+            <button type="button" class="btn primary" data-act="big" data-id="x3">👀 크게</button>
+            <button type="button" class="btn ghost" data-act="hu" data-id="x3">🔊 듣기</button>
+          </div>
+        </div>
+        <div class="addrCard">
+          <span class="addrTag">✈️ 공항</span>
+          <p class="addrHu">Budapest Liszt Ferenc Nemzetközi Repülőtér
+1185 Budapest (2. terminál)</p>
+          <p class="addrKo">부다페스트 리스트 페렌츠 국제공항</p>
+          <div class="addrBtns">
+            <button type="button" class="btn primary" data-act="big" data-id="x4">👀 크게</button>
+            <button type="button" class="btn ghost" data-act="hu" data-id="x4">🔊 듣기</button>
+          </div>
+        </div>
+        <div class="addrCard">
+          <span class="addrTag">🇰🇷 대사관</span>
+          <p class="addrHu">Koreai Köztársaság Nagykövetsége
+1062 Budapest, Andrássy út 109.</p>
+          <p class="addrKo">주헝가리 대한민국 대사관</p>
+          <div class="addrBtns">
+            <button type="button" class="btn primary" data-act="big" data-id="x5">👀 크게</button>
+            <button type="button" class="btn ghost" data-act="hu" data-id="x5">🔊 듣기</button>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="infoCard" id="sec-money">
+      <h3>💳 돈과 결제</h3>
+      <ul>
+        <li><b>헝가리 돈은 포린트(HUF)예요. 유로가 아니에요.</b> 유로를 받아 주는 가게도 있지만 거스름돈에서 손해를 봐요.</li>
+        <li>카드는 대부분 되지만 <b>화장실·시장·작은 가게는 현금</b>이 필요해요. <b>1만~2만 포린트</b>는 현금으로 챙기세요.</li>
+        <li>카드 기계에 <b>원화(KRW)</b>와 <b>포린트(HUF)</b>가 같이 나오면 꼭 <b>HUF</b>를 고르세요. 원화를 고르면 수수료가 붙어요.</li>
+        <li>트래블월렛·트래블로그 카드는 포린트로 결제하면 그대로 빠져나가요. 결제 전에 <b>잔액</b>을 확인하세요.</li>
+        <li>공항 환전소는 수수료가 비싸요. 필요하면 은행 ATM에서 <b>소액만</b> 찾으세요.</li>
+        <li>영수증에 <b>Szervizdíj</b>(서비스료)가 찍혀 있으면 팁이 이미 들어간 거예요. 없으면 <b>10%</b> 정도를 더 주시면 돼요.</li>
+      </ul>
+    </article>
+
+    <article class="infoCard" id="sec-food">
+      <h3>💧 물과 식당</h3>
+      <ul>
+        <li><b>수돗물은 그냥 마시기엔 석회가 많아요.</b> 편의점에서 생수를 사 드시는 게 좋아요.</li>
+        <li>물병에 <b>Szénsavmentes</b>(센솨브멘테시)라고 써 있으면 <b>탄산 없음</b>, <b>Szénsavas</b>(센솨바시)는 <b>탄산 있음</b>이에요.</li>
+        <li>식당에서는 물도 값을 받아요. 그냥 "vizet"(비제트) 하면 탄산수를 줄 때가 많아요.</li>
+        <li>헝가리 음식은 파프리카로 맵게 하는 경우가 있어요. <b>csípős</b>(치포시)가 매운 거예요. 맵지 않게 하려면 회화 카드의 <b>"ne legyen csípős"</b>를 보여 주세요.</li>
+        <li>아침은 호텔 조식으로, 점심은 가볍게, 저녁은 공연 전에 <b>여유 있게</b> 드시는 걸 권해요.</li>
+      </ul>
+    </article>
+
+    <article class="infoCard" id="sec-move">
+      <h3>🚇 교통과 안전</h3>
+      <ul>
+        <li><b>지하철·트램·버스는 탈 때 표를 꼭 찍어야 해요.</b> 안 찍으면 무임승차로 <b>몇만 포린트 벌금</b>을 내요.</li>
+        <li>표는 역 자판기나 <b>BudapestGO 앱</b>에서 사요. 하루나 72시간권이 편해요.</li>
+        <li><b>공항버스 100E</b>는 공항과 시내 Deák Ferenc tér를 왔다 갔다 해요. 표는 따로 사야 해요.</li>
+        <li>택시는 <b>Bolt 앱</b>이나 공식 <b>Főtaxi</b>를 쓰세요. 길에서 손 흔들어 부르는 택시는 값이 비쌀 수 있어요.</li>
+        <li><b>소매치기 조심</b> — 2호선, 4·6번 트램, 바치 거리처럼 사람 많은 곳이요. 가방은 꼭 앞으로 메세요.</li>
+        <li><b>여권 원본은 호텔 금고에</b> 두고, 사본이나 휴대폰 사진을 들고 다니세요.</li>
+      </ul>
+    </article>
+
+    <article class="infoCard" id="sec-weather">
+      <h3>☀️ 6월 부다페스트 날씨</h3>
+      <ul>
+        <li>6월은 초여름이에요. 낮에는 <b>25~28℃</b>로 맑고 따뜻해요.</li>
+        <li>밤에는 <b>15~18℃</b>로 선선해요. <b>얇은 겉옷</b>(가디건·바람막이)을 꼭 챙기세요.</li>
+        <li>햇빛이 강해요. <b>모자와 선크림</b>을 챙기세요.</li>
+        <li>저녁 도나우강 유람선은 <b>강바람</b>이 불어요. 겉옷이 꼭 필요해요.</li>
+        <li>갑자기 소나기가 올 때가 있어요. <b>작은 우산</b> 하나 있으면 좋아요.</li>
+      </ul>
+    </article>
+
+    <article class="infoCard" id="sec-bath">
+      <h3>♨️ 세체니 온천 준비물</h3>
+      <ul>
+        <li><b>수영복·슬리퍼·수건</b>을 챙기세요. 빌릴 수도 있지만 줄이 길어요.</li>
+        <li>탈의실은 문이 있는 <b>캐빈</b>을 받아요. 귀중품은 캐빈 안에 넣고 잠그세요.</li>
+        <li>실외 수영장은 <b>수영모</b>를 써야 할 수 있어요.</li>
+        <li>물이 뜨거워요. <b>15~20분</b>씩 들어갔다 나오면서 쉬세요.</li>
+        <li>온천에 오래 있으면 목이 말라요. <b>물을 챙겨</b> 드세요.</li>
+      </ul>
+    </article>
+
+    <article class="infoCard" id="sec-shop">
+      <h3>🛍 기념품 쇼핑</h3>
+      <ul>
+        <li><b>토카이 아수(Tokaji Aszú)</b> — 헝가리 단맛 와인이에요. 선물로 좋아요.</li>
+        <li><b>파프리카 가루</b> — <b>édes</b>(에데시)는 순한 맛, <b>csípős</b>(치포시)는 매운 맛이에요. 기념품점보다 <b>마트</b>가 싸요.</li>
+        <li>픽 살라미(Pick szalámi), 굴뚝빵(kürtőskalács)도 인기예요.</li>
+        <li>와인 같은 <b>액체는 부치는 짐</b>에 넣어야 해요. 기내에는 100ml가 넘는 병은 못 가져가요.</li>
+        <li>면세로 살 때는 <b>여권</b>이 필요해요.</li>
+      </ul>
+    </article>
+
+    <article class="infoCard" id="sec-help">
+      <h3>📞 긴급할 때</h3>
+      <ul>
+        <li><b>112</b> — 경찰·구급·소방. 영어 통역도 연결돼요. 급하면 이 번호 하나만 누르세요.</li>
+        <li><b>주헝가리 대한민국 대사관</b> — 1062 Budapest, Andrássy út 109. / <b>+36 1 462 3080</b></li>
+        <li><b>영사콜센터</b>(24시간) <b>+82 2 3210 0404</b> — 한국에서 받아요. 휴대폰으로 바로 걸 수 있어요.</li>
+        <li><b>숙소 프런트</b> 다누비우스 호텔 아레나 <b>+36 1 889 5200</b></li>
+        <li>여권을 잃어버리면 경찰서에서 <b>신고 확인서</b>를 받고, 대사관에 연락하세요.</li>
+        <li>아프면 호텔 프런트에 "orvos"(오르보시, 의사)를 불러 달라고 하세요.</li>
+      </ul>
+    </article>
+
+    <article class="infoCard" id="sec-app">
+      <h3>📱 이 화면 쓰는 법</h3>
+      <ul>
+        <li>위의 <b>🗣 회화 카드</b>를 누르면 59개 문장을 상황별로 볼 수 있어요.</li>
+        <li>카드의 <b>🔊 헝가리어</b>를 누르면 발음을 들려줘요. 소리가 안 나면 <b>🔊 영어</b>를 눌러 보세요. 아이폰에 헝가리어 음성이 없을 때가 있어요.</li>
+        <li><b>👀 크게 보기</b>는 화면을 꽉 채워 보여줘요. 상대방에게 들이밀 때 좋아요.</li>
+        <li>별(★)을 누르면 <b>자주 쓰는 문장</b>에 담겨요. 위의 <b>☆ 자주 쓰는 문장만</b>을 누르면 그 문장만 모아 볼 수 있어요.</li>
+        <li><b>인터넷이 없어도 열려요.</b> 사파리에서 <b>공유 → 홈 화면에 추가</b>를 해 두면 아이콘처럼 바로 열 수 있어요.</li>
+      </ul>
+    </article>
+
+    <p class="hint" style="text-align:center;margin:4px 0 0">이 안내는 2026년 11월에 확인한 정보예요. 예약이 끝나면 다시 점검해 드릴게요.</p>
+  </section>
+</div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="크게 보기">
+  <div class="modalHead">
+    <span class="catBadge" id="mCat">공항·이동</span>
+    <button class="closeBtn" id="mClose" aria-label="닫기">✕ 닫기</button>
+  </div>
+  <div class="modalBody">
+    <p class="mHu" id="mHu"></p>
+    <p class="mPron" id="mPron"></p>
+    <p class="mEn" id="mEn"></p>
+    <p class="mEnPron" id="mEnPron"></p>
+    <p class="mKo" id="mKo"></p>
+  </div>
+  <p class="modalHint">이 화면을 그대로 보여 주세요</p>
+  <div class="modalFoot">
+    <button class="btn primary" id="mHuPlay">🔊 헝가리어</button>
+    <button class="btn ghost" id="mEnPlay">🔊 영어</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var CATS = ['전체', '공항·이동', '호텔', '식당·카페', '편의점·쇼핑', '공연·관광', '응급·도움'];
+
+  var PHRASES = [
+    /* ── 공항·이동 (11) ── */
+    { id: 'a1', cat: '공항·이동',
+      ko: '공항버스(100E) 타는 곳이 어디예요?',
+      hu: 'Hol van a repülőtéri busz megállója?',
+      huPron: '홀 번 어 러퓔뢰테리 부스 메갈로여',
+      en: 'Where is the airport bus stop?',
+      enPron: '웨어 이즈 디 에어포트 버스 스탑' },
+    { id: 'a2', cat: '공항·이동',
+      ko: '이 버스 시내로 가나요?',
+      hu: 'Megy ez a busz a belvárosba?',
+      huPron: '메지 에즈 어 부스 어 벨바로시보',
+      en: 'Does this bus go downtown?',
+      enPron: '더즈 디스 버스 고 다운타운' },
+    { id: 'a3', cat: '공항·이동',
+      ko: '표 파는 기계가 어디예요? (지하철·트램)',
+      hu: 'Hol van a jegyautomata?',
+      huPron: '홀 번 어 예지어우토머터',
+      en: 'Where is the ticket machine?',
+      enPron: '웨어 이즈 더 티킷 머신' },
+    { id: 'a4', cat: '공항·이동', star: true,
+      ko: '제 호텔 주소는 여기예요. (화면 보여주기)',
+      hu: 'Ez a szállodám címe.',
+      huPron: '에즈 어 살로담 치메',
+      en: 'This is my hotel address.',
+      enPron: '디스 이즈 마이 호텔 어드레스' },
+    { id: 'a5', cat: '공항·이동', star: true,
+      ko: '여기서 세워 주세요.',
+      hu: 'Kérem, itt álljon meg.',
+      huPron: '케렘, 이트 알욘 메그',
+      en: 'Please stop here.',
+      enPron: '플리즈 스탑 히어' },
+    { id: 'a6', cat: '공항·이동', star: true,
+      ko: '카드로 결제할 수 있나요?',
+      hu: 'Fizethetek kártyával?',
+      huPron: '피제테테크 카르탸발',
+      en: 'Can I pay by card?',
+      enPron: '캔 아이 페이 바이 카드' },
+    { id: 'a7', cat: '공항·이동',
+      ko: '공항까지 얼마예요?',
+      hu: 'Mennyibe kerül a repülőtérig?',
+      huPron: '멘니베 케륄 어 러퓔뢰테리그',
+      en: 'How much is it to the airport?',
+      enPron: '하우 머치 이즈 잇 투 디 에어포트' },
+    { id: 'a8', cat: '공항·이동',
+      ko: '푸슈카슈 페렌츠 슈터디온 역으로 가 주세요. (공연장)',
+      hu: 'Kérem, vigyen a Puskás Ferenc Stadion megállóhoz.',
+      huPron: '케렘, 비견 어 푸슈카슈 페렌츠 슈터디온 메갈로호즈',
+      en: 'To Puskás Ferenc Stadion station, please.',
+      enPron: '투 푸슈카슈 페렌츠 슈터디온 스테이션, 플리즈' },
+    { id: 'a9', cat: '공항·이동',
+      ko: '세체니 온천 가는 지하철은 어느 쪽이에요?',
+      hu: 'Melyik metró megy a Széchenyi fürdőhöz?',
+      huPron: '메이이크 메트로 메지 어 세체니 퓌르되회즈',
+      en: 'Which metro goes to Széchenyi Bath?',
+      enPron: '위치 메트로 고즈 투 세체니 바스' },
+    { id: 'a10', cat: '공항·이동',
+      ko: '이 버스 켈레티 역에 서나요?',
+      hu: 'Megáll ez a busz a Keleti pályaudvarnál?',
+      huPron: '메갈 에즈 어 부스 어 켈레티 파여우드보르날',
+      en: 'Does this bus stop at Keleti station?',
+      enPron: '더즈 디스 버스 스탑 앳 켈레티 스테이션' },
+    { id: 'a11', cat: '공항·이동',
+      ko: '택시 타는 곳이 어디예요?',
+      hu: 'Hol van a taxiállomás?',
+      huPron: '홀 번 어 턱시알로마시',
+      en: 'Where is the taxi stand?',
+      enPron: '웨어 이즈 더 택시 스탠드' },
+
+    /* ── 호텔 (9) ── */
+    { id: 'h1', cat: '호텔', star: true,
+      ko: '체크인하고 싶어요. 예약한 사람입니다.',
+      hu: 'Szeretnék bejelentkezni. Ez a foglalásom.',
+      huPron: '세르트네크 베옐렌트케즈니. 에즈 어 포글럴라숌',
+      en: "I'd like to check in. This is my reservation.",
+      enPron: '아이드 라이크 투 체크 인. 디스 이즈 마이 레저베이션' },
+    { id: 'h2', cat: '호텔',
+      ko: '체크아웃은 몇 시예요?',
+      hu: 'Mikor kell kijelentkezni?',
+      huPron: '미코르 켈 키옐렌트케즈니',
+      en: 'What time is check-out?',
+      enPron: '왓 타임 이즈 체크아웃' },
+    { id: 'h3', cat: '호텔',
+      ko: '조식은 몇 시부터예요?',
+      hu: 'Mikortól van a reggeli?',
+      huPron: '미코르톨 번 어 레겔리',
+      en: 'What time does breakfast start?',
+      enPron: '왓 타임 더즈 브렉퍼스트 스타트' },
+    { id: 'h4', cat: '호텔',
+      ko: '조식은 어디에서 하나요?',
+      hu: 'Hol szolgálják fel a reggelit?',
+      huPron: '홀 솔갈야크 펠 어 레겔리트',
+      en: 'Where is breakfast served?',
+      enPron: '웨어 이즈 브렉퍼스트 서브드' },
+    { id: 'h5', cat: '호텔', star: true,
+      ko: '와이파이 비밀번호가 뭐예요?',
+      hu: 'Mi a wifi jelszava?',
+      huPron: '미 어 와이파이 옐사보',
+      en: "What's the Wi-Fi password?",
+      enPron: '왓츠 더 와이파이 패스워드' },
+    { id: 'h6', cat: '호텔',
+      ko: '수건 좀 더 주시겠어요?',
+      hu: 'Kaphatnék még törölközőt?',
+      huPron: '커퍼트네크 메그 퇴뢸퀴죄트',
+      en: 'Could I get more towels?',
+      enPron: '쿠드 아이 겟 모어 타월즈' },
+    { id: 'h7', cat: '호텔',
+      ko: '체크아웃 후에 짐을 맡길 수 있나요?',
+      hu: 'A kijelentkezés után megőrizhetem a csomagomat?',
+      huPron: '어 키옐렌트케제시 우탄 메그외리즈헤테므 어 초머고머트',
+      en: 'Can I leave my luggage after check-out?',
+      enPron: '캔 아이 리브 마이 러기지 애프터 체크아웃' },
+    { id: 'h8', cat: '호텔',
+      ko: '공항까지 택시를 불러 주시겠어요?',
+      hu: 'Tudna nekem taxit hívni a repülőtérre?',
+      huPron: '투드너 네켐 턱시트 히브니 어 러퓔뢰테르레',
+      en: 'Could you call a taxi to the airport for me?',
+      enPron: '쿠드 유 콜 어 택시 투 디 에어포트 포 미' },
+    { id: 'h9', cat: '호텔',
+      ko: '방 키가 안 열려요.',
+      hu: 'Nem működik a szobakulcsom.',
+      huPron: '넴 뮈쾨디크 어 소버쿨촘',
+      en: "My room key isn't working.",
+      enPron: '마이 룸 키 이즌트 워킹' },
+    { id: 'h10', cat: '호텔',
+      ko: '생수 한 병 더 주시겠어요?',
+      hu: 'Kaphatnék még egy üveg vizet?',
+      huPron: '커퍼트네크 메그 에지 위베그 비제트',
+      en: 'Could I get another bottle of water?',
+      enPron: '쿠드 아이 겟 어나더 보틀 오브 워터' },
+
+    /* ── 식당·카페 (12) ── */
+    { id: 'r1', cat: '식당·카페', star: true,
+      ko: '한 명인데 자리 있나요?',
+      hu: 'Van asztal egy főre?',
+      huPron: '번 어스털 에지 푀레',
+      en: 'A table for one, please.',
+      enPron: '어 테이블 포 원, 플리즈' },
+    { id: 'r2', cat: '식당·카페',
+      ko: '영어 메뉴판 주시겠어요?',
+      hu: 'Kaphatnék angol menüt?',
+      huPron: '커퍼트네크 언골 메뉘트',
+      en: 'Could I have an English menu?',
+      enPron: '쿠드 아이 해브 언 잉글리시 메뉴' },
+    { id: 'r3', cat: '식당·카페',
+      ko: '뭐가 제일 인기예요?',
+      hu: 'Mi a legnépszerűbb étel?',
+      huPron: '미 어 레그네프세뤼브 에텔',
+      en: "What's the most popular dish?",
+      enPron: '왓츠 더 모스트 파퓰러 디시' },
+    { id: 'r4', cat: '식당·카페', star: true,
+      ko: '무탄산 생수 주세요. (탄산 없는 물)',
+      hu: 'Szénsavmentes vizet kérek.',
+      huPron: '센솨브멘테시 비제트 케레크',
+      en: 'Still water, please.',
+      enPron: '스틸 워터, 플리즈' },
+    { id: 'r5', cat: '식당·카페',
+      ko: '맵지 않게 해 주세요.',
+      hu: 'Kérem, ne legyen csípős.',
+      huPron: '케렘, 네 레젠 치포시',
+      en: 'Not spicy, please.',
+      enPron: '낫 스파이시, 플리즈' },
+    { id: 'r6', cat: '식당·카페',
+      ko: '짜지 않게 해 주세요.',
+      hu: 'Kérem, ne legyen túl sós.',
+      huPron: '케렘, 네 레젠 툴 쇼시',
+      en: 'Not too salty, please.',
+      enPron: '낫 투 솔티, 플리즈' },
+    { id: 'r7', cat: '식당·카페',
+      ko: '따뜻한 커피 한 잔 주세요.',
+      hu: 'Egy meleg kávét kérek.',
+      huPron: '에지 메레그 커베트 케레크',
+      en: 'A hot coffee, please.',
+      enPron: '어 핫 커피, 플리즈' },
+    { id: 'r8', cat: '식당·카페', star: true,
+      ko: '화장실이 어디예요?',
+      hu: 'Hol van a mosdó?',
+      huPron: '홀 번 어 모시도',
+      en: 'Where is the restroom?',
+      enPron: '웨어 이즈 더 레스트룸' },
+    { id: 'r9', cat: '식당·카페', star: true,
+      ko: '계산은 카드로 할게요.',
+      hu: 'Kártyával szeretnék fizetni.',
+      huPron: '카르탸발 세르트네크 피제트니',
+      en: "I'd like to pay by card.",
+      enPron: '아이드 라이크 투 페이 바이 카드' },
+    { id: 'r10', cat: '식당·카페',
+      ko: '포장해 주세요.',
+      hu: 'Kérem, csomagolja be.',
+      huPron: '케렘, 초머골여 베',
+      en: 'To take away, please.',
+      enPron: '투 테이크 어웨이, 플리즈' },
+    { id: 'r11', cat: '식당·카페',
+      ko: '계산서 주세요.',
+      hu: 'Kérem a számlát.',
+      huPron: '케렘 어 살믈라트',
+      en: 'Could I have the bill?',
+      enPron: '쿠드 아이 해브 더 빌' },
+    { id: 'r12', cat: '식당·카페',
+      ko: '물 한 잔 주세요.',
+      hu: 'Egy pohár csapvizet kérek.',
+      huPron: '에지 포하르 챕비제트 케레크',
+      en: 'A glass of tap water, please.',
+      enPron: '어 글래스 오브 탭 워터, 플리즈' },
+    { id: 'r13', cat: '식당·카페',
+      ko: '따뜻한 차 한 잔 주세요.',
+      hu: 'Egy meleg teát kérek.',
+      huPron: '에지 메레그 테아트 케레크',
+      en: 'A hot tea, please.',
+      enPron: '어 핫 티, 플리즈' },
+
+    /* ── 편의점·쇼핑 (7) ── */
+    { id: 's1', cat: '편의점·쇼핑',
+      ko: '얼마예요?',
+      hu: 'Mennyibe kerül?',
+      huPron: '멘니베 케륄',
+      en: 'How much is it?',
+      enPron: '하우 머치 이즈 잇' },
+    { id: 's2', cat: '편의점·쇼핑',
+      ko: '카드로 되나요?',
+      hu: 'Lehet kártyával fizetni?',
+      huPron: '레헤트 카르탸발 피제트니',
+      en: 'Do you take cards?',
+      enPron: '두 유 테이크 카드즈' },
+    { id: 's3', cat: '편의점·쇼핑',
+      ko: '봉투 하나 주세요.',
+      hu: 'Kérek egy szatyrot.',
+      huPron: '케레크 에지 서트로트',
+      en: 'A bag, please.',
+      enPron: '어 백, 플리즈' },
+    { id: 's4', cat: '편의점·쇼핑',
+      ko: '영수증 주세요.',
+      hu: 'Kérem a nyugtát.',
+      huPron: '케렘 어 니우그타트',
+      en: 'A receipt, please.',
+      enPron: '어 리싯, 플리즈' },
+    { id: 's5', cat: '편의점·쇼핑',
+      ko: '이거 하나 주세요.',
+      hu: 'Ebből kérek egyet.',
+      huPron: '에브뢸 케레크 에젯',
+      en: 'One of these, please.',
+      enPron: '원 오브 디즈, 플리즈' },
+    { id: 's6', cat: '편의점·쇼핑',
+      ko: '사진 찍어도 되나요?',
+      hu: 'Szabad itt fotózni?',
+      huPron: '서버드 이트 포토즈니',
+      en: 'May I take a photo here?',
+      enPron: '메이 아이 테이크 어 포토 히어' },
+    { id: 's7', cat: '편의점·쇼핑',
+      ko: '면세(텍스 리펀) 되나요?',
+      hu: 'Lehet áfamentesen vásárolni?',
+      huPron: '레헤트 아파멘테센 버샤롤니',
+      en: 'Can I shop tax-free?',
+      enPron: '캔 아이 숍 택스 프리' },
+
+    /* ── 공연·관광 (8) ── */
+    { id: 'p1', cat: '공연·관광',
+      ko: '파프 라슬로 스포츠아레나 입구가 어디예요?',
+      hu: 'Hol van a Papp László Sportaréna bejárata?',
+      huPron: '홀 번 어 파프 라슬로 쇼포르타레너 버야러터',
+      en: 'Where is the entrance to Papp László Sportaréna?',
+      enPron: '웨어 이즈 디 엔트런스 투 파프 라슬로 스포르타레나' },
+    { id: 'p2', cat: '공연·관광', star: true,
+      ko: '제 좌석이 어디인가요?',
+      hu: 'Hol van ez az ülőhely?',
+      huPron: '홀 번 에즈 어 윌뢰헤이',
+      en: 'Where is this seat?',
+      enPron: '웨어 이즈 디스 시트' },
+    { id: 'p3', cat: '공연·관광',
+      ko: '물품 보관소가 어디예요?',
+      hu: 'Hol van a ruhatár?',
+      huPron: '홀 번 어 루허타르',
+      en: 'Where is the cloakroom?',
+      enPron: '웨어 이즈 더 클록룸' },
+    { id: 'p4', cat: '공연·관광',
+      ko: '화장실은 어디에서 찾을 수 있어요?',
+      hu: 'Hol találom a mosdót?',
+      huPron: '홀 터랄롬 어 모시도트',
+      en: 'Where can I find the restroom?',
+      enPron: '웨어 캔 아이 파인드 더 레스트룸' },
+    { id: 'p5', cat: '공연·관광',
+      ko: '사진 한 장 찍어 주실 수 있나요?',
+      hu: 'Készítene rólam egy fotót?',
+      huPron: '케시테네 로람 에지 포토트',
+      en: 'Could you take a photo of me?',
+      enPron: '쿠드 유 테이크 어 포토 오브 미' },
+    { id: 'p6', cat: '공연·관광',
+      ko: '제 티켓은 여기 있어요.',
+      hu: 'Itt van a jegyem.',
+      huPron: '이트 번 어 예젬',
+      en: 'Here is my ticket.',
+      enPron: '히어 이즈 마이 티킷' },
+    { id: 'p7', cat: '공연·관광',
+      ko: '락커 하나 주세요. (온천)',
+      hu: 'Kérek egy öltözőszekrényt.',
+      huPron: '케레크 에지 욜퇴죄세크레니트',
+      en: "I'd like a locker, please.",
+      enPron: '아이드 라이크 어 라커, 플리즈' },
+    { id: 'p9', cat: '공연·관광',
+      ko: '수건 대여되나요? (온천)',
+      hu: 'Lehet törölközőt bérelni?',
+      huPron: '레헤트 퇴뢸퀴죄트 베렐니',
+      en: 'Can I rent a towel?',
+      enPron: '캔 아이 렌트 어 타월' },
+    { id: 'p8', cat: '공연·관광',
+      ko: '도나우강 유람선은 어디서 타요?',
+      hu: 'Honnan indul a dunai hajó?',
+      huPron: '혼넌 인둘 어 두너이 허요',
+      en: 'Where does the Danube boat leave from?',
+      enPron: '웨어 더즈 더 다뉴브 보트 리브 프롬' },
+
+    /* ── 응급·도움 (9) ── */
+    { id: 'e1', cat: '응급·도움', star: true,
+      ko: '영어 하실 수 있나요?',
+      hu: 'Beszél angolul?',
+      huPron: '베셀 언골룰',
+      en: 'Do you speak English?',
+      enPron: '두 유 스픽 잉글리시' },
+    { id: 'e2', cat: '응급·도움', star: true,
+      ko: '천천히 말씀해 주세요.',
+      hu: 'Kérem, beszéljen lassabban.',
+      huPron: '케렘, 베셀렌 러솨반',
+      en: 'Please speak slowly.',
+      enPron: '플리즈 스픽 슬로울리' },
+    { id: 'e3', cat: '응급·도움',
+      ko: '도와주세요!',
+      hu: 'Segítség!',
+      huPron: '셰기트셰그',
+      en: 'Help!',
+      enPron: '헬프' },
+    { id: 'e4', cat: '응급·도움',
+      ko: '길을 잃었어요. 이 주소로 가야 해요.',
+      hu: 'Eltévedtem. Erre a címre kell mennem.',
+      huPron: '엘테베드템. 에레 어 치메레 켈 멘넴',
+      en: 'I\'m lost. I need to go to this address.',
+      enPron: '아임 로스트. 아이 니드 투 고 투 디스 어드레스' },
+    { id: 'e5', cat: '응급·도움',
+      ko: '휴대전화를 충전할 수 있을까요?',
+      hu: 'Fel tudná tölteni a telefonomat?',
+      huPron: '펠 투드너 퇼텐니 어 텔레포노머트',
+      en: 'Could you charge my phone?',
+      enPron: '쿠드 유 차지 마이 폰' },
+    { id: 'e6', cat: '응급·도움',
+      ko: '가까운 약국이 어디예요?',
+      hu: 'Hol van a legközelebbi gyógyszertár?',
+      huPron: '홀 번 어 레그쾨젤레비 죠교세르타르',
+      en: 'Where is the nearest pharmacy?',
+      enPron: '웨어 이즈 더 니어리스트 파머시' },
+    { id: 'e7', cat: '응급·도움',
+      ko: '두통약 있나요?',
+      hu: 'Van valami fejfájásra?',
+      huPron: '번 버러미 페이파야시러',
+      en: 'Do you have something for a headache?',
+      enPron: '두 유 해브 섬싱 포 어 헤드에이크' },
+    { id: 'e8', cat: '응급·도움',
+      ko: '여권을 잃어버렸어요. 경찰서가 어디예요?',
+      hu: 'Elvesztettem az útlevelemet. Hol van a rendőrség?',
+      huPron: '엘베스테템 어즈 울트레벨레메트. 홀 번 어 렌되르세그',
+      en: 'I lost my passport. Where is the police station?',
+      enPron: '아이 로스트 마이 패스포트. 웨어 이즈 더 폴리스 스테이션' },
+    { id: 'e9', cat: '응급·도움',
+      ko: '몸이 안 좋아요. 병원에 가야 해요.',
+      hu: 'Rosszul vagyok. Kórházba kell mennem.',
+      huPron: '로슬 버죽. 코르하즈바 켈 멘넴',
+      en: 'I feel unwell. I need a hospital.',
+      enPron: '아이 필 언웰. 아이 니드 어 하스피털' }
+  ];
+
+  var STAR_KEY = 'budapest-phrasebook-stars-v1';
+
+  /* ── 공연·여행 팁에서 바로 보여줄 장소 카드 ── */
+  var PLACES = [
+    { id: 'x1', cat: '공연장',
+      ko: '파프 라슬로 부다페스트 스포츠아레나 (공연장)',
+      hu: 'Papp László Budapest Sportaréna\n1143 Budapest, Stefánia út 2.',
+      huPron: '파프 라슬로 부다페스트 쇼포르타레너 · 슈테파니어 우트 케트퇴',
+      en: 'Papp László Budapest Sportaréna, 1143 Budapest, Stefánia út 2.',
+      enPron: '' },
+    { id: 'x2', cat: '숙소',
+      ko: '다누비우스 호텔 아레나 (숙소)',
+      hu: 'Danubius Hotel Arena\n1148 Budapest, Ifjúság útja 1-3.',
+      huPron: '다누비우스 호텔 아레너 · 이푸샤그 우트여 에지허롬',
+      en: 'Danubius Hotel Arena, 1148 Budapest, Ifjúság útja 1-3.',
+      enPron: '' },
+    { id: 'x3', cat: '온천',
+      ko: '세체니 온천 (Széchenyi fürdő)',
+      hu: 'Széchenyi Gyógyfürdő és Uszoda\n1146 Budapest, Állatkerti körút 9-11.',
+      huPron: '세체니 죠져퓌르되 에슈 우소더 · 알라트케르티 쾨루트 킬렌츠-티제네지',
+      en: 'Széchenyi Thermal Bath, 1146 Budapest, Állatkerti körút 9-11.',
+      enPron: '' },
+    { id: 'x4', cat: '공항',
+      ko: '부다페스트 리스트 페렌츠 국제공항',
+      hu: 'Budapest Liszt Ferenc Nemzetközi Repülőtér\n1185 Budapest (2. terminál)',
+      huPron: '부더페슈트 리스트 페렌츠 넴제트쾨지 러퓔뢰테르',
+      en: 'Budapest Ferenc Liszt International Airport, 1185 Budapest, Terminal 2.',
+      enPron: '' },
+    { id: 'x5', cat: '대사관',
+      ko: '주헝가리 대한민국 대사관',
+      hu: 'Koreai Köztársaság Nagykövetsége\n1062 Budapest, Andrássy út 109.',
+      huPron: '코레어이 쾨즈타르서샤그 너지쾨벳셰게 · 언드라슈이 우트 센트킬렌츠',
+      en: 'Embassy of the Republic of Korea, 1062 Budapest, Andrássy út 109.',
+      enPron: '' }
+  ];
+
+  var ALL_ITEMS = PHRASES.concat(PLACES);
+  function findItem(id) {
+    for (var i = 0; i < ALL_ITEMS.length; i++) {
+      if (ALL_ITEMS[i].id === id) return ALL_ITEMS[i];
+    }
+    return null;
+  }
+
+  var state = { cat: '전체', starOnly: false, q: '' };
+  var starOverride = loadStars();
+  var current = null;
+  var toastTimer = null;
+
+  var tabsEl = document.getElementById('tabs');
+  var listEl = document.getElementById('list');
+  var countEl = document.getElementById('count');
+  var starToggle = document.getElementById('starToggle');
+  var searchInput = document.getElementById('searchInput');
+  var modal = document.getElementById('modal');
+  var toastEl = document.getElementById('toast');
+
+  /* ── 즐겨찾기 저장 ── */
+  function loadStars() {
+    try {
+      var raw = localStorage.getItem(STAR_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      return {};
+    }
+  }
+  function saveStars() {
+    try {
+      localStorage.setItem(STAR_KEY, JSON.stringify(starOverride));
+    } catch (e) { /* 저장 공간이 없으면 이번 실행 동안만 유지 */ }
+  }
+  function isStarred(p) {
+    return Object.prototype.hasOwnProperty.call(starOverride, p.id) ? !!starOverride[p.id] : !!p.star;
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  /* ── 탭 ── */
+  function buildTabs() {
+    tabsEl.innerHTML = CATS.map(function (c) {
+      var on = c === state.cat;
+      return '<button class="tab" role="tab" aria-selected="' + on + '" data-cat="' + esc(c) + '">' + esc(c) + '</button>';
+    }).join('');
+  }
+
+  /* ── 목록 ── */
+  function filtered() {
+    var q = state.q.trim().toLowerCase();
+    return PHRASES.filter(function (p) {
+      if (state.cat !== '전체' && p.cat !== state.cat) return false;
+      if (state.starOnly && !isStarred(p)) return false;
+      if (q) {
+        var hay = [p.ko, p.hu, p.huPron, p.en, p.enPron, p.cat].join(' ').toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+  }
+
+  function render() {
+    var list = filtered();
+    countEl.textContent = '문장 ' + list.length + '개';
+
+    if (!list.length) {
+      listEl.innerHTML = '<div class="empty">조건에 맞는 문장이 없어요.<br><span>다른 말로 찾아보거나 ★를 풀어 보세요.</span></div>';
+      return;
+    }
+
+    listEl.innerHTML = list.map(function (p) {
+      var on = isStarred(p);
+      return '' +
+        '<article class="card" data-id="' + p.id + '">' +
+          '<div class="cardTop">' +
+            '<span class="catBadge">' + esc(p.cat) + '</span>' +
+            '<button class="starBtn' + (on ? ' on' : '') + '" data-act="star" data-id="' + p.id + '" ' +
+              'aria-label="즐겨찾기" aria-pressed="' + on + '">' + (on ? '★' : '☆') + '</button>' +
+          '</div>' +
+          '<p class="ko">' + esc(p.ko) + '</p>' +
+          '<p class="hu">' + esc(p.hu) + '</p>' +
+          '<p class="huPron">' + esc(p.huPron) + '</p>' +
+          '<div class="enBox">' +
+            '<p class="en">' + esc(p.en) + '</p>' +
+            '<p class="enPron">' + esc(p.enPron) + '</p>' +
+          '</div>' +
+          '<div class="btns">' +
+            '<button class="btn primary" data-act="hu" data-id="' + p.id + '">🔊 헝가리어</button>' +
+            '<button class="btn ghost" data-act="en" data-id="' + p.id + '">🔊 영어</button>' +
+            '<button class="btn ghost wide" data-act="big" data-id="' + p.id + '">👀 크게 보기</button>' +
+          '</div>' +
+        '</article>';
+    }).join('');
+  }
+
+  /* ── 토스트 ── */
+  function toast(msg, ms) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, ms || 2800);
+  }
+
+  /* ── 음성 ── */
+  var voices = [];
+  function refreshVoices() {
+    try {
+      voices = (window.speechSynthesis && typeof window.speechSynthesis.getVoices === 'function')
+        ? window.speechSynthesis.getVoices() : [];
+    } catch (e) { voices = []; }
+    return voices;
+  }
+  if ('speechSynthesis' in window) {
+    refreshVoices();
+    if (typeof window.speechSynthesis.addEventListener === 'function') {
+      window.speechSynthesis.addEventListener('voiceschanged', refreshVoices);
+    } else {
+      window.speechSynthesis.onvoiceschanged = refreshVoices;
+    }
+  }
+  function normLang(l) { return String(l || '').replace('_', '-').toLowerCase(); }
+  function voiceFor(lang) {
+    var list = refreshVoices();
+    if (!list.length) return null;
+    var want = normLang(lang);
+    var pre = want.slice(0, 2);
+    for (var i = 0; i < list.length; i++) {
+      if (normLang(list[i].lang) === want) return list[i];
+    }
+    for (var j = 0; j < list.length; j++) {
+      if (normLang(list[j].lang).indexOf(pre) === 0) return list[j];
+    }
+    return null;
+  }
+  function ensureVoices(cb) {
+    var list = refreshVoices();
+    if (list.length) { cb(list); return; }
+    var done = false;
+    var finish = function () {
+      if (done) return;
+      done = true;
+      cb(refreshVoices());
+    };
+    if (window.speechSynthesis && typeof window.speechSynthesis.addEventListener === 'function') {
+      window.speechSynthesis.addEventListener('voiceschanged', finish, { once: true });
+    }
+    setTimeout(finish, 700);
+  }
+  function speak(text, lang, btn) {
+    if (!('speechSynthesis' in window)) {
+      toast('이 브라우저에서는 소리가 나오지 않아요. 화면을 보여 주세요.');
+      return;
+    }
+    try {
+      window.speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = lang;
+      u.rate = 0.85;
+      u.pitch = 1;
+      var v = voiceFor(lang);
+      if (v) u.voice = v;
+      if (btn) {
+        btn.classList.add('playing');
+        var clear = function () { btn.classList.remove('playing'); };
+        u.onend = clear;
+        u.onerror = clear;
+        setTimeout(clear, 12000);
+      }
+      window.speechSynthesis.speak(u);
+    } catch (e) {
+      if (btn) btn.classList.remove('playing');
+      toast('소리를 재생하지 못했어요. 화면을 보여 주세요.');
+    }
+  }
+  function speakHu(p, btn) {
+    ensureVoices(function () {
+      if (!voiceFor('hu-HU')) {
+        toast('이 기기에는 헝가리어 음성이 없어요. 대신 영어로 들려드릴게요.', 3600);
+        setTimeout(function () { speak(p.en, 'en-US'); }, 850);
+        return;
+      }
+      speak(p.hu, 'hu-HU', btn);
+    });
+  }
+  function speakEn(p, btn) {
+    ensureVoices(function () { speak(p.en, 'en-US', btn); });
+  }
+
+  /* ── 크게 보기 ── */
+  function huSize(t) {
+    var n = t.length;
+    if (n <= 18) return '46px';
+    if (n <= 30) return '40px';
+    if (n <= 44) return '33px';
+    if (n <= 60) return '27px';
+    return '23px';
+  }
+  function openModal(p) {
+    current = p;
+    document.getElementById('mCat').textContent = p.cat;
+    var hu = document.getElementById('mHu');
+    hu.textContent = p.hu;
+    hu.style.fontSize = huSize(p.hu);
+    document.getElementById('mPron').textContent = p.huPron || '';
+    var en = document.getElementById('mEn');
+    var enP = document.getElementById('mEnPron');
+    en.textContent = p.en || '';
+    enP.textContent = p.enPron || '';
+    en.style.display = p.en ? '' : 'none';
+    enP.style.display = p.enPron ? '' : 'none';
+    document.getElementById('mKo').textContent = p.ko;
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+    current = null;
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  }
+
+  /* ── 이벤트 ── */
+  tabsEl.addEventListener('click', function (e) {
+    var btn = e.target.closest('.tab');
+    if (!btn) return;
+    state.cat = btn.getAttribute('data-cat');
+    Array.prototype.forEach.call(tabsEl.querySelectorAll('.tab'), function (t) {
+      t.setAttribute('aria-selected', String(t === btn));
+    });
+    if (btn.scrollIntoView) {
+      try { btn.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' }); } catch (err) {}
+    }
+    render();
+    try {
+      var bar = document.querySelector('.filters');
+      if (bar && typeof window.scrollTo === 'function') {
+        window.scrollTo({ top: bar.offsetTop, behavior: 'smooth' });
+      }
+    } catch (err) {}
+  });
+
+  /* 화면 어디서든 [data-act] 버튼 하나로 처리 (회화 카드 + 장소 카드) */
+  document.addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest ? e.target.closest('[data-act]') : null;
+    if (!btn) return;
+    var p = findItem(btn.getAttribute('data-id'));
+    if (!p) return;
+    var act = btn.getAttribute('data-act');
+
+    if (act === 'star') {
+      var now = !isStarred(p);
+      starOverride[p.id] = now;
+      saveStars();
+      render();
+      toast(now ? '★ 자주 쓰는 문장에 담았어요.' : '☆ 즐겨찾기에서 뺐어요.', 1600);
+      return;
+    }
+    if (act === 'hu') { speakHu(p, btn); return; }
+    if (act === 'en') { speakEn(p, btn); return; }
+    if (act === 'big') { openModal(p); return; }
+  });
+
+  starToggle.addEventListener('click', function () {
+    state.starOnly = !state.starOnly;
+    starToggle.setAttribute('aria-pressed', String(state.starOnly));
+    starToggle.textContent = state.starOnly ? '★ 자주 쓰는 문장만' : '☆ 자주 쓰는 문장만';
+    render();
+  });
+
+  searchInput.addEventListener('input', function () {
+    state.q = searchInput.value;
+    render();
+  });
+
+  document.getElementById('mClose').addEventListener('click', closeModal);
+  document.getElementById('mHuPlay').addEventListener('click', function () {
+    if (current) speakHu(current, this);
+  });
+  document.getElementById('mEnPlay').addEventListener('click', function () {
+    if (current) speakEn(current, this);
+  });
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal) closeModal();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
+
+  /* ── 화면 전환 (회화 / 공연·여행 팁) ── */
+  var modeSwitch = document.getElementById('modeSwitch');
+  var phraseTools = document.getElementById('phraseTools');
+  var infoEl = document.getElementById('info');
+  var infoNav = document.getElementById('infoNav');
+
+  function setMode(m) {
+    var isInfo = m === 'info';
+    Array.prototype.forEach.call(modeSwitch.querySelectorAll('.modeBtn'), function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-mode') === m));
+    });
+    phraseTools.hidden = isInfo;
+    listEl.hidden = isInfo;
+    infoEl.hidden = !isInfo;
+    try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (err) { window.scrollTo(0, 0); }
+  }
+  modeSwitch.addEventListener('click', function (e) {
+    var btn = e.target.closest('.modeBtn');
+    if (!btn) return;
+    setMode(btn.getAttribute('data-mode'));
+  });
+  infoNav.addEventListener('click', function (e) {
+    var chip = e.target.closest('[data-jump]');
+    if (!chip) return;
+    var target = document.getElementById(chip.getAttribute('data-jump'));
+    if (!target) return;
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    try { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    catch (err) { target.scrollIntoView(); }
+  });
+
+  /* ── 시작 ── */
+  buildTabs();
+  render();
+})();
+</script>
+</body>
+</html>
