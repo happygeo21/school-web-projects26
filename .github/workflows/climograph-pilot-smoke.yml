@@ -1,0 +1,23 @@
+name: Climograph Pilot Offline Smoke
+
+on:
+  pull_request:
+    paths:
+      - 'experiments/happygeo-climograph-pilot/**'
+      - '.github/workflows/climograph-pilot-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify standalone HTML source and embedded synthetic data
+        run: node --test experiments/happygeo-climograph-pilot/smoke.test.cjs
