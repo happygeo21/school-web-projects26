@@ -1,0 +1,4 @@
+project_id = "veteransgeo-rehearsal-only"
+[functions.media]
+# Firebase tokens are verified by the gateway; Supabase's JWT gate expects its own JWT.
+verify_jwt = false

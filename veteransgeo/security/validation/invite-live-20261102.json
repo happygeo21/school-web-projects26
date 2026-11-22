@@ -1,0 +1,159 @@
+{
+  "kind": "real-test-invite-integration",
+  "checkedAt": "2026-11-01T23:42:51.9610316Z",
+  "mocked": false,
+  "physicalDevice": false,
+  "passed": 27,
+  "failed": 0,
+  "partialRunsRetained": true,
+  "continuedSameTwoWorks": true,
+  "partialRunLimitations": [
+    "New synthetic recorder decode failed; reused prior genuine synthetic fixtures",
+    "Original harness waited for an empty hidden feed",
+    "Teacher list render race; same works previewed before approval in continuation"
+  ],
+  "httpPermissionChecks": [
+    {
+      "label": "issue-one-minute-link",
+      "status": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "label": "own-school-issue",
+      "status": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "label": "other-school-issue-denied",
+      "status": 403,
+      "expected": 403,
+      "passed": true
+    },
+    {
+      "label": "unapproved-teacher-denied",
+      "status": 403,
+      "expected": 403,
+      "passed": true
+    },
+    {
+      "label": "peer-own-school-issue",
+      "status": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "label": "other-issuer-revoke-denied",
+      "status": 403,
+      "expected": 403,
+      "passed": true
+    },
+    {
+      "label": "peer-own-revoke",
+      "status": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "label": "revoked-link-redeem-denied",
+      "status": 403,
+      "expected": 403,
+      "passed": true
+    },
+    {
+      "label": "virtual-student-redeem",
+      "status": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "label": "other-uid-grant-denied",
+      "status": 403,
+      "expected": 403,
+      "passed": true
+    },
+    {
+      "label": "other-school-grant-denied",
+      "status": 403,
+      "expected": 403,
+      "passed": true
+    }
+  ],
+  "browserUploadChecks": {
+    "inviteFragmentRemoved": true,
+    "noUploadCodeInput": true,
+    "studentJPEGUpload": true,
+    "studentWebMUpload": true,
+    "sameWorkDuplicateACK": true,
+    "linkPerFileSizeLimit": true,
+    "realExpiredInviteDenied": true,
+    "revokedGrantNewUploadDenied": true
+  },
+  "browserReviewChecks": {
+    "virtualTeacherLogin": true,
+    "pendingOriginalPreview": true,
+    "teacherApprovedBoth": true,
+    "mobileApprovedFeed": true,
+    "imageDecoded": true,
+    "webmPlayback": true,
+    "withdrawnFeedRemoved": true,
+    "withdrawnGETAndRange403": true
+  },
+  "retryHTTP": 200,
+  "sizeLimitHTTP": 400,
+  "expiredHTTP": 403,
+  "revokedHTTP": 403,
+  "withdrawalHTTP": [
+    403,
+    403,
+    403,
+    403
+  ],
+  "productionNetworkRequests": 0,
+  "productionAttemptsBlocked": 3,
+  "media": {
+    "sourceBundleSHA256": "9214e173ec4047b57fac8fdc1815839077a7978facda123a43ee3397571ec9b9",
+    "filesMatch": 9,
+    "testApprovedTeacherCount": 2,
+    "adminCount": 0,
+    "migrationReapplied": false,
+    "version": 7,
+    "status": "ACTIVE",
+    "mode": "teacher-invite-link",
+    "project": "jfkjuhxkcctfmwojhpci",
+    "assignedSchool": "S1"
+  },
+  "preservation": {
+    "originalMedia": 9,
+    "originalObjects": 9,
+    "originalMediaUnchanged": true,
+    "originalObjectsUnchanged": true,
+    "currentMedia": 11,
+    "currentObjects": 11,
+    "claims": 2,
+    "orphans": 0
+  },
+  "origin": "https://examines-visiting-richards-meanwhile.trycloudflare.com",
+  "urlStatus": {
+    "student": 200,
+    "teacher": 200,
+    "public": 200
+  },
+  "authorizedTestDomain": true,
+  "cors": 204,
+  "netlifyStatus": 401,
+  "netlifyCause": "Hosting access gate before app authentication; not bypassed",
+  "syntheticWorksLeftApproved": false,
+  "operatingChanges": 0,
+  "pending": [
+    "Physical Android/tablet check",
+    "School privacy evidence",
+    "Six real teacher sign-ins",
+    "Final operating approval and post-deploy smoke"
+  ],
+  "operatingEvidence": "Reuse prior 20-record compatibility, seven-account map, Rules and Pages rollback backups; not fresh production recheck",
+  "draftPR": 7,
+  "baseHead": "c3b0417bcc99e886ff1d40c4d019aa29b7bf2b1f",
+  "deployedSourceEvidence": "Exact deployed nine-file match against current invite-deploy-manifest.json; Deno-only typing fixes after baseHead"
+}
