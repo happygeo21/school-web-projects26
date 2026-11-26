@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('flowNext').textContent=next;$('flowNext').disabled=!state.ready||state.busy||(step===2&&(!state.hasData||(route==='file'&&needsFile)))||(step===4&&!state.canExport);
   $('flowActions').hidden=mode!=='easy'||!step;
   const blocked=state.status==='결합 중단',warning=state.status==='확인 필요';
-  $('easyFeedback').textContent=blocked?'잘못 연결된 지역이나 통계값이 있어 CSV를 만들지 않았어요. 상세 모드에서 지역·코드·시트·통계 열을 확인하고 다시 변환하세요.':warning?'누락·빈칸·연도 차이 등 확인할 내용이 있어요. 아래 안내와 원본을 확인하세요. 빈칸은 0으로 바꾸지 않아요.':state.canExport?'변환이 끝났어요. CSV를 받아 e-GIS에서 지도와 연결하세요.':'';
+  $('easyFeedback').textContent=blocked?'잘못 연결된 지역이나 통계값이 있어 CSV를 만들지 않았어요. 아래 중단 사유를 확인하세요. 미지원 표는 지역코드를 직접 바꾸어 해결하지 않아요.':warning?'누락·빈칸·연도 차이 등 확인할 내용이 있어요. 아래 안내와 원본을 확인하세요. 빈칸은 0으로 바꾸지 않아요.':state.canExport?'변환이 끝났어요. CSV를 받아 e-GIS에서 지도와 연결하세요.':'';
   $('easyFeedback').className=blocked||warning?'notice':'success-note';$('easyFeedback').hidden=!state.status;$('fixDetailed').hidden=!blocked&&!warning;
   $('csv').classList.add('primary');
   const regionColumns=['name','code','sido','year'].map(id=>+$(id).value);

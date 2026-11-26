@@ -1,0 +1,1431 @@
+[
+  {
+    "profileId": "aging-sgg-jeonnam",
+    "sourceFile": "eGIS_2024_Jeonnam22_verified.csv",
+    "metric": "aging_pct",
+    "rows": [
+      {
+        "sourceCode": "1236010",
+        "name": "목포시",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "21.2"
+      },
+      {
+        "sourceCode": "1236020",
+        "name": "여수시",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "23.8"
+      },
+      {
+        "sourceCode": "1236030",
+        "name": "순천시",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "19.3"
+      },
+      {
+        "sourceCode": "1236040",
+        "name": "나주시",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "25"
+      },
+      {
+        "sourceCode": "1236060",
+        "name": "광양시",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "16.2"
+      },
+      {
+        "sourceCode": "1236310",
+        "name": "담양군",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "35.6"
+      },
+      {
+        "sourceCode": "1236320",
+        "name": "곡성군",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "40.5"
+      },
+      {
+        "sourceCode": "1236330",
+        "name": "구례군",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "39.4"
+      },
+      {
+        "sourceCode": "1236350",
+        "name": "고흥군",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "45.7"
+      },
+      {
+        "sourceCode": "1236360",
+        "name": "보성군",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "43.9"
+      },
+      {
+        "sourceCode": "1236370",
+        "name": "화순군",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "30.9"
+      },
+      {
+        "sourceCode": "1236380",
+        "name": "장흥군",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "39.1"
+      },
+      {
+        "sourceCode": "1236390",
+        "name": "강진군",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "39.4"
+      },
+      {
+        "sourceCode": "1236400",
+        "name": "해남군",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "37.7"
+      },
+      {
+        "sourceCode": "1236410",
+        "name": "영암군",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "30.4"
+      },
+      {
+        "sourceCode": "1236420",
+        "name": "무안군",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "21.1"
+      },
+      {
+        "sourceCode": "1236430",
+        "name": "함평군",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "41.4"
+      },
+      {
+        "sourceCode": "1236440",
+        "name": "영광군",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "32"
+      },
+      {
+        "sourceCode": "1236450",
+        "name": "장성군",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "34.4"
+      },
+      {
+        "sourceCode": "1236460",
+        "name": "완도군",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "37.4"
+      },
+      {
+        "sourceCode": "1236470",
+        "name": "진도군",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "37.7"
+      },
+      {
+        "sourceCode": "1236480",
+        "name": "신안군",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sgg",
+        "value": "40.1"
+      }
+    ],
+    "boundaries": [
+      {
+        "code": "46110",
+        "name": "목포시",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "46130",
+        "name": "여수시",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "46150",
+        "name": "순천시",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "46170",
+        "name": "나주시",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "46230",
+        "name": "광양시",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "46710",
+        "name": "담양군",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "46720",
+        "name": "곡성군",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "46730",
+        "name": "구례군",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "46770",
+        "name": "고흥군",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "46780",
+        "name": "보성군",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "46790",
+        "name": "화순군",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "46800",
+        "name": "장흥군",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "46810",
+        "name": "강진군",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "46820",
+        "name": "해남군",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "46830",
+        "name": "영암군",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "46840",
+        "name": "무안군",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "46860",
+        "name": "함평군",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "46870",
+        "name": "영광군",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "46880",
+        "name": "장성군",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "46890",
+        "name": "완도군",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "46900",
+        "name": "진도군",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "46910",
+        "name": "신안군",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sgg"
+      }
+    ],
+    "expectedCodes": [
+      "46110",
+      "46130",
+      "46150",
+      "46170",
+      "46230",
+      "46710",
+      "46720",
+      "46730",
+      "46770",
+      "46780",
+      "46790",
+      "46800",
+      "46810",
+      "46820",
+      "46830",
+      "46840",
+      "46860",
+      "46870",
+      "46880",
+      "46890",
+      "46900",
+      "46910"
+    ],
+    "expectedValues": {
+      "46110": "21.2",
+      "46130": "23.8",
+      "46150": "19.3",
+      "46170": "25",
+      "46230": "16.2",
+      "46710": "35.6",
+      "46720": "40.5",
+      "46730": "39.4",
+      "46770": "45.7",
+      "46780": "43.9",
+      "46790": "30.9",
+      "46800": "39.1",
+      "46810": "39.4",
+      "46820": "37.7",
+      "46830": "30.4",
+      "46840": "21.1",
+      "46860": "41.4",
+      "46870": "32",
+      "46880": "34.4",
+      "46890": "37.4",
+      "46900": "37.7",
+      "46910": "40.1"
+    }
+  },
+  {
+    "profileId": "aging-sido",
+    "sourceFile": "eGIS_2024_Sido17_verified.csv",
+    "metric": "aging_pct",
+    "rows": [
+      {
+        "sourceCode": "11",
+        "name": "서울특별시",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sido",
+        "value": "19.4"
+      },
+      {
+        "sourceCode": "1224",
+        "name": "광주광역시",
+        "province": "광주광역시",
+        "year": "2024",
+        "level": "sido",
+        "value": "17.5"
+      },
+      {
+        "sourceCode": "1236",
+        "name": "전라남도",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sido",
+        "value": "27.2"
+      },
+      {
+        "sourceCode": "21",
+        "name": "부산광역시",
+        "province": "부산광역시",
+        "year": "2024",
+        "level": "sido",
+        "value": "23.9"
+      },
+      {
+        "sourceCode": "22",
+        "name": "대구광역시",
+        "province": "대구광역시",
+        "year": "2024",
+        "level": "sido",
+        "value": "20.9"
+      },
+      {
+        "sourceCode": "23",
+        "name": "인천광역시",
+        "province": "인천광역시",
+        "year": "2024",
+        "level": "sido",
+        "value": "17.7"
+      },
+      {
+        "sourceCode": "25",
+        "name": "대전광역시",
+        "province": "대전광역시",
+        "year": "2024",
+        "level": "sido",
+        "value": "18"
+      },
+      {
+        "sourceCode": "26",
+        "name": "울산광역시",
+        "province": "울산광역시",
+        "year": "2024",
+        "level": "sido",
+        "value": "17.2"
+      },
+      {
+        "sourceCode": "29",
+        "name": "세종특별자치시",
+        "province": "세종특별자치시",
+        "year": "2024",
+        "level": "sido",
+        "value": "11.6"
+      },
+      {
+        "sourceCode": "31",
+        "name": "경기도",
+        "province": "경기도",
+        "year": "2024",
+        "level": "sido",
+        "value": "16.6"
+      },
+      {
+        "sourceCode": "32",
+        "name": "강원특별자치도",
+        "province": "강원특별자치도",
+        "year": "2024",
+        "level": "sido",
+        "value": "25.4"
+      },
+      {
+        "sourceCode": "33",
+        "name": "충청북도",
+        "province": "충청북도",
+        "year": "2024",
+        "level": "sido",
+        "value": "21.9"
+      },
+      {
+        "sourceCode": "34",
+        "name": "충청남도",
+        "province": "충청남도",
+        "year": "2024",
+        "level": "sido",
+        "value": "22.3"
+      },
+      {
+        "sourceCode": "35",
+        "name": "전북특별자치도",
+        "province": "전북특별자치도",
+        "year": "2024",
+        "level": "sido",
+        "value": "25.3"
+      },
+      {
+        "sourceCode": "37",
+        "name": "경상북도",
+        "province": "경상북도",
+        "year": "2024",
+        "level": "sido",
+        "value": "26"
+      },
+      {
+        "sourceCode": "38",
+        "name": "경상남도",
+        "province": "경상남도",
+        "year": "2024",
+        "level": "sido",
+        "value": "21.8"
+      },
+      {
+        "sourceCode": "39",
+        "name": "제주특별자치도",
+        "province": "제주특별자치도",
+        "year": "2024",
+        "level": "sido",
+        "value": "18.9"
+      }
+    ],
+    "boundaries": [
+      {
+        "code": "11",
+        "name": "서울특별시",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "29",
+        "name": "광주광역시",
+        "province": "광주광역시",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "46",
+        "name": "전라남도",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "26",
+        "name": "부산광역시",
+        "province": "부산광역시",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "27",
+        "name": "대구광역시",
+        "province": "대구광역시",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "28",
+        "name": "인천광역시",
+        "province": "인천광역시",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "30",
+        "name": "대전광역시",
+        "province": "대전광역시",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "31",
+        "name": "울산광역시",
+        "province": "울산광역시",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "36",
+        "name": "세종특별자치시",
+        "province": "세종특별자치시",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "41",
+        "name": "경기도",
+        "province": "경기도",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "51",
+        "name": "강원특별자치도",
+        "province": "강원특별자치도",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "43",
+        "name": "충청북도",
+        "province": "충청북도",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "44",
+        "name": "충청남도",
+        "province": "충청남도",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "52",
+        "name": "전북특별자치도",
+        "province": "전북특별자치도",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "47",
+        "name": "경상북도",
+        "province": "경상북도",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "48",
+        "name": "경상남도",
+        "province": "경상남도",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "50",
+        "name": "제주특별자치도",
+        "province": "제주특별자치도",
+        "year": "2025",
+        "level": "sido"
+      }
+    ],
+    "expectedCodes": [
+      "11",
+      "29",
+      "46",
+      "26",
+      "27",
+      "28",
+      "30",
+      "31",
+      "36",
+      "41",
+      "51",
+      "43",
+      "44",
+      "52",
+      "47",
+      "48",
+      "50"
+    ],
+    "expectedValues": {
+      "11": "19.4",
+      "29": "17.5",
+      "46": "27.2",
+      "26": "23.9",
+      "27": "20.9",
+      "28": "17.7",
+      "30": "18",
+      "31": "17.2",
+      "36": "11.6",
+      "41": "16.6",
+      "51": "25.4",
+      "43": "21.9",
+      "44": "22.3",
+      "52": "25.3",
+      "47": "26",
+      "48": "21.8",
+      "50": "18.9"
+    }
+  },
+  {
+    "profileId": "households-seoul",
+    "sourceFile": "eGIS_2024_Seoul25_single_households_API.csv",
+    "metric": "single_household_pct",
+    "rows": [
+      {
+        "sourceCode": "11010",
+        "name": "종로구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "46.1"
+      },
+      {
+        "sourceCode": "11020",
+        "name": "중구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "48.4"
+      },
+      {
+        "sourceCode": "11030",
+        "name": "용산구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "43.3"
+      },
+      {
+        "sourceCode": "11040",
+        "name": "성동구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "39.4"
+      },
+      {
+        "sourceCode": "11050",
+        "name": "광진구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "46"
+      },
+      {
+        "sourceCode": "11060",
+        "name": "동대문구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "45"
+      },
+      {
+        "sourceCode": "11070",
+        "name": "중랑구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "39.9"
+      },
+      {
+        "sourceCode": "11080",
+        "name": "성북구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "38.1"
+      },
+      {
+        "sourceCode": "11090",
+        "name": "강북구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "41"
+      },
+      {
+        "sourceCode": "11100",
+        "name": "도봉구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "33.4"
+      },
+      {
+        "sourceCode": "11110",
+        "name": "노원구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "32.7"
+      },
+      {
+        "sourceCode": "11120",
+        "name": "은평구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "35.5"
+      },
+      {
+        "sourceCode": "11130",
+        "name": "서대문구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "41.1"
+      },
+      {
+        "sourceCode": "11140",
+        "name": "마포구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "43.7"
+      },
+      {
+        "sourceCode": "11150",
+        "name": "양천구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "28.3"
+      },
+      {
+        "sourceCode": "11160",
+        "name": "강서구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "41.7"
+      },
+      {
+        "sourceCode": "11170",
+        "name": "구로구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "36.5"
+      },
+      {
+        "sourceCode": "11180",
+        "name": "금천구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "47.8"
+      },
+      {
+        "sourceCode": "11190",
+        "name": "영등포구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "45.1"
+      },
+      {
+        "sourceCode": "11200",
+        "name": "동작구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "43.3"
+      },
+      {
+        "sourceCode": "11210",
+        "name": "관악구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "58.2"
+      },
+      {
+        "sourceCode": "11220",
+        "name": "서초구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "31.2"
+      },
+      {
+        "sourceCode": "11230",
+        "name": "강남구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "35"
+      },
+      {
+        "sourceCode": "11240",
+        "name": "송파구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "33.5"
+      },
+      {
+        "sourceCode": "11250",
+        "name": "강동구",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sgg",
+        "value": "33.8"
+      }
+    ],
+    "boundaries": [
+      {
+        "code": "11110",
+        "name": "종로구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11140",
+        "name": "중구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11170",
+        "name": "용산구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11200",
+        "name": "성동구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11215",
+        "name": "광진구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11230",
+        "name": "동대문구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11260",
+        "name": "중랑구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11290",
+        "name": "성북구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11305",
+        "name": "강북구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11320",
+        "name": "도봉구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11350",
+        "name": "노원구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11380",
+        "name": "은평구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11410",
+        "name": "서대문구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11440",
+        "name": "마포구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11470",
+        "name": "양천구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11500",
+        "name": "강서구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11530",
+        "name": "구로구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11545",
+        "name": "금천구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11560",
+        "name": "영등포구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11590",
+        "name": "동작구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11620",
+        "name": "관악구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11650",
+        "name": "서초구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11680",
+        "name": "강남구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11710",
+        "name": "송파구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      },
+      {
+        "code": "11740",
+        "name": "강동구",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sgg"
+      }
+    ],
+    "expectedCodes": [
+      "11110",
+      "11140",
+      "11170",
+      "11200",
+      "11215",
+      "11230",
+      "11260",
+      "11290",
+      "11305",
+      "11320",
+      "11350",
+      "11380",
+      "11410",
+      "11440",
+      "11470",
+      "11500",
+      "11530",
+      "11545",
+      "11560",
+      "11590",
+      "11620",
+      "11650",
+      "11680",
+      "11710",
+      "11740"
+    ],
+    "expectedValues": {
+      "11110": "46.1",
+      "11140": "48.4",
+      "11170": "43.3",
+      "11200": "39.4",
+      "11215": "46",
+      "11230": "45",
+      "11260": "39.9",
+      "11290": "38.1",
+      "11305": "41",
+      "11320": "33.4",
+      "11350": "32.7",
+      "11380": "35.5",
+      "11410": "41.1",
+      "11440": "43.7",
+      "11470": "28.3",
+      "11500": "41.7",
+      "11530": "36.5",
+      "11545": "47.8",
+      "11560": "45.1",
+      "11590": "43.3",
+      "11620": "58.2",
+      "11650": "31.2",
+      "11680": "35",
+      "11710": "33.5",
+      "11740": "33.8"
+    }
+  },
+  {
+    "profileId": "fertility-sido",
+    "sourceFile": "eGIS_2024_Sido17_fertility_API.csv",
+    "metric": "fertility_rate",
+    "rows": [
+      {
+        "sourceCode": "11",
+        "name": "서울특별시",
+        "province": "서울특별시",
+        "year": "2024",
+        "level": "sido",
+        "value": "0.58"
+      },
+      {
+        "sourceCode": "21",
+        "name": "부산광역시",
+        "province": "부산광역시",
+        "year": "2024",
+        "level": "sido",
+        "value": "0.68"
+      },
+      {
+        "sourceCode": "22",
+        "name": "대구광역시",
+        "province": "대구광역시",
+        "year": "2024",
+        "level": "sido",
+        "value": "0.75"
+      },
+      {
+        "sourceCode": "23",
+        "name": "인천광역시",
+        "province": "인천광역시",
+        "year": "2024",
+        "level": "sido",
+        "value": "0.76"
+      },
+      {
+        "sourceCode": "24",
+        "name": "광주광역시",
+        "province": "광주광역시",
+        "year": "2024",
+        "level": "sido",
+        "value": "0.7"
+      },
+      {
+        "sourceCode": "25",
+        "name": "대전광역시",
+        "province": "대전광역시",
+        "year": "2024",
+        "level": "sido",
+        "value": "0.79"
+      },
+      {
+        "sourceCode": "26",
+        "name": "울산광역시",
+        "province": "울산광역시",
+        "year": "2024",
+        "level": "sido",
+        "value": "0.86"
+      },
+      {
+        "sourceCode": "29",
+        "name": "세종특별자치시",
+        "province": "세종특별자치시",
+        "year": "2024",
+        "level": "sido",
+        "value": "1.03"
+      },
+      {
+        "sourceCode": "31",
+        "name": "경기도",
+        "province": "경기도",
+        "year": "2024",
+        "level": "sido",
+        "value": "0.79"
+      },
+      {
+        "sourceCode": "32",
+        "name": "강원특별자치도",
+        "province": "강원특별자치도",
+        "year": "2024",
+        "level": "sido",
+        "value": "0.89"
+      },
+      {
+        "sourceCode": "33",
+        "name": "충청북도",
+        "province": "충청북도",
+        "year": "2024",
+        "level": "sido",
+        "value": "0.88"
+      },
+      {
+        "sourceCode": "34",
+        "name": "충청남도",
+        "province": "충청남도",
+        "year": "2024",
+        "level": "sido",
+        "value": "0.88"
+      },
+      {
+        "sourceCode": "35",
+        "name": "전북특별자치도",
+        "province": "전북특별자치도",
+        "year": "2024",
+        "level": "sido",
+        "value": "0.81"
+      },
+      {
+        "sourceCode": "36",
+        "name": "전라남도",
+        "province": "전라남도",
+        "year": "2024",
+        "level": "sido",
+        "value": "1.03"
+      },
+      {
+        "sourceCode": "37",
+        "name": "경상북도",
+        "province": "경상북도",
+        "year": "2024",
+        "level": "sido",
+        "value": "0.9"
+      },
+      {
+        "sourceCode": "38",
+        "name": "경상남도",
+        "province": "경상남도",
+        "year": "2024",
+        "level": "sido",
+        "value": "0.82"
+      },
+      {
+        "sourceCode": "39",
+        "name": "제주특별자치도",
+        "province": "제주특별자치도",
+        "year": "2024",
+        "level": "sido",
+        "value": "0.83"
+      }
+    ],
+    "boundaries": [
+      {
+        "code": "11",
+        "name": "서울특별시",
+        "province": "서울특별시",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "26",
+        "name": "부산광역시",
+        "province": "부산광역시",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "27",
+        "name": "대구광역시",
+        "province": "대구광역시",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "28",
+        "name": "인천광역시",
+        "province": "인천광역시",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "29",
+        "name": "광주광역시",
+        "province": "광주광역시",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "30",
+        "name": "대전광역시",
+        "province": "대전광역시",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "31",
+        "name": "울산광역시",
+        "province": "울산광역시",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "36",
+        "name": "세종특별자치시",
+        "province": "세종특별자치시",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "41",
+        "name": "경기도",
+        "province": "경기도",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "51",
+        "name": "강원특별자치도",
+        "province": "강원특별자치도",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "43",
+        "name": "충청북도",
+        "province": "충청북도",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "44",
+        "name": "충청남도",
+        "province": "충청남도",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "52",
+        "name": "전북특별자치도",
+        "province": "전북특별자치도",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "46",
+        "name": "전라남도",
+        "province": "전라남도",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "47",
+        "name": "경상북도",
+        "province": "경상북도",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "48",
+        "name": "경상남도",
+        "province": "경상남도",
+        "year": "2025",
+        "level": "sido"
+      },
+      {
+        "code": "50",
+        "name": "제주특별자치도",
+        "province": "제주특별자치도",
+        "year": "2025",
+        "level": "sido"
+      }
+    ],
+    "expectedCodes": [
+      "11",
+      "26",
+      "27",
+      "28",
+      "29",
+      "30",
+      "31",
+      "36",
+      "41",
+      "51",
+      "43",
+      "44",
+      "52",
+      "46",
+      "47",
+      "48",
+      "50"
+    ],
+    "expectedValues": {
+      "11": "0.58",
+      "26": "0.68",
+      "27": "0.75",
+      "28": "0.76",
+      "29": "0.7",
+      "30": "0.79",
+      "31": "0.86",
+      "36": "1.03",
+      "41": "0.79",
+      "51": "0.89",
+      "43": "0.88",
+      "44": "0.88",
+      "52": "0.81",
+      "46": "1.03",
+      "47": "0.9",
+      "48": "0.82",
+      "50": "0.83"
+    }
+  }
+]

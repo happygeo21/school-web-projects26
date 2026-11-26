@@ -104,6 +104,11 @@
     "kosis-egis-tool/statistics-catalog.json",
     "kosis-egis-tool/vendor/xlsx-0.20.3.full.min.js",
     "kosis-egis-tool/vendor/SheetJS-LICENSE.txt",
-    "kosis-egis-tool/student-flow.js"
+    "kosis-egis-tool/student-flow.js",
+    "kosis-egis-tool/region-crosswalk.js",
+    "kosis-egis-tool/kosis-workbook.js",
+    "kosis-egis-tool/region-registry.json",
+    "kosis-egis-tool/design-tokens.css",
+    "kosis-egis-tool/design-controls.css"
   ]
 }
