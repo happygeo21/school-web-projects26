@@ -56,6 +56,23 @@
       "referenceDate": "base_year=2025; exact boundary effective date unverified",
       "terms": "e-GIS public teaching distribution; original agency terms not independently verified",
       "termsStatus": "unverified"
+    },
+    {
+      "id": "sgis-codebook-20261126",
+      "kind": "official-original",
+      "url": "https://link.mods.go.kr/contents/include/download.jsp?filename=ref_code.zip&path=/board/&type=board",
+      "discoveryUrl": "https://link.mods.go.kr/view/pss/downloadList",
+      "file": "sgis-ref-code-20261126.zip (local preserved original; not redistributed)",
+      "sha256": "d6c2dc706f683b7fc72d9ad2584c33daff806e05e457a133164a164d96244b94",
+      "originalBytes": 34348978,
+      "extractedFile": "adm_code.xls",
+      "extractedSha256": "db97d9919f7b6093d92d10bec9eaa1e458163fd217d6c86a3108bf895660025a",
+      "extractedBytes": 10740224,
+      "downloadedAt": "2026-11-26",
+      "referenceDate": "2024-06-30 and 2025-06-30 sheets audited; codebook also contains 2000–2023 sheets",
+      "terms": "Public codebook download; redistribution terms not verified. Original ZIP/XLS preserved locally; public repo contains audit facts only.",
+      "termsStatus": "unverified",
+      "limitation": "Does not contain the KAC-to-MOIS period-link DB or boundary geometry change history."
     }
   ],
   "unavailable": [
@@ -66,6 +83,10 @@
     {
       "url": "https://kssc.mods.go.kr/",
       "reason": "ERR_CERT_COMMON_NAME_INVALID; independent HTTPS request RemoteCertificateNameMismatch"
+    },
+    {
+      "url": "https://www.data.go.kr/data/15129688/fileData.do",
+      "reason": "Observed file-download control contains an empty file ID; no original package obtained through this portal route."
     }
   ]
 }
