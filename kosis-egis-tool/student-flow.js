@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('flowNext').textContent=next;$('flowNext').disabled=!state.ready||state.busy||(step===2&&(!state.hasData||(route==='file'&&needsFile)))||(step===4&&!state.canExport);
   $('flowActions').hidden=mode!=='easy'||!step;
   const blocked=state.status==='결합 중단',warning=state.status==='확인 필요';
-  $('easyFeedback').textContent=blocked?'잘못 연결된 지역이나 통계값이 있어 CSV를 만들지 않았어요. 상세 모드에서 지역·코드·시트·통계 열을 확인하고 다시 변환하세요.':warning?'누락·빈칸·연도 차이 등 확인할 내용이 있어요. 아래 안내와 원본을 확인하세요. 빈칸은 0으로 바꾸지 않아요.':state.canExport?'변환이 끝났어요. CSV를 받아 e-GIS에서 지도와 연결하세요.':'';
+  $('easyFeedback').textContent=blocked?'잘못 연결된 지역이나 통계값이 있어 CSV를 만들지 않았어요. 아래 중단 사유를 확인하세요. 미지원 표는 지역코드를 직접 바꾸어 해결하지 않아요.':warning?'누락·빈칸·연도 차이 등 확인할 내용이 있어요. 아래 안내와 원본을 확인하세요. 빈칸은 0으로 바꾸지 않아요.':state.canExport?'변환이 끝났어요. CSV를 받아 e-GIS에서 지도와 연결하세요.':'';
   $('easyFeedback').className=blocked||warning?'notice':'success-note';$('easyFeedback').hidden=!state.status;$('fixDetailed').hidden=!blocked&&!warning;
   $('csv').classList.add('primary');
   const regionColumns=['name','code','sido','year'].map(id=>+$(id).value);
@@ -47,11 +47,11 @@ document.addEventListener('DOMContentLoaded',()=>{
  const guide=[
   ['e-GIS 열기','위의 ‘e-GIS 열기’를 눌러 실제 서비스를 새 창에서 열어요. 이 안내와 e-GIS 화면을 번갈아 보세요.','지금부터는 e-GIS에서 직접 확인해요. 변환 완료만으로 지도 결합이 끝난 것은 아니에요.'],
   ['같은 지역의 경계 불러오기',()=>state.targetUnit==='sido'?'시도별 자료에는 시도 경계를 불러와요. 내장 경계는 2025년 기준 전국17개예요.':'시군구 자료에는 시군구 경계를 불러와요. 전남 자료라면 전남22개 시군을 선택해요. 전국 내장 경계는 2025년 기준252개예요.','아래 실제 경계 받기를 이용할 수 있어요. 자료연도와 지도 기준연도가 다르면 행정구역 변경도 확인하세요.'],
-  ['CSV 표 불러오기·테이블 결합','받은 CSV를 자료/테이블 불러오기에서 선택하고, 지도 레이어의 테이블 결합 기능을 찾아요. 메뉴 이름은 서비스 화면에 따라 달라질 수 있어요.','한글이 깨지면 UTF-8로 읽으세요. 지역 code는 문자, 통계값은 숫자로 읽혀야 해요.'],
+  ['CSV 표 불러오기·테이블 결합','경계 레이어 이름을 누른 뒤 상단 ‘레이어 → 테이블 결합’을 열어요. 파일 업로드 영역에서 받은 CSV를 선택해요.','새 레이어 추가에는 경계 GeoJSON을 넣어요. CSV는 테이블 결합 창에서 넣고, 미리보기의 매칭 수가 선택 지역 수와 같은지 확인해요.'],
   ['지도와 CSV의 code 연결',()=>state.targetUnit==='sido'?'지도 쪽 code와 CSV 쪽 code를 연결해요. 시도 코드는 문자열2자리예요.':'지도 쪽 code와 CSV 쪽 code를 연결해요. 시군구 코드는 문자열5자리예요.','실제 속성 열 이름과 값을 먼저 확인하세요. 코드 연결 수와 숫자가 있는 지역 수를 따로 확인해요.'],
   ['단계구분도 만들기',()=> '주제도/단계구분도에서 통계 숫자 열'+(state.metrics.length?' (‘'+state.metrics.join(' · ')+'’)':'')+'을 선택해요. 값에 따라 지역의 색을 나누어요.','code나 base_year를 지표로 선택하지 마세요. 비율과 인원수는 다른 뜻이에요.'],
-  ['범례·결측값·자료연도 확인','범례의 구간·단위와 빈값의 색을 확인해요. 표본 지역의 값이 원본과 같은지 살펴보고 자료연도와 경계연도를 적어요.','빈칸은 0이 아니에요. 결합되지 않은 지역·누락·결측을 숨기지 마세요.'],
-  ['지도 내보내기','e-GIS의 지도 이미지 내보내기 기능을 찾아 저장해요. 제목·범례·단위·출처·자료연도가 결과에 보이도록 확인해요.','위의 학생 시범 지도2종과 비교해 보세요. 연습값으로 만든 지도는 합성자료 연습이라고 표시해요.']
+  ['범례·결측값·자료연도 확인','범례 설정에서 소수가 필요한 지표는 ‘소수점 2자리’를 선택하고 단위를 적어요. 원본 숫자와 자료연도·경계연도도 확인해요.','범례의 표시 자릿수와 원본 수치는 달라요. 빈칸은 0이 아니며 결합되지 않은 지역·누락·결측을 숨기지 마세요.'],
+  ['지도 내보내기','프로젝트를 저장하고 ‘열기’로 다시 불러와 지도와 범례를 확인해요. ‘프로젝트 → 지도 내보내기’에서 PDF나 이미지로 저장해요.','출력 제목은 다시 입력해야 할 수 있어요. 제목·범례·단위·출처·자료연도가 보이는지 확인하세요. 연습값은 합성자료 연습이라고 표시해요.']
  ];
  function renderGuide(){if(!guide)return;const g=guide[guideStep];$('mapGuidePosition').textContent=(guideStep+1)+' / 7 안내';$('mapGuideTitle').textContent=g[0];$('mapGuideText').textContent=typeof g[1]==='function'?g[1]():g[1];$('mapGuideCheck').textContent=g[2];[...$('mapGuideSteps').querySelectorAll('button')].forEach((b,i)=>b.setAttribute('aria-pressed',String(i===guideStep)));$('mapGuidePrev').disabled=guideStep===0;$('mapGuideNext').disabled=guideStep===6;}
  guide.forEach((g,i)=>{const li=document.createElement('li'),b=document.createElement('button');b.type='button';b.textContent=(i+1)+'. '+g[0];b.onclick=()=>{guideStep=i;renderGuide();};li.append(b);$('mapGuideSteps').append(li);});

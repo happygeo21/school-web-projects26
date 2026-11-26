@@ -1,0 +1,3 @@
+# Preserve downloaded evidence byte-for-byte on Windows and Linux.
+artifacts/*.csv -text
+artifacts/*.egis -text linguist-generated=true

@@ -1,0 +1,11 @@
+{
+  "license": "KOSIS public statistics; source attribution required; source metadata retained",
+  "file": "households-2024.xlsx",
+  "statYear": "2024",
+  "records": 248,
+  "mapValidation": "blocked: official linkage and temporal equivalence unverified",
+  "downloadedAt": "2026-11-26T13:54:42+09:00",
+  "sha256": "d306a8fda0ce0324cdc1ec34893a1eab4397c83a72e64563980a92e17f1d4fea",
+  "downloadMethod": "KOSIS browser XLSX, code included, original precision, unmerged",
+  "sourceUrl": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL21161"
+}

@@ -7,10 +7,28 @@ on:
       - 'egis-student-guide/**'
       - 'tests/kosis-egis/**'
       - 'scripts/public-files.json'
+      - 'scripts/build-kosis-review.cjs'
       - '.github/workflows/kosis-egis-review.yml'
 permissions:
   contents: read
 jobs:
+  review-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build exact-head review runtime (no deployment or QA inputs)
+        run: node scripts/build-kosis-review.cjs "$RUNNER_TEMP/egis-review"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: egis-review-${{ github.event.pull_request.head.sha }}
+          path: ${{ runner.temp }}/egis-review/
+          if-no-files-found: error
+          retention-days: 30
   validate:
     runs-on: ubuntu-latest
     steps:

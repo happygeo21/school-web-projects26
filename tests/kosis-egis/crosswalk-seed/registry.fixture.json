@@ -1,0 +1,630 @@
+{
+  "schemaVersion": 1,
+  "reviewState": "fixture-only",
+  "version": "2026-11-26-seed",
+  "profiles": [
+    {
+      "id": "aging-sgg-jeonnam",
+      "orgId": "101",
+      "tableId": "DT_1YL20631",
+      "itemId": "T10",
+      "statYear": "2024",
+      "boundaryYear": "2025",
+      "level": "sgg",
+      "evidence": "PR #28 prior verified CSV; not official linkage DB",
+      "sourceUrl": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20631",
+      "compatibility": "fixture-only",
+      "entries": [
+        {
+          "sourceCode": "1236010",
+          "sourceName": "목포시",
+          "province": "전라남도",
+          "targetCode": "46110",
+          "targetName": "목포시"
+        },
+        {
+          "sourceCode": "1236020",
+          "sourceName": "여수시",
+          "province": "전라남도",
+          "targetCode": "46130",
+          "targetName": "여수시"
+        },
+        {
+          "sourceCode": "1236030",
+          "sourceName": "순천시",
+          "province": "전라남도",
+          "targetCode": "46150",
+          "targetName": "순천시"
+        },
+        {
+          "sourceCode": "1236040",
+          "sourceName": "나주시",
+          "province": "전라남도",
+          "targetCode": "46170",
+          "targetName": "나주시"
+        },
+        {
+          "sourceCode": "1236060",
+          "sourceName": "광양시",
+          "province": "전라남도",
+          "targetCode": "46230",
+          "targetName": "광양시"
+        },
+        {
+          "sourceCode": "1236310",
+          "sourceName": "담양군",
+          "province": "전라남도",
+          "targetCode": "46710",
+          "targetName": "담양군"
+        },
+        {
+          "sourceCode": "1236320",
+          "sourceName": "곡성군",
+          "province": "전라남도",
+          "targetCode": "46720",
+          "targetName": "곡성군"
+        },
+        {
+          "sourceCode": "1236330",
+          "sourceName": "구례군",
+          "province": "전라남도",
+          "targetCode": "46730",
+          "targetName": "구례군"
+        },
+        {
+          "sourceCode": "1236350",
+          "sourceName": "고흥군",
+          "province": "전라남도",
+          "targetCode": "46770",
+          "targetName": "고흥군"
+        },
+        {
+          "sourceCode": "1236360",
+          "sourceName": "보성군",
+          "province": "전라남도",
+          "targetCode": "46780",
+          "targetName": "보성군"
+        },
+        {
+          "sourceCode": "1236370",
+          "sourceName": "화순군",
+          "province": "전라남도",
+          "targetCode": "46790",
+          "targetName": "화순군"
+        },
+        {
+          "sourceCode": "1236380",
+          "sourceName": "장흥군",
+          "province": "전라남도",
+          "targetCode": "46800",
+          "targetName": "장흥군"
+        },
+        {
+          "sourceCode": "1236390",
+          "sourceName": "강진군",
+          "province": "전라남도",
+          "targetCode": "46810",
+          "targetName": "강진군"
+        },
+        {
+          "sourceCode": "1236400",
+          "sourceName": "해남군",
+          "province": "전라남도",
+          "targetCode": "46820",
+          "targetName": "해남군"
+        },
+        {
+          "sourceCode": "1236410",
+          "sourceName": "영암군",
+          "province": "전라남도",
+          "targetCode": "46830",
+          "targetName": "영암군"
+        },
+        {
+          "sourceCode": "1236420",
+          "sourceName": "무안군",
+          "province": "전라남도",
+          "targetCode": "46840",
+          "targetName": "무안군"
+        },
+        {
+          "sourceCode": "1236430",
+          "sourceName": "함평군",
+          "province": "전라남도",
+          "targetCode": "46860",
+          "targetName": "함평군"
+        },
+        {
+          "sourceCode": "1236440",
+          "sourceName": "영광군",
+          "province": "전라남도",
+          "targetCode": "46870",
+          "targetName": "영광군"
+        },
+        {
+          "sourceCode": "1236450",
+          "sourceName": "장성군",
+          "province": "전라남도",
+          "targetCode": "46880",
+          "targetName": "장성군"
+        },
+        {
+          "sourceCode": "1236460",
+          "sourceName": "완도군",
+          "province": "전라남도",
+          "targetCode": "46890",
+          "targetName": "완도군"
+        },
+        {
+          "sourceCode": "1236470",
+          "sourceName": "진도군",
+          "province": "전라남도",
+          "targetCode": "46900",
+          "targetName": "진도군"
+        },
+        {
+          "sourceCode": "1236480",
+          "sourceName": "신안군",
+          "province": "전라남도",
+          "targetCode": "46910",
+          "targetName": "신안군"
+        }
+      ]
+    },
+    {
+      "id": "aging-sido",
+      "orgId": "101",
+      "tableId": "DT_1YL20631",
+      "itemId": "T10",
+      "statYear": "2024",
+      "boundaryYear": "2025",
+      "level": "sido",
+      "evidence": "PR #28 prior verified CSV; not official linkage DB",
+      "sourceUrl": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20631",
+      "compatibility": "fixture-only",
+      "entries": [
+        {
+          "sourceCode": "11",
+          "sourceName": "서울특별시",
+          "province": "서울특별시",
+          "targetCode": "11",
+          "targetName": "서울특별시"
+        },
+        {
+          "sourceCode": "1224",
+          "sourceName": "광주광역시",
+          "province": "광주광역시",
+          "targetCode": "29",
+          "targetName": "광주광역시"
+        },
+        {
+          "sourceCode": "1236",
+          "sourceName": "전라남도",
+          "province": "전라남도",
+          "targetCode": "46",
+          "targetName": "전라남도"
+        },
+        {
+          "sourceCode": "21",
+          "sourceName": "부산광역시",
+          "province": "부산광역시",
+          "targetCode": "26",
+          "targetName": "부산광역시"
+        },
+        {
+          "sourceCode": "22",
+          "sourceName": "대구광역시",
+          "province": "대구광역시",
+          "targetCode": "27",
+          "targetName": "대구광역시"
+        },
+        {
+          "sourceCode": "23",
+          "sourceName": "인천광역시",
+          "province": "인천광역시",
+          "targetCode": "28",
+          "targetName": "인천광역시"
+        },
+        {
+          "sourceCode": "25",
+          "sourceName": "대전광역시",
+          "province": "대전광역시",
+          "targetCode": "30",
+          "targetName": "대전광역시"
+        },
+        {
+          "sourceCode": "26",
+          "sourceName": "울산광역시",
+          "province": "울산광역시",
+          "targetCode": "31",
+          "targetName": "울산광역시"
+        },
+        {
+          "sourceCode": "29",
+          "sourceName": "세종특별자치시",
+          "province": "세종특별자치시",
+          "targetCode": "36",
+          "targetName": "세종특별자치시"
+        },
+        {
+          "sourceCode": "31",
+          "sourceName": "경기도",
+          "province": "경기도",
+          "targetCode": "41",
+          "targetName": "경기도"
+        },
+        {
+          "sourceCode": "32",
+          "sourceName": "강원특별자치도",
+          "province": "강원특별자치도",
+          "targetCode": "51",
+          "targetName": "강원특별자치도"
+        },
+        {
+          "sourceCode": "33",
+          "sourceName": "충청북도",
+          "province": "충청북도",
+          "targetCode": "43",
+          "targetName": "충청북도"
+        },
+        {
+          "sourceCode": "34",
+          "sourceName": "충청남도",
+          "province": "충청남도",
+          "targetCode": "44",
+          "targetName": "충청남도"
+        },
+        {
+          "sourceCode": "35",
+          "sourceName": "전북특별자치도",
+          "province": "전북특별자치도",
+          "targetCode": "52",
+          "targetName": "전북특별자치도"
+        },
+        {
+          "sourceCode": "37",
+          "sourceName": "경상북도",
+          "province": "경상북도",
+          "targetCode": "47",
+          "targetName": "경상북도"
+        },
+        {
+          "sourceCode": "38",
+          "sourceName": "경상남도",
+          "province": "경상남도",
+          "targetCode": "48",
+          "targetName": "경상남도"
+        },
+        {
+          "sourceCode": "39",
+          "sourceName": "제주특별자치도",
+          "province": "제주특별자치도",
+          "targetCode": "50",
+          "targetName": "제주특별자치도"
+        }
+      ]
+    },
+    {
+      "id": "households-seoul",
+      "orgId": "101",
+      "tableId": "DT_1YL21161",
+      "itemId": "T10",
+      "statYear": "2024",
+      "boundaryYear": "2025",
+      "level": "sgg",
+      "evidence": "prior KOSIS API + existing GIS reference reconstruction; not original XLSX",
+      "sourceUrl": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL21161",
+      "compatibility": "fixture-only",
+      "entries": [
+        {
+          "sourceCode": "11010",
+          "sourceName": "종로구",
+          "province": "서울특별시",
+          "targetCode": "11110",
+          "targetName": "종로구"
+        },
+        {
+          "sourceCode": "11020",
+          "sourceName": "중구",
+          "province": "서울특별시",
+          "targetCode": "11140",
+          "targetName": "중구"
+        },
+        {
+          "sourceCode": "11030",
+          "sourceName": "용산구",
+          "province": "서울특별시",
+          "targetCode": "11170",
+          "targetName": "용산구"
+        },
+        {
+          "sourceCode": "11040",
+          "sourceName": "성동구",
+          "province": "서울특별시",
+          "targetCode": "11200",
+          "targetName": "성동구"
+        },
+        {
+          "sourceCode": "11050",
+          "sourceName": "광진구",
+          "province": "서울특별시",
+          "targetCode": "11215",
+          "targetName": "광진구"
+        },
+        {
+          "sourceCode": "11060",
+          "sourceName": "동대문구",
+          "province": "서울특별시",
+          "targetCode": "11230",
+          "targetName": "동대문구"
+        },
+        {
+          "sourceCode": "11070",
+          "sourceName": "중랑구",
+          "province": "서울특별시",
+          "targetCode": "11260",
+          "targetName": "중랑구"
+        },
+        {
+          "sourceCode": "11080",
+          "sourceName": "성북구",
+          "province": "서울특별시",
+          "targetCode": "11290",
+          "targetName": "성북구"
+        },
+        {
+          "sourceCode": "11090",
+          "sourceName": "강북구",
+          "province": "서울특별시",
+          "targetCode": "11305",
+          "targetName": "강북구"
+        },
+        {
+          "sourceCode": "11100",
+          "sourceName": "도봉구",
+          "province": "서울특별시",
+          "targetCode": "11320",
+          "targetName": "도봉구"
+        },
+        {
+          "sourceCode": "11110",
+          "sourceName": "노원구",
+          "province": "서울특별시",
+          "targetCode": "11350",
+          "targetName": "노원구"
+        },
+        {
+          "sourceCode": "11120",
+          "sourceName": "은평구",
+          "province": "서울특별시",
+          "targetCode": "11380",
+          "targetName": "은평구"
+        },
+        {
+          "sourceCode": "11130",
+          "sourceName": "서대문구",
+          "province": "서울특별시",
+          "targetCode": "11410",
+          "targetName": "서대문구"
+        },
+        {
+          "sourceCode": "11140",
+          "sourceName": "마포구",
+          "province": "서울특별시",
+          "targetCode": "11440",
+          "targetName": "마포구"
+        },
+        {
+          "sourceCode": "11150",
+          "sourceName": "양천구",
+          "province": "서울특별시",
+          "targetCode": "11470",
+          "targetName": "양천구"
+        },
+        {
+          "sourceCode": "11160",
+          "sourceName": "강서구",
+          "province": "서울특별시",
+          "targetCode": "11500",
+          "targetName": "강서구"
+        },
+        {
+          "sourceCode": "11170",
+          "sourceName": "구로구",
+          "province": "서울특별시",
+          "targetCode": "11530",
+          "targetName": "구로구"
+        },
+        {
+          "sourceCode": "11180",
+          "sourceName": "금천구",
+          "province": "서울특별시",
+          "targetCode": "11545",
+          "targetName": "금천구"
+        },
+        {
+          "sourceCode": "11190",
+          "sourceName": "영등포구",
+          "province": "서울특별시",
+          "targetCode": "11560",
+          "targetName": "영등포구"
+        },
+        {
+          "sourceCode": "11200",
+          "sourceName": "동작구",
+          "province": "서울특별시",
+          "targetCode": "11590",
+          "targetName": "동작구"
+        },
+        {
+          "sourceCode": "11210",
+          "sourceName": "관악구",
+          "province": "서울특별시",
+          "targetCode": "11620",
+          "targetName": "관악구"
+        },
+        {
+          "sourceCode": "11220",
+          "sourceName": "서초구",
+          "province": "서울특별시",
+          "targetCode": "11650",
+          "targetName": "서초구"
+        },
+        {
+          "sourceCode": "11230",
+          "sourceName": "강남구",
+          "province": "서울특별시",
+          "targetCode": "11680",
+          "targetName": "강남구"
+        },
+        {
+          "sourceCode": "11240",
+          "sourceName": "송파구",
+          "province": "서울특별시",
+          "targetCode": "11710",
+          "targetName": "송파구"
+        },
+        {
+          "sourceCode": "11250",
+          "sourceName": "강동구",
+          "province": "서울특별시",
+          "targetCode": "11740",
+          "targetName": "강동구"
+        }
+      ]
+    },
+    {
+      "id": "fertility-sido",
+      "orgId": "101",
+      "tableId": "DT_1B8000H",
+      "itemId": "T12",
+      "statYear": "2024",
+      "boundaryYear": "2025",
+      "level": "sido",
+      "evidence": "prior KOSIS API + existing GIS reference reconstruction; not original XLSX",
+      "sourceUrl": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B8000H",
+      "compatibility": "fixture-only",
+      "entries": [
+        {
+          "sourceCode": "11",
+          "sourceName": "서울특별시",
+          "province": "서울특별시",
+          "targetCode": "11",
+          "targetName": "서울특별시"
+        },
+        {
+          "sourceCode": "21",
+          "sourceName": "부산광역시",
+          "province": "부산광역시",
+          "targetCode": "26",
+          "targetName": "부산광역시"
+        },
+        {
+          "sourceCode": "22",
+          "sourceName": "대구광역시",
+          "province": "대구광역시",
+          "targetCode": "27",
+          "targetName": "대구광역시"
+        },
+        {
+          "sourceCode": "23",
+          "sourceName": "인천광역시",
+          "province": "인천광역시",
+          "targetCode": "28",
+          "targetName": "인천광역시"
+        },
+        {
+          "sourceCode": "24",
+          "sourceName": "광주광역시",
+          "province": "광주광역시",
+          "targetCode": "29",
+          "targetName": "광주광역시"
+        },
+        {
+          "sourceCode": "25",
+          "sourceName": "대전광역시",
+          "province": "대전광역시",
+          "targetCode": "30",
+          "targetName": "대전광역시"
+        },
+        {
+          "sourceCode": "26",
+          "sourceName": "울산광역시",
+          "province": "울산광역시",
+          "targetCode": "31",
+          "targetName": "울산광역시"
+        },
+        {
+          "sourceCode": "29",
+          "sourceName": "세종특별자치시",
+          "province": "세종특별자치시",
+          "targetCode": "36",
+          "targetName": "세종특별자치시"
+        },
+        {
+          "sourceCode": "31",
+          "sourceName": "경기도",
+          "province": "경기도",
+          "targetCode": "41",
+          "targetName": "경기도"
+        },
+        {
+          "sourceCode": "32",
+          "sourceName": "강원특별자치도",
+          "province": "강원특별자치도",
+          "targetCode": "51",
+          "targetName": "강원특별자치도"
+        },
+        {
+          "sourceCode": "33",
+          "sourceName": "충청북도",
+          "province": "충청북도",
+          "targetCode": "43",
+          "targetName": "충청북도"
+        },
+        {
+          "sourceCode": "34",
+          "sourceName": "충청남도",
+          "province": "충청남도",
+          "targetCode": "44",
+          "targetName": "충청남도"
+        },
+        {
+          "sourceCode": "35",
+          "sourceName": "전북특별자치도",
+          "province": "전북특별자치도",
+          "targetCode": "52",
+          "targetName": "전북특별자치도"
+        },
+        {
+          "sourceCode": "36",
+          "sourceName": "전라남도",
+          "province": "전라남도",
+          "targetCode": "46",
+          "targetName": "전라남도"
+        },
+        {
+          "sourceCode": "37",
+          "sourceName": "경상북도",
+          "province": "경상북도",
+          "targetCode": "47",
+          "targetName": "경상북도"
+        },
+        {
+          "sourceCode": "38",
+          "sourceName": "경상남도",
+          "province": "경상남도",
+          "targetCode": "48",
+          "targetName": "경상남도"
+        },
+        {
+          "sourceCode": "39",
+          "sourceName": "제주특별자치도",
+          "province": "제주특별자치도",
+          "targetCode": "50",
+          "targetName": "제주특별자치도"
+        }
+      ]
+    }
+  ]
+}

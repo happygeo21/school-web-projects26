@@ -1,0 +1,199 @@
+{
+  "codeCommit": "91346ce3bd6ceb665eeac18e009cab7a5f8657ab",
+  "checkedAtKST": "2026-11-26 15:24:58 KST",
+  "workflows": [
+    {
+      "name": "Check public site before deployment",
+      "conclusion": "success",
+      "url": "https://github.com/happygeo21/school-web-projects26/actions/runs/45767216427"
+    },
+    {
+      "name": "gitleaks",
+      "conclusion": "success",
+      "url": "https://github.com/happygeo21/school-web-projects26/actions/runs/45767216366"
+    },
+    {
+      "name": "Review happygeo curriculum without deploying",
+      "conclusion": "success",
+      "url": "https://github.com/happygeo21/school-web-projects26/actions/runs/45767216398"
+    },
+    {
+      "name": "Validate KOSIS e-GIS without deploying",
+      "conclusion": "success",
+      "url": "https://github.com/happygeo21/school-web-projects26/actions/runs/45767216476"
+    }
+  ],
+  "unitTests": {
+    "core": 28,
+    "spatial": 27,
+    "worker": 4,
+    "pr28Originals": 33,
+    "crosswalk": 39,
+    "crosswalkOriginals": 8,
+    "seedSynthetic": 28,
+    "total": 167,
+    "failed": 0,
+    "localNode": "26.13.0",
+    "ciNode": "22",
+    "note": "Synthetic tests, original workbook comparisons, and safety rejection tests are not completed e-GIS map workflows."
+  },
+  "browserTests": [
+    {
+      "environment": "GitHub Actions windows-latest / Edge",
+      "jobId": 139730893244,
+      "checks": [
+        {
+          "passed": 18,
+          "results": [
+            "region and official search scope can be selected before upload",
+            "Jeonnam synthetic demo + XLSX text codes + CSV roundtrip",
+            "original value audit download and unique-year recognition",
+            "stale export disabled after scope change; national missing count accurate",
+            "UTF8 BOM, UTF8, EUC-KR uploads",
+            "unknown code system cannot be manually corrected",
+            "national 252 rows synthetic upload",
+            "XLSX and XLS multiple sheets + merged header controls",
+            "quoted tabs/newlines and XSS input rendered as text",
+            "50000 rows convert off main thread while UI remains responsive",
+            "user-reported one-point CSV is not official original evidence",
+            "mobile no document overflow + keyboard accessible entry",
+            "province17 auto recommendation, confirmation, CSV and actual geometry download",
+            "province-to-district replication blocked; map switch preserves original table",
+            "aggregation consent cannot approve an unidentified code system",
+            "weighted-rate controls use counts and reset prior aggregation consent on new upload",
+            "Jeonnam recommendation and subset boundary contains exactly22 actual features",
+            "alternate URL uses the same working engine"
+          ]
+        },
+        {
+          "passed": 9,
+          "results": [
+            {
+              "name": "entry offers exactly three starts; remaining steps stay collapsed",
+              "status": "PASS"
+            },
+            {
+              "name": "A Jeonnam22 follows four steps, requires confirmation, and downloads exact CSV",
+              "status": "PASS"
+            },
+            {
+              "name": "B province17 practice yields distinct province keys and CSV values",
+              "status": "PASS"
+            },
+            {
+              "name": "C real-format synthetic XLSX auto-detects region, year and metric; unverified code system blocks export",
+              "status": "PASS"
+            },
+            {
+              "name": "D mode switching preserves uploaded file, sheet, selections, blocked result and original values",
+              "status": "PASS"
+            },
+            {
+              "name": "E invalid code/name blocks easy CSV; detailed mode cannot bypass code-system verification",
+              "status": "PASS"
+            },
+            {
+              "name": "missing year and uncertain region request required information instead of a silent conversion",
+              "status": "PASS"
+            },
+            {
+              "name": "G seven map steps and exact official/Notion links work on the alternate URL",
+              "status": "PASS"
+            },
+            {
+              "name": "F PC tablet and mobile retain one active step, readable navigation and no page overflow",
+              "status": "PASS"
+            }
+          ]
+        },
+        {
+          "passed": 30
+        }
+      ]
+    },
+    {
+      "environment": "GitHub Actions ubuntu-latest / Chromium",
+      "jobId": 139730893049,
+      "checks": [
+        {
+          "passed": 18,
+          "results": [
+            "region and official search scope can be selected before upload",
+            "Jeonnam synthetic demo + XLSX text codes + CSV roundtrip",
+            "original value audit download and unique-year recognition",
+            "stale export disabled after scope change; national missing count accurate",
+            "UTF8 BOM, UTF8, EUC-KR uploads",
+            "unknown code system cannot be manually corrected",
+            "national 252 rows synthetic upload",
+            "XLSX and XLS multiple sheets + merged header controls",
+            "quoted tabs/newlines and XSS input rendered as text",
+            "50000 rows convert off main thread while UI remains responsive",
+            "user-reported one-point CSV is not official original evidence",
+            "mobile no document overflow + keyboard accessible entry",
+            "province17 auto recommendation, confirmation, CSV and actual geometry download",
+            "province-to-district replication blocked; map switch preserves original table",
+            "aggregation consent cannot approve an unidentified code system",
+            "weighted-rate controls use counts and reset prior aggregation consent on new upload",
+            "Jeonnam recommendation and subset boundary contains exactly22 actual features",
+            "alternate URL uses the same working engine"
+          ]
+        },
+        {
+          "passed": 9,
+          "results": [
+            {
+              "name": "entry offers exactly three starts; remaining steps stay collapsed",
+              "status": "PASS"
+            },
+            {
+              "name": "A Jeonnam22 follows four steps, requires confirmation, and downloads exact CSV",
+              "status": "PASS"
+            },
+            {
+              "name": "B province17 practice yields distinct province keys and CSV values",
+              "status": "PASS"
+            },
+            {
+              "name": "C real-format synthetic XLSX auto-detects region, year and metric; unverified code system blocks export",
+              "status": "PASS"
+            },
+            {
+              "name": "D mode switching preserves uploaded file, sheet, selections, blocked result and original values",
+              "status": "PASS"
+            },
+            {
+              "name": "E invalid code/name blocks easy CSV; detailed mode cannot bypass code-system verification",
+              "status": "PASS"
+            },
+            {
+              "name": "missing year and uncertain region request required information instead of a silent conversion",
+              "status": "PASS"
+            },
+            {
+              "name": "G seven map steps and exact official/Notion links work on the alternate URL",
+              "status": "PASS"
+            },
+            {
+              "name": "F PC tablet and mobile retain one active step, readable navigation and no page overflow",
+              "status": "PASS"
+            }
+          ]
+        },
+        {
+          "passed": 30
+        }
+      ]
+    }
+  ],
+  "newOriginals": {
+    "downloaded": 7,
+    "parsed": 5,
+    "blockedFormats": 2,
+    "comparedRows": 772,
+    "comparedMetricCells": 2316,
+    "newApprovedProfiles": 0,
+    "newMapSuccesses": 0
+  },
+  "deviceAcceptance": "Student Windows/iPad/phone: not verified",
+  "deployment": "None; Draft PR only"
+}

@@ -1,0 +1,92 @@
+{
+  "retrievalDateKST": "2026-11-26",
+  "seed": {
+    "file": "eGIS_region_crosswalk_Codex_seed.zip",
+    "sha256": "a96005cf9b4a6df87103d002e6ea22f5230058171d3839e21e1ddb814ed6e351",
+    "classification": "user-supplied integration seed, not official linkage"
+  },
+  "sources": [
+    {
+      "id": "data-go-15136373-20250704",
+      "kind": "official-original",
+      "url": "https://www.data.go.kr/data/15136373/fileData.do",
+      "file": "data-go-15136373-20250704.csv.gz",
+      "sha256": "d32f0bc337b39eb768d5bc53a0ac0563b7f139648bc53406f6ce923f831dc806",
+      "archiveSha256": "1f04d1d6e2d3f8d914f3a23936ce7ff93dee1531f722b4428df7ab408f0d914d",
+      "downloadedAt": "2026-11-26",
+      "referenceDate": "2025-04-01 (last row revision; distribution label 20250704)",
+      "encoding": "CP949",
+      "terms": "공공데이터포털 페이지 이용허락범위: 제한 없음; 원본 출처 표시",
+      "termsUrl": "https://www.data.go.kr/ugs/selectPortalPolicyView.do",
+      "termsStatus": "verified",
+      "originalBytes": 30532809,
+      "rows": 582162,
+      "declaredRows": 569727
+    },
+    {
+      "id": "mois-legal-20261126",
+      "kind": "official-original",
+      "url": "https://www.code.go.kr/",
+      "file": "법정동코드 전체자료.zip (local preserved original; not redistributed)",
+      "sha256": "cfa86808d3abea2244cd6d566374149b34ea3ec69abd810fd7ee9f9e0c3a2d85",
+      "extractedSha256": "962fd4cdfb6ccf2887b745eb97db55f71112b9f9a32c1f8fbd7692fb069b1df0",
+      "downloadedAt": "2026-11-26",
+      "referenceDate": "download snapshot; effective creation/abolition dates absent",
+      "terms": "이용조건 미확인: 원본 로컬 보존, 재배포 보류",
+      "termsStatus": "unverified"
+    },
+    {
+      "id": "egis-sido",
+      "kind": "boundary-distribution",
+      "url": "https://www.e-gis.kr/data/builtin/practice/Area%20Data/%ED%96%89%EC%A0%95%EA%B2%BD%EA%B3%84/%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD%20%EC%8B%9C%EB%8F%84%28~2026.06.30.%29.geojson",
+      "file": "kosis-egis-tool/sido-2025.geojson",
+      "sha256": "6be5d0089314a73783846dff2f7342682d588ebc1729de1e3a366d3c465c1265",
+      "downloadedAt": "2026-11-26",
+      "referenceDate": "base_year=2025; catalog label ~2026.06.30",
+      "terms": "e-GIS public teaching distribution, KOSTAT attribution; original agency terms not independently verified",
+      "termsStatus": "unverified"
+    },
+    {
+      "id": "egis-sgg",
+      "kind": "boundary-distribution",
+      "url": "https://www.e-gis.kr/data/builtin/practice/Area%20Data/%ED%96%89%EC%A0%95%EA%B2%BD%EA%B3%84/%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD%20%EC%8B%9C%EA%B5%B0%EA%B5%AC.geojson",
+      "file": "kosis-egis-tool/sigungu-2025.geojson",
+      "sha256": "ed06f5c3489d1cdb3a744a7b1152d8c2308e2d9a609f5561f3d2dd3184654802",
+      "downloadedAt": "2026-11-26",
+      "referenceDate": "base_year=2025; exact boundary effective date unverified",
+      "terms": "e-GIS public teaching distribution; original agency terms not independently verified",
+      "termsStatus": "unverified"
+    },
+    {
+      "id": "sgis-codebook-20261126",
+      "kind": "official-original",
+      "url": "https://link.mods.go.kr/contents/include/download.jsp?filename=ref_code.zip&path=/board/&type=board",
+      "discoveryUrl": "https://link.mods.go.kr/view/pss/downloadList",
+      "file": "sgis-ref-code-20261126.zip (local preserved original; not redistributed)",
+      "sha256": "d6c2dc706f683b7fc72d9ad2584c33daff806e05e457a133164a164d96244b94",
+      "originalBytes": 34348978,
+      "extractedFile": "adm_code.xls",
+      "extractedSha256": "db97d9919f7b6093d92d10bec9eaa1e458163fd217d6c86a3108bf895660025a",
+      "extractedBytes": 10740224,
+      "downloadedAt": "2026-11-26",
+      "referenceDate": "2024-06-30 and 2025-06-30 sheets audited; codebook also contains 2000–2023 sheets",
+      "terms": "Public codebook download; redistribution terms not verified. Original ZIP/XLS preserved locally; public repo contains audit facts only.",
+      "termsStatus": "unverified",
+      "limitation": "Does not contain the KAC-to-MOIS period-link DB or boundary geometry change history."
+    }
+  ],
+  "unavailable": [
+    {
+      "url": "https://kssc.kostat.go.kr/",
+      "reason": "ERR_CERT_COMMON_NAME_INVALID"
+    },
+    {
+      "url": "https://kssc.mods.go.kr/",
+      "reason": "ERR_CERT_COMMON_NAME_INVALID; independent HTTPS request RemoteCertificateNameMismatch"
+    },
+    {
+      "url": "https://www.data.go.kr/data/15129688/fileData.do",
+      "reason": "Observed file-download control contains an empty file ID; no original package obtained through this portal route."
+    }
+  ]
+}
