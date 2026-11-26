@@ -1,86 +1,6588 @@
 {
   "schemaVersion": 2,
-  "version": "2026-11-26-review-1",
-  "reviewState": "in-review",
+  "version": "2026-11-26-student-1",
+  "reviewState": "approved",
   "sources": [
     {
-      "id": "data-go-15136373-20250704",
+      "id": "kssc-20241231",
       "kind": "official-original",
-      "url": "https://www.data.go.kr/data/15136373/fileData.do",
-      "file": "data-go-15136373-20250704.csv.gz",
-      "sha256": "d32f0bc337b39eb768d5bc53a0ac0563b7f139648bc53406f6ce923f831dc806",
-      "archiveSha256": "1f04d1d6e2d3f8d914f3a23936ce7ff93dee1531f722b4428df7ab408f0d914d",
+      "file": "KSSC_20241231_original.xlsx",
+      "sha256": "23b7589e9b7b7b73ed0c48d4aff4163f28df2b5186e918617178a1b47aa82bc0",
       "downloadedAt": "2026-11-26",
-      "referenceDate": "2025-04-01 (last row revision; distribution label 20250704)",
-      "encoding": "CP949",
-      "terms": "공공데이터포털 페이지 이용허락범위: 제한 없음; 원본 출처 표시",
-      "termsUrl": "https://www.data.go.kr/ugs/selectPortalPolicyView.do",
+      "referenceDate": "2024-12-31",
+      "url": "https://kssc.mods.go.kr:8443/ksscNew_web/upload/%ED%95%9C%EA%B5%AD%ED%96%89%EC%A0%95%EA%B5%AC%EC%97%AD%EB%B6%84%EB%A5%98_2024.12.31.%EA%B8%B0%EC%A4%80_20241231100033.xlsx",
+      "terms": "공공누리 제3유형(출처표시·변경금지). 원문 보존. 코드·명칭·연계 사실값과 원문 셀 위치를 인용하며 원문 개작본으로 배포하지 않음.",
       "termsStatus": "verified",
-      "originalBytes": 30532809,
-      "rows": 582162,
-      "declaredRows": 569727
+      "termsUrl": "https://kssc.mods.go.kr:8443/ksscNew_web/kssc/common/copyright.do?gubun=1"
     },
     {
-      "id": "mois-legal-20261126",
+      "id": "kssc-20250101",
       "kind": "official-original",
-      "url": "https://www.code.go.kr/",
-      "file": "법정동코드 전체자료.zip (local preserved original; not redistributed)",
-      "sha256": "cfa86808d3abea2244cd6d566374149b34ea3ec69abd810fd7ee9f9e0c3a2d85",
-      "extractedSha256": "962fd4cdfb6ccf2887b745eb97db55f71112b9f9a32c1f8fbd7692fb069b1df0",
+      "file": "KSSC_20250101_original.xlsx",
+      "sha256": "11ba74f7492eefe2ef02016719d09f93e076162fa35ca5aed1771526876ebe4d",
       "downloadedAt": "2026-11-26",
-      "referenceDate": "download snapshot; effective creation/abolition dates absent",
-      "terms": "이용조건 미확인: 원본 로컬 보존, 재배포 보류",
-      "termsStatus": "unverified"
+      "referenceDate": "2025-01-01",
+      "url": "https://kssc.mods.go.kr:8443/ksscNew_web/upload/%ED%95%9C%EA%B5%AD%ED%96%89%EC%A0%95%EA%B5%AC%EC%97%AD%EB%B6%84%EB%A5%98_2025.1.1.%EA%B8%B0%EC%A4%80_20241231100033.xlsx",
+      "terms": "공공누리 제3유형(출처표시·변경금지). 원문 보존. 코드·명칭·연계 사실값과 원문 셀 위치를 인용하며 원문 개작본으로 배포하지 않음.",
+      "termsStatus": "verified",
+      "termsUrl": "https://kssc.mods.go.kr:8443/ksscNew_web/kssc/common/copyright.do?gubun=1"
     },
     {
-      "id": "egis-sido",
-      "kind": "boundary-distribution",
-      "url": "https://www.e-gis.kr/data/builtin/practice/Area%20Data/%ED%96%89%EC%A0%95%EA%B2%BD%EA%B3%84/%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD%20%EC%8B%9C%EB%8F%84%28~2026.06.30.%29.geojson",
-      "file": "kosis-egis-tool/sido-2025.geojson",
-      "sha256": "6be5d0089314a73783846dff2f7342682d588ebc1729de1e3a366d3c465c1265",
+      "id": "kssc-20261001",
+      "kind": "official-original",
+      "file": "KSSC_20261001_original.xlsx",
+      "sha256": "06f899f0a7cb4caf92de880e2a4071f88ab2324dde75c985b9863f06b296a9dd",
       "downloadedAt": "2026-11-26",
-      "referenceDate": "base_year=2025; catalog label ~2026.06.30",
-      "terms": "e-GIS public teaching distribution, KOSTAT attribution; original agency terms not independently verified",
-      "termsStatus": "unverified"
-    },
-    {
-      "id": "egis-sgg",
-      "kind": "boundary-distribution",
-      "url": "https://www.e-gis.kr/data/builtin/practice/Area%20Data/%ED%96%89%EC%A0%95%EA%B2%BD%EA%B3%84/%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD%20%EC%8B%9C%EA%B5%B0%EA%B5%AC.geojson",
-      "file": "kosis-egis-tool/sigungu-2025.geojson",
-      "sha256": "ed06f5c3489d1cdb3a744a7b1152d8c2308e2d9a609f5561f3d2dd3184654802",
-      "downloadedAt": "2026-11-26",
-      "referenceDate": "base_year=2025; exact boundary effective date unverified",
-      "terms": "e-GIS public teaching distribution; original agency terms not independently verified",
-      "termsStatus": "unverified"
+      "referenceDate": "2026-10-01",
+      "url": "https://kssc.mods.go.kr:8443/ksscNew_web/kssc/common/CommonBoardList.do?categoryMenu=011&gubun=1&strBbsId=kasctnr&strCategoryNameCode=019",
+      "terms": "공공누리 제3유형(출처표시·변경금지). 원문 보존. 코드·명칭·연계 사실값과 원문 셀 위치를 인용하며 원문 개작본으로 배포하지 않음.",
+      "termsStatus": "verified",
+      "termsUrl": "https://kssc.mods.go.kr:8443/ksscNew_web/kssc/common/copyright.do?gubun=1"
     }
   ],
   "codeSystems": [
     {
       "id": "kostat-kac",
       "kind": "official-standard",
-      "name": "한국행정구역분류",
-      "status": "official-original-acquired-linkage-pending"
-    },
-    {
-      "id": "mois-legal",
-      "kind": "official-standard",
-      "name": "행정안전부 법정동코드",
-      "status": "official-original-acquired-history-pending"
-    },
-    {
-      "id": "kosis-101-DT_1YL20631-SGG",
-      "kind": "table-classification",
-      "name": "고령인구비율 통계표 SGG 분류",
-      "status": "PR28-restricted-adapter-preserved"
-    },
-    {
-      "id": "kosis-101-DT_1YL21161-SGG",
-      "kind": "table-classification",
-      "name": "1인가구비율 통계표 SGG 분류",
-      "status": "original-acquired-linkage-pending"
+      "name": "한국행정구역분류"
     }
   ],
   "profiles": [],
-  "status": "공식 연계DB와 시점 호환 검증 전입니다. 후보 대응표는 자동 변환에 사용하지 않습니다. PR #28의 검증된 2024 고령인구비율 두 원본은 기존 전용 경로로 유지합니다."
+  "standardSets": [
+    {
+      "id": "kac-2024-egis-2025",
+      "codeSystem": "kostat-kac",
+      "statYear": "2024",
+      "statDate": "2024-12-31",
+      "classificationDates": [
+        "2024-12-31",
+        "2025-01-01"
+      ],
+      "boundaryYear": "2025",
+      "validFrom": "2024-01-18",
+      "validThrough": "2024-12-31",
+      "compatibility": "verified",
+      "sourceIds": [
+        "kssc-20241231",
+        "kssc-20250101",
+        "kssc-20261001"
+      ],
+      "temporalEvidence": "KSSC 2024말/2025초 281개 상위 구역 코드·명칭·행정기관·법정동 연계 동일. 2026.10.1 원문의 2025년 변경내역 15건은 시군구 내부 동/리 변경. 시도17·시군구252 실제 경계 속성 전수 일치. 좌표 동일성 검증은 요구하지 않음. 읍면동, 2026 개편구역, 상위 시→일반구 분배 제외.",
+      "boundaryHashes": {
+        "sido": "6be5d0089314a73783846dff2f7342682d588ebc1729de1e3a366d3c465c1265",
+        "sgg": "ed06f5c3489d1cdb3a744a7b1152d8c2308e2d9a609f5561f3d2dd3184654802"
+      },
+      "regions": [
+        {
+          "sourceRow": 3,
+          "sourceCode": "11",
+          "sourceName": "서울특별시",
+          "province": "서울특별시",
+          "administrativeCode": "1100000000",
+          "legalCode": "1100000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3,
+            "2025-01-01": 3
+          },
+          "level": "sido",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11",
+          "targetName": "서울특별시",
+          "ancestors": []
+        },
+        {
+          "sourceRow": 4,
+          "sourceCode": "11010",
+          "sourceName": "종로구",
+          "province": "서울특별시",
+          "administrativeCode": "1111000000",
+          "legalCode": "1111000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 4,
+            "2025-01-01": 4
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11110",
+          "targetName": "종로구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 98,
+          "sourceCode": "11020",
+          "sourceName": "중구",
+          "province": "서울특별시",
+          "administrativeCode": "1114000000",
+          "legalCode": "1114000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 98,
+            "2025-01-01": 98
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11140",
+          "targetName": "중구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 191,
+          "sourceCode": "11030",
+          "sourceName": "용산구",
+          "province": "서울특별시",
+          "administrativeCode": "1117000000",
+          "legalCode": "1117000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 191,
+            "2025-01-01": 191
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11170",
+          "targetName": "용산구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 230,
+          "sourceCode": "11040",
+          "sourceName": "성동구",
+          "province": "서울특별시",
+          "administrativeCode": "1120000000",
+          "legalCode": "1120000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 230,
+            "2025-01-01": 230
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11200",
+          "targetName": "성동구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 254,
+          "sourceCode": "11050",
+          "sourceName": "광진구",
+          "province": "서울특별시",
+          "administrativeCode": "1121500000",
+          "legalCode": "1121500000",
+          "created": "19950301",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 254,
+            "2025-01-01": 254
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11215",
+          "targetName": "광진구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 270,
+          "sourceCode": "11060",
+          "sourceName": "동대문구",
+          "province": "서울특별시",
+          "administrativeCode": "1123000000",
+          "legalCode": "1123000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 270,
+            "2025-01-01": 270
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11230",
+          "targetName": "동대문구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 286,
+          "sourceCode": "11070",
+          "sourceName": "중랑구",
+          "province": "서울특별시",
+          "administrativeCode": "1126000000",
+          "legalCode": "1126000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 286,
+            "2025-01-01": 286
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11260",
+          "targetName": "중랑구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 303,
+          "sourceCode": "11080",
+          "sourceName": "성북구",
+          "province": "서울특별시",
+          "administrativeCode": "1129000000",
+          "legalCode": "1129000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 303,
+            "2025-01-01": 303
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11290",
+          "targetName": "성북구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 357,
+          "sourceCode": "11090",
+          "sourceName": "강북구",
+          "province": "서울특별시",
+          "administrativeCode": "1130500000",
+          "legalCode": "1130500000",
+          "created": "19950301",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 357,
+            "2025-01-01": 357
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11305",
+          "targetName": "강북구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 372,
+          "sourceCode": "11100",
+          "sourceName": "도봉구",
+          "province": "서울특별시",
+          "administrativeCode": "1132000000",
+          "legalCode": "1132000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 372,
+            "2025-01-01": 372
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11320",
+          "targetName": "도봉구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 387,
+          "sourceCode": "11110",
+          "sourceName": "노원구",
+          "province": "서울특별시",
+          "administrativeCode": "1135000000",
+          "legalCode": "1135000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 387,
+            "2025-01-01": 387
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11350",
+          "targetName": "노원구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 407,
+          "sourceCode": "11120",
+          "sourceName": "은평구",
+          "province": "서울특별시",
+          "administrativeCode": "1138000000",
+          "legalCode": "1138000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 407,
+            "2025-01-01": 407
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11380",
+          "targetName": "은평구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 424,
+          "sourceCode": "11130",
+          "sourceName": "서대문구",
+          "province": "서울특별시",
+          "administrativeCode": "1141000000",
+          "legalCode": "1141000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 424,
+            "2025-01-01": 424
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11410",
+          "targetName": "서대문구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 451,
+          "sourceCode": "11140",
+          "sourceName": "마포구",
+          "province": "서울특별시",
+          "administrativeCode": "1144000000",
+          "legalCode": "1144000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 451,
+            "2025-01-01": 451
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11440",
+          "targetName": "마포구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 493,
+          "sourceCode": "11150",
+          "sourceName": "양천구",
+          "province": "서울특별시",
+          "administrativeCode": "1147000000",
+          "legalCode": "1147000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 493,
+            "2025-01-01": 493
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11470",
+          "targetName": "양천구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 512,
+          "sourceCode": "11160",
+          "sourceName": "강서구",
+          "province": "서울특별시",
+          "administrativeCode": "1150000000",
+          "legalCode": "1150000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 512,
+            "2025-01-01": 512
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11500",
+          "targetName": "강서구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 548,
+          "sourceCode": "11170",
+          "sourceName": "구로구",
+          "province": "서울특별시",
+          "administrativeCode": "1153000000",
+          "legalCode": "1153000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 548,
+            "2025-01-01": 548
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11530",
+          "targetName": "구로구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 567,
+          "sourceCode": "11180",
+          "sourceName": "금천구",
+          "province": "서울특별시",
+          "administrativeCode": "1154500000",
+          "legalCode": "1154500000",
+          "created": "19950301",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 567,
+            "2025-01-01": 567
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11545",
+          "targetName": "금천구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 578,
+          "sourceCode": "11190",
+          "sourceName": "영등포구",
+          "province": "서울특별시",
+          "administrativeCode": "1156000000",
+          "legalCode": "1156000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 578,
+            "2025-01-01": 578
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11560",
+          "targetName": "영등포구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 624,
+          "sourceCode": "11200",
+          "sourceName": "동작구",
+          "province": "서울특별시",
+          "administrativeCode": "1159000000",
+          "legalCode": "1159000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 624,
+            "2025-01-01": 624
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11590",
+          "targetName": "동작구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 643,
+          "sourceCode": "11210",
+          "sourceName": "관악구",
+          "province": "서울특별시",
+          "administrativeCode": "1162000000",
+          "legalCode": "1162000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 643,
+            "2025-01-01": 643
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11620",
+          "targetName": "관악구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 665,
+          "sourceCode": "11220",
+          "sourceName": "서초구",
+          "province": "서울특별시",
+          "administrativeCode": "1165000000",
+          "legalCode": "1165000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 665,
+            "2025-01-01": 665
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11650",
+          "targetName": "서초구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 689,
+          "sourceCode": "11230",
+          "sourceName": "강남구",
+          "province": "서울특별시",
+          "administrativeCode": "1168000000",
+          "legalCode": "1168000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 689,
+            "2025-01-01": 689
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11680",
+          "targetName": "강남구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 721,
+          "sourceCode": "11240",
+          "sourceName": "송파구",
+          "province": "서울특별시",
+          "administrativeCode": "1171000000",
+          "legalCode": "1171000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 721,
+            "2025-01-01": 721
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11710",
+          "targetName": "송파구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 752,
+          "sourceCode": "11250",
+          "sourceName": "강동구",
+          "province": "서울특별시",
+          "administrativeCode": "1174000000",
+          "legalCode": "1174000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 752,
+            "2025-01-01": 752
+          },
+          "level": "sgg",
+          "provinceSourceCode": "11",
+          "provinceTargetCode": "11",
+          "targetCode": "11740",
+          "targetName": "강동구",
+          "ancestors": [
+            "11"
+          ]
+        },
+        {
+          "sourceRow": 772,
+          "sourceCode": "21",
+          "sourceName": "부산광역시",
+          "province": "부산광역시",
+          "administrativeCode": "2600000000",
+          "legalCode": "2600000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 772,
+            "2025-01-01": 772
+          },
+          "level": "sido",
+          "provinceSourceCode": "21",
+          "provinceTargetCode": "26",
+          "targetCode": "26",
+          "targetName": "부산광역시",
+          "ancestors": []
+        },
+        {
+          "sourceRow": 773,
+          "sourceCode": "21010",
+          "sourceName": "중구",
+          "province": "부산광역시",
+          "administrativeCode": "2611000000",
+          "legalCode": "2611000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 773,
+            "2025-01-01": 773
+          },
+          "level": "sgg",
+          "provinceSourceCode": "21",
+          "provinceTargetCode": "26",
+          "targetCode": "26110",
+          "targetName": "중구",
+          "ancestors": [
+            "21"
+          ]
+        },
+        {
+          "sourceRow": 816,
+          "sourceCode": "21020",
+          "sourceName": "서구",
+          "province": "부산광역시",
+          "administrativeCode": "2614000000",
+          "legalCode": "2614000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 816,
+            "2025-01-01": 816
+          },
+          "level": "sgg",
+          "provinceSourceCode": "21",
+          "provinceTargetCode": "26",
+          "targetCode": "26140",
+          "targetName": "서구",
+          "ancestors": [
+            "21"
+          ]
+        },
+        {
+          "sourceRow": 843,
+          "sourceCode": "21030",
+          "sourceName": "동구",
+          "province": "부산광역시",
+          "administrativeCode": "2617000000",
+          "legalCode": "2617000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 843,
+            "2025-01-01": 843
+          },
+          "level": "sgg",
+          "provinceSourceCode": "21",
+          "provinceTargetCode": "26",
+          "targetCode": "26170",
+          "targetName": "동구",
+          "ancestors": [
+            "21"
+          ]
+        },
+        {
+          "sourceRow": 858,
+          "sourceCode": "21040",
+          "sourceName": "영도구",
+          "province": "부산광역시",
+          "administrativeCode": "2620000000",
+          "legalCode": "2620000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 858,
+            "2025-01-01": 858
+          },
+          "level": "sgg",
+          "provinceSourceCode": "21",
+          "provinceTargetCode": "26",
+          "targetCode": "26200",
+          "targetName": "영도구",
+          "ancestors": [
+            "21"
+          ]
+        },
+        {
+          "sourceRow": 886,
+          "sourceCode": "21050",
+          "sourceName": "부산진구",
+          "province": "부산광역시",
+          "administrativeCode": "2623000000",
+          "legalCode": "2623000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 886,
+            "2025-01-01": 886
+          },
+          "level": "sgg",
+          "provinceSourceCode": "21",
+          "provinceTargetCode": "26",
+          "targetCode": "26230",
+          "targetName": "부산진구",
+          "ancestors": [
+            "21"
+          ]
+        },
+        {
+          "sourceRow": 911,
+          "sourceCode": "21060",
+          "sourceName": "동래구",
+          "province": "부산광역시",
+          "administrativeCode": "2626000000",
+          "legalCode": "2626000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 911,
+            "2025-01-01": 911
+          },
+          "level": "sgg",
+          "provinceSourceCode": "21",
+          "provinceTargetCode": "26",
+          "targetCode": "26260",
+          "targetName": "동래구",
+          "ancestors": [
+            "21"
+          ]
+        },
+        {
+          "sourceRow": 927,
+          "sourceCode": "21070",
+          "sourceName": "남구",
+          "province": "부산광역시",
+          "administrativeCode": "2629000000",
+          "legalCode": "2629000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 927,
+            "2025-01-01": 927
+          },
+          "level": "sgg",
+          "provinceSourceCode": "21",
+          "provinceTargetCode": "26",
+          "targetCode": "26290",
+          "targetName": "남구",
+          "ancestors": [
+            "21"
+          ]
+        },
+        {
+          "sourceRow": 945,
+          "sourceCode": "21080",
+          "sourceName": "북구",
+          "province": "부산광역시",
+          "administrativeCode": "2632000000",
+          "legalCode": "2632000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 945,
+            "2025-01-01": 945
+          },
+          "level": "sgg",
+          "provinceSourceCode": "21",
+          "provinceTargetCode": "26",
+          "targetCode": "26320",
+          "targetName": "북구",
+          "ancestors": [
+            "21"
+          ]
+        },
+        {
+          "sourceRow": 959,
+          "sourceCode": "21090",
+          "sourceName": "해운대구",
+          "province": "부산광역시",
+          "administrativeCode": "2635000000",
+          "legalCode": "2635000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 959,
+            "2025-01-01": 959
+          },
+          "level": "sgg",
+          "provinceSourceCode": "21",
+          "provinceTargetCode": "26",
+          "targetCode": "26350",
+          "targetName": "해운대구",
+          "ancestors": [
+            "21"
+          ]
+        },
+        {
+          "sourceRow": 979,
+          "sourceCode": "21100",
+          "sourceName": "사하구",
+          "province": "부산광역시",
+          "administrativeCode": "2638000000",
+          "legalCode": "2638000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 979,
+            "2025-01-01": 979
+          },
+          "level": "sgg",
+          "provinceSourceCode": "21",
+          "provinceTargetCode": "26",
+          "targetCode": "26380",
+          "targetName": "사하구",
+          "ancestors": [
+            "21"
+          ]
+        },
+        {
+          "sourceRow": 996,
+          "sourceCode": "21110",
+          "sourceName": "금정구",
+          "province": "부산광역시",
+          "administrativeCode": "2641000000",
+          "legalCode": "2641000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 996,
+            "2025-01-01": 996
+          },
+          "level": "sgg",
+          "provinceSourceCode": "21",
+          "provinceTargetCode": "26",
+          "targetCode": "26410",
+          "targetName": "금정구",
+          "ancestors": [
+            "21"
+          ]
+        },
+        {
+          "sourceRow": 1017,
+          "sourceCode": "21120",
+          "sourceName": "강서구",
+          "province": "부산광역시",
+          "administrativeCode": "2644000000",
+          "legalCode": "2644000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1017,
+            "2025-01-01": 1017
+          },
+          "level": "sgg",
+          "provinceSourceCode": "21",
+          "provinceTargetCode": "26",
+          "targetCode": "26440",
+          "targetName": "강서구",
+          "ancestors": [
+            "21"
+          ]
+        },
+        {
+          "sourceRow": 1041,
+          "sourceCode": "21130",
+          "sourceName": "연제구",
+          "province": "부산광역시",
+          "administrativeCode": "2647000000",
+          "legalCode": "2647000000",
+          "created": "19950301",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1041,
+            "2025-01-01": 1041
+          },
+          "level": "sgg",
+          "provinceSourceCode": "21",
+          "provinceTargetCode": "26",
+          "targetCode": "26470",
+          "targetName": "연제구",
+          "ancestors": [
+            "21"
+          ]
+        },
+        {
+          "sourceRow": 1054,
+          "sourceCode": "21140",
+          "sourceName": "수영구",
+          "province": "부산광역시",
+          "administrativeCode": "2650000000",
+          "legalCode": "2650000000",
+          "created": "19950301",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1054,
+            "2025-01-01": 1054
+          },
+          "level": "sgg",
+          "provinceSourceCode": "21",
+          "provinceTargetCode": "26",
+          "targetCode": "26500",
+          "targetName": "수영구",
+          "ancestors": [
+            "21"
+          ]
+        },
+        {
+          "sourceRow": 1065,
+          "sourceCode": "21150",
+          "sourceName": "사상구",
+          "province": "부산광역시",
+          "administrativeCode": "2653000000",
+          "legalCode": "2653000000",
+          "created": "19950301",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1065,
+            "2025-01-01": 1065
+          },
+          "level": "sgg",
+          "provinceSourceCode": "21",
+          "provinceTargetCode": "26",
+          "targetCode": "26530",
+          "targetName": "사상구",
+          "ancestors": [
+            "21"
+          ]
+        },
+        {
+          "sourceRow": 1078,
+          "sourceCode": "21510",
+          "sourceName": "기장군",
+          "province": "부산광역시",
+          "administrativeCode": "2671000000",
+          "legalCode": "2671000000",
+          "created": "19950301",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1078,
+            "2025-01-01": 1078
+          },
+          "level": "sgg",
+          "provinceSourceCode": "21",
+          "provinceTargetCode": "26",
+          "targetCode": "26710",
+          "targetName": "기장군",
+          "ancestors": [
+            "21"
+          ]
+        },
+        {
+          "sourceRow": 1146,
+          "sourceCode": "22",
+          "sourceName": "대구광역시",
+          "province": "대구광역시",
+          "administrativeCode": "2700000000",
+          "legalCode": "2700000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1146,
+            "2025-01-01": 1146
+          },
+          "level": "sido",
+          "provinceSourceCode": "22",
+          "provinceTargetCode": "27",
+          "targetCode": "27",
+          "targetName": "대구광역시",
+          "ancestors": []
+        },
+        {
+          "sourceRow": 1147,
+          "sourceCode": "22010",
+          "sourceName": "중구",
+          "province": "대구광역시",
+          "administrativeCode": "2711000000",
+          "legalCode": "2711000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1147,
+            "2025-01-01": 1147
+          },
+          "level": "sgg",
+          "provinceSourceCode": "22",
+          "provinceTargetCode": "27",
+          "targetCode": "27110",
+          "targetName": "중구",
+          "ancestors": [
+            "22"
+          ]
+        },
+        {
+          "sourceRow": 1220,
+          "sourceCode": "22020",
+          "sourceName": "동구",
+          "province": "대구광역시",
+          "administrativeCode": "2714000000",
+          "legalCode": "2714000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1220,
+            "2025-01-01": 1220
+          },
+          "level": "sgg",
+          "provinceSourceCode": "22",
+          "provinceTargetCode": "27",
+          "targetCode": "27140",
+          "targetName": "동구",
+          "ancestors": [
+            "22"
+          ]
+        },
+        {
+          "sourceRow": 1287,
+          "sourceCode": "22030",
+          "sourceName": "서구",
+          "province": "대구광역시",
+          "administrativeCode": "2717000000",
+          "legalCode": "2717000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1287,
+            "2025-01-01": 1287
+          },
+          "level": "sgg",
+          "provinceSourceCode": "22",
+          "provinceTargetCode": "27",
+          "targetCode": "27170",
+          "targetName": "서구",
+          "ancestors": [
+            "22"
+          ]
+        },
+        {
+          "sourceRow": 1309,
+          "sourceCode": "22040",
+          "sourceName": "남구",
+          "province": "대구광역시",
+          "administrativeCode": "2720000000",
+          "legalCode": "2720000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1309,
+            "2025-01-01": 1309
+          },
+          "level": "sgg",
+          "provinceSourceCode": "22",
+          "provinceTargetCode": "27",
+          "targetCode": "27200",
+          "targetName": "남구",
+          "ancestors": [
+            "22"
+          ]
+        },
+        {
+          "sourceRow": 1323,
+          "sourceCode": "22050",
+          "sourceName": "북구",
+          "province": "대구광역시",
+          "administrativeCode": "2723000000",
+          "legalCode": "2723000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1323,
+            "2025-01-01": 1323
+          },
+          "level": "sgg",
+          "provinceSourceCode": "22",
+          "provinceTargetCode": "27",
+          "targetCode": "27230",
+          "targetName": "북구",
+          "ancestors": [
+            "22"
+          ]
+        },
+        {
+          "sourceRow": 1362,
+          "sourceCode": "22060",
+          "sourceName": "수성구",
+          "province": "대구광역시",
+          "administrativeCode": "2726000000",
+          "legalCode": "2726000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1362,
+            "2025-01-01": 1362
+          },
+          "level": "sgg",
+          "provinceSourceCode": "22",
+          "provinceTargetCode": "27",
+          "targetCode": "27260",
+          "targetName": "수성구",
+          "ancestors": [
+            "22"
+          ]
+        },
+        {
+          "sourceRow": 1398,
+          "sourceCode": "22070",
+          "sourceName": "달서구",
+          "province": "대구광역시",
+          "administrativeCode": "2729000000",
+          "legalCode": "2729000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1398,
+            "2025-01-01": 1398
+          },
+          "level": "sgg",
+          "provinceSourceCode": "22",
+          "provinceTargetCode": "27",
+          "targetCode": "27290",
+          "targetName": "달서구",
+          "ancestors": [
+            "22"
+          ]
+        },
+        {
+          "sourceRow": 1441,
+          "sourceCode": "22510",
+          "sourceName": "달성군",
+          "province": "대구광역시",
+          "administrativeCode": "2771000000",
+          "legalCode": "2771000000",
+          "created": "19950301",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1441,
+            "2025-01-01": 1441
+          },
+          "level": "sgg",
+          "provinceSourceCode": "22",
+          "provinceTargetCode": "27",
+          "targetCode": "27710",
+          "targetName": "달성군",
+          "ancestors": [
+            "22"
+          ]
+        },
+        {
+          "sourceRow": 1550,
+          "sourceCode": "22520",
+          "sourceName": "군위군",
+          "province": "대구광역시",
+          "administrativeCode": "2772000000",
+          "legalCode": "2772000000",
+          "created": "20230701",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1550,
+            "2025-01-01": 1550
+          },
+          "level": "sgg",
+          "provinceSourceCode": "22",
+          "provinceTargetCode": "27",
+          "targetCode": "27720",
+          "targetName": "군위군",
+          "ancestors": [
+            "22"
+          ]
+        },
+        {
+          "sourceRow": 1651,
+          "sourceCode": "23",
+          "sourceName": "인천광역시",
+          "province": "인천광역시",
+          "administrativeCode": "2800000000",
+          "legalCode": "2800000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1651,
+            "2025-01-01": 1651
+          },
+          "level": "sido",
+          "provinceSourceCode": "23",
+          "provinceTargetCode": "28",
+          "targetCode": "28",
+          "targetName": "인천광역시",
+          "ancestors": []
+        },
+        {
+          "sourceRow": 1652,
+          "sourceCode": "23010",
+          "sourceName": "중구",
+          "province": "인천광역시",
+          "administrativeCode": "2811000000",
+          "legalCode": "2811000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1652,
+            "2025-01-01": 1652
+          },
+          "level": "sgg",
+          "provinceSourceCode": "23",
+          "provinceTargetCode": "28",
+          "targetCode": "28110",
+          "targetName": "중구",
+          "ancestors": [
+            "23"
+          ]
+        },
+        {
+          "sourceRow": 1714,
+          "sourceCode": "23020",
+          "sourceName": "동구",
+          "province": "인천광역시",
+          "administrativeCode": "2814000000",
+          "legalCode": "2814000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1714,
+            "2025-01-01": 1714
+          },
+          "level": "sgg",
+          "provinceSourceCode": "23",
+          "provinceTargetCode": "28",
+          "targetCode": "28140",
+          "targetName": "동구",
+          "ancestors": [
+            "23"
+          ]
+        },
+        {
+          "sourceRow": 1729,
+          "sourceCode": "23090",
+          "sourceName": "미추홀구",
+          "province": "인천광역시",
+          "administrativeCode": "2817700000",
+          "legalCode": "2817700000",
+          "created": "20180701",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1729,
+            "2025-01-01": 1729
+          },
+          "level": "sgg",
+          "provinceSourceCode": "23",
+          "provinceTargetCode": "28",
+          "targetCode": "28177",
+          "targetName": "미추홀구",
+          "ancestors": [
+            "23"
+          ]
+        },
+        {
+          "sourceRow": 1751,
+          "sourceCode": "23040",
+          "sourceName": "연수구",
+          "province": "인천광역시",
+          "administrativeCode": "2818500000",
+          "legalCode": "2818500000",
+          "created": "19950301",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1751,
+            "2025-01-01": 1751
+          },
+          "level": "sgg",
+          "provinceSourceCode": "23",
+          "provinceTargetCode": "28",
+          "targetCode": "28185",
+          "targetName": "연수구",
+          "ancestors": [
+            "23"
+          ]
+        },
+        {
+          "sourceRow": 1767,
+          "sourceCode": "23050",
+          "sourceName": "남동구",
+          "province": "인천광역시",
+          "administrativeCode": "2820000000",
+          "legalCode": "2820000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1767,
+            "2025-01-01": 1767
+          },
+          "level": "sgg",
+          "provinceSourceCode": "23",
+          "provinceTargetCode": "28",
+          "targetCode": "28200",
+          "targetName": "남동구",
+          "ancestors": [
+            "23"
+          ]
+        },
+        {
+          "sourceRow": 1793,
+          "sourceCode": "23060",
+          "sourceName": "부평구",
+          "province": "인천광역시",
+          "administrativeCode": "2823700000",
+          "legalCode": "2823700000",
+          "created": "19950301",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1793,
+            "2025-01-01": 1793
+          },
+          "level": "sgg",
+          "provinceSourceCode": "23",
+          "provinceTargetCode": "28",
+          "targetCode": "28237",
+          "targetName": "부평구",
+          "ancestors": [
+            "23"
+          ]
+        },
+        {
+          "sourceRow": 1824,
+          "sourceCode": "23070",
+          "sourceName": "계양구",
+          "province": "인천광역시",
+          "administrativeCode": "2824500000",
+          "legalCode": "2824500000",
+          "created": "19950301",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1824,
+            "2025-01-01": 1824
+          },
+          "level": "sgg",
+          "provinceSourceCode": "23",
+          "provinceTargetCode": "28",
+          "targetCode": "28245",
+          "targetName": "계양구",
+          "ancestors": [
+            "23"
+          ]
+        },
+        {
+          "sourceRow": 1856,
+          "sourceCode": "23080",
+          "sourceName": "서구",
+          "province": "인천광역시",
+          "administrativeCode": "2826000000",
+          "legalCode": "2826000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1856,
+            "2025-01-01": 1856
+          },
+          "level": "sgg",
+          "provinceSourceCode": "23",
+          "provinceTargetCode": "28",
+          "targetCode": "28260",
+          "targetName": "서구",
+          "ancestors": [
+            "23"
+          ]
+        },
+        {
+          "sourceRow": 1895,
+          "sourceCode": "23510",
+          "sourceName": "강화군",
+          "province": "인천광역시",
+          "administrativeCode": "2871000000",
+          "legalCode": "2871000000",
+          "created": "19950301",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 1895,
+            "2025-01-01": 1895
+          },
+          "level": "sgg",
+          "provinceSourceCode": "23",
+          "provinceTargetCode": "28",
+          "targetCode": "28710",
+          "targetName": "강화군",
+          "ancestors": [
+            "23"
+          ]
+        },
+        {
+          "sourceRow": 2006,
+          "sourceCode": "23520",
+          "sourceName": "옹진군",
+          "province": "인천광역시",
+          "administrativeCode": "2872000000",
+          "legalCode": "2872000000",
+          "created": "19950301",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2006,
+            "2025-01-01": 2006
+          },
+          "level": "sgg",
+          "provinceSourceCode": "23",
+          "provinceTargetCode": "28",
+          "targetCode": "28720",
+          "targetName": "옹진군",
+          "ancestors": [
+            "23"
+          ]
+        },
+        {
+          "sourceRow": 2043,
+          "sourceCode": "24",
+          "sourceName": "광주광역시",
+          "province": "광주광역시",
+          "administrativeCode": "2900000000",
+          "legalCode": "2900000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2043,
+            "2025-01-01": 2043
+          },
+          "level": "sido",
+          "provinceSourceCode": "24",
+          "provinceTargetCode": "29",
+          "targetCode": "29",
+          "targetName": "광주광역시",
+          "ancestors": []
+        },
+        {
+          "sourceRow": 2044,
+          "sourceCode": "24010",
+          "sourceName": "동구",
+          "province": "광주광역시",
+          "administrativeCode": "2911000000",
+          "legalCode": "2911000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2044,
+            "2025-01-01": 2044
+          },
+          "level": "sgg",
+          "provinceSourceCode": "24",
+          "provinceTargetCode": "29",
+          "targetCode": "29110",
+          "targetName": "동구",
+          "ancestors": [
+            "24"
+          ]
+        },
+        {
+          "sourceRow": 2088,
+          "sourceCode": "24020",
+          "sourceName": "서구",
+          "province": "광주광역시",
+          "administrativeCode": "2914000000",
+          "legalCode": "2914000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2088,
+            "2025-01-01": 2088
+          },
+          "level": "sgg",
+          "provinceSourceCode": "24",
+          "provinceTargetCode": "29",
+          "targetCode": "29140",
+          "targetName": "서구",
+          "ancestors": [
+            "24"
+          ]
+        },
+        {
+          "sourceRow": 2123,
+          "sourceCode": "24030",
+          "sourceName": "남구",
+          "province": "광주광역시",
+          "administrativeCode": "2915500000",
+          "legalCode": "2915500000",
+          "created": "19950301",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2123,
+            "2025-01-01": 2123
+          },
+          "level": "sgg",
+          "provinceSourceCode": "24",
+          "provinceTargetCode": "29",
+          "targetCode": "29155",
+          "targetName": "남구",
+          "ancestors": [
+            "24"
+          ]
+        },
+        {
+          "sourceRow": 2165,
+          "sourceCode": "24040",
+          "sourceName": "북구",
+          "province": "광주광역시",
+          "administrativeCode": "2917000000",
+          "legalCode": "2917000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2165,
+            "2025-01-01": 2165
+          },
+          "level": "sgg",
+          "provinceSourceCode": "24",
+          "provinceTargetCode": "29",
+          "targetCode": "29170",
+          "targetName": "북구",
+          "ancestors": [
+            "24"
+          ]
+        },
+        {
+          "sourceRow": 2217,
+          "sourceCode": "24050",
+          "sourceName": "광산구",
+          "province": "광주광역시",
+          "administrativeCode": "2920000000",
+          "legalCode": "2920000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2217,
+            "2025-01-01": 2217
+          },
+          "level": "sgg",
+          "provinceSourceCode": "24",
+          "provinceTargetCode": "29",
+          "targetCode": "29200",
+          "targetName": "광산구",
+          "ancestors": [
+            "24"
+          ]
+        },
+        {
+          "sourceRow": 2318,
+          "sourceCode": "25",
+          "sourceName": "대전광역시",
+          "province": "대전광역시",
+          "administrativeCode": "3000000000",
+          "legalCode": "3000000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2318,
+            "2025-01-01": 2318
+          },
+          "level": "sido",
+          "provinceSourceCode": "25",
+          "provinceTargetCode": "30",
+          "targetCode": "30",
+          "targetName": "대전광역시",
+          "ancestors": []
+        },
+        {
+          "sourceRow": 2319,
+          "sourceCode": "25010",
+          "sourceName": "동구",
+          "province": "대전광역시",
+          "administrativeCode": "3011000000",
+          "legalCode": "3011000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2319,
+            "2025-01-01": 2319
+          },
+          "level": "sgg",
+          "provinceSourceCode": "25",
+          "provinceTargetCode": "30",
+          "targetCode": "30110",
+          "targetName": "동구",
+          "ancestors": [
+            "25"
+          ]
+        },
+        {
+          "sourceRow": 2367,
+          "sourceCode": "25020",
+          "sourceName": "중구",
+          "province": "대전광역시",
+          "administrativeCode": "3014000000",
+          "legalCode": "3014000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2367,
+            "2025-01-01": 2367
+          },
+          "level": "sgg",
+          "provinceSourceCode": "25",
+          "provinceTargetCode": "30",
+          "targetCode": "30140",
+          "targetName": "중구",
+          "ancestors": [
+            "25"
+          ]
+        },
+        {
+          "sourceRow": 2397,
+          "sourceCode": "25030",
+          "sourceName": "서구",
+          "province": "대전광역시",
+          "administrativeCode": "3017000000",
+          "legalCode": "3017000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2397,
+            "2025-01-01": 2397
+          },
+          "level": "sgg",
+          "provinceSourceCode": "25",
+          "provinceTargetCode": "30",
+          "targetCode": "30170",
+          "targetName": "서구",
+          "ancestors": [
+            "25"
+          ]
+        },
+        {
+          "sourceRow": 2433,
+          "sourceCode": "25040",
+          "sourceName": "유성구",
+          "province": "대전광역시",
+          "administrativeCode": "3020000000",
+          "legalCode": "3020000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2433,
+            "2025-01-01": 2433
+          },
+          "level": "sgg",
+          "provinceSourceCode": "25",
+          "provinceTargetCode": "30",
+          "targetCode": "30200",
+          "targetName": "유성구",
+          "ancestors": [
+            "25"
+          ]
+        },
+        {
+          "sourceRow": 2497,
+          "sourceCode": "25050",
+          "sourceName": "대덕구",
+          "province": "대전광역시",
+          "administrativeCode": "3023000000",
+          "legalCode": "3023000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2497,
+            "2025-01-01": 2497
+          },
+          "level": "sgg",
+          "provinceSourceCode": "25",
+          "provinceTargetCode": "30",
+          "targetCode": "30230",
+          "targetName": "대덕구",
+          "ancestors": [
+            "25"
+          ]
+        },
+        {
+          "sourceRow": 2525,
+          "sourceCode": "26",
+          "sourceName": "울산광역시",
+          "province": "울산광역시",
+          "administrativeCode": "3100000000",
+          "legalCode": "3100000000",
+          "created": "19970715",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2525,
+            "2025-01-01": 2525
+          },
+          "level": "sido",
+          "provinceSourceCode": "26",
+          "provinceTargetCode": "31",
+          "targetCode": "31",
+          "targetName": "울산광역시",
+          "ancestors": []
+        },
+        {
+          "sourceRow": 2526,
+          "sourceCode": "26010",
+          "sourceName": "중구",
+          "province": "울산광역시",
+          "administrativeCode": "3111000000",
+          "legalCode": "3111000000",
+          "created": "19970715",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2526,
+            "2025-01-01": 2526
+          },
+          "level": "sgg",
+          "provinceSourceCode": "26",
+          "provinceTargetCode": "31",
+          "targetCode": "31110",
+          "targetName": "중구",
+          "ancestors": [
+            "26"
+          ]
+        },
+        {
+          "sourceRow": 2548,
+          "sourceCode": "26020",
+          "sourceName": "남구",
+          "province": "울산광역시",
+          "administrativeCode": "3114000000",
+          "legalCode": "3114000000",
+          "created": "19970715",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2548,
+            "2025-01-01": 2548
+          },
+          "level": "sgg",
+          "provinceSourceCode": "26",
+          "provinceTargetCode": "31",
+          "targetCode": "31140",
+          "targetName": "남구",
+          "ancestors": [
+            "26"
+          ]
+        },
+        {
+          "sourceRow": 2576,
+          "sourceCode": "26030",
+          "sourceName": "동구",
+          "province": "울산광역시",
+          "administrativeCode": "3117000000",
+          "legalCode": "3117000000",
+          "created": "19970715",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2576,
+            "2025-01-01": 2576
+          },
+          "level": "sgg",
+          "provinceSourceCode": "26",
+          "provinceTargetCode": "31",
+          "targetCode": "31170",
+          "targetName": "동구",
+          "ancestors": [
+            "26"
+          ]
+        },
+        {
+          "sourceRow": 2589,
+          "sourceCode": "26040",
+          "sourceName": "북구",
+          "province": "울산광역시",
+          "administrativeCode": "3120000000",
+          "legalCode": "3120000000",
+          "created": "19970715",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2589,
+            "2025-01-01": 2589
+          },
+          "level": "sgg",
+          "provinceSourceCode": "26",
+          "provinceTargetCode": "31",
+          "targetCode": "31200",
+          "targetName": "북구",
+          "ancestors": [
+            "26"
+          ]
+        },
+        {
+          "sourceRow": 2619,
+          "sourceCode": "26510",
+          "sourceName": "울주군",
+          "province": "울산광역시",
+          "administrativeCode": "3171000000",
+          "legalCode": "3171000000",
+          "created": "19970715",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2619,
+            "2025-01-01": 2619
+          },
+          "level": "sgg",
+          "provinceSourceCode": "26",
+          "provinceTargetCode": "31",
+          "targetCode": "31710",
+          "targetName": "울주군",
+          "ancestors": [
+            "26"
+          ]
+        },
+        {
+          "sourceRow": 2750,
+          "sourceCode": "29",
+          "sourceName": "세종특별자치시",
+          "province": "세종특별자치시",
+          "administrativeCode": "3600000000",
+          "legalCode": "3600000000",
+          "created": "20120701",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2750,
+            "2025-01-01": 2750
+          },
+          "level": "sido",
+          "provinceSourceCode": "29",
+          "provinceTargetCode": "36",
+          "targetCode": "36",
+          "targetName": "세종특별자치시",
+          "ancestors": []
+        },
+        {
+          "sourceRow": 2751,
+          "sourceCode": "29010",
+          "sourceName": "세종특별자치시",
+          "province": "세종특별자치시",
+          "administrativeCode": "3611000000",
+          "legalCode": "3611000000",
+          "created": "20120701",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2751,
+            "2025-01-01": 2751
+          },
+          "level": "sgg",
+          "provinceSourceCode": "29",
+          "provinceTargetCode": "36",
+          "targetCode": "36110",
+          "targetName": "세종시",
+          "ancestors": [
+            "29"
+          ]
+        },
+        {
+          "sourceRow": 2902,
+          "sourceCode": "31",
+          "sourceName": "경기도",
+          "province": "경기도",
+          "administrativeCode": "4100000000",
+          "legalCode": "4100000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2902,
+            "2025-01-01": 2902
+          },
+          "level": "sido",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41",
+          "targetName": "경기도",
+          "ancestors": []
+        },
+        {
+          "sourceRow": 2904,
+          "sourceCode": "31010",
+          "sourceName": "수원시",
+          "province": "경기도",
+          "administrativeCode": "4111000000",
+          "legalCode": "4111000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2904,
+            "2025-01-01": 2904
+          },
+          "level": "city",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": null,
+          "targetName": null,
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 2905,
+          "sourceCode": "31011",
+          "sourceName": "수원시 장안구",
+          "province": "경기도",
+          "administrativeCode": "4111100000",
+          "legalCode": "4111100000",
+          "created": "19880701",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2905,
+            "2025-01-01": 2905
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41111",
+          "targetName": "수원시장안구",
+          "ancestors": [
+            "31",
+            "31010"
+          ]
+        },
+        {
+          "sourceRow": 2921,
+          "sourceCode": "31012",
+          "sourceName": "수원시 권선구",
+          "province": "경기도",
+          "administrativeCode": "4111300000",
+          "legalCode": "4111300000",
+          "created": "19880701",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2921,
+            "2025-01-01": 2921
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41113",
+          "targetName": "수원시권선구",
+          "ancestors": [
+            "31",
+            "31010"
+          ]
+        },
+        {
+          "sourceRow": 2942,
+          "sourceCode": "31013",
+          "sourceName": "수원시 팔달구",
+          "province": "경기도",
+          "administrativeCode": "4111500000",
+          "legalCode": "4111500000",
+          "created": "19930115",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2942,
+            "2025-01-01": 2942
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41115",
+          "targetName": "수원시팔달구",
+          "ancestors": [
+            "31",
+            "31010"
+          ]
+        },
+        {
+          "sourceRow": 2967,
+          "sourceCode": "31014",
+          "sourceName": "수원시 영통구",
+          "province": "경기도",
+          "administrativeCode": "4111700000",
+          "legalCode": "4111700000",
+          "created": "20031124",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2967,
+            "2025-01-01": 2967
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41117",
+          "targetName": "수원시영통구",
+          "ancestors": [
+            "31",
+            "31010"
+          ]
+        },
+        {
+          "sourceRow": 2982,
+          "sourceCode": "31020",
+          "sourceName": "성남시",
+          "province": "경기도",
+          "administrativeCode": "4113000000",
+          "legalCode": "4113000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2982,
+            "2025-01-01": 2982
+          },
+          "level": "city",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": null,
+          "targetName": null,
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 2983,
+          "sourceCode": "31021",
+          "sourceName": "성남시 수정구",
+          "province": "경기도",
+          "administrativeCode": "4113100000",
+          "legalCode": "4113100000",
+          "created": "19890501",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 2983,
+            "2025-01-01": 2983
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41131",
+          "targetName": "성남시수정구",
+          "ancestors": [
+            "31",
+            "31020"
+          ]
+        },
+        {
+          "sourceRow": 3008,
+          "sourceCode": "31022",
+          "sourceName": "성남시 중원구",
+          "province": "경기도",
+          "administrativeCode": "4113300000",
+          "legalCode": "4113300000",
+          "created": "19890501",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3008,
+            "2025-01-01": 3008
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41133",
+          "targetName": "성남시중원구",
+          "ancestors": [
+            "31",
+            "31020"
+          ]
+        },
+        {
+          "sourceRow": 3022,
+          "sourceCode": "31023",
+          "sourceName": "성남시 분당구",
+          "province": "경기도",
+          "administrativeCode": "4113500000",
+          "legalCode": "4113500000",
+          "created": "19910916",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3022,
+            "2025-01-01": 3022
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41135",
+          "targetName": "성남시분당구",
+          "ancestors": [
+            "31",
+            "31020"
+          ]
+        },
+        {
+          "sourceRow": 3052,
+          "sourceCode": "31030",
+          "sourceName": "의정부시",
+          "province": "경기도",
+          "administrativeCode": "4115000000",
+          "legalCode": "4115000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3052,
+            "2025-01-01": 3052
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41150",
+          "targetName": "의정부시",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 3076,
+          "sourceCode": "31040",
+          "sourceName": "안양시",
+          "province": "경기도",
+          "administrativeCode": "4117000000",
+          "legalCode": "4117000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3076,
+            "2025-01-01": 3076
+          },
+          "level": "city",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": null,
+          "targetName": null,
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 3077,
+          "sourceCode": "31041",
+          "sourceName": "안양시 만안구",
+          "province": "경기도",
+          "administrativeCode": "4117100000",
+          "legalCode": "4117100000",
+          "created": "19921001",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3077,
+            "2025-01-01": 3077
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41171",
+          "targetName": "안양시만안구",
+          "ancestors": [
+            "31",
+            "31040"
+          ]
+        },
+        {
+          "sourceRow": 3093,
+          "sourceCode": "31042",
+          "sourceName": "안양시 동안구",
+          "province": "경기도",
+          "administrativeCode": "4117300000",
+          "legalCode": "4117300000",
+          "created": "19921001",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3093,
+            "2025-01-01": 3093
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41173",
+          "targetName": "안양시동안구",
+          "ancestors": [
+            "31",
+            "31040"
+          ]
+        },
+        {
+          "sourceRow": 3112,
+          "sourceCode": "31050",
+          "sourceName": "부천시",
+          "province": "경기도",
+          "administrativeCode": "4119000000",
+          "legalCode": "4119000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3112,
+            "2025-01-01": 3112
+          },
+          "level": "city",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": null,
+          "targetName": null,
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 3113,
+          "sourceCode": "31051",
+          "sourceName": "부천시 원미구",
+          "province": "경기도",
+          "administrativeCode": "4119200000",
+          "legalCode": "4119200000",
+          "created": "20240101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3113,
+            "2025-01-01": 3113
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41192",
+          "targetName": "부천시원미구",
+          "ancestors": [
+            "31",
+            "31050"
+          ]
+        },
+        {
+          "sourceRow": 3137,
+          "sourceCode": "31052",
+          "sourceName": "부천시 소사구",
+          "province": "경기도",
+          "administrativeCode": "4119400000",
+          "legalCode": "4119400000",
+          "created": "20240101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3137,
+            "2025-01-01": 3137
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41194",
+          "targetName": "부천시소사구",
+          "ancestors": [
+            "31",
+            "31050"
+          ]
+        },
+        {
+          "sourceRow": 3151,
+          "sourceCode": "31053",
+          "sourceName": "부천시 오정구",
+          "province": "경기도",
+          "administrativeCode": "4119600000",
+          "legalCode": "4119600000",
+          "created": "20240101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3151,
+            "2025-01-01": 3151
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41196",
+          "targetName": "부천시오정구",
+          "ancestors": [
+            "31",
+            "31050"
+          ]
+        },
+        {
+          "sourceRow": 3164,
+          "sourceCode": "31060",
+          "sourceName": "광명시",
+          "province": "경기도",
+          "administrativeCode": "4121000000",
+          "legalCode": "4121000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3164,
+            "2025-01-01": 3164
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41210",
+          "targetName": "광명시",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 3186,
+          "sourceCode": "31070",
+          "sourceName": "평택시",
+          "province": "경기도",
+          "administrativeCode": "4122000000",
+          "legalCode": "4122000000",
+          "created": "19950510",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3186,
+            "2025-01-01": 3186
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41220",
+          "targetName": "평택시",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 3350,
+          "sourceCode": "31080",
+          "sourceName": "동두천시",
+          "province": "경기도",
+          "administrativeCode": "4125000000",
+          "legalCode": "4125000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3350,
+            "2025-01-01": 3350
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41250",
+          "targetName": "동두천시",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 3367,
+          "sourceCode": "31090",
+          "sourceName": "안산시",
+          "province": "경기도",
+          "administrativeCode": "4127000000",
+          "legalCode": "4127000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3367,
+            "2025-01-01": 3367
+          },
+          "level": "city",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": null,
+          "targetName": null,
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 3368,
+          "sourceCode": "31091",
+          "sourceName": "안산시 상록구",
+          "province": "경기도",
+          "administrativeCode": "4127100000",
+          "legalCode": "4127100000",
+          "created": "20021101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3368,
+            "2025-01-01": 3368
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41271",
+          "targetName": "안산시상록구",
+          "ancestors": [
+            "31",
+            "31090"
+          ]
+        },
+        {
+          "sourceRow": 3391,
+          "sourceCode": "31092",
+          "sourceName": "안산시 단원구",
+          "province": "경기도",
+          "administrativeCode": "4127300000",
+          "legalCode": "4127300000",
+          "created": "20021101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3391,
+            "2025-01-01": 3391
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41273",
+          "targetName": "안산시단원구",
+          "ancestors": [
+            "31",
+            "31090"
+          ]
+        },
+        {
+          "sourceRow": 3413,
+          "sourceCode": "31100",
+          "sourceName": "고양시",
+          "province": "경기도",
+          "administrativeCode": "4128000000",
+          "legalCode": "4128000000",
+          "created": "19920504",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3413,
+            "2025-01-01": 3413
+          },
+          "level": "city",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": null,
+          "targetName": null,
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 3414,
+          "sourceCode": "31101",
+          "sourceName": "고양시 덕양구",
+          "province": "경기도",
+          "administrativeCode": "4128100000",
+          "legalCode": "4128100000",
+          "created": "19960301",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3414,
+            "2025-01-01": 3414
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41281",
+          "targetName": "고양시덕양구",
+          "ancestors": [
+            "31",
+            "31100"
+          ]
+        },
+        {
+          "sourceRow": 3464,
+          "sourceCode": "31103",
+          "sourceName": "고양시 일산동구",
+          "province": "경기도",
+          "administrativeCode": "4128500000",
+          "legalCode": "4128500000",
+          "created": "20050516",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3464,
+            "2025-01-01": 3464
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41285",
+          "targetName": "고양시일산동구",
+          "ancestors": [
+            "31",
+            "31100"
+          ]
+        },
+        {
+          "sourceRow": 3483,
+          "sourceCode": "31104",
+          "sourceName": "고양시 일산서구",
+          "province": "경기도",
+          "administrativeCode": "4128700000",
+          "legalCode": "4128700000",
+          "created": "20050516",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3483,
+            "2025-01-01": 3483
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41287",
+          "targetName": "고양시일산서구",
+          "ancestors": [
+            "31",
+            "31100"
+          ]
+        },
+        {
+          "sourceRow": 3497,
+          "sourceCode": "31110",
+          "sourceName": "과천시",
+          "province": "경기도",
+          "administrativeCode": "4129000000",
+          "legalCode": "4129000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3497,
+            "2025-01-01": 3497
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41290",
+          "targetName": "과천시",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 3511,
+          "sourceCode": "31120",
+          "sourceName": "구리시",
+          "province": "경기도",
+          "administrativeCode": "4131000000",
+          "legalCode": "4131000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3511,
+            "2025-01-01": 3511
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41310",
+          "targetName": "구리시",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 3527,
+          "sourceCode": "31130",
+          "sourceName": "남양주시",
+          "province": "경기도",
+          "administrativeCode": "4136000000",
+          "legalCode": "4136000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3527,
+            "2025-01-01": 3527
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41360",
+          "targetName": "남양주시",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 3599,
+          "sourceCode": "31140",
+          "sourceName": "오산시",
+          "province": "경기도",
+          "administrativeCode": "4137000000",
+          "legalCode": "4137000000",
+          "created": "19890101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3599,
+            "2025-01-01": 3599
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41370",
+          "targetName": "오산시",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 3639,
+          "sourceCode": "31150",
+          "sourceName": "시흥시",
+          "province": "경기도",
+          "administrativeCode": "4139000000",
+          "legalCode": "4139000000",
+          "created": "19890101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3639,
+            "2025-01-01": 3639
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41390",
+          "targetName": "시흥시",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 3681,
+          "sourceCode": "31160",
+          "sourceName": "군포시",
+          "province": "경기도",
+          "administrativeCode": "4141000000",
+          "legalCode": "4141000000",
+          "created": "19890101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3681,
+            "2025-01-01": 3681
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41410",
+          "targetName": "군포시",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 3701,
+          "sourceCode": "31170",
+          "sourceName": "의왕시",
+          "province": "경기도",
+          "administrativeCode": "4143000000",
+          "legalCode": "4143000000",
+          "created": "19890101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3701,
+            "2025-01-01": 3701
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41430",
+          "targetName": "의왕시",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 3717,
+          "sourceCode": "31180",
+          "sourceName": "하남시",
+          "province": "경기도",
+          "administrativeCode": "4145000000",
+          "legalCode": "4145000000",
+          "created": "19890101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3717,
+            "2025-01-01": 3717
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41450",
+          "targetName": "하남시",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 3750,
+          "sourceCode": "31190",
+          "sourceName": "용인시",
+          "province": "경기도",
+          "administrativeCode": "4146000000",
+          "legalCode": "4146000000",
+          "created": "19960301",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3750,
+            "2025-01-01": 3750
+          },
+          "level": "city",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": null,
+          "targetName": null,
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 3751,
+          "sourceCode": "31191",
+          "sourceName": "용인시 처인구",
+          "province": "경기도",
+          "administrativeCode": "4146100000",
+          "legalCode": "4146100000",
+          "created": "20051031",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3751,
+            "2025-01-01": 3751
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41461",
+          "targetName": "용인시처인구",
+          "ancestors": [
+            "31",
+            "31190"
+          ]
+        },
+        {
+          "sourceRow": 3841,
+          "sourceCode": "31192",
+          "sourceName": "용인시 기흥구",
+          "province": "경기도",
+          "administrativeCode": "4146300000",
+          "legalCode": "4146300000",
+          "created": "20051031",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3841,
+            "2025-01-01": 3841
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41463",
+          "targetName": "용인시기흥구",
+          "ancestors": [
+            "31",
+            "31190"
+          ]
+        },
+        {
+          "sourceRow": 3863,
+          "sourceCode": "31193",
+          "sourceName": "용인시 수지구",
+          "province": "경기도",
+          "administrativeCode": "4146500000",
+          "legalCode": "4146500000",
+          "created": "20051031",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3863,
+            "2025-01-01": 3863
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41465",
+          "targetName": "용인시수지구",
+          "ancestors": [
+            "31",
+            "31190"
+          ]
+        },
+        {
+          "sourceRow": 3876,
+          "sourceCode": "31200",
+          "sourceName": "파주시",
+          "province": "경기도",
+          "administrativeCode": "4148000000",
+          "legalCode": "4148000000",
+          "created": "19960301",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 3876,
+            "2025-01-01": 3876
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41480",
+          "targetName": "파주시",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 4035,
+          "sourceCode": "31210",
+          "sourceName": "이천시",
+          "province": "경기도",
+          "administrativeCode": "4150000000",
+          "legalCode": "4150000000",
+          "created": "19960301",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 4035,
+            "2025-01-01": 4035
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41500",
+          "targetName": "이천시",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 4178,
+          "sourceCode": "31220",
+          "sourceName": "안성시",
+          "province": "경기도",
+          "administrativeCode": "4155000000",
+          "legalCode": "4155000000",
+          "created": "19980401",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 4178,
+            "2025-01-01": 4178
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41550",
+          "targetName": "안성시",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 4382,
+          "sourceCode": "31230",
+          "sourceName": "김포시",
+          "province": "경기도",
+          "administrativeCode": "4157000000",
+          "legalCode": "4157000000",
+          "created": "19980401",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 4382,
+            "2025-01-01": 4382
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41570",
+          "targetName": "김포시",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 4457,
+          "sourceCode": "31240",
+          "sourceName": "화성시",
+          "province": "경기도",
+          "administrativeCode": "4159000000",
+          "legalCode": "4159000000",
+          "created": "20010321",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 4457,
+            "2025-01-01": 4457
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41590",
+          "targetName": "화성시",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 4670,
+          "sourceCode": "31250",
+          "sourceName": "광주시",
+          "province": "경기도",
+          "administrativeCode": "4161000000",
+          "legalCode": "4161000000",
+          "created": "20010321",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 4670,
+            "2025-01-01": 4670
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41610",
+          "targetName": "광주시",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 4760,
+          "sourceCode": "31260",
+          "sourceName": "양주시",
+          "province": "경기도",
+          "administrativeCode": "4163000000",
+          "legalCode": "4163000000",
+          "created": "20031019",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 4760,
+            "2025-01-01": 4760
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41630",
+          "targetName": "양주시",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 4822,
+          "sourceCode": "31270",
+          "sourceName": "포천시",
+          "province": "경기도",
+          "administrativeCode": "4165000000",
+          "legalCode": "4165000000",
+          "created": "20031019",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 4822,
+            "2025-01-01": 4822
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41650",
+          "targetName": "포천시",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 4923,
+          "sourceCode": "31280",
+          "sourceName": "여주시",
+          "province": "경기도",
+          "administrativeCode": "4167000000",
+          "legalCode": "4167000000",
+          "created": "20130923",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 4923,
+            "2025-01-01": 4923
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41670",
+          "targetName": "여주시",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 5079,
+          "sourceCode": "31550",
+          "sourceName": "연천군",
+          "province": "경기도",
+          "administrativeCode": "4180000000",
+          "legalCode": "4180000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 5079,
+            "2025-01-01": 5079
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41800",
+          "targetName": "연천군",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 5193,
+          "sourceCode": "31570",
+          "sourceName": "가평군",
+          "province": "경기도",
+          "administrativeCode": "4182000000",
+          "legalCode": "4182000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 5193,
+            "2025-01-01": 5193
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41820",
+          "targetName": "가평군",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 5261,
+          "sourceCode": "31580",
+          "sourceName": "양평군",
+          "province": "경기도",
+          "administrativeCode": "4183000000",
+          "legalCode": "4183000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 5261,
+            "2025-01-01": 5261
+          },
+          "level": "sgg",
+          "provinceSourceCode": "31",
+          "provinceTargetCode": "41",
+          "targetCode": "41830",
+          "targetName": "양평군",
+          "ancestors": [
+            "31"
+          ]
+        },
+        {
+          "sourceRow": 5384,
+          "sourceCode": "32",
+          "sourceName": "강원특별자치도",
+          "province": "강원특별자치도",
+          "administrativeCode": "5100000000",
+          "legalCode": "5100000000",
+          "created": "20230611",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 5384,
+            "2025-01-01": 5384
+          },
+          "level": "sido",
+          "provinceSourceCode": "32",
+          "provinceTargetCode": "51",
+          "targetCode": "51",
+          "targetName": "강원특별자치도",
+          "ancestors": []
+        },
+        {
+          "sourceRow": 5385,
+          "sourceCode": "32010",
+          "sourceName": "춘천시",
+          "province": "강원특별자치도",
+          "administrativeCode": "5111000000",
+          "legalCode": "5111000000",
+          "created": "20230611",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 5385,
+            "2025-01-01": 5385
+          },
+          "level": "sgg",
+          "provinceSourceCode": "32",
+          "provinceTargetCode": "51",
+          "targetCode": "51110",
+          "targetName": "춘천시",
+          "ancestors": [
+            "32"
+          ]
+        },
+        {
+          "sourceRow": 5508,
+          "sourceCode": "32020",
+          "sourceName": "원주시",
+          "province": "강원특별자치도",
+          "administrativeCode": "5113000000",
+          "legalCode": "5113000000",
+          "created": "20230611",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 5508,
+            "2025-01-01": 5508
+          },
+          "level": "sgg",
+          "provinceSourceCode": "32",
+          "provinceTargetCode": "51",
+          "targetCode": "51130",
+          "targetName": "원주시",
+          "ancestors": [
+            "32"
+          ]
+        },
+        {
+          "sourceRow": 5603,
+          "sourceCode": "32030",
+          "sourceName": "강릉시",
+          "province": "강원특별자치도",
+          "administrativeCode": "5115000000",
+          "legalCode": "5115000000",
+          "created": "20230611",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 5603,
+            "2025-01-01": 5603
+          },
+          "level": "sgg",
+          "provinceSourceCode": "32",
+          "provinceTargetCode": "51",
+          "targetCode": "51150",
+          "targetName": "강릉시",
+          "ancestors": [
+            "32"
+          ]
+        },
+        {
+          "sourceRow": 5719,
+          "sourceCode": "32040",
+          "sourceName": "동해시",
+          "province": "강원특별자치도",
+          "administrativeCode": "5117000000",
+          "legalCode": "5117000000",
+          "created": "20230611",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 5719,
+            "2025-01-01": 5719
+          },
+          "level": "sgg",
+          "provinceSourceCode": "32",
+          "provinceTargetCode": "51",
+          "targetCode": "51170",
+          "targetName": "동해시",
+          "ancestors": [
+            "32"
+          ]
+        },
+        {
+          "sourceRow": 5759,
+          "sourceCode": "32050",
+          "sourceName": "태백시",
+          "province": "강원특별자치도",
+          "administrativeCode": "5119000000",
+          "legalCode": "5119000000",
+          "created": "20230611",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 5759,
+            "2025-01-01": 5759
+          },
+          "level": "sgg",
+          "provinceSourceCode": "32",
+          "provinceTargetCode": "51",
+          "targetCode": "51190",
+          "targetName": "태백시",
+          "ancestors": [
+            "32"
+          ]
+        },
+        {
+          "sourceRow": 5783,
+          "sourceCode": "32060",
+          "sourceName": "속초시",
+          "province": "강원특별자치도",
+          "administrativeCode": "5121000000",
+          "legalCode": "5121000000",
+          "created": "20230611",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 5783,
+            "2025-01-01": 5783
+          },
+          "level": "sgg",
+          "provinceSourceCode": "32",
+          "provinceTargetCode": "51",
+          "targetCode": "51210",
+          "targetName": "속초시",
+          "ancestors": [
+            "32"
+          ]
+        },
+        {
+          "sourceRow": 5801,
+          "sourceCode": "32070",
+          "sourceName": "삼척시",
+          "province": "강원특별자치도",
+          "administrativeCode": "5123000000",
+          "legalCode": "5123000000",
+          "created": "20230611",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 5801,
+            "2025-01-01": 5801
+          },
+          "level": "sgg",
+          "provinceSourceCode": "32",
+          "provinceTargetCode": "51",
+          "targetCode": "51230",
+          "targetName": "삼척시",
+          "ancestors": [
+            "32"
+          ]
+        },
+        {
+          "sourceRow": 5940,
+          "sourceCode": "32510",
+          "sourceName": "홍천군",
+          "province": "강원특별자치도",
+          "administrativeCode": "5172000000",
+          "legalCode": "5172000000",
+          "created": "20230611",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 5940,
+            "2025-01-01": 5940
+          },
+          "level": "sgg",
+          "provinceSourceCode": "32",
+          "provinceTargetCode": "51",
+          "targetCode": "51720",
+          "targetName": "홍천군",
+          "ancestors": [
+            "32"
+          ]
+        },
+        {
+          "sourceRow": 6056,
+          "sourceCode": "32520",
+          "sourceName": "횡성군",
+          "province": "강원특별자치도",
+          "administrativeCode": "5173000000",
+          "legalCode": "5173000000",
+          "created": "20230611",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 6056,
+            "2025-01-01": 6056
+          },
+          "level": "sgg",
+          "provinceSourceCode": "32",
+          "provinceTargetCode": "51",
+          "targetCode": "51730",
+          "targetName": "횡성군",
+          "ancestors": [
+            "32"
+          ]
+        },
+        {
+          "sourceRow": 6176,
+          "sourceCode": "32530",
+          "sourceName": "영월군",
+          "province": "강원특별자치도",
+          "administrativeCode": "5175000000",
+          "legalCode": "5175000000",
+          "created": "20230611",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 6176,
+            "2025-01-01": 6176
+          },
+          "level": "sgg",
+          "provinceSourceCode": "32",
+          "provinceTargetCode": "51",
+          "targetCode": "51750",
+          "targetName": "영월군",
+          "ancestors": [
+            "32"
+          ]
+        },
+        {
+          "sourceRow": 6244,
+          "sourceCode": "32540",
+          "sourceName": "평창군",
+          "province": "강원특별자치도",
+          "administrativeCode": "5176000000",
+          "legalCode": "5176000000",
+          "created": "20230611",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 6244,
+            "2025-01-01": 6244
+          },
+          "level": "sgg",
+          "provinceSourceCode": "32",
+          "provinceTargetCode": "51",
+          "targetCode": "51760",
+          "targetName": "평창군",
+          "ancestors": [
+            "32"
+          ]
+        },
+        {
+          "sourceRow": 6343,
+          "sourceCode": "32550",
+          "sourceName": "정선군",
+          "province": "강원특별자치도",
+          "administrativeCode": "5177000000",
+          "legalCode": "5177000000",
+          "created": "20230611",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 6343,
+            "2025-01-01": 6343
+          },
+          "level": "sgg",
+          "provinceSourceCode": "32",
+          "provinceTargetCode": "51",
+          "targetCode": "51770",
+          "targetName": "정선군",
+          "ancestors": [
+            "32"
+          ]
+        },
+        {
+          "sourceRow": 6413,
+          "sourceCode": "32560",
+          "sourceName": "철원군",
+          "province": "강원특별자치도",
+          "administrativeCode": "5178000000",
+          "legalCode": "5178000000",
+          "created": "20230611",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 6413,
+            "2025-01-01": 6413
+          },
+          "level": "sgg",
+          "provinceSourceCode": "32",
+          "provinceTargetCode": "51",
+          "targetCode": "51780",
+          "targetName": "철원군",
+          "ancestors": [
+            "32"
+          ]
+        },
+        {
+          "sourceRow": 6506,
+          "sourceCode": "32570",
+          "sourceName": "화천군",
+          "province": "강원특별자치도",
+          "administrativeCode": "5179000000",
+          "legalCode": "5179000000",
+          "created": "20230611",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 6506,
+            "2025-01-01": 6506
+          },
+          "level": "sgg",
+          "provinceSourceCode": "32",
+          "provinceTargetCode": "51",
+          "targetCode": "51790",
+          "targetName": "화천군",
+          "ancestors": [
+            "32"
+          ]
+        },
+        {
+          "sourceRow": 6552,
+          "sourceCode": "32580",
+          "sourceName": "양구군",
+          "province": "강원특별자치도",
+          "administrativeCode": "5180000000",
+          "legalCode": "5180000000",
+          "created": "20230611",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 6552,
+            "2025-01-01": 6552
+          },
+          "level": "sgg",
+          "provinceSourceCode": "32",
+          "provinceTargetCode": "51",
+          "targetCode": "51800",
+          "targetName": "양구군",
+          "ancestors": [
+            "32"
+          ]
+        },
+        {
+          "sourceRow": 6618,
+          "sourceCode": "32590",
+          "sourceName": "인제군",
+          "province": "강원특별자치도",
+          "administrativeCode": "5181000000",
+          "legalCode": "5181000000",
+          "created": "20230611",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 6618,
+            "2025-01-01": 6618
+          },
+          "level": "sgg",
+          "provinceSourceCode": "32",
+          "provinceTargetCode": "51",
+          "targetCode": "51810",
+          "targetName": "인제군",
+          "ancestors": [
+            "32"
+          ]
+        },
+        {
+          "sourceRow": 6670,
+          "sourceCode": "32600",
+          "sourceName": "고성군",
+          "province": "강원특별자치도",
+          "administrativeCode": "5182000000",
+          "legalCode": "5182000000",
+          "created": "20230611",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 6670,
+            "2025-01-01": 6670
+          },
+          "level": "sgg",
+          "provinceSourceCode": "32",
+          "provinceTargetCode": "51",
+          "targetCode": "51820",
+          "targetName": "고성군",
+          "ancestors": [
+            "32"
+          ]
+        },
+        {
+          "sourceRow": 6765,
+          "sourceCode": "32610",
+          "sourceName": "양양군",
+          "province": "강원특별자치도",
+          "administrativeCode": "5183000000",
+          "legalCode": "5183000000",
+          "created": "20230611",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 6765,
+            "2025-01-01": 6765
+          },
+          "level": "sgg",
+          "provinceSourceCode": "32",
+          "provinceTargetCode": "51",
+          "targetCode": "51830",
+          "targetName": "양양군",
+          "ancestors": [
+            "32"
+          ]
+        },
+        {
+          "sourceRow": 6892,
+          "sourceCode": "33",
+          "sourceName": "충청북도",
+          "province": "충청북도",
+          "administrativeCode": "4300000000",
+          "legalCode": "4300000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 6892,
+            "2025-01-01": 6892
+          },
+          "level": "sido",
+          "provinceSourceCode": "33",
+          "provinceTargetCode": "43",
+          "targetCode": "43",
+          "targetName": "충청북도",
+          "ancestors": []
+        },
+        {
+          "sourceRow": 6893,
+          "sourceCode": "33040",
+          "sourceName": "청주시",
+          "province": "충청북도",
+          "administrativeCode": "4311000000",
+          "legalCode": "4311000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 6893,
+            "2025-01-01": 6893
+          },
+          "level": "city",
+          "provinceSourceCode": "33",
+          "provinceTargetCode": "43",
+          "targetCode": null,
+          "targetName": null,
+          "ancestors": [
+            "33"
+          ]
+        },
+        {
+          "sourceRow": 6894,
+          "sourceCode": "33041",
+          "sourceName": "청주시 상당구",
+          "province": "충청북도",
+          "administrativeCode": "4311100000",
+          "legalCode": "4311100000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 6894,
+            "2025-01-01": 6894
+          },
+          "level": "sgg",
+          "provinceSourceCode": "33",
+          "provinceTargetCode": "43",
+          "targetCode": "43111",
+          "targetName": "청주시상당구",
+          "ancestors": [
+            "33",
+            "33040"
+          ]
+        },
+        {
+          "sourceRow": 7012,
+          "sourceCode": "33042",
+          "sourceName": "청주시 서원구",
+          "province": "충청북도",
+          "administrativeCode": "4311200000",
+          "legalCode": "4311200000",
+          "created": "20140701",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 7012,
+            "2025-01-01": 7012
+          },
+          "level": "sgg",
+          "provinceSourceCode": "33",
+          "provinceTargetCode": "43",
+          "targetCode": "43112",
+          "targetName": "청주시서원구",
+          "ancestors": [
+            "33",
+            "33040"
+          ]
+        },
+        {
+          "sourceRow": 7065,
+          "sourceCode": "33043",
+          "sourceName": "청주시 흥덕구",
+          "province": "충청북도",
+          "administrativeCode": "4311300000",
+          "legalCode": "4311300000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 7065,
+            "2025-01-01": 7065
+          },
+          "level": "sgg",
+          "provinceSourceCode": "33",
+          "provinceTargetCode": "43",
+          "targetCode": "43113",
+          "targetName": "청주시흥덕구",
+          "ancestors": [
+            "33",
+            "33040"
+          ]
+        },
+        {
+          "sourceRow": 7145,
+          "sourceCode": "33044",
+          "sourceName": "청주시 청원구",
+          "province": "충청북도",
+          "administrativeCode": "4311400000",
+          "legalCode": "4311400000",
+          "created": "20140701",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 7145,
+            "2025-01-01": 7145
+          },
+          "level": "sgg",
+          "provinceSourceCode": "33",
+          "provinceTargetCode": "43",
+          "targetCode": "43114",
+          "targetName": "청주시청원구",
+          "ancestors": [
+            "33",
+            "33040"
+          ]
+        },
+        {
+          "sourceRow": 7244,
+          "sourceCode": "33020",
+          "sourceName": "충주시",
+          "province": "충청북도",
+          "administrativeCode": "4313000000",
+          "legalCode": "4313000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 7244,
+            "2025-01-01": 7244
+          },
+          "level": "sgg",
+          "provinceSourceCode": "33",
+          "provinceTargetCode": "43",
+          "targetCode": "43130",
+          "targetName": "충주시",
+          "ancestors": [
+            "33"
+          ]
+        },
+        {
+          "sourceRow": 7421,
+          "sourceCode": "33030",
+          "sourceName": "제천시",
+          "province": "충청북도",
+          "administrativeCode": "4315000000",
+          "legalCode": "4315000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 7421,
+            "2025-01-01": 7421
+          },
+          "level": "sgg",
+          "provinceSourceCode": "33",
+          "provinceTargetCode": "43",
+          "targetCode": "43150",
+          "targetName": "제천시",
+          "ancestors": [
+            "33"
+          ]
+        },
+        {
+          "sourceRow": 7571,
+          "sourceCode": "33520",
+          "sourceName": "보은군",
+          "province": "충청북도",
+          "administrativeCode": "4372000000",
+          "legalCode": "4372000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 7571,
+            "2025-01-01": 7571
+          },
+          "level": "sgg",
+          "provinceSourceCode": "33",
+          "provinceTargetCode": "43",
+          "targetCode": "43720",
+          "targetName": "보은군",
+          "ancestors": [
+            "33"
+          ]
+        },
+        {
+          "sourceRow": 7757,
+          "sourceCode": "33530",
+          "sourceName": "옥천군",
+          "province": "충청북도",
+          "administrativeCode": "4373000000",
+          "legalCode": "4373000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 7757,
+            "2025-01-01": 7757
+          },
+          "level": "sgg",
+          "provinceSourceCode": "33",
+          "provinceTargetCode": "43",
+          "targetCode": "43730",
+          "targetName": "옥천군",
+          "ancestors": [
+            "33"
+          ]
+        },
+        {
+          "sourceRow": 7892,
+          "sourceCode": "33540",
+          "sourceName": "영동군",
+          "province": "충청북도",
+          "administrativeCode": "4374000000",
+          "legalCode": "4374000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 7892,
+            "2025-01-01": 7892
+          },
+          "level": "sgg",
+          "provinceSourceCode": "33",
+          "provinceTargetCode": "43",
+          "targetCode": "43740",
+          "targetName": "영동군",
+          "ancestors": [
+            "33"
+          ]
+        },
+        {
+          "sourceRow": 8035,
+          "sourceCode": "33590",
+          "sourceName": "증평군",
+          "province": "충청북도",
+          "administrativeCode": "4374500000",
+          "legalCode": "4374500000",
+          "created": "20030830",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 8035,
+            "2025-01-01": 8035
+          },
+          "level": "sgg",
+          "provinceSourceCode": "33",
+          "provinceTargetCode": "43",
+          "targetCode": "43745",
+          "targetName": "증평군",
+          "ancestors": [
+            "33"
+          ]
+        },
+        {
+          "sourceRow": 8065,
+          "sourceCode": "33550",
+          "sourceName": "진천군",
+          "province": "충청북도",
+          "administrativeCode": "4375000000",
+          "legalCode": "4375000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 8065,
+            "2025-01-01": 8065
+          },
+          "level": "sgg",
+          "provinceSourceCode": "33",
+          "provinceTargetCode": "43",
+          "targetCode": "43750",
+          "targetName": "진천군",
+          "ancestors": [
+            "33"
+          ]
+        },
+        {
+          "sourceRow": 8157,
+          "sourceCode": "33560",
+          "sourceName": "괴산군",
+          "province": "충청북도",
+          "administrativeCode": "4376000000",
+          "legalCode": "4376000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 8157,
+            "2025-01-01": 8157
+          },
+          "level": "sgg",
+          "provinceSourceCode": "33",
+          "provinceTargetCode": "43",
+          "targetCode": "43760",
+          "targetName": "괴산군",
+          "ancestors": [
+            "33"
+          ]
+        },
+        {
+          "sourceRow": 8295,
+          "sourceCode": "33570",
+          "sourceName": "음성군",
+          "province": "충청북도",
+          "administrativeCode": "4377000000",
+          "legalCode": "4377000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 8295,
+            "2025-01-01": 8295
+          },
+          "level": "sgg",
+          "provinceSourceCode": "33",
+          "provinceTargetCode": "43",
+          "targetCode": "43770",
+          "targetName": "음성군",
+          "ancestors": [
+            "33"
+          ]
+        },
+        {
+          "sourceRow": 8420,
+          "sourceCode": "33580",
+          "sourceName": "단양군",
+          "province": "충청북도",
+          "administrativeCode": "4380000000",
+          "legalCode": "4380000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 8420,
+            "2025-01-01": 8420
+          },
+          "level": "sgg",
+          "provinceSourceCode": "33",
+          "provinceTargetCode": "43",
+          "targetCode": "43800",
+          "targetName": "단양군",
+          "ancestors": [
+            "33"
+          ]
+        },
+        {
+          "sourceRow": 8537,
+          "sourceCode": "34",
+          "sourceName": "충청남도",
+          "province": "충청남도",
+          "administrativeCode": "4400000000",
+          "legalCode": "4400000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 8537,
+            "2025-01-01": 8537
+          },
+          "level": "sido",
+          "provinceSourceCode": "34",
+          "provinceTargetCode": "44",
+          "targetCode": "44",
+          "targetName": "충청남도",
+          "ancestors": []
+        },
+        {
+          "sourceRow": 8538,
+          "sourceCode": "34010",
+          "sourceName": "천안시",
+          "province": "충청남도",
+          "administrativeCode": "4413000000",
+          "legalCode": "4413000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 8538,
+            "2025-01-01": 8538
+          },
+          "level": "city",
+          "provinceSourceCode": "34",
+          "provinceTargetCode": "44",
+          "targetCode": null,
+          "targetName": null,
+          "ancestors": [
+            "34"
+          ]
+        },
+        {
+          "sourceRow": 8539,
+          "sourceCode": "34011",
+          "sourceName": "천안시 동남구",
+          "province": "충청남도",
+          "administrativeCode": "4413100000",
+          "legalCode": "4413100000",
+          "created": "20080623",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 8539,
+            "2025-01-01": 8539
+          },
+          "level": "sgg",
+          "provinceSourceCode": "34",
+          "provinceTargetCode": "44",
+          "targetCode": "44131",
+          "targetName": "천안시동남구",
+          "ancestors": [
+            "34",
+            "34010"
+          ]
+        },
+        {
+          "sourceRow": 8658,
+          "sourceCode": "34012",
+          "sourceName": "천안시 서북구",
+          "province": "충청남도",
+          "administrativeCode": "4413300000",
+          "legalCode": "4413300000",
+          "created": "20080623",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 8658,
+            "2025-01-01": 8658
+          },
+          "level": "sgg",
+          "provinceSourceCode": "34",
+          "provinceTargetCode": "44",
+          "targetCode": "44133",
+          "targetName": "천안시서북구",
+          "ancestors": [
+            "34",
+            "34010"
+          ]
+        },
+        {
+          "sourceRow": 8742,
+          "sourceCode": "34020",
+          "sourceName": "공주시",
+          "province": "충청남도",
+          "administrativeCode": "4415000000",
+          "legalCode": "4415000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 8742,
+            "2025-01-01": 8742
+          },
+          "level": "sgg",
+          "provinceSourceCode": "34",
+          "provinceTargetCode": "44",
+          "targetCode": "44150",
+          "targetName": "공주시",
+          "ancestors": [
+            "34"
+          ]
+        },
+        {
+          "sourceRow": 8942,
+          "sourceCode": "34030",
+          "sourceName": "보령시",
+          "province": "충청남도",
+          "administrativeCode": "4418000000",
+          "legalCode": "4418000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 8942,
+            "2025-01-01": 8942
+          },
+          "level": "sgg",
+          "provinceSourceCode": "34",
+          "provinceTargetCode": "44",
+          "targetCode": "44180",
+          "targetName": "보령시",
+          "ancestors": [
+            "34"
+          ]
+        },
+        {
+          "sourceRow": 9069,
+          "sourceCode": "34040",
+          "sourceName": "아산시",
+          "province": "충청남도",
+          "administrativeCode": "4420000000",
+          "legalCode": "4420000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 9069,
+            "2025-01-01": 9069
+          },
+          "level": "sgg",
+          "provinceSourceCode": "34",
+          "provinceTargetCode": "44",
+          "targetCode": "44200",
+          "targetName": "아산시",
+          "ancestors": [
+            "34"
+          ]
+        },
+        {
+          "sourceRow": 9245,
+          "sourceCode": "34050",
+          "sourceName": "서산시",
+          "province": "충청남도",
+          "administrativeCode": "4421000000",
+          "legalCode": "4421000000",
+          "created": "19890101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 9245,
+            "2025-01-01": 9245
+          },
+          "level": "sgg",
+          "provinceSourceCode": "34",
+          "provinceTargetCode": "44",
+          "targetCode": "44210",
+          "targetName": "서산시",
+          "ancestors": [
+            "34"
+          ]
+        },
+        {
+          "sourceRow": 9396,
+          "sourceCode": "34060",
+          "sourceName": "논산시",
+          "province": "충청남도",
+          "administrativeCode": "4423000000",
+          "legalCode": "4423000000",
+          "created": "19960301",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 9396,
+            "2025-01-01": 9396
+          },
+          "level": "sgg",
+          "provinceSourceCode": "34",
+          "provinceTargetCode": "44",
+          "targetCode": "44230",
+          "targetName": "논산시",
+          "ancestors": [
+            "34"
+          ]
+        },
+        {
+          "sourceRow": 9595,
+          "sourceCode": "34070",
+          "sourceName": "계룡시",
+          "province": "충청남도",
+          "administrativeCode": "4425000000",
+          "legalCode": "4425000000",
+          "created": "20030919",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 9595,
+            "2025-01-01": 9595
+          },
+          "level": "sgg",
+          "provinceSourceCode": "34",
+          "provinceTargetCode": "44",
+          "targetCode": "44250",
+          "targetName": "계룡시",
+          "ancestors": [
+            "34"
+          ]
+        },
+        {
+          "sourceRow": 9614,
+          "sourceCode": "34080",
+          "sourceName": "당진시",
+          "province": "충청남도",
+          "administrativeCode": "4427000000",
+          "legalCode": "4427000000",
+          "created": "20120101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 9614,
+            "2025-01-01": 9614
+          },
+          "level": "sgg",
+          "provinceSourceCode": "34",
+          "provinceTargetCode": "44",
+          "targetCode": "44270",
+          "targetName": "당진시",
+          "ancestors": [
+            "34"
+          ]
+        },
+        {
+          "sourceRow": 9775,
+          "sourceCode": "34510",
+          "sourceName": "금산군",
+          "province": "충청남도",
+          "administrativeCode": "4471000000",
+          "legalCode": "4471000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 9775,
+            "2025-01-01": 9775
+          },
+          "level": "sgg",
+          "provinceSourceCode": "34",
+          "provinceTargetCode": "44",
+          "targetCode": "44710",
+          "targetName": "금산군",
+          "ancestors": [
+            "34"
+          ]
+        },
+        {
+          "sourceRow": 9892,
+          "sourceCode": "34530",
+          "sourceName": "부여군",
+          "province": "충청남도",
+          "administrativeCode": "4476000000",
+          "legalCode": "4476000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 9892,
+            "2025-01-01": 9892
+          },
+          "level": "sgg",
+          "provinceSourceCode": "34",
+          "provinceTargetCode": "44",
+          "targetCode": "44760",
+          "targetName": "부여군",
+          "ancestors": [
+            "34"
+          ]
+        },
+        {
+          "sourceRow": 10100,
+          "sourceCode": "34540",
+          "sourceName": "서천군",
+          "province": "충청남도",
+          "administrativeCode": "4477000000",
+          "legalCode": "4477000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 10100,
+            "2025-01-01": 10100
+          },
+          "level": "sgg",
+          "provinceSourceCode": "34",
+          "provinceTargetCode": "44",
+          "targetCode": "44770",
+          "targetName": "서천군",
+          "ancestors": [
+            "34"
+          ]
+        },
+        {
+          "sourceRow": 10286,
+          "sourceCode": "34550",
+          "sourceName": "청양군",
+          "province": "충청남도",
+          "administrativeCode": "4479000000",
+          "legalCode": "4479000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 10286,
+            "2025-01-01": 10286
+          },
+          "level": "sgg",
+          "provinceSourceCode": "34",
+          "provinceTargetCode": "44",
+          "targetCode": "44790",
+          "targetName": "청양군",
+          "ancestors": [
+            "34"
+          ]
+        },
+        {
+          "sourceRow": 10412,
+          "sourceCode": "34560",
+          "sourceName": "홍성군",
+          "province": "충청남도",
+          "administrativeCode": "4480000000",
+          "legalCode": "4480000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 10412,
+            "2025-01-01": 10412
+          },
+          "level": "sgg",
+          "provinceSourceCode": "34",
+          "provinceTargetCode": "44",
+          "targetCode": "44800",
+          "targetName": "홍성군",
+          "ancestors": [
+            "34"
+          ]
+        },
+        {
+          "sourceRow": 10565,
+          "sourceCode": "34570",
+          "sourceName": "예산군",
+          "province": "충청남도",
+          "administrativeCode": "4481000000",
+          "legalCode": "4481000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 10565,
+            "2025-01-01": 10565
+          },
+          "level": "sgg",
+          "provinceSourceCode": "34",
+          "provinceTargetCode": "44",
+          "targetCode": "44810",
+          "targetName": "예산군",
+          "ancestors": [
+            "34"
+          ]
+        },
+        {
+          "sourceRow": 10755,
+          "sourceCode": "34580",
+          "sourceName": "태안군",
+          "province": "충청남도",
+          "administrativeCode": "4482500000",
+          "legalCode": "4482500000",
+          "created": "19890101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 10755,
+            "2025-01-01": 10755
+          },
+          "level": "sgg",
+          "provinceSourceCode": "34",
+          "provinceTargetCode": "44",
+          "targetCode": "44825",
+          "targetName": "태안군",
+          "ancestors": [
+            "34"
+          ]
+        },
+        {
+          "sourceRow": 10829,
+          "sourceCode": "35",
+          "sourceName": "전북특별자치도",
+          "province": "전북특별자치도",
+          "administrativeCode": "5200000000",
+          "legalCode": "5200000000",
+          "created": "20240118",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 10829,
+            "2025-01-01": 10829
+          },
+          "level": "sido",
+          "provinceSourceCode": "35",
+          "provinceTargetCode": "52",
+          "targetCode": "52",
+          "targetName": "전북특별자치도",
+          "ancestors": []
+        },
+        {
+          "sourceRow": 10830,
+          "sourceCode": "35010",
+          "sourceName": "전주시",
+          "province": "전북특별자치도",
+          "administrativeCode": "5211000000",
+          "legalCode": "5211000000",
+          "created": "20240118",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 10830,
+            "2025-01-01": 10830
+          },
+          "level": "city",
+          "provinceSourceCode": "35",
+          "provinceTargetCode": "52",
+          "targetCode": null,
+          "targetName": null,
+          "ancestors": [
+            "35"
+          ]
+        },
+        {
+          "sourceRow": 10831,
+          "sourceCode": "35011",
+          "sourceName": "전주시 완산구",
+          "province": "전북특별자치도",
+          "administrativeCode": "5211100000",
+          "legalCode": "5211100000",
+          "created": "20240118",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 10831,
+            "2025-01-01": 10831
+          },
+          "level": "sgg",
+          "provinceSourceCode": "35",
+          "provinceTargetCode": "52",
+          "targetCode": "52111",
+          "targetName": "전주시완산구",
+          "ancestors": [
+            "35",
+            "35010"
+          ]
+        },
+        {
+          "sourceRow": 10890,
+          "sourceCode": "35012",
+          "sourceName": "전주시 덕진구",
+          "province": "전북특별자치도",
+          "administrativeCode": "5211300000",
+          "legalCode": "5211300000",
+          "created": "20240118",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 10890,
+            "2025-01-01": 10890
+          },
+          "level": "sgg",
+          "provinceSourceCode": "35",
+          "provinceTargetCode": "52",
+          "targetCode": "52113",
+          "targetName": "전주시덕진구",
+          "ancestors": [
+            "35",
+            "35010"
+          ]
+        },
+        {
+          "sourceRow": 10936,
+          "sourceCode": "35020",
+          "sourceName": "군산시",
+          "province": "전북특별자치도",
+          "administrativeCode": "5213000000",
+          "legalCode": "5213000000",
+          "created": "20240118",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 10936,
+            "2025-01-01": 10936
+          },
+          "level": "sgg",
+          "provinceSourceCode": "35",
+          "provinceTargetCode": "52",
+          "targetCode": "52130",
+          "targetName": "군산시",
+          "ancestors": [
+            "35"
+          ]
+        },
+        {
+          "sourceRow": 11080,
+          "sourceCode": "35030",
+          "sourceName": "익산시",
+          "province": "전북특별자치도",
+          "administrativeCode": "5214000000",
+          "legalCode": "5214000000",
+          "created": "20240118",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 11080,
+            "2025-01-01": 11080
+          },
+          "level": "sgg",
+          "provinceSourceCode": "35",
+          "provinceTargetCode": "52",
+          "targetCode": "52140",
+          "targetName": "익산시",
+          "ancestors": [
+            "35"
+          ]
+        },
+        {
+          "sourceRow": 11247,
+          "sourceCode": "35040",
+          "sourceName": "정읍시",
+          "province": "전북특별자치도",
+          "administrativeCode": "5218000000",
+          "legalCode": "5218000000",
+          "created": "20240118",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 11247,
+            "2025-01-01": 11247
+          },
+          "level": "sgg",
+          "provinceSourceCode": "35",
+          "provinceTargetCode": "52",
+          "targetCode": "52180",
+          "targetName": "정읍시",
+          "ancestors": [
+            "35"
+          ]
+        },
+        {
+          "sourceRow": 11434,
+          "sourceCode": "35050",
+          "sourceName": "남원시",
+          "province": "전북특별자치도",
+          "administrativeCode": "5219000000",
+          "legalCode": "5219000000",
+          "created": "20240118",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 11434,
+            "2025-01-01": 11434
+          },
+          "level": "sgg",
+          "provinceSourceCode": "35",
+          "provinceTargetCode": "52",
+          "targetCode": "52190",
+          "targetName": "남원시",
+          "ancestors": [
+            "35"
+          ]
+        },
+        {
+          "sourceRow": 11631,
+          "sourceCode": "35060",
+          "sourceName": "김제시",
+          "province": "전북특별자치도",
+          "administrativeCode": "5221000000",
+          "legalCode": "5221000000",
+          "created": "20240118",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 11631,
+            "2025-01-01": 11631
+          },
+          "level": "sgg",
+          "provinceSourceCode": "35",
+          "provinceTargetCode": "52",
+          "targetCode": "52210",
+          "targetName": "김제시",
+          "ancestors": [
+            "35"
+          ]
+        },
+        {
+          "sourceRow": 11798,
+          "sourceCode": "35510",
+          "sourceName": "완주군",
+          "province": "전북특별자치도",
+          "administrativeCode": "5271000000",
+          "legalCode": "5271000000",
+          "created": "20240118",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 11798,
+            "2025-01-01": 11798
+          },
+          "level": "sgg",
+          "provinceSourceCode": "35",
+          "provinceTargetCode": "52",
+          "targetCode": "52710",
+          "targetName": "완주군",
+          "ancestors": [
+            "35"
+          ]
+        },
+        {
+          "sourceRow": 11918,
+          "sourceCode": "35520",
+          "sourceName": "진안군",
+          "province": "전북특별자치도",
+          "administrativeCode": "5272000000",
+          "legalCode": "5272000000",
+          "created": "20240118",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 11918,
+            "2025-01-01": 11918
+          },
+          "level": "sgg",
+          "provinceSourceCode": "35",
+          "provinceTargetCode": "52",
+          "targetCode": "52720",
+          "targetName": "진안군",
+          "ancestors": [
+            "35"
+          ]
+        },
+        {
+          "sourceRow": 12007,
+          "sourceCode": "35530",
+          "sourceName": "무주군",
+          "province": "전북특별자치도",
+          "administrativeCode": "5273000000",
+          "legalCode": "5273000000",
+          "created": "20240118",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 12007,
+            "2025-01-01": 12007
+          },
+          "level": "sgg",
+          "provinceSourceCode": "35",
+          "provinceTargetCode": "52",
+          "targetCode": "52730",
+          "targetName": "무주군",
+          "ancestors": [
+            "35"
+          ]
+        },
+        {
+          "sourceRow": 12062,
+          "sourceCode": "35540",
+          "sourceName": "장수군",
+          "province": "전북특별자치도",
+          "administrativeCode": "5274000000",
+          "legalCode": "5274000000",
+          "created": "20240118",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 12062,
+            "2025-01-01": 12062
+          },
+          "level": "sgg",
+          "provinceSourceCode": "35",
+          "provinceTargetCode": "52",
+          "targetCode": "52740",
+          "targetName": "장수군",
+          "ancestors": [
+            "35"
+          ]
+        },
+        {
+          "sourceRow": 12143,
+          "sourceCode": "35550",
+          "sourceName": "임실군",
+          "province": "전북특별자치도",
+          "administrativeCode": "5275000000",
+          "legalCode": "5275000000",
+          "created": "20240118",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 12143,
+            "2025-01-01": 12143
+          },
+          "level": "sgg",
+          "provinceSourceCode": "35",
+          "provinceTargetCode": "52",
+          "targetCode": "52750",
+          "targetName": "임실군",
+          "ancestors": [
+            "35"
+          ]
+        },
+        {
+          "sourceRow": 12287,
+          "sourceCode": "35560",
+          "sourceName": "순창군",
+          "province": "전북특별자치도",
+          "administrativeCode": "5277000000",
+          "legalCode": "5277000000",
+          "created": "20240118",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 12287,
+            "2025-01-01": 12287
+          },
+          "level": "sgg",
+          "provinceSourceCode": "35",
+          "provinceTargetCode": "52",
+          "targetCode": "52770",
+          "targetName": "순창군",
+          "ancestors": [
+            "35"
+          ]
+        },
+        {
+          "sourceRow": 12430,
+          "sourceCode": "35570",
+          "sourceName": "고창군",
+          "province": "전북특별자치도",
+          "administrativeCode": "5279000000",
+          "legalCode": "5279000000",
+          "created": "20240118",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 12430,
+            "2025-01-01": 12430
+          },
+          "level": "sgg",
+          "provinceSourceCode": "35",
+          "provinceTargetCode": "52",
+          "targetCode": "52790",
+          "targetName": "고창군",
+          "ancestors": [
+            "35"
+          ]
+        },
+        {
+          "sourceRow": 12634,
+          "sourceCode": "35580",
+          "sourceName": "부안군",
+          "province": "전북특별자치도",
+          "administrativeCode": "5280000000",
+          "legalCode": "5280000000",
+          "created": "20240118",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 12634,
+            "2025-01-01": 12634
+          },
+          "level": "sgg",
+          "provinceSourceCode": "35",
+          "provinceTargetCode": "52",
+          "targetCode": "52800",
+          "targetName": "부안군",
+          "ancestors": [
+            "35"
+          ]
+        },
+        {
+          "sourceRow": 12747,
+          "sourceCode": "36",
+          "sourceName": "전라남도",
+          "province": "전라남도",
+          "administrativeCode": "4600000000",
+          "legalCode": "4600000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 12747,
+            "2025-01-01": 12747
+          },
+          "level": "sido",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46",
+          "targetName": "전라남도",
+          "ancestors": []
+        },
+        {
+          "sourceRow": 12748,
+          "sourceCode": "36010",
+          "sourceName": "목포시",
+          "province": "전라남도",
+          "administrativeCode": "4611000000",
+          "legalCode": "4611000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 12748,
+            "2025-01-01": 12748
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46110",
+          "targetName": "목포시",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 12849,
+          "sourceCode": "36020",
+          "sourceName": "여수시",
+          "province": "전라남도",
+          "administrativeCode": "4613000000",
+          "legalCode": "4613000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 12849,
+            "2025-01-01": 12849
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46130",
+          "targetName": "여수시",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 12974,
+          "sourceCode": "36030",
+          "sourceName": "순천시",
+          "province": "전라남도",
+          "administrativeCode": "4615000000",
+          "legalCode": "4615000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 12974,
+            "2025-01-01": 12974
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46150",
+          "targetName": "순천시",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 13185,
+          "sourceCode": "36040",
+          "sourceName": "나주시",
+          "province": "전라남도",
+          "administrativeCode": "4617000000",
+          "legalCode": "4617000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 13185,
+            "2025-01-01": 13185
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46170",
+          "targetName": "나주시",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 13388,
+          "sourceCode": "36060",
+          "sourceName": "광양시",
+          "province": "전라남도",
+          "administrativeCode": "4623000000",
+          "legalCode": "4623000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 13388,
+            "2025-01-01": 13388
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46230",
+          "targetName": "광양시",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 13465,
+          "sourceCode": "36510",
+          "sourceName": "담양군",
+          "province": "전라남도",
+          "administrativeCode": "4671000000",
+          "legalCode": "4671000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 13465,
+            "2025-01-01": 13465
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46710",
+          "targetName": "담양군",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 13618,
+          "sourceCode": "36520",
+          "sourceName": "곡성군",
+          "province": "전라남도",
+          "administrativeCode": "4672000000",
+          "legalCode": "4672000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 13618,
+            "2025-01-01": 13618
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46720",
+          "targetName": "곡성군",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 13755,
+          "sourceCode": "36530",
+          "sourceName": "구례군",
+          "province": "전라남도",
+          "administrativeCode": "4673000000",
+          "legalCode": "4673000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 13755,
+            "2025-01-01": 13755
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46730",
+          "targetName": "구례군",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 13833,
+          "sourceCode": "36550",
+          "sourceName": "고흥군",
+          "province": "전라남도",
+          "administrativeCode": "4677000000",
+          "legalCode": "4677000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 13833,
+            "2025-01-01": 13833
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46770",
+          "targetName": "고흥군",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 13983,
+          "sourceCode": "36560",
+          "sourceName": "보성군",
+          "province": "전라남도",
+          "administrativeCode": "4678000000",
+          "legalCode": "4678000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 13983,
+            "2025-01-01": 13983
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46780",
+          "targetName": "보성군",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 14123,
+          "sourceCode": "36570",
+          "sourceName": "화순군",
+          "province": "전라남도",
+          "administrativeCode": "4679000000",
+          "legalCode": "4679000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 14123,
+            "2025-01-01": 14123
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46790",
+          "targetName": "화순군",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 14333,
+          "sourceCode": "36580",
+          "sourceName": "장흥군",
+          "province": "전라남도",
+          "administrativeCode": "4680000000",
+          "legalCode": "4680000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 14333,
+            "2025-01-01": 14333
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46800",
+          "targetName": "장흥군",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 14480,
+          "sourceCode": "36590",
+          "sourceName": "강진군",
+          "province": "전라남도",
+          "administrativeCode": "4681000000",
+          "legalCode": "4681000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 14480,
+            "2025-01-01": 14480
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46810",
+          "targetName": "강진군",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 14604,
+          "sourceCode": "36600",
+          "sourceName": "해남군",
+          "province": "전라남도",
+          "administrativeCode": "4682000000",
+          "legalCode": "4682000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 14604,
+            "2025-01-01": 14604
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46820",
+          "targetName": "해남군",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 14797,
+          "sourceCode": "36610",
+          "sourceName": "영암군",
+          "province": "전라남도",
+          "administrativeCode": "4683000000",
+          "legalCode": "4683000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 14797,
+            "2025-01-01": 14797
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46830",
+          "targetName": "영암군",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 14931,
+          "sourceCode": "36620",
+          "sourceName": "무안군",
+          "province": "전라남도",
+          "administrativeCode": "4684000000",
+          "legalCode": "4684000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 14931,
+            "2025-01-01": 14931
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46840",
+          "targetName": "무안군",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 15046,
+          "sourceCode": "36630",
+          "sourceName": "함평군",
+          "province": "전라남도",
+          "administrativeCode": "4686000000",
+          "legalCode": "4686000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 15046,
+            "2025-01-01": 15046
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46860",
+          "targetName": "함평군",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 15160,
+          "sourceCode": "36640",
+          "sourceName": "영광군",
+          "province": "전라남도",
+          "administrativeCode": "4687000000",
+          "legalCode": "4687000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 15160,
+            "2025-01-01": 15160
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46870",
+          "targetName": "영광군",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 15300,
+          "sourceCode": "36650",
+          "sourceName": "장성군",
+          "province": "전라남도",
+          "administrativeCode": "4688000000",
+          "legalCode": "4688000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 15300,
+            "2025-01-01": 15300
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46880",
+          "targetName": "장성군",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 15435,
+          "sourceCode": "36660",
+          "sourceName": "완도군",
+          "province": "전라남도",
+          "administrativeCode": "4689000000",
+          "legalCode": "4689000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 15435,
+            "2025-01-01": 15435
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46890",
+          "targetName": "완도군",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 15539,
+          "sourceCode": "36670",
+          "sourceName": "진도군",
+          "province": "전라남도",
+          "administrativeCode": "4690000000",
+          "legalCode": "4690000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 15539,
+            "2025-01-01": 15539
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46900",
+          "targetName": "진도군",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 15647,
+          "sourceCode": "36680",
+          "sourceName": "신안군",
+          "province": "전라남도",
+          "administrativeCode": "4691000000",
+          "legalCode": "4691000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 15647,
+            "2025-01-01": 15647
+          },
+          "level": "sgg",
+          "provinceSourceCode": "36",
+          "provinceTargetCode": "46",
+          "targetCode": "46910",
+          "targetName": "신안군",
+          "ancestors": [
+            "36"
+          ]
+        },
+        {
+          "sourceRow": 15815,
+          "sourceCode": "37",
+          "sourceName": "경상북도",
+          "province": "경상북도",
+          "administrativeCode": "4700000000",
+          "legalCode": "4700000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 15815,
+            "2025-01-01": 15815
+          },
+          "level": "sido",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47",
+          "targetName": "경상북도",
+          "ancestors": []
+        },
+        {
+          "sourceRow": 15816,
+          "sourceCode": "37010",
+          "sourceName": "포항시",
+          "province": "경상북도",
+          "administrativeCode": "4711000000",
+          "legalCode": "4711000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 15816,
+            "2025-01-01": 15816
+          },
+          "level": "city",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": null,
+          "targetName": null,
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 15817,
+          "sourceCode": "37011",
+          "sourceName": "포항시 남구",
+          "province": "경상북도",
+          "administrativeCode": "4711100000",
+          "legalCode": "4711100000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 15817,
+            "2025-01-01": 15817
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47111",
+          "targetName": "포항시남구",
+          "ancestors": [
+            "37",
+            "37010"
+          ]
+        },
+        {
+          "sourceRow": 15926,
+          "sourceCode": "37012",
+          "sourceName": "포항시 북구",
+          "province": "경상북도",
+          "administrativeCode": "4711300000",
+          "legalCode": "4711300000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 15926,
+            "2025-01-01": 15926
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47113",
+          "targetName": "포항시북구",
+          "ancestors": [
+            "37",
+            "37010"
+          ]
+        },
+        {
+          "sourceRow": 16073,
+          "sourceCode": "37020",
+          "sourceName": "경주시",
+          "province": "경상북도",
+          "administrativeCode": "4713000000",
+          "legalCode": "4713000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 16073,
+            "2025-01-01": 16073
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47130",
+          "targetName": "경주시",
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 16272,
+          "sourceCode": "37030",
+          "sourceName": "김천시",
+          "province": "경상북도",
+          "administrativeCode": "4715000000",
+          "legalCode": "4715000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 16272,
+            "2025-01-01": 16272
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47150",
+          "targetName": "김천시",
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 16458,
+          "sourceCode": "37040",
+          "sourceName": "안동시",
+          "province": "경상북도",
+          "administrativeCode": "4717000000",
+          "legalCode": "4717000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 16458,
+            "2025-01-01": 16458
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47170",
+          "targetName": "안동시",
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 16691,
+          "sourceCode": "37050",
+          "sourceName": "구미시",
+          "province": "경상북도",
+          "administrativeCode": "4719000000",
+          "legalCode": "4719000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 16691,
+            "2025-01-01": 16691
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47190",
+          "targetName": "구미시",
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 16844,
+          "sourceCode": "37060",
+          "sourceName": "영주시",
+          "province": "경상북도",
+          "administrativeCode": "4721000000",
+          "legalCode": "4721000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 16844,
+            "2025-01-01": 16844
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47210",
+          "targetName": "영주시",
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 16975,
+          "sourceCode": "37070",
+          "sourceName": "영천시",
+          "province": "경상북도",
+          "administrativeCode": "4723000000",
+          "legalCode": "4723000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 16975,
+            "2025-01-01": 16975
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47230",
+          "targetName": "영천시",
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 17196,
+          "sourceCode": "37080",
+          "sourceName": "상주시",
+          "province": "경상북도",
+          "administrativeCode": "4725000000",
+          "legalCode": "4725000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 17196,
+            "2025-01-01": 17196
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47250",
+          "targetName": "상주시",
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 17455,
+          "sourceCode": "37090",
+          "sourceName": "문경시",
+          "province": "경상북도",
+          "administrativeCode": "4728000000",
+          "legalCode": "4728000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 17455,
+            "2025-01-01": 17455
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47280",
+          "targetName": "문경시",
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 17600,
+          "sourceCode": "37100",
+          "sourceName": "경산시",
+          "province": "경상북도",
+          "administrativeCode": "4729000000",
+          "legalCode": "4729000000",
+          "created": "19890101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 17600,
+            "2025-01-01": 17600
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47290",
+          "targetName": "경산시",
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 17777,
+          "sourceCode": "37520",
+          "sourceName": "의성군",
+          "province": "경상북도",
+          "administrativeCode": "4773000000",
+          "legalCode": "4773000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 17777,
+            "2025-01-01": 17777
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47730",
+          "targetName": "의성군",
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 17978,
+          "sourceCode": "37530",
+          "sourceName": "청송군",
+          "province": "경상북도",
+          "administrativeCode": "4775000000",
+          "legalCode": "4775000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 17978,
+            "2025-01-01": 17978
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47750",
+          "targetName": "청송군",
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 18073,
+          "sourceCode": "37540",
+          "sourceName": "영양군",
+          "province": "경상북도",
+          "administrativeCode": "4776000000",
+          "legalCode": "4776000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 18073,
+            "2025-01-01": 18073
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47760",
+          "targetName": "영양군",
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 18154,
+          "sourceCode": "37550",
+          "sourceName": "영덕군",
+          "province": "경상북도",
+          "administrativeCode": "4777000000",
+          "legalCode": "4777000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 18154,
+            "2025-01-01": 18154
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47770",
+          "targetName": "영덕군",
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 18284,
+          "sourceCode": "37560",
+          "sourceName": "청도군",
+          "province": "경상북도",
+          "administrativeCode": "4782000000",
+          "legalCode": "4782000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 18284,
+            "2025-01-01": 18284
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47820",
+          "targetName": "청도군",
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 18423,
+          "sourceCode": "37570",
+          "sourceName": "고령군",
+          "province": "경상북도",
+          "administrativeCode": "4783000000",
+          "legalCode": "4783000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 18423,
+            "2025-01-01": 18423
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47830",
+          "targetName": "고령군",
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 18528,
+          "sourceCode": "37580",
+          "sourceName": "성주군",
+          "province": "경상북도",
+          "administrativeCode": "4784000000",
+          "legalCode": "4784000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 18528,
+            "2025-01-01": 18528
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47840",
+          "targetName": "성주군",
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 18650,
+          "sourceCode": "37590",
+          "sourceName": "칠곡군",
+          "province": "경상북도",
+          "administrativeCode": "4785000000",
+          "legalCode": "4785000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 18650,
+            "2025-01-01": 18650
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47850",
+          "targetName": "칠곡군",
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 18732,
+          "sourceCode": "37600",
+          "sourceName": "예천군",
+          "province": "경상북도",
+          "administrativeCode": "4790000000",
+          "legalCode": "4790000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 18732,
+            "2025-01-01": 18732
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47900",
+          "targetName": "예천군",
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 18918,
+          "sourceCode": "37610",
+          "sourceName": "봉화군",
+          "province": "경상북도",
+          "administrativeCode": "4792000000",
+          "legalCode": "4792000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 18918,
+            "2025-01-01": 18918
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47920",
+          "targetName": "봉화군",
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 19001,
+          "sourceCode": "37620",
+          "sourceName": "울진군",
+          "province": "경상북도",
+          "administrativeCode": "4793000000",
+          "legalCode": "4793000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 19001,
+            "2025-01-01": 19001
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47930",
+          "targetName": "울진군",
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 19093,
+          "sourceCode": "37630",
+          "sourceName": "울릉군",
+          "province": "경상북도",
+          "administrativeCode": "4794000000",
+          "legalCode": "4794000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 19093,
+            "2025-01-01": 19093
+          },
+          "level": "sgg",
+          "provinceSourceCode": "37",
+          "provinceTargetCode": "47",
+          "targetCode": "47940",
+          "targetName": "울릉군",
+          "ancestors": [
+            "37"
+          ]
+        },
+        {
+          "sourceRow": 19108,
+          "sourceCode": "38",
+          "sourceName": "경상남도",
+          "province": "경상남도",
+          "administrativeCode": "4800000000",
+          "legalCode": "4800000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 19108,
+            "2025-01-01": 19108
+          },
+          "level": "sido",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48",
+          "targetName": "경상남도",
+          "ancestors": []
+        },
+        {
+          "sourceRow": 19109,
+          "sourceCode": "38110",
+          "sourceName": "창원시",
+          "province": "경상남도",
+          "administrativeCode": "4812000000",
+          "legalCode": "4812000000",
+          "created": "20100701",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 19109,
+            "2025-01-01": 19109
+          },
+          "level": "city",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": null,
+          "targetName": null,
+          "ancestors": [
+            "38"
+          ]
+        },
+        {
+          "sourceRow": 19110,
+          "sourceCode": "38111",
+          "sourceName": "창원시 의창구",
+          "province": "경상남도",
+          "administrativeCode": "4812100000",
+          "legalCode": "4812100000",
+          "created": "20100701",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 19110,
+            "2025-01-01": 19110
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48121",
+          "targetName": "창원시의창구",
+          "ancestors": [
+            "38",
+            "38110"
+          ]
+        },
+        {
+          "sourceRow": 19188,
+          "sourceCode": "38112",
+          "sourceName": "창원시 성산구",
+          "province": "경상남도",
+          "administrativeCode": "4812300000",
+          "legalCode": "4812300000",
+          "created": "20100701",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 19188,
+            "2025-01-01": 19188
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48123",
+          "targetName": "창원시성산구",
+          "ancestors": [
+            "38",
+            "38110"
+          ]
+        },
+        {
+          "sourceRow": 19235,
+          "sourceCode": "38113",
+          "sourceName": "창원시 마산합포구",
+          "province": "경상남도",
+          "administrativeCode": "4812500000",
+          "legalCode": "4812500000",
+          "created": "20100701",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 19235,
+            "2025-01-01": 19235
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48125",
+          "targetName": "창원시마산합포구",
+          "ancestors": [
+            "38",
+            "38110"
+          ]
+        },
+        {
+          "sourceRow": 19359,
+          "sourceCode": "38114",
+          "sourceName": "창원시 마산회원구",
+          "province": "경상남도",
+          "administrativeCode": "4812700000",
+          "legalCode": "4812700000",
+          "created": "20100701",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 19359,
+            "2025-01-01": 19359
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48127",
+          "targetName": "창원시마산회원구",
+          "ancestors": [
+            "38",
+            "38110"
+          ]
+        },
+        {
+          "sourceRow": 19387,
+          "sourceCode": "38115",
+          "sourceName": "창원시 진해구",
+          "province": "경상남도",
+          "administrativeCode": "4812900000",
+          "legalCode": "4812900000",
+          "created": "20100701",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 19387,
+            "2025-01-01": 19387
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48129",
+          "targetName": "창원시진해구",
+          "ancestors": [
+            "38",
+            "38110"
+          ]
+        },
+        {
+          "sourceRow": 19469,
+          "sourceCode": "38030",
+          "sourceName": "진주시",
+          "province": "경상남도",
+          "administrativeCode": "4817000000",
+          "legalCode": "4817000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 19469,
+            "2025-01-01": 19469
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48170",
+          "targetName": "진주시",
+          "ancestors": [
+            "38"
+          ]
+        },
+        {
+          "sourceRow": 19646,
+          "sourceCode": "38050",
+          "sourceName": "통영시",
+          "province": "경상남도",
+          "administrativeCode": "4822000000",
+          "legalCode": "4822000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 19646,
+            "2025-01-01": 19646
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48220",
+          "targetName": "통영시",
+          "ancestors": [
+            "38"
+          ]
+        },
+        {
+          "sourceRow": 19722,
+          "sourceCode": "38060",
+          "sourceName": "사천시",
+          "province": "경상남도",
+          "administrativeCode": "4824000000",
+          "legalCode": "4824000000",
+          "created": "19950510",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 19722,
+            "2025-01-01": 19722
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48240",
+          "targetName": "사천시",
+          "ancestors": [
+            "38"
+          ]
+        },
+        {
+          "sourceRow": 19849,
+          "sourceCode": "38070",
+          "sourceName": "김해시",
+          "province": "경상남도",
+          "administrativeCode": "4825000000",
+          "legalCode": "4825000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 19849,
+            "2025-01-01": 19849
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48250",
+          "targetName": "김해시",
+          "ancestors": [
+            "38"
+          ]
+        },
+        {
+          "sourceRow": 19959,
+          "sourceCode": "38080",
+          "sourceName": "밀양시",
+          "province": "경상남도",
+          "administrativeCode": "4827000000",
+          "legalCode": "4827000000",
+          "created": "19890101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 19959,
+            "2025-01-01": 19959
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48270",
+          "targetName": "밀양시",
+          "ancestors": [
+            "38"
+          ]
+        },
+        {
+          "sourceRow": 20100,
+          "sourceCode": "38090",
+          "sourceName": "거제시",
+          "province": "경상남도",
+          "administrativeCode": "4831000000",
+          "legalCode": "4831000000",
+          "created": "19950101",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 20100,
+            "2025-01-01": 20100
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48310",
+          "targetName": "거제시",
+          "ancestors": [
+            "38"
+          ]
+        },
+        {
+          "sourceRow": 20204,
+          "sourceCode": "38100",
+          "sourceName": "양산시",
+          "province": "경상남도",
+          "administrativeCode": "4833000000",
+          "legalCode": "4833000000",
+          "created": "19960301",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 20204,
+            "2025-01-01": 20204
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48330",
+          "targetName": "양산시",
+          "ancestors": [
+            "38"
+          ]
+        },
+        {
+          "sourceRow": 20271,
+          "sourceCode": "38510",
+          "sourceName": "의령군",
+          "province": "경상남도",
+          "administrativeCode": "4872000000",
+          "legalCode": "4872000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 20271,
+            "2025-01-01": 20271
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48720",
+          "targetName": "의령군",
+          "ancestors": [
+            "38"
+          ]
+        },
+        {
+          "sourceRow": 20401,
+          "sourceCode": "38520",
+          "sourceName": "함안군",
+          "province": "경상남도",
+          "administrativeCode": "4873000000",
+          "legalCode": "4873000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 20401,
+            "2025-01-01": 20401
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48730",
+          "targetName": "함안군",
+          "ancestors": [
+            "38"
+          ]
+        },
+        {
+          "sourceRow": 20500,
+          "sourceCode": "38530",
+          "sourceName": "창녕군",
+          "province": "경상남도",
+          "administrativeCode": "4874000000",
+          "legalCode": "4874000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 20500,
+            "2025-01-01": 20500
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48740",
+          "targetName": "창녕군",
+          "ancestors": [
+            "38"
+          ]
+        },
+        {
+          "sourceRow": 20654,
+          "sourceCode": "38540",
+          "sourceName": "고성군",
+          "province": "경상남도",
+          "administrativeCode": "4882000000",
+          "legalCode": "4882000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 20654,
+            "2025-01-01": 20654
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48820",
+          "targetName": "고성군",
+          "ancestors": [
+            "38"
+          ]
+        },
+        {
+          "sourceRow": 20788,
+          "sourceCode": "38550",
+          "sourceName": "남해군",
+          "province": "경상남도",
+          "administrativeCode": "4884000000",
+          "legalCode": "4884000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 20788,
+            "2025-01-01": 20788
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48840",
+          "targetName": "남해군",
+          "ancestors": [
+            "38"
+          ]
+        },
+        {
+          "sourceRow": 20878,
+          "sourceCode": "38560",
+          "sourceName": "하동군",
+          "province": "경상남도",
+          "administrativeCode": "4885000000",
+          "legalCode": "4885000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 20878,
+            "2025-01-01": 20878
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48850",
+          "targetName": "하동군",
+          "ancestors": [
+            "38"
+          ]
+        },
+        {
+          "sourceRow": 21000,
+          "sourceCode": "38570",
+          "sourceName": "산청군",
+          "province": "경상남도",
+          "administrativeCode": "4886000000",
+          "legalCode": "4886000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 21000,
+            "2025-01-01": 21000
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48860",
+          "targetName": "산청군",
+          "ancestors": [
+            "38"
+          ]
+        },
+        {
+          "sourceRow": 21131,
+          "sourceCode": "38580",
+          "sourceName": "함양군",
+          "province": "경상남도",
+          "administrativeCode": "4887000000",
+          "legalCode": "4887000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 21131,
+            "2025-01-01": 21131
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48870",
+          "targetName": "함양군",
+          "ancestors": [
+            "38"
+          ]
+        },
+        {
+          "sourceRow": 21246,
+          "sourceCode": "38590",
+          "sourceName": "거창군",
+          "province": "경상남도",
+          "administrativeCode": "4888000000",
+          "legalCode": "4888000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 21246,
+            "2025-01-01": 21246
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48880",
+          "targetName": "거창군",
+          "ancestors": [
+            "38"
+          ]
+        },
+        {
+          "sourceRow": 21353,
+          "sourceCode": "38600",
+          "sourceName": "합천군",
+          "province": "경상남도",
+          "administrativeCode": "4889000000",
+          "legalCode": "4889000000",
+          "created": "19880423",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 21353,
+            "2025-01-01": 21353
+          },
+          "level": "sgg",
+          "provinceSourceCode": "38",
+          "provinceTargetCode": "48",
+          "targetCode": "48890",
+          "targetName": "합천군",
+          "ancestors": [
+            "38"
+          ]
+        },
+        {
+          "sourceRow": 21563,
+          "sourceCode": "39",
+          "sourceName": "제주특별자치도",
+          "province": "제주특별자치도",
+          "administrativeCode": "5000000000",
+          "legalCode": "5000000000",
+          "created": "20060701",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 21563,
+            "2025-01-01": 21563
+          },
+          "level": "sido",
+          "provinceSourceCode": "39",
+          "provinceTargetCode": "50",
+          "targetCode": "50",
+          "targetName": "제주특별자치도",
+          "ancestors": []
+        },
+        {
+          "sourceRow": 21564,
+          "sourceCode": "39010",
+          "sourceName": "제주시",
+          "province": "제주특별자치도",
+          "administrativeCode": "5011000000",
+          "legalCode": "5011000000",
+          "created": "20060701",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 21564,
+            "2025-01-01": 21564
+          },
+          "level": "sgg",
+          "provinceSourceCode": "39",
+          "provinceTargetCode": "50",
+          "targetCode": "50110",
+          "targetName": "제주시",
+          "ancestors": [
+            "39"
+          ]
+        },
+        {
+          "sourceRow": 21697,
+          "sourceCode": "39020",
+          "sourceName": "서귀포시",
+          "province": "제주특별자치도",
+          "administrativeCode": "5013000000",
+          "legalCode": "5013000000",
+          "created": "20060701",
+          "split": "",
+          "sourceRows": {
+            "2024-12-31": 21697,
+            "2025-01-01": 21697
+          },
+          "level": "sgg",
+          "provinceSourceCode": "39",
+          "provinceTargetCode": "50",
+          "targetCode": "50130",
+          "targetName": "서귀포시",
+          "ancestors": [
+            "39"
+          ]
+        }
+      ]
+    }
+  ],
+  "tableBindings": [
+    {
+      "orgId": "101",
+      "tableId": "DT_1YL21161",
+      "dimension": "SGG",
+      "statYear": "2024",
+      "standardSet": "kac-2024-egis-2025",
+      "items": [
+        "T10"
+      ],
+      "levels": [
+        "sido",
+        "sgg"
+      ],
+      "reviewState": "verified",
+      "unit": "%",
+      "itemDefinitions": {
+        "T10": {
+          "label": "1인가구비율 (A÷B×100) (14210.MT0001 %)",
+          "unit": "%"
+        }
+      },
+      "originalEvidence": {
+        "file": "A_KOSIS_DT_1YL21161_T10_2024_original.xlsx",
+        "sha256": "ae00fa6e0cd9f67a556e951bd6ff78fe209b5adcc7501ffd0c3f7f804e4b62d1",
+        "title": "1인가구비율(시도/시/군/구)",
+        "downloadedAt": "2026.11.26 13:37",
+        "sourceUrl": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL21161&conn_path=I3"
+      }
+    },
+    {
+      "orgId": "101",
+      "tableId": "DT_1B8000H",
+      "dimension": "B",
+      "statYear": "2024",
+      "standardSet": "kac-2024-egis-2025",
+      "items": [
+        "T12"
+      ],
+      "levels": [
+        "sido"
+      ],
+      "reviewState": "verified",
+      "unit": "가임여성 1명당 명",
+      "itemDefinitions": {
+        "T12": {
+          "label": "합계출산율",
+          "unit": "가임여성 1명당 명"
+        }
+      },
+      "originalEvidence": {
+        "file": "B_KOSIS_DT_1B8000H_T12_2024_original.xlsx",
+        "sha256": "61cd208a1379a6e99db4f54229ae7240e135d6194206b1773a0258067389b629",
+        "title": "시도/인구동태건수 및 동태율(출생,사망,혼인,이혼)",
+        "downloadedAt": "2026.11.26 13:42",
+        "sourceUrl": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B8000H&conn_path=I3"
+      }
+    },
+    {
+      "orgId": "101",
+      "tableId": "INH_1B81A17",
+      "dimension": "A",
+      "statYear": "2024",
+      "standardSet": "kac-2024-egis-2025",
+      "items": [
+        "value"
+      ],
+      "levels": [
+        "sido"
+      ],
+      "reviewState": "verified",
+      "singleMetric": {
+        "title": "합계출산율(시도/시/군/구)",
+        "label": "합계출산율",
+        "unit": "가임여성 1명당 명",
+        "identitySource": "single-measure-metadata"
+      },
+      "unit": "가임여성 1명당 명",
+      "itemDefinitions": {
+        "value": {
+          "label": "합계출산율(시도/시/군/구)",
+          "unit": "가임여성 1명당 명"
+        }
+      },
+      "originalEvidence": {
+        "file": "fertility-2024.xlsx",
+        "sha256": "87bcb909699e2cf9ac65135022f614b63a60fb7a3e45845475168f8fd0801a55",
+        "title": "합계출산율(시도/시/군/구)",
+        "downloadedAt": "2026.11.26 15:02",
+        "sourceUrl": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=INH_1B81A17&conn_path=I3"
+      }
+    },
+    {
+      "orgId": "101",
+      "tableId": "DT_1YL20621",
+      "dimension": "SGG",
+      "statYear": "2024",
+      "standardSet": "kac-2024-egis-2025",
+      "items": [
+        "T10"
+      ],
+      "levels": [
+        "sido",
+        "sgg"
+      ],
+      "reviewState": "verified",
+      "unit": "%",
+      "itemDefinitions": {
+        "T10": {
+          "label": "인구증가율 {(A-B)÷B}×100 (14210.MT0001 %)",
+          "unit": "%"
+        }
+      },
+      "originalEvidence": {
+        "file": "C_강원18_2024_KOSIS원본.xlsx",
+        "sha256": "714845b0bee2b909e4d21fb03d42df682a82bb7602ce0d0bbb5a8ecfe9082532",
+        "title": "인구증가율(시도/시/군/구)",
+        "downloadedAt": "2026.11.26 13:38",
+        "sourceUrl": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20621&conn_path=I3"
+      }
+    },
+    {
+      "orgId": "101",
+      "tableId": "DT_1YL20842",
+      "dimension": "SGG",
+      "statYear": "2024",
+      "standardSet": "kac-2024-egis-2025",
+      "items": [
+        "T10"
+      ],
+      "levels": [
+        "sido",
+        "sgg"
+      ],
+      "reviewState": "verified",
+      "unit": "개",
+      "itemDefinitions": {
+        "T10": {
+          "label": "인구천명당 사업체수(A÷B×1,000) (14210.E9 개)",
+          "unit": "개"
+        }
+      },
+      "originalEvidence": {
+        "file": "H_DT_1YL20842_2024_original.xlsx",
+        "sha256": "6c3871534bd574bfea684f5b065e271b20c69068370dc971339c13c126bacb24",
+        "title": "인구 천명당 사업체수(등록기반)(시도/시/군/구)",
+        "downloadedAt": "2026.11.26 15:02",
+        "sourceUrl": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20842&conn_path=I3"
+      }
+    },
+    {
+      "orgId": "101",
+      "tableId": "DT_1YL20622",
+      "dimension": "A",
+      "statYear": "2024",
+      "standardSet": "kac-2024-egis-2025",
+      "items": [
+        "T001"
+      ],
+      "levels": [
+        "sido",
+        "sgg"
+      ],
+      "reviewState": "verified",
+      "unit": "%",
+      "itemDefinitions": {
+        "T001": {
+          "label": "5년간 연평균 인구증감률 (14210.MT0001 %)",
+          "unit": "%"
+        }
+      },
+      "originalEvidence": {
+        "file": "population-2024.xlsx",
+        "sha256": "6d1dd37c45cec7e3c0d8f415cdb262f522a87b167517d301a188746c1bbfc13a",
+        "title": "인구총조사 연평균 인구증감률(시도/시/군/구)",
+        "downloadedAt": "2026.11.26 15:02",
+        "sourceUrl": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20622&conn_path=I3"
+      }
+    },
+    {
+      "orgId": "101",
+      "tableId": "DT_1YL20931",
+      "dimension": "SGG",
+      "statYear": "2024",
+      "standardSet": "kac-2024-egis-2025",
+      "items": [
+        "T10"
+      ],
+      "levels": [
+        "sido",
+        "sgg"
+      ],
+      "reviewState": "verified",
+      "unit": "개",
+      "itemDefinitions": {
+        "T10": {
+          "label": "인구십만명당 문화기반시설수 (A÷B×100,000) (14STD03220 개)",
+          "unit": "개"
+        }
+      },
+      "originalEvidence": {
+        "file": "F1_KOSIS_DT_1YL20931_2024_original.xlsx",
+        "sha256": "116d82691ff670bdd10b0ee27e4cd1828fa0aa96563271aa97dca09cf3c71872",
+        "title": "인구 십만명당 문화기반시설수(시도/시/군/구)",
+        "downloadedAt": "2026.11.26 13:39",
+        "sourceUrl": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20931&conn_path=I3"
+      }
+    },
+    {
+      "orgId": "101",
+      "tableId": "DT_1YL21281",
+      "dimension": "SGG",
+      "statYear": "2024",
+      "standardSet": "kac-2024-egis-2025",
+      "items": [
+        "T10"
+      ],
+      "levels": [
+        "sido",
+        "sgg"
+      ],
+      "reviewState": "verified",
+      "unit": "천㎡",
+      "itemDefinitions": {
+        "T10": {
+          "label": "인구천명당 도시공원조성면적 (A÷B×1,000) (14STD06036 천㎡)",
+          "unit": "천㎡"
+        }
+      },
+      "originalEvidence": {
+        "file": "F2_KOSIS_original_2024.xlsx",
+        "sha256": "ca260077280c07a2422f7e3685794f0fa8a277f5a429a603a99c36a7bbdb534f",
+        "title": "인구 천명당 도시공원조성면적(시도)",
+        "downloadedAt": "2026.11.26 13:39",
+        "sourceUrl": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL21281&conn_path=I3"
+      }
+    },
+    {
+      "orgId": "101",
+      "tableId": "DT_1YL20981",
+      "dimension": "SGG",
+      "statYear": "2024",
+      "standardSet": "kac-2024-egis-2025",
+      "items": [
+        "T10"
+      ],
+      "levels": [
+        "sido",
+        "sgg"
+      ],
+      "reviewState": "verified",
+      "unit": "명",
+      "itemDefinitions": {
+        "T10": {
+          "label": "인구 천명당 의료기관 종사 의사수 (A÷B×1,000)",
+          "unit": "명"
+        }
+      },
+      "originalEvidence": {
+        "file": "E_DT_1YL20981_T10_2024_KOSIS_all_regions_original.xlsx",
+        "sha256": "677ab4416fdfac6cdb857d268d02f13769a473df21707c04f7876aacbbeca276",
+        "title": "인구 천명당 의료기관 종사 의사수(시도/시/군/구)",
+        "downloadedAt": "2026.11.26 13:41",
+        "sourceUrl": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20981&conn_path=I3"
+      }
+    },
+    {
+      "orgId": "101",
+      "tableId": "DT_1YL202004",
+      "dimension": "A",
+      "statYear": "2024",
+      "standardSet": "kac-2024-egis-2025",
+      "items": [
+        "T10"
+      ],
+      "levels": [
+        "sido",
+        "sgg"
+      ],
+      "reviewState": "verified",
+      "unit": "%",
+      "itemDefinitions": {
+        "T10": {
+          "label": "노후주택비율(A÷B×100) (14STD00018 %)",
+          "unit": "%"
+        }
+      },
+      "originalEvidence": {
+        "file": "I_DT_1YL202004_2024_original.xlsx",
+        "sha256": "3206da53a4477ac31194c59b271faac67aa386c097aa38963c52d5988700324d",
+        "title": "노후주택비율(시도/시/군/구)",
+        "downloadedAt": "2026.11.26 15:04",
+        "sourceUrl": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL202004&conn_path=I3"
+      }
+    },
+    {
+      "orgId": "101",
+      "tableId": "DT_1YL20643",
+      "dimension": "A",
+      "statYear": "2024",
+      "standardSet": "kac-2024-egis-2025",
+      "items": [
+        "10/11"
+      ],
+      "levels": [
+        "sido",
+        "sgg"
+      ],
+      "reviewState": "verified",
+      "unit": "%",
+      "itemDefinitions": {
+        "10/11": {
+          "label": "주지표 / 청년인구비율(19~39세) (14STD00018 %)",
+          "unit": "%"
+        }
+      },
+      "originalEvidence": {
+        "file": "D_KOSIS_original_2024_youth19-39.xlsx",
+        "sha256": "7aa9a7afd61b770de37d8a8aa4c4a93b7c3d5bebfdc71b573c2971ad53cb1403",
+        "title": "인구총조사 청년인구비율(시도/시/군/구)",
+        "downloadedAt": "2026.11.26 13:38",
+        "sourceUrl": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20643&conn_path=I3"
+      }
+    }
+  ],
+  "status": "공식 공통 코드 연계는 전국 17개 시도와 252개 시군구 경계에서 검증. 표별 원본 분류와 공간 단위가 같은 행만 변환. 2026 통합·개편 분류 및 상위 시 합계는 차단."
 }

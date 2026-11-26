@@ -1,0 +1,289 @@
+{
+  "createdAt": "2026-11-26T07:34:31.778Z",
+  "qaBundleFilesVerified": 73,
+  "qaFixedOriginals": 10,
+  "fixedOriginalCsvSuccesses": 3,
+  "newActualMapSuccesses": 2,
+  "alternativeFertilityMatchesINH": 17,
+  "results": [
+    {
+      "case": "A",
+      "file": "A_KOSIS_DT_1YL21161_T10_2024_original.xlsx",
+      "sha256": "ae00fa6e0cd9f67a556e951bd6ff78fe209b5adcc7501ffd0c3f7f804e4b62d1",
+      "table": "DT_1YL21161",
+      "headerRows": 2,
+      "inputRows": 26,
+      "originalCellsCompared": 26,
+      "status": "결합 가능",
+      "matched": 25,
+      "scope": "11",
+      "reason": null,
+      "uiMapVerified": true,
+      "verificationEnvironment": "Node.js common-engine audit; UI evidence is recorded separately; no physical-device acceptance",
+      "outputCellsCompared": 25,
+      "actualMap": {
+        "joined": 25,
+        "savedLayers": 2,
+        "reopenedLayers": 2,
+        "allValuesAndTextMetadataMatch": true,
+        "reopenedGeometryPreserved": true,
+        "pdf": "PR29_A_Seoul25_2024.pdf",
+        "representativeImage": "Rendered from actual e-GIS PDF, not native PNG download",
+        "nativePngDownload": "not confirmed: IAB download event timed out for A",
+        "legendDisplayDigits": 2,
+        "sourcePrecisionPreserved": true,
+        "files": {
+          "PR29_A_Seoul25_2024.egis": {
+            "bytes": 236283,
+            "sha256": "65351e344db9c336df4bf46e680cb11d5f006015158f8e0f97432cbc9ae7fd3b"
+          },
+          "PR29_A_Seoul25_2024_reopened.egis": {
+            "bytes": 236307,
+            "sha256": "b24ec10d9cc1b809cd99a7269b9fb998f228cd009cd21e5cf3ebeb490e4d5c97"
+          },
+          "PR29_A_Seoul25_2024.pdf": {
+            "bytes": 15252145,
+            "sha256": "22477da262820bc612ec3fafae805c1d91a815475a24571c55ac518443167aa1"
+          }
+        }
+      }
+    },
+    {
+      "case": "B",
+      "file": "B_KOSIS_DT_1B8000H_T12_2024_original.xlsx",
+      "sha256": "61cd208a1379a6e99db4f54229ae7240e135d6194206b1773a0258067389b629",
+      "table": "DT_1B8000H",
+      "headerRows": 2,
+      "inputRows": 17,
+      "originalCellsCompared": 17,
+      "status": "결합 가능",
+      "matched": 17,
+      "scope": "all",
+      "reason": null,
+      "uiMapVerified": false,
+      "verificationEnvironment": "Node.js common-engine audit; UI evidence is recorded separately; no physical-device acceptance",
+      "outputCellsCompared": 17,
+      "uiCsvVerified": true,
+      "automaticRecommendation": "sido/all",
+      "uiCsvSha256": "61edbf90e4ce99ca6e75e29f5d81150923f4377bafd9c09c439ef560f27aaa89"
+    },
+    {
+      "case": "C",
+      "file": "C_강원18_2024_KOSIS원본.xlsx",
+      "sha256": "714845b0bee2b909e4d21fb03d42df682a82bb7602ce0d0bbb5a8ecfe9082532",
+      "table": "DT_1YL20621",
+      "headerRows": 2,
+      "inputRows": 19,
+      "originalCellsCompared": 19,
+      "status": "결합 중단",
+      "matched": 0,
+      "scope": "51",
+      "reason": "11행 홍천군 (32310)는 2024 공식 분류와 연결되지 않아요. 개편된 지역이 함께 있다면 KOSIS에서 탐구할 지역만 선택하고, 코드 포함과 셀 병합 해제로 다시 내려받아 주세요.",
+      "uiMapVerified": false,
+      "verificationEnvironment": "Node.js common-engine audit; UI evidence is recorded separately; no physical-device acceptance"
+    },
+    {
+      "case": "D",
+      "file": "D_KOSIS_original_2024_youth19-39.xlsx",
+      "sha256": "7aa9a7afd61b770de37d8a8aa4c4a93b7c3d5bebfdc71b573c2971ad53cb1403",
+      "table": "DT_1YL20643",
+      "headerRows": 3,
+      "inputRows": 23,
+      "originalCellsCompared": 23,
+      "status": "결합 중단",
+      "matched": 0,
+      "scope": "47",
+      "reason": "5행 포항시는 상위 시 합계예요. 일반구가 나뉜 지도에 같은 값을 나누거나 복제할 수 없어요. 원본과 같은 지역 단위의 자료를 선택해 주세요.",
+      "uiMapVerified": false,
+      "verificationEnvironment": "Node.js common-engine audit; UI evidence is recorded separately; no physical-device acceptance"
+    },
+    {
+      "case": "E",
+      "file": "E_DT_1YL20981_T10_2024_KOSIS_all_regions_original.xlsx",
+      "sha256": "677ab4416fdfac6cdb857d268d02f13769a473df21707c04f7876aacbbeca276",
+      "table": "DT_1YL20981",
+      "headerRows": 2,
+      "inputRows": 247,
+      "originalCellsCompared": 247,
+      "status": "결합 중단",
+      "matched": 0,
+      "scope": "all",
+      "reason": "30행 전남광주통합특별시 (12)는 2024 공식 분류와 연결되지 않아요. 개편된 지역이 함께 있다면 KOSIS에서 탐구할 지역만 선택하고, 코드 포함과 셀 병합 해제로 다시 내려받아 주세요.",
+      "uiMapVerified": false,
+      "verificationEnvironment": "Node.js common-engine audit; UI evidence is recorded separately; no physical-device acceptance"
+    },
+    {
+      "case": "F1",
+      "file": "F1_KOSIS_DT_1YL20931_2024_original.xlsx",
+      "sha256": "116d82691ff670bdd10b0ee27e4cd1828fa0aa96563271aa97dca09cf3c71872",
+      "table": "DT_1YL20931",
+      "headerRows": 2,
+      "inputRows": 17,
+      "originalCellsCompared": 17,
+      "status": "결합 중단",
+      "matched": 0,
+      "scope": "all",
+      "reason": "4행 광주광역시 (1224)는 2024 공식 분류와 연결되지 않아요. 개편된 지역이 함께 있다면 KOSIS에서 탐구할 지역만 선택하고, 코드 포함과 셀 병합 해제로 다시 내려받아 주세요.",
+      "uiMapVerified": false,
+      "verificationEnvironment": "Node.js common-engine audit; UI evidence is recorded separately; no physical-device acceptance"
+    },
+    {
+      "case": "F2",
+      "file": "F2_KOSIS_original_2024.xlsx",
+      "sha256": "ca260077280c07a2422f7e3685794f0fa8a277f5a429a603a99c36a7bbdb534f",
+      "table": "DT_1YL21281",
+      "headerRows": 2,
+      "inputRows": 17,
+      "originalCellsCompared": 17,
+      "status": "결합 중단",
+      "matched": 0,
+      "scope": "all",
+      "reason": "4행 광주광역시 (1224)는 2024 공식 분류와 연결되지 않아요. 개편된 지역이 함께 있다면 KOSIS에서 탐구할 지역만 선택하고, 코드 포함과 셀 병합 해제로 다시 내려받아 주세요.",
+      "uiMapVerified": false,
+      "verificationEnvironment": "Node.js common-engine audit; UI evidence is recorded separately; no physical-device acceptance"
+    },
+    {
+      "case": "G",
+      "file": "G_DT_1YL13401E_2024_original.xlsx",
+      "sha256": "d64938f0a96d2c18ad62de05996c9c76aa794e1b47b9d5ad3ad30d7def802f8d",
+      "table": "DT_1YL13401E",
+      "headerRows": 1,
+      "inputRows": 17,
+      "originalCellsCompared": 17,
+      "status": "결합 중단",
+      "matched": 0,
+      "scope": "all",
+      "reason": "이 통계표·연도·지역 단계의 코드 대응이 아직 검증되지 않았습니다. 원본을 보존했습니다. DETAIL에서 검증 상태를 확인하세요.",
+      "uiMapVerified": false,
+      "verificationEnvironment": "Node.js common-engine audit; UI evidence is recorded separately; no physical-device acceptance"
+    },
+    {
+      "case": "H",
+      "file": "H_DT_1YL20842_2024_original.xlsx",
+      "sha256": "6c3871534bd574bfea684f5b065e271b20c69068370dc971339c13c126bacb24",
+      "table": "DT_1YL20842",
+      "headerRows": 2,
+      "inputRows": 17,
+      "originalCellsCompared": 17,
+      "status": "결합 가능",
+      "matched": 16,
+      "scope": "26",
+      "reason": null,
+      "uiMapVerified": false,
+      "verificationEnvironment": "Node.js common-engine audit; UI evidence is recorded separately; no physical-device acceptance",
+      "outputCellsCompared": 16,
+      "uiCsvVerified": true,
+      "automaticRecommendation": "sgg/26",
+      "uiCsvSha256": "8a45e935ed7820ffcdc54b0ad39866b7710462a29c5ebfb73f231818de4fc629"
+    },
+    {
+      "case": "I",
+      "file": "I_DT_1YL202004_2024_original.xlsx",
+      "sha256": "3206da53a4477ac31194c59b271faac67aa386c097aa38963c52d5988700324d",
+      "table": "DT_1YL202004",
+      "headerRows": 2,
+      "inputRows": 247,
+      "originalCellsCompared": 247,
+      "status": "결합 중단",
+      "matched": 0,
+      "scope": "all",
+      "reason": "30행 전남광주통합특별시 (12)는 2024 공식 분류와 연결되지 않아요. 개편된 지역이 함께 있다면 KOSIS에서 탐구할 지역만 선택하고, 코드 포함과 셀 병합 해제로 다시 내려받아 주세요.",
+      "uiMapVerified": false,
+      "verificationEnvironment": "Node.js common-engine audit; UI evidence is recorded separately; no physical-device acceptance"
+    },
+    {
+      "case": "INH-existing",
+      "file": "fertility-2024.xlsx",
+      "sha256": "87bcb909699e2cf9ac65135022f614b63a60fb7a3e45845475168f8fd0801a55",
+      "table": "INH_1B81A17",
+      "headerRows": 1,
+      "inputRows": 18,
+      "originalCellsCompared": 18,
+      "status": "결합 가능",
+      "matched": 17,
+      "scope": "all",
+      "reason": null,
+      "uiMapVerified": true,
+      "verificationEnvironment": "Node.js common-engine audit; UI evidence is recorded separately; no physical-device acceptance",
+      "outputCellsCompared": 17,
+      "actualMap": {
+        "joined": 17,
+        "savedLayers": 2,
+        "reopenedLayers": 2,
+        "allValuesAndTextMetadataMatch": true,
+        "reopenedGeometryPreserved": true,
+        "pdf": "PR29_B_INH_Sido17_2024.pdf",
+        "representativeImage": "Rendered from actual e-GIS PDF, not native PNG download",
+        "nativePngDownload": "not confirmed: IAB download event timed out for A",
+        "legendDisplayDigits": 2,
+        "sourcePrecisionPreserved": true,
+        "files": {
+          "PR29_B_INH_Sido17_2024.egis": {
+            "bytes": 891491,
+            "sha256": "668a81c03746a094dc0d03527a965c31c6da39efd4348b8826751a591b8ce626"
+          },
+          "PR29_B_INH_Sido17_2024_reopened.egis": {
+            "bytes": 891500,
+            "sha256": "dcb76de58da17e1ab203e8504c4b7111cdf802aedc1ffd617e2c5ef1afeb6b7b"
+          },
+          "PR29_B_INH_Sido17_2024.pdf": {
+            "bytes": 15252145,
+            "sha256": "ded0b9dd9423e2cb3f80ac6664d09b39504af18b3789aa42dce65ee43aacd578"
+          }
+        }
+      }
+    },
+    {
+      "case": "national-households-existing",
+      "file": "households-2024.xlsx",
+      "sha256": "d306a8fda0ce0324cdc1ec34893a1eab4397c83a72e64563980a92e17f1d4fea",
+      "table": "DT_1YL21161",
+      "headerRows": 2,
+      "inputRows": 248,
+      "originalCellsCompared": 744,
+      "status": "결합 중단",
+      "matched": 0,
+      "scope": "11",
+      "reason": "30행 전남광주통합특별시 (12)는 2024 공식 분류와 연결되지 않아요. 개편된 지역이 함께 있다면 KOSIS에서 탐구할 지역만 선택하고, 코드 포함과 셀 병합 해제로 다시 내려받아 주세요.",
+      "uiMapVerified": false,
+      "verificationEnvironment": "Node.js common-engine audit; UI evidence is recorded separately; no physical-device acceptance"
+    },
+    {
+      "case": "culture-selected4-existing",
+      "file": "culture-seoul-subset-2024.xlsx",
+      "sha256": "c9e6b971c875d140da5eefa7bdfb6c0734bbed547f0ebbe24d2183dc5d650bae",
+      "table": "DT_1YL20931",
+      "headerRows": 2,
+      "inputRows": 4,
+      "originalCellsCompared": 12,
+      "status": "결합 가능",
+      "matched": 4,
+      "scope": "sample",
+      "reason": null,
+      "uiMapVerified": false,
+      "verificationEnvironment": "Node.js common-engine audit; UI evidence is recorded separately; no physical-device acceptance",
+      "outputCellsCompared": 4
+    }
+  ],
+  "agingRegression": [
+    {
+      "file": "A_전남22_2024_KOSIS원본.xlsx",
+      "sha256": "f4b2d3dfc5e1ca156f7b17c842d2b28ad3be93897baf33339a9bb020278779dd",
+      "matched": 22,
+      "verification": "Unchanged PR28 adapter: original XLSX to CSV regression; real maps not newly recreated in this run"
+    },
+    {
+      "file": "B_시도17_2024_KOSIS원본.xlsx",
+      "sha256": "21a543f086eeab65eb55333c996357820ee6a49a7c3c8c0ef14140c2e5144d78",
+      "matched": 17,
+      "verification": "Unchanged PR28 adapter: original XLSX to CSV regression; real maps not newly recreated in this run"
+    }
+  ],
+  "limitations": [
+    "2024 annual data only",
+    "No physical iPad/phone or independent Aside acceptance yet",
+    "Seven fixed originals safely blocked; no claim of arbitrary-table support",
+    "Native e-GIS PNG export not confirmed in IAB; representative PNGs are rendered from actual PDFs",
+    "No main merge or production deployment"
+  ]
+}

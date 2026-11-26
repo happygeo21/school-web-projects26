@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "test": "node core.test.cjs && node spatial.test.cjs && node worker.test.mjs && node real-xlsx.test.cjs && node crosswalk.test.cjs && node crosswalk-seed/region-crosswalk.test.cjs && node crosswalk-originals.test.cjs",
+    "test": "node core.test.cjs && node spatial.test.cjs && node worker.test.mjs && node real-xlsx.test.cjs && node crosswalk.test.cjs && node crosswalk-seed/region-crosswalk.test.cjs && node crosswalk-originals.test.cjs && node standard-registry.test.cjs",
     "test:browser": "node browser.test.cjs && node student-flow.browser.cjs && node real-xlsx.browser.cjs"
   },
   "devDependencies": {

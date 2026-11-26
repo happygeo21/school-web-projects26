@@ -5,7 +5,7 @@ for(const p of books)test('official original: '+p.file,()=>{
  const bytes=fs.readFileSync(path.join(dir,p.file));assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),p.sha256);
  const b=X.read(bytes,{type:'buffer'}),before=JSON.stringify(b),raw=X.utils.sheet_to_json(b.Sheets['데이터'],{header:1,defval:'',raw:true});
  assert.equal(raw.length,p.records+p.headerRows);
- if(p.parserStatus==='unsupported'){assert.throws(()=>W.read(b,X),/머리글|분류/);assert.equal(JSON.stringify(b),before);return;}
+ // Formerly unsupported header shapes now parse; approval remains separate.
  const input=W.read(b,X);assert.equal(input.tableId,p.tableId);assert.equal(input.statYear,p.statYear);assert.equal(input.records.length,p.records);
  for(const [i,r] of input.records.entries()){assert.deepEqual(r.hierarchy,raw[i+p.headerRows].slice(0,p.dimensions).map(v=>String(v).trim()));assert.deepEqual(r.values,raw[i+p.headerRows].slice(p.dimensions));}
  assert.equal(JSON.stringify(b),before);

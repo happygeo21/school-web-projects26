@@ -1,0 +1,247 @@
+
+> kosis-egis-qa@1.0.0 test
+> node core.test.cjs && node spatial.test.cjs && node worker.test.mjs && node real-xlsx.test.cjs && node crosswalk.test.cjs && node crosswalk-seed/region-crosswalk.test.cjs && node crosswalk-originals.test.cjs && node standard-registry.test.cjs
+
+✔ all 252 codes, names, years, province distribution and expected distribution (3.0937ms)
+✔ national 252 synthetic rows retain exact values and metadata (5.2418ms)
+✔ Jeonnam 22 is complete for its scope, not a national claim (1.9183ms)
+✔ all same-name districts and Goseong require correct province; full Hwasun name (8.4626ms)
+✔ unique prior name does not invent province context for ambiguous next row (0.632ms)
+✔ code/name and code/province mismatch stop instead of silently trusting code (0.6763ms)
+✔ code-only data is supported (0.3521ms)
+✔ Suwon aggregate never copies values into its four districts (0.4323ms)
+✔ national/province totals are excluded; Sejong is a real reference region (0.4168ms)
+✔ duplicates and multiple periods do not keep first value (0.4034ms)
+✔ missing values stay empty; invalid grouping, text and unsafe precision rejected (0.6532ms)
+✔ year missing or older than boundaries requires review (0.3131ms)
+✔ quoted CSV/BOM/tab/newline/empty row roundtrip (0.36ms)
+✔ UTF8 and EUC-KR decode fixtures (2.8094ms)
+✔ merged multilevel headers, empty columns and duplicate header names (0.106ms)
+✔ manual matching and exclusion re-run validation (0.647ms)
+✔ 10000-row repeated input is diagnosed as duplicates, never summed (39.1277ms)
+✔ code column before name and trailing unnamed values are not lost (0.2263ms)
+✔ row audit preserves original values and marks duplicate rows as unverified (0.7761ms)
+✔ downloaded e-GIS 2025 layer properties match all reference fields (3.2289ms)
+✔ user-reported Hwasun 2024 three indicators join GIS46790 and preserve original values/codes (1.7269ms)
+✔ Hwasun candidate12760 is blocked with selected/disabled code and manual override (1.5028ms)
+✔ foreign codes require table selection and cannot fall back to name-only (3.0761ms)
+✔ source province and source year must be explicit and match selected year (6.5593ms)
+✔ source metadata org/table/item conflicts block crosswalk even when region and value look correct (3.7475ms)
+✔ one Hwasun point does not establish Jeonnam22 coverage and wrong candidate is never selected (0.5347ms)
+✔ user-reported anchors survive XLSX with string GIS code (87.0709ms)
+✔ business anchor rejects non-total industry or size in original metadata (0.6796ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 182.9071
+✔ actual 17-province distribution keys/year match file and all 252 parent attributes (3.5902ms)
+✔ 17 provincial synthetic rows join once with two-digit string codes, including zero (2.7248ms)
+✔ 252 SGG synthetic rows preserve legacy matches (6.5928ms)
+✔ Jeonnam22 means complete only in province46 scope (2.8144ms)
+✔ province values are never replicated onto SGG geometry and original arrays remain unchanged (0.8722ms)
+✔ changing to the suggested matching layer fixes only the mapping choice (1.4827ms)
+✔ unknown/auto unit needs explicit confirmation; title alone does not prove geography (2.312ms)
+✔ SGG to province requires a declared aggregation, never direct join (2.4193ms)
+✔ additive complete counts produce exactly correct province sums (5.5437ms)
+✔ single province aggregation uses all its22 districts, not nationwide completeness (1.4419ms)
+✔ rates/means cannot be summed or simple-averaged (2.2739ms)
+✔ weighted elderly rate is computed from numerator and population, not mean of rates (1.4848ms)
+✔ ratio without real numerator/denominator, nonpositive denominator, impossible numerator is blocked (12.8809ms)
+✔ density recomputes population over area in km2 and refuses unknown units (5.4206ms)
+✔ missing geography, missing value and zero remain distinct; no partial sum is emitted (2.9533ms)
+✔ duplicates stop all aggregation and do not get silently summed (3.3487ms)
+✔ province totals and coded Suwon totals are excluded from district sums but original province totals are compared (8.4274ms)
+✔ original province ratio can be compared and a difference is never called equal (2.2206ms)
+✔ boundary/statistical year mismatch is a warning on matching levels (0.552ms)
+✔ duplicate or conflicting provincial codes are rejected (1.0833ms)
+✔ upper-city-only rows require a matching city boundary, never fabricated gu values (0.2521ms)
+✔ same-name districts, upper-city hierarchy and existing Hwasun anchor safeguards survive dispatch (4.3158ms)
+✔ a teacher-provided matching city reference supports city totals without creating gu data (0.2031ms)
+✔ province code alone with no original name is not sufficient to assert code system identity (0.7712ms)
+✔ rates cannot be selected as weighted-count inputs, and density overflow is blocked (6.9112ms)
+✔ downloaded province geometry is the exact catalog original, never fabricated (4.8313ms)
+✔ a partial teacher reference can never masquerade as complete provincial aggregation (0.4046ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 93.4003
+✔ origin alone cannot authorize; missing protection fails closed (33.3468ms)
+✔ authentication and rate limiting enforced before upstream (0.8038ms)
+✔ unknown parameters cannot override upstream key or endpoint (0.6371ms)
+✔ successful response and upstream errors never echo credential details (2.8352ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 41.7313
+✔ sgg: unchanged real XLSX bytes, all codes and values survive CSV (22.2642ms)
+✔ sgg: blocks wrong year (4.6712ms)
+✔ sgg: blocks wrong item (5.772ms)
+✔ sgg: blocks missing (3.1161ms)
+✔ sgg: blocks text number (2.7698ms)
+✔ sgg: blocks wrong value (2.5744ms)
+✔ sgg: blocks formula (2.8309ms)
+✔ sgg: blocks wrong parent (3.123ms)
+✔ sgg: blocks duplicate (3.5353ms)
+✔ sgg: blocks missing row (2.9052ms)
+✔ sgg: blocks extra monthly column (2.744ms)
+✔ sgg: blocks wrong table (2.0029ms)
+✔ sgg: blocks wrong meta year (1.8468ms)
+✔ sgg: blocks wrong unit (1.9816ms)
+✔ sgg: blocks merged cells (1.8948ms)
+✔ sgg: settings cannot bypass scope, year, metrics or reference (2.7201ms)
+✔ sido: unchanged real XLSX bytes, all codes and values survive CSV (3.2971ms)
+✔ sido: blocks wrong year (2.023ms)
+✔ sido: blocks wrong item (2.1226ms)
+✔ sido: blocks missing (1.7975ms)
+✔ sido: blocks text number (1.665ms)
+✔ sido: blocks wrong value (1.9018ms)
+✔ sido: blocks formula (2.046ms)
+✔ sido: blocks wrong parent (2.1086ms)
+✔ sido: blocks duplicate (1.6912ms)
+✔ sido: blocks missing row (1.6934ms)
+✔ sido: blocks extra monthly column (2.0038ms)
+✔ sido: blocks wrong table (1.5556ms)
+✔ sido: blocks wrong meta year (1.5681ms)
+✔ sido: blocks wrong unit (1.5934ms)
+✔ sido: blocks merged cells (1.6973ms)
+✔ sido: settings cannot bypass scope, year, metrics or reference (1.7341ms)
+✔ unrelated workbook stays on existing converter path (0.0956ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 103.2172
+✔ explicit synthetic namespace mapping preserves real zero, leaves inputs untouched (1.3078ms)
+✔ schema 1 cannot be promoted by approved flag (0.494ms)
+✔ code system collision (0.1024ms)
+✔ unknown same-name code (0.3019ms)
+✔ numeric-only region code (0.1793ms)
+✔ missing code no name fallback (0.0997ms)
+✔ wrong parent (0.1247ms)
+✔ wrong hierarchy (0.1023ms)
+✔ one to many (0.1364ms)
+✔ many to one (0.1639ms)
+✔ duplicate source row (0.1137ms)
+✔ wrong boundary file (0.0575ms)
+✔ missing source digest (0.0388ms)
+✔ unverified time compatibility (0.0835ms)
+✔ date outside validity (0.0488ms)
+✔ wrong stat year (0.0408ms)
+✔ wrong boundary identity (0.0415ms)
+✔ duplicate expected selection (0.0282ms)
+✔ missing selected target (0.0518ms)
+✔ actual KOSIS download: all 248 source rows, 744 original cells and hierarchy preserved (38.5548ms)
+✔ actual workbook mutation rejects formula (14.3013ms)
+✔ actual workbook mutation rejects missing source code (12.3419ms)
+✔ actual workbook mutation rejects value merge (9.2062ms)
+✔ actual workbook mutation rejects wrong metadata table (6.9058ms)
+✔ actual workbook mutation rejects several years (8.1735ms)
+✔ actual workbook mutation rejects wrong header year (8.4116ms)
+✔ explicit subset uses selected boundaries and preserves value through CSV (0.6695ms)
+✔ missing/invalid values never become zero:  (0.1416ms)
+✔ missing/invalid values never become zero: null (0.0917ms)
+✔ missing/invalid values never become zero: - (0.0818ms)
+✔ missing/invalid values never become zero: N/A (0.0688ms)
+✔ missing/invalid values never become zero: bad (0.1018ms)
+✔ sample requires explicit selection (0.0764ms)
+✔ unverified arbitrary CSV cannot use old name-based converter in production (0.9004ms)
+✔ a verified outside row is excluded only after identity checks (0.237ms)
+✔ outside rows cannot hide wrong name (0.1028ms)
+✔ outside rows cannot hide wrong province (0.0724ms)
+✔ outside rows cannot hide wrong hierarchy (0.0382ms)
+✔ duplicate outside rows are still blocked (0.061ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 109.3595
+PASS aging-sgg-jeonnam 22 regions, all values and codes unchanged
+PASS aging-sido 17 regions, all values and codes unchanged
+PASS households-seoul 25 regions, all values and codes unchanged
+PASS fertility-sido 17 regions, all values and codes unchanged
+PASS fixture cannot run in production
+PASS unknown table namespace
+PASS wrong item namespace
+PASS wrong statistical year
+PASS wrong boundary year
+PASS wrong spatial level
+PASS numeric collision: 36 does not mean Sejong in this namespace
+PASS same-name district wrong parent
+PASS unknown code not bypassed by name
+PASS missing code not bypassed by name
+PASS wrong row year
+PASS mixed spatial units
+PASS duplicate input row
+PASS missing selected region
+PASS conflicting boundary name
+PASS duplicate mapping source code
+PASS duplicate mapping target code
+PASS out-of-scope row
+PASS malformed source row
+PASS malformed boundary entry
+PASS unverified compatibility in production
+PASS sample scope only explicit selected boundaries
+PASS code 36 mapped to 46, original kept
+PASS value zero or missing passed unchanged to upstream/downstream metric validator (not approval)
+28 tests passed; 81 fixture rows checked (not independent official verification).
+✔ official original: fertility-2024.xlsx (17.8015ms)
+✔ official original: population-2024.xlsx (23.7385ms)
+✔ official original: business-gyeongbuk-2024.xlsx (4.0931ms)
+✔ official original: old-housing-2024.xlsx (12.0698ms)
+✔ official original: culture-seoul-subset-2024.xlsx (3.6907ms)
+✔ official original: green-area-2024.xlsx (5.3957ms)
+✔ flat district exports do not invent a parent province from a name or code (7.2371ms)
+✔ Gangwon population source includes exactly 18 districts plus its province total (9.8388ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 88.1735
+✔ existing INH original: one header, exact 17 known values, no national aggregate (19.455ms)
+✔ existing four-district original: explicit selected subset and flat parent inference by official code (10.4671ms)
+✔ official source linkage covers every actual boundary identity and records unmatched parent cities (2.0053ms)
+✔ common registry blocks same-name unknown code (4.6107ms)
+✔ common registry blocks same number in wrong namespace (4.3551ms)
+✔ common registry blocks wrong supplied parent (5.1596ms)
+✔ common registry blocks wrong source title for metadata-only item (4.0573ms)
+✔ common registry blocks wrong item description (3.9233ms)
+✔ common registry blocks row year changed (3.5055ms)
+✔ common registry blocks duplicate region (5.5279ms)
+✔ common registry blocks missing value (3.5985ms)
+✔ common registry blocks unknown table (3.0988ms)
+✔ common registry blocks wrong dimension (2.8803ms)
+✔ unknown outside selection cannot be silently filtered (3.1476ms)
+✔ table binding cannot erase source, temporal, registry or boundary safeguards (17.6918ms)
+✔ physical range recovers malformed !ref without mutating source workbook (3.2024ms)
+✔ ambiguous headerless measures and oversized physical cells are rejected (5.5503ms)
+✔ compound headers remain structured but unregistered classifications are blocked (3.5251ms)
+✔ all unapproved secondary indicators are blocked, and missing values never become zero (7.9901ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 119.9135

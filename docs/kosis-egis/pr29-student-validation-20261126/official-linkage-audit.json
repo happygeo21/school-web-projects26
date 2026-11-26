@@ -1,0 +1,356 @@
+{
+  "sourceHashes": [
+    "23b7589e9b7b7b73ed0c48d4aff4163f28df2b5186e918617178a1b47aa82bc0",
+    "11ba74f7492eefe2ef02016719d09f93e076162fa35ca5aed1771526876ebe4d",
+    "06f899f0a7cb4caf92de880e2a4071f88ab2324dde75c985b9863f06b296a9dd"
+  ],
+  "originalsPreserved": true,
+  "officialRows": 281,
+  "sidoMatched": 17,
+  "sggMatched": 252,
+  "parentCities": [
+    {
+      "sourceRow": 2904,
+      "sourceCode": "31010",
+      "sourceName": "수원시",
+      "province": "경기도",
+      "administrativeCode": "4111000000",
+      "legalCode": "4111000000",
+      "created": "19880423",
+      "split": "",
+      "sourceRows": {
+        "2024-12-31": 2904,
+        "2025-01-01": 2904
+      },
+      "level": "city",
+      "provinceSourceCode": "31",
+      "provinceTargetCode": "41",
+      "targetCode": null,
+      "targetName": null,
+      "ancestors": [
+        "31"
+      ]
+    },
+    {
+      "sourceRow": 2982,
+      "sourceCode": "31020",
+      "sourceName": "성남시",
+      "province": "경기도",
+      "administrativeCode": "4113000000",
+      "legalCode": "4113000000",
+      "created": "19880423",
+      "split": "",
+      "sourceRows": {
+        "2024-12-31": 2982,
+        "2025-01-01": 2982
+      },
+      "level": "city",
+      "provinceSourceCode": "31",
+      "provinceTargetCode": "41",
+      "targetCode": null,
+      "targetName": null,
+      "ancestors": [
+        "31"
+      ]
+    },
+    {
+      "sourceRow": 3076,
+      "sourceCode": "31040",
+      "sourceName": "안양시",
+      "province": "경기도",
+      "administrativeCode": "4117000000",
+      "legalCode": "4117000000",
+      "created": "19880423",
+      "split": "",
+      "sourceRows": {
+        "2024-12-31": 3076,
+        "2025-01-01": 3076
+      },
+      "level": "city",
+      "provinceSourceCode": "31",
+      "provinceTargetCode": "41",
+      "targetCode": null,
+      "targetName": null,
+      "ancestors": [
+        "31"
+      ]
+    },
+    {
+      "sourceRow": 3112,
+      "sourceCode": "31050",
+      "sourceName": "부천시",
+      "province": "경기도",
+      "administrativeCode": "4119000000",
+      "legalCode": "4119000000",
+      "created": "19880423",
+      "split": "",
+      "sourceRows": {
+        "2024-12-31": 3112,
+        "2025-01-01": 3112
+      },
+      "level": "city",
+      "provinceSourceCode": "31",
+      "provinceTargetCode": "41",
+      "targetCode": null,
+      "targetName": null,
+      "ancestors": [
+        "31"
+      ]
+    },
+    {
+      "sourceRow": 3367,
+      "sourceCode": "31090",
+      "sourceName": "안산시",
+      "province": "경기도",
+      "administrativeCode": "4127000000",
+      "legalCode": "4127000000",
+      "created": "19880423",
+      "split": "",
+      "sourceRows": {
+        "2024-12-31": 3367,
+        "2025-01-01": 3367
+      },
+      "level": "city",
+      "provinceSourceCode": "31",
+      "provinceTargetCode": "41",
+      "targetCode": null,
+      "targetName": null,
+      "ancestors": [
+        "31"
+      ]
+    },
+    {
+      "sourceRow": 3413,
+      "sourceCode": "31100",
+      "sourceName": "고양시",
+      "province": "경기도",
+      "administrativeCode": "4128000000",
+      "legalCode": "4128000000",
+      "created": "19920504",
+      "split": "",
+      "sourceRows": {
+        "2024-12-31": 3413,
+        "2025-01-01": 3413
+      },
+      "level": "city",
+      "provinceSourceCode": "31",
+      "provinceTargetCode": "41",
+      "targetCode": null,
+      "targetName": null,
+      "ancestors": [
+        "31"
+      ]
+    },
+    {
+      "sourceRow": 3750,
+      "sourceCode": "31190",
+      "sourceName": "용인시",
+      "province": "경기도",
+      "administrativeCode": "4146000000",
+      "legalCode": "4146000000",
+      "created": "19960301",
+      "split": "",
+      "sourceRows": {
+        "2024-12-31": 3750,
+        "2025-01-01": 3750
+      },
+      "level": "city",
+      "provinceSourceCode": "31",
+      "provinceTargetCode": "41",
+      "targetCode": null,
+      "targetName": null,
+      "ancestors": [
+        "31"
+      ]
+    },
+    {
+      "sourceRow": 6893,
+      "sourceCode": "33040",
+      "sourceName": "청주시",
+      "province": "충청북도",
+      "administrativeCode": "4311000000",
+      "legalCode": "4311000000",
+      "created": "19880423",
+      "split": "",
+      "sourceRows": {
+        "2024-12-31": 6893,
+        "2025-01-01": 6893
+      },
+      "level": "city",
+      "provinceSourceCode": "33",
+      "provinceTargetCode": "43",
+      "targetCode": null,
+      "targetName": null,
+      "ancestors": [
+        "33"
+      ]
+    },
+    {
+      "sourceRow": 8538,
+      "sourceCode": "34010",
+      "sourceName": "천안시",
+      "province": "충청남도",
+      "administrativeCode": "4413000000",
+      "legalCode": "4413000000",
+      "created": "19880423",
+      "split": "",
+      "sourceRows": {
+        "2024-12-31": 8538,
+        "2025-01-01": 8538
+      },
+      "level": "city",
+      "provinceSourceCode": "34",
+      "provinceTargetCode": "44",
+      "targetCode": null,
+      "targetName": null,
+      "ancestors": [
+        "34"
+      ]
+    },
+    {
+      "sourceRow": 10830,
+      "sourceCode": "35010",
+      "sourceName": "전주시",
+      "province": "전북특별자치도",
+      "administrativeCode": "5211000000",
+      "legalCode": "5211000000",
+      "created": "20240118",
+      "split": "",
+      "sourceRows": {
+        "2024-12-31": 10830,
+        "2025-01-01": 10830
+      },
+      "level": "city",
+      "provinceSourceCode": "35",
+      "provinceTargetCode": "52",
+      "targetCode": null,
+      "targetName": null,
+      "ancestors": [
+        "35"
+      ]
+    },
+    {
+      "sourceRow": 15816,
+      "sourceCode": "37010",
+      "sourceName": "포항시",
+      "province": "경상북도",
+      "administrativeCode": "4711000000",
+      "legalCode": "4711000000",
+      "created": "19880423",
+      "split": "",
+      "sourceRows": {
+        "2024-12-31": 15816,
+        "2025-01-01": 15816
+      },
+      "level": "city",
+      "provinceSourceCode": "37",
+      "provinceTargetCode": "47",
+      "targetCode": null,
+      "targetName": null,
+      "ancestors": [
+        "37"
+      ]
+    },
+    {
+      "sourceRow": 19109,
+      "sourceCode": "38110",
+      "sourceName": "창원시",
+      "province": "경상남도",
+      "administrativeCode": "4812000000",
+      "legalCode": "4812000000",
+      "created": "20100701",
+      "split": "",
+      "sourceRows": {
+        "2024-12-31": 19109,
+        "2025-01-01": 19109
+      },
+      "level": "city",
+      "provinceSourceCode": "38",
+      "provinceTargetCode": "48",
+      "targetCode": null,
+      "targetName": null,
+      "ancestors": [
+        "38"
+      ]
+    }
+  ],
+  "changes2025": [
+    {
+      "sourceRow": 413,
+      "area": "부산광역시\n강서구\n(21120)",
+      "note": "\n\n\n부산광역시 강서구 행정운영동의 설치 및 동장 정수 조례\n\n◎ 시행일: 2025. 1. 1.\n\n1. 행정동: (신설) 신호동\n\n2. 법정동: 관할구역 변경"
+    },
+    {
+      "sourceRow": 427,
+      "area": "전북특별자치도\n전주시 덕진구\n(35012)",
+      "note": "\n전주시 행정운영동의 설치 및 동장 정수 조례\n\n◎ 시행일: 2025. 3. 10.\n\n1. 행정동: (신설) 금암동, (폐지) 금암1동, 금암2동\n\n2. 법정동: 관할구역 변경"
+    },
+    {
+      "sourceRow": 434,
+      "area": "경기도\n화성시\n(31240)",
+      "note": "\n화성시 읍ㆍ면ㆍ동ㆍ리의 명칭 및 관할구역에 관한 조례 일부개정조례안\n\n◎ 시행일: 2025. 5. 13.\n\n1. 행정동: 변동사항 없음\n\n2. 법정동: (폐지) 사곳리, (신설) 사곶리"
+    },
+    {
+      "sourceRow": 452,
+      "area": "경상북도\n영덕군\n(37550)",
+      "note": "\n영덕군 읍면의 명칭과 구역에 관한 조례 전부개정조례안\n\n◎ 시행일: 2025. 6. 30.\n\n1. 행정동: 변동사항 없음\n\n2. 법정동: (폐지) 대리, (신설) 대동리"
+    },
+    {
+      "sourceRow": 466,
+      "area": "충청북도\n음성군\n(33570)",
+      "note": "\n음성군 행정기구 설치 조례\n\n◎ 시행일: 2025. 6. 30.\n\n1. 행정동: (신설) 맹동면혁신도시출장소\n\n2. 법정동: 관할구역 변경"
+    },
+    {
+      "sourceRow": 485,
+      "area": "경기도 안양시 만안구\n(31041)",
+      "note": "\n안양시 동의 명칭과 관할구역에 관한 조례 일부개정조례\n\n◎ 시행일: 2025. 7. 1.\n\n1. 행정동: (폐지) 박달1동, 박달2동, (신설) 박달동, 호현동\n\n2. 법정동: 변동사항 없음"
+    },
+    {
+      "sourceRow": 492,
+      "area": "경기도 용인시 처인구\n(31191)",
+      "note": "\n용인시 구 및 읍·면·동의 명칭과 관할구역에 관한 조례\n\n◎ 시행일: 2025. 7. 1. → 7. 14. (시행일 연기)\n\n1. 행정동: (폐지) 유림동, (신설) 유림1동, 유림2동\n\n2. 법정동: 변동사항 없음"
+    },
+    {
+      "sourceRow": 500,
+      "area": "서울특별시 \n동대문구\n(11060)",
+      "note": "\n서울특별시 동대문구 행정기구 설치 조례\n\n◎ 시행일: 2025. 7. 1.\n\n1. 행정동: (폐지) 용신동, (신설) 신설동, 용두동\n\n2. 법정동: 변동사항 없음"
+    },
+    {
+      "sourceRow": 508,
+      "area": "경기도\n의정부시\n(31030)",
+      "note": "\n의정부시 행정동의 설치 및 동장 정수 조례 일부개정조례\n\n◎ 시행일: 2025. 7. 1.\n\n1. 행정동: 변동사항 없음\n\n2. 법정동: 관할구역 변경"
+    },
+    {
+      "sourceRow": 517,
+      "area": "인천광역시\n서구\n(23080)",
+      "note": "\n｢인천광역시 서구 동의 명칭과 구역에 관한 조례｣ 및 ｢인천광역시 서구 행정운영동의 설치 및 동장 정수 조례｣\n\n◎ 시행일: 2025. 7. 11.\n\n1. 행정동: 변동사항 없음\n\n2. 법정동: 관할구역 변경"
+    },
+    {
+      "sourceRow": 535,
+      "area": "경상북도\n경주시\n(37020)",
+      "note": "\n｢경주시 행정동 설치 조례｣ 및 ｢경주시 리통반 설치 조례｣ \n\n◎ 시행일: 2025. 9. 1.\n\n1. 행정동: (폐지) 중부동\n\n2. 법정동: 관할구역 변경"
+    },
+    {
+      "sourceRow": 547,
+      "area": "경상남도\n통영시\n(38050)",
+      "note": "\n통영시 리명칭 및 구역획정에 관한 조례 일부개정조례\n\n◎ 시행일: 2025. 10. 17.\n\n1. 행정동: 변동사항 없음\n\n2. 법정동: (폐지) 삼덕리, (신설) 당포리"
+    },
+    {
+      "sourceRow": 564,
+      "area": "인천광역시 \n서구\n(23080)",
+      "note": "\n인천광역시 서구 행정운영동의 설치 및 동장 정수 조례\n\n◎ 시행일: 2025. 10. 20.\n\n1. 행정동: (폐지) 아라동, (신설) 아라1동, 아라2동\n\n2. 법정동: 변동사항 없음"
+    },
+    {
+      "sourceRow": 572,
+      "area": "전북특별자치도 전주시 덕진구\n(35012)",
+      "note": "\n전주시 행정운영동의 설치 및 동장 정수 조례\n\n◎ 시행일: 2025. 10. 27.\n\n1. 행정동:(신설) 송천3동\n\n2. 법정동: 변동사항 없음"
+    },
+    {
+      "sourceRow": 841,
+      "area": "경기도 화성시 동탄구\n(31244)",
+      "note": "\n화성시 구 및 읍·면·동의 명칭과 관할구역에 관한 조례\n\n◎ 시행일: 2025. 7. 1. → 7. 14. (시행일 연기)\n\n1. 행정동: 변동사항 없음\n\n2. 법정동: (폐지) 오산동, (신설) 여울동"
+    }
+  ],
+  "coordinateEqualityRequired": false,
+  "scopeInterpretation": "KSSC 2024말/2025초 281개 상위 구역 코드·명칭·행정기관·법정동 연계 동일. 2026.10.1 원문의 2025년 변경내역 15건은 시군구 내부 동/리 변경. 시도17·시군구252 실제 경계 속성 전수 일치. 좌표 동일성 검증은 요구하지 않음. 읍면동, 2026 개편구역, 상위 시→일반구 분배 제외."
+}
