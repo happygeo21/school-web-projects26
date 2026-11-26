@@ -19,13 +19,15 @@ function read(book,X){
  if(Object.entries(sheet).some(([k,c])=>!k.startsWith('!')&&c.f))fail('원본에 수식이 있습니다. KOSIS에서 받은 파일을 그대로 넣어 주세요.');
  const original=X.utils.sheet_to_json(sheet,{header:1,defval:'',raw:true,blankrows:true});
  const src=C.expand(original,sheet['!merges']||[]);
- const dims=src[0]?.filter(v=>/^\w+ .+\(\d+\)$/.test(text(v))).length||0;
- if(!dims||dims>5||!src[1]||src[0].slice(0,dims).some((v,i)=>v!==src[1][i])||src[0].slice(dims).some(v=>text(v)!=='Y'+period[1]+' '+period[1]))fail('지원하지 않는 표 구조입니다. 행에 행정구역, 열에 한 연도와 항목을 선택하세요.');
+ const dims=src[0]?.findIndex(v=>/^Y\d{4}\s/.test(text(v)))??-1;
+ if(dims<1||dims>5||!src[1]||src[0].slice(0,dims).some((v,i)=>v!==src[1][i])||src[0].slice(dims).some(v=>text(v)!=='Y'+period[1]+' '+period[1]))fail('항목 코드가 있는 2줄 머리글의 지역별 표만 읽을 수 있습니다. 이 통계표 형식은 검증 전입니다.');
  const dimension=text(src[0][0]).split(' ')[0];
  if((sheet['!merges']||[]).some(m=>m.e.r>=2&&m.e.c>=dims))fail('통계값 영역의 병합 셀은 값을 복제할 수 있어 변환하지 않습니다.');
- if(src[0].slice(0,dims).some((v,i)=>!text(v).startsWith(dimension+' ')||!text(v).endsWith('('+(i+1)+')')))fail('여러 지역 분류나 성별·연령별 행을 한 번에 연결하지 않습니다.');
+ if(src[0].slice(0,dims).some((v,i)=>!/^\w+ .+/.test(text(v))||!text(v).startsWith(dimension+' ')||((dims>1||/\(\d+\)$/.test(text(v)))&&!text(v).endsWith('('+(i+1)+')'))))fail('여러 지역 분류나 성별·연령별 행을 한 번에 연결하지 않습니다.');
+ if(src[2]?.slice(0,dims).every((v,i)=>text(v)===text(src[0][i])))fail('3줄 이상의 머리글이나 항목 외 분류가 포함된 표는 검증 전입니다.');
  const metrics=src[1].slice(dims).map((v,i)=>{const m=text(v).match(/^([A-Za-z0-9_]+)\s+(.+)$/);if(!m)fail('항목 코드가 없습니다. 다운로드에서 코드 포함을 선택하세요.');return {id:m[1],label:m[2].replace(/<br\s*\/?\s*>/gi,' '),column:i+4};});
  if(!metrics.length||new Set(metrics.map(m=>m.id)).size!==metrics.length)fail('통계 항목 코드가 없거나 중복됩니다.');
+ if(src[2]?.slice(0,dims).every((v,i)=>text(v)===text(src[0][i])))fail('3줄 이상의 머리글이나 항목 외 분류가 포함된 표는 검증 전입니다.');
  const records=[];
  for(let i=2;i<src.length;i++){
   const r=src[i];if(r.every(v=>!text(v)))continue;
@@ -34,7 +36,7 @@ function read(book,X){
   const identities=hierarchy.filter(v=>v!=='소계').map(v=>{const m=v.match(/^(\d+)\s+(.+)$/);if(!m)fail((i+1)+'행 지역 코드가 없습니다. 다운로드에서 코드 포함을 선택하세요.');return {code:m[1],name:m[2]};});
   if(!identities.length)fail((i+1)+'행 지역 정보가 없습니다.');
   const last=identities.at(-1),first=identities[0];
-  records.push({sourceRow:i+1,sourceCode:last.code,name:last.name,province:first.name,year:period[1],hierarchy,values:metrics.map((m,j)=>r[dims+j]??'')});
+  records.push({sourceRow:i+1,sourceCode:last.code,name:last.name,province:dims>1?first.name:'',year:period[1],hierarchy,values:metrics.map((m,j)=>r[dims+j]??'')});
  }
  const headers=['source_code','지역명','시도명','통계연도',...metrics.map(m=>m.id+' '+m.label)];
  return {orgId:url.searchParams.get('orgId'),tableId,title:get('○ 통계표명'),statYear:period[1],sourceUrl:url.href,downloadedAt:get('○ 자료다운일자'),dimension,metrics,records,headers,rows:[headers,...records.map(r=>[r.sourceCode,r.name,r.province,r.year,...r.values])]};
