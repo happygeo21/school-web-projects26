@@ -62,11 +62,16 @@ function convert(input,registry,refs,settings,boundaryHash){
   targets=targets.filter(r=>codes.includes(r.code));
  }
  const selected=new Set(targets.map(t=>t.code)),allEntries=new Map((p.entries||[]).map(e=>[e.sourceCode,e]));
- const sourceRows=[];let outside=0;
+ const sourceRows=[],seenSources=new Set();let outside=0;
  for(const r of input.records){
+  if(seenSources.has(r.sourceCode))return stop('원본 중복 코드','선택 범위와 관계없이 같은 원본 코드가 여러 행에 있습니다.');
+  seenSources.add(r.sourceCode);
   const e=allEntries.get(r.sourceCode);
   // Only explicitly registered rows can be omitted. Unknowns are never name-filtered away.
-  if(e&&!selected.has(e.targetCode)){outside++;continue;}
+  if(e&&!selected.has(e.targetCode)){
+   if(r.year!==input.statYear||r.name!==e.sourceName||r.province!==e.province||JSON.stringify(r.hierarchy)!==JSON.stringify(e.sourceHierarchy))return stop('범위 밖 원본 불일치','제외할 지역도 코드·지역명·상위 시도·연도가 검증된 대응표와 같아야 합니다.');
+   outside++;continue;
+  }
   const ignored=(p.excludedRows||[]).some(x=>x.sourceCode===r.sourceCode&&x.name===r.name&&JSON.stringify(x.hierarchy)===JSON.stringify(r.hierarchy));
   if(ignored){outside++;continue;}
   sourceRows.push({...r,level:p.level});
